@@ -1,0 +1,65 @@
+/* ==========================================================================
+   MEGAVISION palette — sampled directly from the logo mark.
+   "Loud, metallic, snowmobile-graphics" aesthetic: chrome text on black,
+   saturated violet/blue/pink/crimson/gold sparks as the only color.
+   Edit these variables to retune every page at once.
+   ========================================================================== */
+
+:root {
+  /* base */
+  --mv-black:      #0a0a10;   /* page background, like painted plastic */
+  --mv-black-2:    #13131b;   /* panel surface, one step up from black */
+  --mv-black-3:    #191922;   /* hover / raised surface */
+  --mv-border:     #26262f;
+
+  /* chrome / metallic (the letterforms) */
+  --mv-chrome-100: #f5f4f7;   /* hottest highlight */
+  --mv-chrome-300: #c7c5d1;   /* mid metal */
+  --mv-chrome-600: #6e6c7a;   /* shadowed steel */
+
+  /* text ink */
+  --mv-ink:        #f2f1f7;
+  --mv-ink-muted:  #8f8ca3;
+  --mv-ink-dim:    #4a4854;
+
+  /* the loud accent sparks, sampled from the artwork */
+  --mv-violet:     #7c3aed;
+  --mv-blue:       #2e6bff;
+  --mv-pink:       #e63fb0;
+  --mv-crimson:    #f0525c;
+  --mv-gold:       #ffd166;
+
+  /* ready-made gradients (chrome text + spark glow) */
+  --mv-gradient-spark: linear-gradient(90deg, var(--mv-violet), var(--mv-pink) 50%, var(--mv-blue));
+  --mv-gradient-chrome: linear-gradient(180deg, var(--mv-chrome-100), var(--mv-chrome-300) 55%, var(--mv-chrome-600));
+
+  --mv-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* Metallic chrome text treatment — use on big headings */
+.mv-chrome-text {
+  background: var(--mv-gradient-chrome);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+/* Loud gradient text treatment — use sparingly, for hero moments */
+.mv-spark-text {
+  background: var(--mv-gradient-spark);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+.mv-card {
+  background: var(--mv-black-2);
+  border: 1px solid var(--mv-border);
+  border-radius: 16px;
+}
+
+.mv-glow {
+  filter: drop-shadow(0 0 40px rgba(124, 58, 237, 0.35));
+}
