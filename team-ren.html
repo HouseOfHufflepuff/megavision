@@ -50,20 +50,55 @@
     </section>
 
     <section class="card mv-card">
-      <h2 class="mv-chrome-text">Roster</h2>
-      <div class="sub">13 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+      <div class="mv-tabs">
+        <button class="mv-tab active" onclick="mvShowTab(this,'roster-REN')">Roster</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'depth-REN')">Depth Chart</button>
+      </div>
+
+      <div id="roster-REN" class="mv-tab-panel active">
+        <div class="sub">13 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+            <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>26/27</th><th>BuyOut</th></tr></thead>
+            <tbody>
+              <tr><td>Frimong, Jeremie D - LIV</td><td>D</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr><td>Calafiori, Riccardo D - ARS</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>$6.05</td><td class="dim">—</td></tr><tr><td>Destiny Udogie - TOT</td><td>D</td><td>$4.40</td><td><strong style="color:var(--mv-gold)">$4.84</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Kerkez D - LIV</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Wesley Fofana D - CHE</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Bruno Fernandes M - MUN</td><td>M</td><td>$40.46</td><td><strong style="color:var(--mv-gold)">$60.69</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Tavernier, Marcus M - BOU</td><td>M</td><td>$8.25</td><td><strong style="color:var(--mv-gold)">$10.73</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Cullen, Josh M - BUR</td><td>M</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Ugarte, Manuel M, MUN</td><td>M</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Hwang Hee Chan F - WOL</td><td>F</td><td>$7.15</td><td><strong style="color:var(--mv-gold)">$7.87</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Richarilson F - TOT</td><td>F</td><td>$6.50</td><td><strong style="color:var(--mv-gold)">$7.15</strong></td><td>$7.87</td><td class="dim">—</td></tr><tr><td>Raul Jimenez F - FUL</td><td>F</td><td>$6.50</td><td><strong style="color:var(--mv-gold)">$7.15</strong></td><td>$7.87</td><td class="dim">—</td></tr><tr><td>Callum Hudson-Odoi F - NOT</td><td>F</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>—</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">13 total &middot; 5 D  &middot;  4 M  &middot;  4 F</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="depth-REN" class="mv-tab-panel">
+        <div class="sub">League formation 3-4-3, ranked by salary at each position</div>
+        <div class="mv-pitch">
+          <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">Hwang Hee Chan F - WOL</div><div class="salary">$7.87</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Richarilson F - TOT</div><div class="salary">$7.15</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Raul Jimenez F - FUL</div><div class="salary">$7.15</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player">Bruno Fernandes M - MUN</div><div class="salary">$60.69</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Tavernier, Marcus M - BOU</div><div class="salary">$10.73</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Cullen, Josh M - BUR</div><div class="salary">$5.50</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Ugarte, Manuel M, MUN</div><div class="salary">$5.50</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player">Frimong, Jeremie D - LIV</div><div class="salary">$6.60</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Calafiori, Riccardo D - ARS</div><div class="salary">$5.50</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Destiny Udogie - TOT</div><div class="salary">$4.84</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
+        </div>
+        <div class="mv-depth-group"><div class="heading">F Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">F</div><div class="player">Callum Hudson-Odoi F - NOT</div><div class="salary">$6.05</div></div></div></div><div class="mv-depth-group"><div class="heading">D Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">Kerkez D - LIV</div><div class="salary">$4.00</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Wesley Fofana D - CHE</div><div class="salary">$4.00</div></div></div></div>
+      </div>
+    </section>
+
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">Youth</h2>
+      <div class="sub">15 players drafted all-time</div>
       <div class="mv-table-scroll">
         <table class="mv-table">
-          <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>26/27</th><th>BuyOut</th></tr></thead>
-          <tbody>
-            <tr><td>Frimong, Jeremie D - LIV</td><td>D</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr><td>Calafiori, Riccardo D - ARS</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>$6.05</td><td class="dim">—</td></tr><tr><td>Destiny Udogie - TOT</td><td>D</td><td>$4.40</td><td><strong style="color:var(--mv-gold)">$4.84</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Kerkez D - LIV</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Wesley Fofana D - CHE</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Bruno Fernandes M - MUN</td><td>M</td><td>$40.46</td><td><strong style="color:var(--mv-gold)">$60.69</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Tavernier, Marcus M - BOU</td><td>M</td><td>$8.25</td><td><strong style="color:var(--mv-gold)">$10.73</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Cullen, Josh M - BUR</td><td>M</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Ugarte, Manuel M, MUN</td><td>M</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Hwang Hee Chan F - WOL</td><td>F</td><td>$7.15</td><td><strong style="color:var(--mv-gold)">$7.87</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Richarilson F - TOT</td><td>F</td><td>$6.50</td><td><strong style="color:var(--mv-gold)">$7.15</strong></td><td>$7.87</td><td class="dim">—</td></tr><tr><td>Raul Jimenez F - FUL</td><td>F</td><td>$6.50</td><td><strong style="color:var(--mv-gold)">$7.15</strong></td><td>$7.87</td><td class="dim">—</td></tr><tr><td>Callum Hudson-Odoi F - NOT</td><td>F</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>—</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">13 total &middot; 5 D  &middot;  4 M  &middot;  4 F</td></tr>
-          </tbody>
+          <thead><tr><th>Draft</th><th>Player</th><th>Pos</th><th>Age</th><th>Club</th><th>Status</th></tr></thead>
+          <tbody><tr><td class="dim">2025/26 Supplemental</td><td>Sindre Walle Egeli</td><td>F</td><td>19.0</td><td>Ipswich Town</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2025/26</td><td>Geovanni Leoni</td><td>D</td><td>18.0</td><td>Liverpool</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2024/25</td><td>Bilal El Khannouss</td><td>M</td><td>—</td><td>Leicester City</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2023/24 Supplemental</td><td>Noel Buck</td><td>M</td><td>—</td><td>New England Revolution</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2023/24</td><td>Milos Kerkez</td><td>D</td><td>—</td><td>Bournemouth</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2022/23</td><td>Destiny Udogie</td><td>D</td><td>—</td><td>Tottenham</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2021/22 Supplemental</td><td>Pedro Gonzalez Lopez ("Pedri")</td><td>M</td><td>—</td><td>Barcelona</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2021/22</td><td>Jamal Musiala</td><td>M</td><td>—</td><td>Bayern Munich</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2020/21 Supplemental</td><td>Gabriel Veron</td><td>F</td><td>—</td><td>FC Porto</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2020/21</td><td>Wesley Fofana</td><td>D</td><td>24.0</td><td>Chelsea</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2019/20 Supplemental</td><td>Lee Kang-in</td><td>M</td><td>—</td><td>PSG</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2019/20</td><td>Myron Boadu</td><td>F</td><td>—</td><td>AS Monaco</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2018/19</td><td>Tyler Roberts</td><td>F</td><td>—</td><td>Birmingham City</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2018/19</td><td>Joel Asoro</td><td>F</td><td>—</td><td>Djurgårdens IF</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2018/19</td><td>Yannick Toure</td><td>F</td><td>—</td><td>FC Aarau</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr></tbody>
         </table>
       </div>
     </section>
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 02:49 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 03:18 UTC</footer>
+  <script>
+    function mvShowTab(btn, panelId) {
+      var tabs = btn.parentElement.querySelectorAll('.mv-tab');
+      var panels = btn.closest('.mv-card').querySelectorAll('.mv-tab-panel');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }
+  </script>
 </body>
 </html>

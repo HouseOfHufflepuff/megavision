@@ -148,6 +148,73 @@ table.mv-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--mv-
 table.mv-table tbody tr:hover { background: var(--mv-black-3); }
 table.mv-table tbody td.dim { color: var(--mv-ink-dim); }
 
+/* ---- tabs ---- */
+.mv-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--mv-border);
+}
+.mv-tab {
+  background: none;
+  border: none;
+  color: var(--mv-ink-muted);
+  font-family: var(--mv-font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.mv-tab:hover { color: var(--mv-ink); }
+.mv-tab.active { color: var(--mv-gold); border-bottom-color: var(--mv-gold); }
+.mv-tab-panel { display: none; }
+.mv-tab-panel.active { display: block; }
+
+/* ---- depth chart / pitch ---- */
+.mv-pitch {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px 8px;
+}
+.mv-pitch-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.mv-pitch-row .row-label {
+  position: absolute;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mv-ink-dim);
+}
+.mv-slot {
+  background: var(--mv-black-3);
+  border: 1px solid var(--mv-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 120px;
+}
+.mv-slot .pos { font-size: 10px; color: var(--mv-ink-muted); letter-spacing: 0.06em; }
+.mv-slot .player { font-size: 13px; font-weight: 700; margin: 2px 0; }
+.mv-slot .salary { font-size: 12px; color: var(--mv-gold); }
+.mv-slot.empty { color: var(--mv-ink-dim); border-style: dashed; }
+
+.mv-depth-group { margin-bottom: 18px; }
+.mv-depth-group .heading {
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--mv-ink-muted);
+  margin-bottom: 8px;
+}
+
 /* ---- empty state ---- */
 .mv-empty {
   text-align: center;

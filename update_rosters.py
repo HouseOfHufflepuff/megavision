@@ -20,8 +20,15 @@ import sys
 from common import (
     TEAMS, head, foot, fetch_live_workbook, EXPORT_URL, fetch_trophy_room,
     tally_trophies, COMP_ABBR, fetch_fans, owner_short, POSITION_ORDER,
-    position_sort_key,
+    position_sort_key, fetch_youth,
 )
+
+STATUS_COLOR = {
+    "Promoted": "var(--mv-gold)",
+    "Released": "var(--mv-ink-dim)",
+    "Frozen": "var(--mv-crimson)",
+    "Active": "var(--mv-ink)",
+}
 
 # 25/26 is over; only players actually signed for 26/27 count as current roster.
 # Match by the literal column label, not position, since some teams' sheets
@@ -30,6 +37,9 @@ from common import (
 CURRENT_SEASON_LABEL = "26/27"
 
 TROPHY_ACCENTS = ["var(--mv-gold)", "var(--mv-blue)", "var(--mv-violet)", "var(--mv-pink)", "var(--mv-crimson)"]
+
+# league formation: 3-4-3 (+ 1 GK), field order top (attack) to bottom (GK)
+FORMATION = [("F", 3), ("M", 4), ("D", 3), ("GK", 1)]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--push", action="store_true")
@@ -103,6 +113,7 @@ comps, seasons = fetch_trophy_room(wb)
 trophy_tally = tally_trophies(comps, seasons)
 trophy_color = {c: TROPHY_ACCENTS[i % len(TROPHY_ACCENTS)] for i, c in enumerate(comps)}
 fans_by_code = fetch_fans(wb)
+youth_by_code = fetch_youth(wb)
 
 updated = []
 financial_rows = []
@@ -155,6 +166,59 @@ for code, name, owners in TEAMS:
         f'<td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
     )
 
+    # ---- depth chart: 3-4-3, ranked by salary within each position ----
+    by_pos = {pos: [p for p in grouped if p["pos"] == pos] for pos, _ in FORMATION}
+    pitch_rows = []
+    for pos, need in FORMATION:
+        slots = []
+        players = by_pos.get(pos, [])
+        for i in range(need):
+            if i < len(players):
+                p = players[i]
+                slots.append(
+                    f'<div class="mv-slot"><div class="pos">{pos}</div>'
+                    f'<div class="player">{p["player"]}</div>'
+                    f'<div class="salary">{money(p["current_salary"])}</div></div>'
+                )
+            else:
+                slots.append(f'<div class="mv-slot empty"><div class="pos">{pos}</div><div class="player">&mdash;</div></div>')
+        pitch_rows.append(f'<div class="mv-pitch-row">{"".join(slots)}</div>')
+
+    depth_groups = []
+    for pos, need in FORMATION:
+        bench = by_pos.get(pos, [])[need:]
+        if not bench:
+            continue
+        items = "".join(
+            f'<div class="mv-slot"><div class="pos">{pos}</div>'
+            f'<div class="player">{p["player"]}</div>'
+            f'<div class="salary">{money(p["current_salary"])}</div></div>'
+            for p in bench
+        )
+        depth_groups.append(
+            f'<div class="mv-depth-group"><div class="heading">{pos} Depth</div>'
+            f'<div class="mv-pitch-row" style="justify-content:flex-start;">{items}</div></div>'
+        )
+    depth_html = "".join(depth_groups) or '<div class="mv-empty">No depth beyond the starting 3-4-3.</div>'
+
+    # ---- youth ----
+    youth = youth_by_code.get(code, [])
+    youth_rows = "".join(
+        f'<tr><td class="dim">{y["year"]}</td><td>{y["player"]}</td><td>{y["pos"]}</td>'
+        f'<td>{y["age"] if y["age"] is not None else "—"}</td><td>{y["club"]}</td>'
+        f'<td style="color:{STATUS_COLOR[y["status"]]};font-weight:600;">{y["status"]}</td></tr>'
+        for y in youth
+    )
+    if not youth:
+        youth_section = '<div class="mv-empty">No youth players drafted yet.</div>'
+    else:
+        youth_section = f"""<div class="mv-table-scroll">
+        <table class="mv-table">
+          <thead><tr><th>Draft</th><th>Player</th><th>Pos</th><th>Age</th><th>Club</th><th>Status</th></tr></thead>
+          <tbody>{youth_rows}</tbody>
+        </table>
+      </div>"""
+
     team_trophies = trophy_tally.get(code, {})
     total_trophies = sum(team_trophies.values())
     trophy_tiles = "\n      ".join(
@@ -188,16 +252,36 @@ for code, name, owners in TEAMS:
     </section>
 
     <section class="card mv-card">
-      <h2 class="mv-chrome-text">Roster</h2>
-      <div class="sub">{roster_size} players signed for 26/27, grouped by position &middot; no games played yet this season</div>
-      <div class="mv-table-scroll">
-        <table class="mv-table">
-          <thead><tr><th>Player</th><th>Pos</th><th>{year_th[0]}</th><th>{year_th[1]}</th><th>{year_th[2]}</th><th>BuyOut</th></tr></thead>
-          <tbody>
-            {"".join(roster_rows)}
-          </tbody>
-        </table>
+      <div class="mv-tabs">
+        <button class="mv-tab active" onclick="mvShowTab(this,'roster-{code}')">Roster</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
       </div>
+
+      <div id="roster-{code}" class="mv-tab-panel active">
+        <div class="sub">{roster_size} players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+            <thead><tr><th>Player</th><th>Pos</th><th>{year_th[0]}</th><th>{year_th[1]}</th><th>{year_th[2]}</th><th>BuyOut</th></tr></thead>
+            <tbody>
+              {"".join(roster_rows)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="depth-{code}" class="mv-tab-panel">
+        <div class="sub">League formation 3-4-3, ranked by salary at each position</div>
+        <div class="mv-pitch">
+          {"".join(pitch_rows)}
+        </div>
+        {depth_html}
+      </div>
+    </section>
+
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">Youth</h2>
+      <div class="sub">{len(youth)} player{"s" if len(youth) != 1 else ""} drafted all-time</div>
+      {youth_section}
     </section>
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>

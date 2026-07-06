@@ -50,20 +50,55 @@
     </section>
 
     <section class="card mv-card">
-      <h2 class="mv-chrome-text">Roster</h2>
-      <div class="sub">15 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+      <div class="mv-tabs">
+        <button class="mv-tab active" onclick="mvShowTab(this,'roster-TTS')">Roster</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'depth-TTS')">Depth Chart</button>
+      </div>
+
+      <div id="roster-TTS" class="mv-tab-panel active">
+        <div class="sub">15 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+            <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
+            <tbody>
+              <tr><td>Daniel Munoz</td><td>D</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>$6.66</td><td class="dim">—</td></tr><tr><td>Zinchenko D - ARS</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$6.00</strong></td><td>$9.00</td><td class="dim">—</td></tr><tr><td>Williams, Neco D - NOT</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>$6.05</td><td class="dim">—</td></tr><tr><td>Nathan Collins D - BRE</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>$6.05</td><td class="dim">—</td></tr><tr><td>Max Kilman </td><td>D</td><td>$4.50</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td><td>$5.45</td><td class="dim">—</td></tr><tr><td>Odegaaard, Martin M - ARS</td><td>M</td><td>$10.22</td><td><strong style="color:var(--mv-gold)">$15.33</strong></td><td>$23.00</td><td class="dim">—</td></tr><tr><td>Mateus Fernandes M - WHU</td><td>M</td><td>$10.00</td><td><strong style="color:var(--mv-gold)">$15.00</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>James Garner M - EVE</td><td>M</td><td>$7.00</td><td><strong style="color:var(--mv-gold)">$7.70</strong></td><td>$8.47</td><td class="dim">—</td></tr><tr><td>John McGinn M - AVL</td><td>M</td><td>$7.00</td><td><strong style="color:var(--mv-gold)">$7.70</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Kevin F FUL</td><td>F</td><td>$12.00</td><td><strong style="color:var(--mv-gold)">$18.00</strong></td><td>$27.00</td><td class="dim">—</td></tr><tr><td>Adli F - BOU</td><td>F</td><td>$10.00</td><td><strong style="color:var(--mv-gold)">$15.00</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Arnaud Kalimuendo F - NOT</td><td>F</td><td>$10.00</td><td><strong style="color:var(--mv-gold)">$15.00</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Lyle Foster F - BUR</td><td>F</td><td>$7.00</td><td><strong style="color:var(--mv-gold)">$7.70</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Dilane Bakwa F - NOT</td><td>F</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$6.00</strong></td><td>$9.00</td><td class="dim">—</td></tr><tr><td>Habib Diarra M - SUN</td><td>M </td><td>$7.00</td><td><strong style="color:var(--mv-gold)">$7.70</strong></td><td>$8.47</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">15 total &middot; 5 D  &middot;  4 M  &middot;  5 F  &middot;  1 M </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="depth-TTS" class="mv-tab-panel">
+        <div class="sub">League formation 3-4-3, ranked by salary at each position</div>
+        <div class="mv-pitch">
+          <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">Kevin F FUL</div><div class="salary">$18.00</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Adli F - BOU</div><div class="salary">$15.00</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Arnaud Kalimuendo F - NOT</div><div class="salary">$15.00</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player">Odegaaard, Martin M - ARS</div><div class="salary">$15.33</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Mateus Fernandes M - WHU</div><div class="salary">$15.00</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">James Garner M - EVE</div><div class="salary">$7.70</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">John McGinn M - AVL</div><div class="salary">$7.70</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player">Daniel Munoz</div><div class="salary">$6.05</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Zinchenko D - ARS</div><div class="salary">$6.00</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Williams, Neco D - NOT</div><div class="salary">$5.50</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
+        </div>
+        <div class="mv-depth-group"><div class="heading">F Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">F</div><div class="player">Lyle Foster F - BUR</div><div class="salary">$7.70</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Dilane Bakwa F - NOT</div><div class="salary">$6.00</div></div></div></div><div class="mv-depth-group"><div class="heading">D Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">Nathan Collins D - BRE</div><div class="salary">$5.50</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Max Kilman </div><div class="salary">$4.95</div></div></div></div>
+      </div>
+    </section>
+
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">Youth</h2>
+      <div class="sub">11 players drafted all-time</div>
       <div class="mv-table-scroll">
         <table class="mv-table">
-          <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
-          <tbody>
-            <tr><td>Daniel Munoz</td><td>D</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>$6.66</td><td class="dim">—</td></tr><tr><td>Zinchenko D - ARS</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$6.00</strong></td><td>$9.00</td><td class="dim">—</td></tr><tr><td>Williams, Neco D - NOT</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>$6.05</td><td class="dim">—</td></tr><tr><td>Nathan Collins D - BRE</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>$6.05</td><td class="dim">—</td></tr><tr><td>Max Kilman </td><td>D</td><td>$4.50</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td><td>$5.45</td><td class="dim">—</td></tr><tr><td>Odegaaard, Martin M - ARS</td><td>M</td><td>$10.22</td><td><strong style="color:var(--mv-gold)">$15.33</strong></td><td>$23.00</td><td class="dim">—</td></tr><tr><td>Mateus Fernandes M - WHU</td><td>M</td><td>$10.00</td><td><strong style="color:var(--mv-gold)">$15.00</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>James Garner M - EVE</td><td>M</td><td>$7.00</td><td><strong style="color:var(--mv-gold)">$7.70</strong></td><td>$8.47</td><td class="dim">—</td></tr><tr><td>John McGinn M - AVL</td><td>M</td><td>$7.00</td><td><strong style="color:var(--mv-gold)">$7.70</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Kevin F FUL</td><td>F</td><td>$12.00</td><td><strong style="color:var(--mv-gold)">$18.00</strong></td><td>$27.00</td><td class="dim">—</td></tr><tr><td>Adli F - BOU</td><td>F</td><td>$10.00</td><td><strong style="color:var(--mv-gold)">$15.00</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Arnaud Kalimuendo F - NOT</td><td>F</td><td>$10.00</td><td><strong style="color:var(--mv-gold)">$15.00</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Lyle Foster F - BUR</td><td>F</td><td>$7.00</td><td><strong style="color:var(--mv-gold)">$7.70</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Dilane Bakwa F - NOT</td><td>F</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$6.00</strong></td><td>$9.00</td><td class="dim">—</td></tr><tr><td>Habib Diarra M - SUN</td><td>M </td><td>$7.00</td><td><strong style="color:var(--mv-gold)">$7.70</strong></td><td>$8.47</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">15 total &middot; 5 D  &middot;  4 M  &middot;  5 F  &middot;  1 M </td></tr>
-          </tbody>
+          <thead><tr><th>Draft</th><th>Player</th><th>Pos</th><th>Age</th><th>Club</th><th>Status</th></tr></thead>
+          <tbody><tr><td class="dim">2024/25</td><td>Kendry Paez</td><td>F</td><td>—</td><td>Strasbourg</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2023/24</td><td>Stefan Bajcetic</td><td>M</td><td>20.0</td><td>Liverpool</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2022/23 Supplemental</td><td>Arsen Zahkaryan</td><td>M</td><td>—</td><td>Dynamo Moscow</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2022/23</td><td>Kaiky</td><td>D</td><td>—</td><td>Almeria</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2021/22</td><td>Anthony Elanga</td><td>F</td><td>23.0</td><td>Newcastle</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2020/21</td><td>Takefusa Kubo</td><td>F</td><td>—</td><td>Real Sociedad</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2019/20</td><td>Joe Willock</td><td>M</td><td>—</td><td>Newcastle</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2018/19</td><td>Christian Pulisic</td><td>M</td><td>—</td><td>Chelsea</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2017/18</td><td>Kylian Mbappe</td><td>F</td><td>—</td><td>PSG</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2016/17</td><td>Chris Willock</td><td>F</td><td>—</td><td>QPR</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2014/15</td><td>Serge Gnabry</td><td>F</td><td>—</td><td>Bayern Munich</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr></tbody>
         </table>
       </div>
     </section>
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 02:49 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 03:18 UTC</footer>
+  <script>
+    function mvShowTab(btn, panelId) {
+      var tabs = btn.parentElement.querySelectorAll('.mv-tab');
+      var panels = btn.closest('.mv-card').querySelectorAll('.mv-tab-panel');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }
+  </script>
 </body>
 </html>

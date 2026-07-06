@@ -50,20 +50,55 @@
     </section>
 
     <section class="card mv-card">
-      <h2 class="mv-chrome-text">Roster</h2>
-      <div class="sub">8 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+      <div class="mv-tabs">
+        <button class="mv-tab active" onclick="mvShowTab(this,'roster-POW')">Roster</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'depth-POW')">Depth Chart</button>
+      </div>
+
+      <div id="roster-POW" class="mv-tab-panel active">
+        <div class="sub">8 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+            <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
+            <tbody>
+              <tr><td>Ait Nouri, Rayan D - MCI</td><td>D</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr><td>DeCuyper, Maxim D - BHA</td><td>D</td><td>$4.50</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td><td>$5.45</td><td class="dim">—</td></tr><tr><td>Maatsen, Ian D - AVL</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Colwill, Levi</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>4,84</td><td class="dim">—</td></tr><tr><td>Joelinton M - NEW</td><td>M</td><td>$10.89</td><td><strong style="color:var(--mv-gold)">$14.16</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Tilemans, Youri, M - AVL</td><td>M</td><td>$9.44</td><td><strong style="color:var(--mv-gold)">$10.38</strong></td><td>$11.42</td><td class="dim">—</td></tr><tr><td>Wirtz, Florian, M - LIV</td><td>M</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Anthony, Jaidon F - BUR</td><td>F</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">8 total &middot; 4 D  &middot;  3 M  &middot;  1 F</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="depth-POW" class="mv-tab-panel">
+        <div class="sub">League formation 3-4-3, ranked by salary at each position</div>
+        <div class="mv-pitch">
+          <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">Anthony, Jaidon F - BUR</div><div class="salary">$4.00</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player">Joelinton M - NEW</div><div class="salary">$14.16</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Tilemans, Youri, M - AVL</div><div class="salary">$10.38</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Wirtz, Florian, M - LIV</div><div class="salary">$4.00</div></div><div class="mv-slot empty"><div class="pos">M</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player">Ait Nouri, Rayan D - MCI</div><div class="salary">$6.60</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">DeCuyper, Maxim D - BHA</div><div class="salary">$4.95</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Maatsen, Ian D - AVL</div><div class="salary">$4.40</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
+        </div>
+        <div class="mv-depth-group"><div class="heading">D Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">Colwill, Levi</div><div class="salary">$4.40</div></div></div></div>
+      </div>
+    </section>
+
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">Youth</h2>
+      <div class="sub">22 players drafted all-time</div>
       <div class="mv-table-scroll">
         <table class="mv-table">
-          <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
-          <tbody>
-            <tr><td>Ait Nouri, Rayan D - MCI</td><td>D</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr><td>DeCuyper, Maxim D - BHA</td><td>D</td><td>$4.50</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td><td>$5.45</td><td class="dim">—</td></tr><tr><td>Maatsen, Ian D - AVL</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Colwill, Levi</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>4,84</td><td class="dim">—</td></tr><tr><td>Joelinton M - NEW</td><td>M</td><td>$10.89</td><td><strong style="color:var(--mv-gold)">$14.16</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Tilemans, Youri, M - AVL</td><td>M</td><td>$9.44</td><td><strong style="color:var(--mv-gold)">$10.38</strong></td><td>$11.42</td><td class="dim">—</td></tr><tr><td>Wirtz, Florian, M - LIV</td><td>M</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Anthony, Jaidon F - BUR</td><td>F</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">8 total &middot; 4 D  &middot;  3 M  &middot;  1 F</td></tr>
-          </tbody>
+          <thead><tr><th>Draft</th><th>Player</th><th>Pos</th><th>Age</th><th>Club</th><th>Status</th></tr></thead>
+          <tbody><tr><td class="dim">2025/26 Supplemental</td><td>JJ Gabriel</td><td>F</td><td>15.0</td><td>Man United</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2025/26</td><td>Divine Mukasa</td><td>M</td><td>18.0</td><td>Man City</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2024/25 Supplemental</td><td>Miles Lewis-Skelly</td><td>M</td><td>18.0</td><td>Arsenal</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2024/25</td><td>Lewis Miley</td><td>M</td><td>19.0</td><td>Newcastle</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2023/24 Supplemental</td><td>Kobbie Mainoo</td><td>M</td><td>20.0</td><td>Manchester United</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2023/24</td><td>Matheus Franca</td><td>F</td><td>21.0</td><td>Crystal Palace</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2022/23 Supplemental</td><td>Elliott Anderson</td><td>M</td><td>22.0</td><td>Nottingham </td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2022/23</td><td>Levi Colwill</td><td>D</td><td>—</td><td>Chelsea</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2021/22 Supplemental</td><td>Diego Luna</td><td>M</td><td>—</td><td>RSC</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2021/22</td><td>Jesurun Rak-Sakyi</td><td>F</td><td>22.0</td><td>Crystal Palace</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2020/21 Supplemental</td><td>Florian Wirtz</td><td>M</td><td>22.0</td><td>Bayer Leverkusen</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2020/21</td><td>Ian Maatsen</td><td>D</td><td>23.0</td><td>Chelsea</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2020/21</td><td>Fabio Silva</td><td>F</td><td>23.0</td><td>Wolverhampton</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2019/20 Supplemental</td><td>Pedro Neto</td><td>F</td><td>—</td><td>Wolverhampton</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2019/20</td><td>Reece James</td><td>D</td><td>—</td><td>Chelsea</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2018/19</td><td>Levi Colwill</td><td>M</td><td>—</td><td>Wolverhampton</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2018/19</td><td>Mason Mount</td><td>M</td><td>—</td><td>Man United</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2018/19</td><td>Mason Greenwood</td><td>M</td><td>—</td><td>N/A</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2017/18</td><td>Jadon Sancho</td><td>F</td><td>—</td><td>Man United</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2016/17</td><td>Sheyi Ojo</td><td>M</td><td>—</td><td>Cardiff City</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2015/16</td><td>Andreas Pereira</td><td>M</td><td>—</td><td>Fulham</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2014/15</td><td>Marcos (Rony) Lopes</td><td>M</td><td>—</td><td>Sevilla</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr></tbody>
         </table>
       </div>
     </section>
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 02:49 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 03:18 UTC</footer>
+  <script>
+    function mvShowTab(btn, panelId) {
+      var tabs = btn.parentElement.querySelectorAll('.mv-tab');
+      var panels = btn.closest('.mv-card').querySelectorAll('.mv-tab-panel');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }
+  </script>
 </body>
 </html>

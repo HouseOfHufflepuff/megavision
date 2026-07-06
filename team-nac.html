@@ -50,20 +50,55 @@
     </section>
 
     <section class="card mv-card">
-      <h2 class="mv-chrome-text">Roster</h2>
-      <div class="sub">9 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+      <div class="mv-tabs">
+        <button class="mv-tab active" onclick="mvShowTab(this,'roster-NAC')">Roster</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'depth-NAC')">Depth Chart</button>
+      </div>
+
+      <div id="roster-NAC" class="mv-tab-panel active">
+        <div class="sub">9 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+            <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
+            <tbody>
+              <tr><td>Tyrick Mitchell D - CPY</td><td>D</td><td>$6.05</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Maxime Esteve - D BUR</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Jaka Bijol - D Leeds</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>S. Adingra - M SUN</td><td>M</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>$6.66</td><td class="dim">—</td></tr><tr><td>Jon Arias - M WOL</td><td>M</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Cole Palmer* - M CHE</td><td>M</td><td>$4.40</td><td><strong style="color:var(--mv-gold)">$4.84</strong></td><td>$6.29</td><td class="dim">—</td></tr><tr><td>Jones, Curtis M LIV</td><td>M</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Metata - F CPY</td><td>F</td><td>$7.50</td><td><strong style="color:var(--mv-gold)">$8.25</strong></td><td>$9.07</td><td class="dim">—</td></tr><tr><td>Dan Ndoye - F NOT</td><td>F</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">9 total &middot; 3 D  &middot;  4 M  &middot;  2 F</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="depth-NAC" class="mv-tab-panel">
+        <div class="sub">League formation 3-4-3, ranked by salary at each position</div>
+        <div class="mv-pitch">
+          <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">Metata - F CPY</div><div class="salary">$8.25</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Dan Ndoye - F NOT</div><div class="salary">$6.60</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player">S. Adingra - M SUN</div><div class="salary">$6.05</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Jon Arias - M WOL</div><div class="salary">$6.05</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Cole Palmer* - M CHE</div><div class="salary">$4.84</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Jones, Curtis M LIV</div><div class="salary">$4.00</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player">Tyrick Mitchell D - CPY</div><div class="salary">$6.66</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Maxime Esteve - D BUR</div><div class="salary">$4.40</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Jaka Bijol - D Leeds</div><div class="salary">$4.40</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
+        </div>
+        <div class="mv-empty">No depth beyond the starting 3-4-3.</div>
+      </div>
+    </section>
+
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">Youth</h2>
+      <div class="sub">20 players drafted all-time</div>
       <div class="mv-table-scroll">
         <table class="mv-table">
-          <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
-          <tbody>
-            <tr><td>Tyrick Mitchell D - CPY</td><td>D</td><td>$6.05</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Maxime Esteve - D BUR</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Jaka Bijol - D Leeds</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>S. Adingra - M SUN</td><td>M</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>$6.66</td><td class="dim">—</td></tr><tr><td>Jon Arias - M WOL</td><td>M</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Cole Palmer* - M CHE</td><td>M</td><td>$4.40</td><td><strong style="color:var(--mv-gold)">$4.84</strong></td><td>$6.29</td><td class="dim">—</td></tr><tr><td>Jones, Curtis M LIV</td><td>M</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Metata - F CPY</td><td>F</td><td>$7.50</td><td><strong style="color:var(--mv-gold)">$8.25</strong></td><td>$9.07</td><td class="dim">—</td></tr><tr><td>Dan Ndoye - F NOT</td><td>F</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">9 total &middot; 3 D  &middot;  4 M  &middot;  2 F</td></tr>
-          </tbody>
+          <thead><tr><th>Draft</th><th>Player</th><th>Pos</th><th>Age</th><th>Club</th><th>Status</th></tr></thead>
+          <tbody><tr><td class="dim">2025/26 Supplemental</td><td>Shumaira Mheuka</td><td>F</td><td>17.0</td><td>Chelsea</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2025/26</td><td>Chido Obi</td><td>F</td><td>17.0</td><td>Man United</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2024/25 Supplemental</td><td>Trey Nyoni</td><td>F</td><td>18.0</td><td>Liverpool</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2024/25</td><td>Matty Warhurst</td><td>F</td><td>—</td><td>Man City</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2023/24 Supplemental</td><td>Ben Doak</td><td>F</td><td>19.0</td><td>Bournemouth</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2023/24</td><td>Warren Zaire-Emery</td><td>M</td><td>—</td><td>PSG</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2022/23 Supplemental</td><td>Marcos Leonardo</td><td>F</td><td>—</td><td>Santos</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2022/23</td><td>Alejandro Garnacho</td><td>F</td><td>21.0</td><td>Chelsea</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2021/22 Supplemental</td><td>Cole Palmer</td><td>M</td><td>—</td><td>Man City</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2021/22</td><td>Dane Scarlett</td><td>F</td><td>21.0</td><td>Tottenham</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2020/21 Supplemental</td><td>Eduordo Camavinga</td><td>M</td><td>—</td><td>Real Madrid</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2020/21</td><td>Charlie Patino</td><td>M</td><td>21.0</td><td>La Coruna</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2019/20 Supplemental</td><td>Bobby Duncan</td><td>F</td><td>—</td><td>Real Balompédica Linense</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2019/20</td><td>Lorent Tolaj</td><td>F</td><td>—</td><td>N/A</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2018/19</td><td>Curtis Jones</td><td>M</td><td>—</td><td>Liverpool</td><td style="color:var(--mv-gold);font-weight:600;">Promoted</td></tr><tr><td class="dim">2018/19</td><td>Dylan Asonganyi</td><td>F</td><td>—</td><td>N/A</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2017/18</td><td>Ben Woodburn</td><td>F</td><td>—</td><td>Preston</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2016/17</td><td>Marcus Edwards</td><td>M</td><td>26.0</td><td>Burnley</td><td style="color:var(--mv-ink-dim);font-weight:600;">Released</td></tr><tr><td class="dim">2015/16</td><td>Ryan Seager</td><td>F</td><td>—</td><td>Dorking</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr><tr><td class="dim">2014/15</td><td>Angel Correa</td><td>F</td><td>—</td><td>Atletico Madrid</td><td style="color:var(--mv-ink);font-weight:600;">Active</td></tr></tbody>
         </table>
       </div>
     </section>
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 02:49 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 03:18 UTC</footer>
+  <script>
+    function mvShowTab(btn, panelId) {
+      var tabs = btn.parentElement.querySelectorAll('.mv-tab');
+      var panels = btn.closest('.mv-card').querySelectorAll('.mv-tab-panel');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }
+  </script>
 </body>
 </html>

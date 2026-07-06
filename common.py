@@ -20,6 +20,41 @@ def fetch_live_workbook():
     return openpyxl.load_workbook(io.BytesIO(data), data_only=True)
 
 
+def fetch_youth(wb):
+    """code -> list of youth-drafted players (all-time), most recent first,
+    straight from the 'Youth' tab. Columns: Year, Team, Player, Pos,
+    Age, Current Owner Team, Currently Playing, Original Team,
+    Fantrax Eligible, Promoted, Youth Rights Released, Contract Frozen."""
+    ws = wb["Youth"]
+    rows = list(ws.iter_rows(min_row=2, max_row=1167, values_only=True))
+    valid_codes = {code for code, _, _ in TEAMS}
+    youth_by_code = {code: [] for code in valid_codes}
+    for row in rows:
+        if not row or row[1] not in valid_codes or not row[2]:
+            continue
+        code = row[1]
+        promoted = str(row[9] or "").strip().upper() == "Y"
+        released = str(row[10] or "").strip().upper() == "Y"
+        frozen = str(row[11] or "").strip().upper() == "Y"
+        if promoted:
+            status = "Promoted"
+        elif released:
+            status = "Released"
+        elif frozen:
+            status = "Frozen"
+        else:
+            status = "Active"
+        youth_by_code[code].append({
+            "year": row[0],
+            "player": row[2],
+            "pos": row[3] or "",
+            "age": row[4],
+            "club": row[6] or row[5] or row[7] or "",
+            "status": status,
+        })
+    return youth_by_code
+
+
 def fetch_trophy_room(wb):
     ws = wb["Trophy Room"]
     all_rows = list(ws.iter_rows(min_row=1, max_row=60, values_only=True))
@@ -199,6 +234,16 @@ def foot():
     updated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     return f"""  </div>
   <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated {updated_at}</footer>
+  <script>
+    function mvShowTab(btn, panelId) {{
+      var tabs = btn.parentElement.querySelectorAll('.mv-tab');
+      var panels = btn.closest('.mv-card').querySelectorAll('.mv-tab-panel');
+      tabs.forEach(function(t) {{ t.classList.remove('active'); }});
+      panels.forEach(function(p) {{ p.classList.remove('active'); }});
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }}
+  </script>
 </body>
 </html>
 """
