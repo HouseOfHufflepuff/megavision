@@ -14,6 +14,7 @@ regenerated *.html files. No caching, no temp files, no stored copy of the
 spreadsheet, ever.
 """
 import argparse
+import re
 import subprocess
 import sys
 
@@ -147,6 +148,25 @@ for code, name, owners in TEAMS:
     cap = data["capacity"]
     capacity_str = f"{cap:,.0f}" if isinstance(cap, (int, float)) else str(cap or "—")
 
+    # ---- youth cross-reference: flag roster/depth players this team drafted ----
+    youth = youth_by_code.get(code, [])
+    youth_last_names = {
+        parts[-1].lower()
+        for y in youth
+        for parts in [y["player"].replace(".", " ").split()]
+        if parts and len(parts[-1]) >= 3
+    }
+
+    def is_youth_product(player_field):
+        core = player_field.split(" - ")[0]
+        tokens = set(re.split(r"[^a-zA-Z]+", core.lower())) - {""}
+        return bool(tokens & youth_last_names)
+
+    YOUTH_MARK = '<span title="Youth product" style="color:var(--mv-blue);">&#127793;</span> '
+
+    def player_label(p):
+        return (YOUTH_MARK if is_youth_product(p["player"]) else "") + p["player"]
+
     # group by position (GK, D, M, F, then anything else), salary desc within group
     grouped = sorted(roster, key=lambda p: (position_sort_key(p["pos"]), -p["current_salary"]))
 
@@ -155,7 +175,7 @@ for code, name, owners in TEAMS:
         cells = [money(p["y1"]), money(p["y2"]), money(p["y3"])]
         cells[current_idx] = f'<strong style="color:var(--mv-gold)">{cells[current_idx]}</strong>'
         roster_rows.append(
-            f'<tr><td>{p["player"]}</td><td>{p["pos"]}</td>'
+            f'<tr><td>{player_label(p)}</td><td>{p["pos"]}</td>'
             f'<td>{cells[0]}</td><td>{cells[1]}</td><td>{cells[2]}</td>'
             f'<td class="dim">{money(p["buyout"])}</td></tr>'
         )
@@ -180,7 +200,7 @@ for code, name, owners in TEAMS:
                 p = players[i]
                 slots.append(
                     f'<div class="mv-slot"><div class="pos">{pos}</div>'
-                    f'<div class="player">{p["player"]}</div>'
+                    f'<div class="player">{player_label(p)}</div>'
                     f'<div class="salary">{money(p["current_salary"])}</div></div>'
                 )
             else:
@@ -194,7 +214,7 @@ for code, name, owners in TEAMS:
             continue
         items = "".join(
             f'<div class="mv-slot"><div class="pos">{pos}</div>'
-            f'<div class="player">{p["player"]}</div>'
+            f'<div class="player">{player_label(p)}</div>'
             f'<div class="salary">{money(p["current_salary"])}</div></div>'
             for p in bench
         )
@@ -204,8 +224,7 @@ for code, name, owners in TEAMS:
         )
     depth_html = "".join(depth_groups) or '<div class="mv-empty">No depth beyond the starting 3-4-3.</div>'
 
-    # ---- youth ----
-    youth = youth_by_code.get(code, [])
+    # ---- youth table (the cross-reference set was already built above) ----
     youth_rows = "".join(
         f'<tr><td class="dim">{y["year"]}</td><td>{y["player"]}</td><td>{y["pos"]}</td>'
         f'<td>{y["age"] if y["age"] is not None else "—"}</td><td>{y["club"]}</td>'
@@ -259,6 +278,7 @@ for code, name, owners in TEAMS:
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-{code}')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
       </div>
+      <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">&#127793; = this team's own youth draft product</div>
 
       <div id="roster-{code}" class="mv-tab-panel active">
         <div class="sub">{roster_size} players signed for 26/27, grouped by position &middot; no games played yet this season</div>
