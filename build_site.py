@@ -1,4 +1,4 @@
-from common import TEAMS, head, foot, hero_logo, fetch_live_workbook, fetch_trophy_room, resolve_team_code, fetch_stadiums
+from common import TEAMS, head, foot, hero_logo, fetch_live_workbook, fetch_trophy_room, resolve_team_code, fetch_stadiums, owner_short
 
 print("Fetching live spreadsheet...")
 wb = fetch_live_workbook()
@@ -83,7 +83,7 @@ for code, name, owners in TEAMS:
     team_cards.append(f"""      <a class="mv-team-card" href="team-{slug}.html">
         <div class="code">{code}</div>
         <div class="name">{name}</div>
-        <div class="owners">{", ".join(owners)}</div>
+        <div class="owners">{owner_short(owners)}</div>
         <div class="owners" style="margin-top:4px;">{stadium_line}</div>
         <div class="go">View Team &rarr;</div>
       </a>""")

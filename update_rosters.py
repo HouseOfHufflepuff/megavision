@@ -234,7 +234,7 @@ for code, name, owners in TEAMS:
     page = head(name, "teams.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">{name}<span class="mv-badge">{code}</span></h1>
-      <div class="sub">{", ".join(owners)} &middot; {data["stadium"]} (Capacity {capacity_str})</div>
+      <div class="sub">{owner_short(owners)} &middot; {data["stadium"]} (Capacity {capacity_str})</div>
     </div>
 
     <div class="mv-stat-grid">
