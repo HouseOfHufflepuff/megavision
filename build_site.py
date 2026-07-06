@@ -1,10 +1,9 @@
-import json
+from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room
 
-from common import TEAMS, head, FOOT
-
-d = json.load(open("_trophy_seasons.json"))
-comps = d["comps"]
-seasons = d["seasons"]
+print("Fetching live spreadsheet...")
+wb = fetch_live_workbook()
+comps, seasons = fetch_trophy_room(wb)
+print(f"Fetched. {len(seasons)} seasons of trophy history.")
 
 total_titles = sum(1 for s in seasons for v in s[1:8] if v)
 reigning = seasons[0][1] or "—"
@@ -48,7 +47,7 @@ index_html = head("Home", "index.html") + f"""
         </table>
       </div>
     </section>
-""" + FOOT
+""" + foot()
 
 with open("index.html", "w") as f:
     f.write(index_html)
@@ -72,7 +71,7 @@ teams_html = head("Teams", "teams.html") + f"""
     <div class="mv-team-grid">
 {chr(10).join(team_cards)}
     </div>
-""" + FOOT
+""" + foot()
 
 with open("teams.html", "w") as f:
     f.write(teams_html)
@@ -108,7 +107,7 @@ financials_html = head("Financials", "financials.html") + f"""
         Game-by-game financials will appear here once Week 1 kicks off.
       </div>
     </section>
-""" + FOOT
+""" + foot()
 
 with open("financials.html", "w") as f:
     f.write(financials_html)

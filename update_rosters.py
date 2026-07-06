@@ -1,36 +1,26 @@
 """
 Repeatable roster + financials sync for the 13 MEGAVISION team pages.
 
-This script holds NO copy of the spreadsheet and never caches one on disk.
-Every run takes a freshly-fetched export as input, uses it in place, and the
-caller deletes it immediately after. There is no standalone Google credential
-here, so the live fetch itself is done by Claude via the Google Drive
-connector -- the full cycle, every time, is:
+Run it. That's it:
 
-    1. Claude fetches the live spreadsheet export to a throwaway temp path
-    2. python3 update_rosters.py --xlsx /path/to/that/temp/file [--push]
-    3. the temp file is deleted
+    python3 update_rosters.py            # fetch live, regenerate the 13 pages
+    python3 update_rosters.py --push     # also git commit + push
 
-Never point --xlsx at a path inside this repo, and never commit the xlsx.
+Every run fetches the spreadsheet live over plain HTTP (it's shared "anyone
+with the link can view", so no login/credential is needed) straight into
+memory and parses it from there. Nothing is written to disk except the
+regenerated team-<code>.html files. No caching, no temp files, no stored
+copy of the spreadsheet, ever.
 """
 import argparse
 import subprocess
 import sys
-from pathlib import Path
 
-import openpyxl
-
-from common import TEAMS, head, FOOT
+from common import TEAMS, head, foot, fetch_live_workbook, EXPORT_URL
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--xlsx", required=True, help="Path to a freshly-fetched spreadsheet export (temp file, not stored in this repo)")
 parser.add_argument("--push", action="store_true")
 args = parser.parse_args()
-
-SS_PATH = Path(args.xlsx)
-if not SS_PATH.exists():
-    print(f"ERROR: {SS_PATH} not found.", file=sys.stderr)
-    sys.exit(1)
 
 
 def parse_team_tab(ws):
@@ -79,7 +69,9 @@ def money(v):
     return str(v)
 
 
-wb = openpyxl.load_workbook(str(SS_PATH), data_only=True)
+print(f"Fetching live spreadsheet from {EXPORT_URL} ...")
+wb = fetch_live_workbook()
+print("Fetched. Parsing team tabs...")
 
 updated = []
 for code, name, owners in TEAMS:
@@ -103,10 +95,11 @@ for code, name, owners in TEAMS:
     y1_label, y2_label, y3_label = data["year_labels"]
     cap = data["capacity"]
     capacity_str = f"{cap:,.0f}" if isinstance(cap, (int, float)) else str(cap or "—")
-    roster_rows = []
+
     def sort_key(p):
         return -p["y1"] if isinstance(p["y1"], (int, float)) else 0
 
+    roster_rows = []
     for p in sorted(roster, key=sort_key):
         roster_rows.append(
             f'<tr><td>{p["player"]}</td><td>{p["pos"]}</td>'
@@ -144,7 +137,7 @@ for code, name, owners in TEAMS:
     </section>
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
-""" + FOOT
+""" + foot()
 
     with open(f"team-{slug}.html", "w") as f:
         f.write(page)

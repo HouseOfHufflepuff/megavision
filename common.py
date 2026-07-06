@@ -1,5 +1,42 @@
 # Shared nav/head/foot template + team roster used by build_site.py and update_rosters.py
 
+import io
+import urllib.request
+from datetime import datetime, timezone
+
+import openpyxl
+
+SHEET_ID = "1l-BG5on67L9beLArTMShJiVZgJOL3CUed3rbuwZKBL0"
+EXPORT_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=xlsx"
+
+
+def fetch_live_workbook():
+    """Always live: the sheet is shared 'anyone with the link can view', so
+    this is a plain unauthenticated HTTP GET, straight into memory. Never
+    write the export to disk, never cache it between runs."""
+    req = urllib.request.Request(EXPORT_URL, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        data = resp.read()
+    return openpyxl.load_workbook(io.BytesIO(data), data_only=True)
+
+
+def fetch_trophy_room(wb):
+    ws = wb["Trophy Room"]
+    all_rows = list(ws.iter_rows(min_row=1, max_row=60, values_only=True))
+    header_idx = None
+    for i, row in enumerate(all_rows):
+        if row and row[1] == "Premium Title":
+            header_idx = i
+            break
+    comps = [c for c in all_rows[header_idx][1:8] if c]
+    seasons = []
+    for row in all_rows[header_idx + 1:]:
+        if row[0] == "Money":
+            break
+        if row[0]:
+            seasons.append(list(row))
+    return comps, seasons
+
 # code, full name, owners
 TEAMS = [
     ("FAV", "5th Ave Argyle", ["Jack Weatherman"]),
@@ -53,8 +90,14 @@ def head(title, active):
 """
 
 
-FOOT = """  </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a></footer>
+def foot():
+    updated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    return f"""  </div>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated {updated_at}</footer>
 </body>
 </html>
 """
+
+
+# kept for any old callers; prefer foot() so the timestamp is current
+FOOT = foot()
