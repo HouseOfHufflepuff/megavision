@@ -14,8 +14,7 @@ for i, s in enumerate(seasons):
     for ci, comp in enumerate(comps):
         val = s[ci + 1] or "—"
         cls = "empty" if val == "—" else ("champ" if comp == "Premium Title" else "")
-        prefix = "🏆 " if comp == "Premium Title" and val != "—" else ""
-        cells.append(f'<td class="{cls}">{prefix}{val}</td>')
+        cells.append(f'<td class="{cls}">{val}</td>')
     row_class = "latest" if is_latest else ""
     rows_html.append(f'<tr class="{row_class}"><td class="season">{s[0]}</td>{"".join(cells)}</tr>')
 
@@ -95,11 +94,6 @@ html = f"""<!DOCTYPE html>
   }}
   .stat .value {{
     font-size: 26px;
-    font-weight: 700;
-    background: linear-gradient(90deg, var(--violet), var(--pink));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
   }}
   section.card {{
     background: var(--panel);
@@ -148,7 +142,7 @@ html = f"""<!DOCTYPE html>
     font-weight: 600;
   }}
   tbody td.empty {{
-    color: #4a4854;
+    color: var(--mv-ink-dim);
   }}
   tbody tr.latest {{
     background: rgba(240, 180, 41, 0.07);
@@ -162,6 +156,9 @@ html = f"""<!DOCTYPE html>
     font-size: 12px;
     margin-top: 32px;
   }}
+  footer a {{
+    color: var(--ink-muted);
+  }}
 </style>
 </head>
 <body>
@@ -174,20 +171,20 @@ html = f"""<!DOCTYPE html>
     <div class="stats">
       <div class="stat">
         <div class="label">Seasons Played</div>
-        <div class="value">{len(seasons)}</div>
+        <div class="value mv-spark-text">{len(seasons)}</div>
       </div>
       <div class="stat">
         <div class="label">Titles Awarded</div>
-        <div class="value">{total_titles}</div>
+        <div class="value mv-spark-text">{total_titles}</div>
       </div>
       <div class="stat">
         <div class="label">Reigning Champion</div>
-        <div class="value" style="font-size:18px;">{reigning}</div>
+        <div class="value mv-spark-text" style="font-size:18px;">{reigning}</div>
       </div>
     </div>
 
     <section class="card">
-      <h2>Hall of Champions</h2>
+      <h2 class="mv-chrome-text">Hall of Champions</h2>
       <div class="sub">Every title the league has ever awarded, season by season</div>
       <div class="table-scroll">
         <table>
@@ -199,7 +196,7 @@ html = f"""<!DOCTYPE html>
       </div>
     </section>
 
-    <footer>MEGAVISION &middot; Mega League Archive</footer>
+    <footer>MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a></footer>
   </div>
 </body>
 </html>

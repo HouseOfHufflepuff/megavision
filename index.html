@@ -71,11 +71,6 @@
   }
   .stat .value {
     font-size: 26px;
-    font-weight: 700;
-    background: linear-gradient(90deg, var(--violet), var(--pink));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
   }
   section.card {
     background: var(--panel);
@@ -124,7 +119,7 @@
     font-weight: 600;
   }
   tbody td.empty {
-    color: #4a4854;
+    color: var(--mv-ink-dim);
   }
   tbody tr.latest {
     background: rgba(240, 180, 41, 0.07);
@@ -138,6 +133,9 @@
     font-size: 12px;
     margin-top: 32px;
   }
+  footer a {
+    color: var(--ink-muted);
+  }
 </style>
 </head>
 <body>
@@ -150,43 +148,43 @@
     <div class="stats">
       <div class="stat">
         <div class="label">Seasons Played</div>
-        <div class="value">12</div>
+        <div class="value mv-spark-text">12</div>
       </div>
       <div class="stat">
         <div class="label">Titles Awarded</div>
-        <div class="value">69</div>
+        <div class="value mv-spark-text">69</div>
       </div>
       <div class="stat">
         <div class="label">Reigning Champion</div>
-        <div class="value" style="font-size:18px;">CRG McGovern</div>
+        <div class="value mv-spark-text" style="font-size:18px;">CRG McGovern</div>
       </div>
     </div>
 
     <section class="card">
-      <h2>Hall of Champions</h2>
+      <h2 class="mv-chrome-text">Hall of Champions</h2>
       <div class="sub">Every title the league has ever awarded, season by season</div>
       <div class="table-scroll">
         <table>
           <thead><tr><th>Season</th><th>Premium Title</th><th>Champions League</th><th>Europa League</th><th>Mega FA Cup</th><th>Citadel Cup</th><th>Mega Community Shield</th><th>Mega Super Cup</th></tr></thead>
           <tbody>
-          <tr class="latest"><td class="season">2025/26</td><td class="champ">🏆 CRG McGovern</td><td class="">House of Hufflepuff</td><td class="">Bookhouse Boys</td><td class="">Quidpool FC</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-          <tr class=""><td class="season">2024/25</td><td class="champ">🏆 Bookhouse Boys</td><td class="">House of Hufflepuff</td><td class="">Bookhouse Boys</td><td class="">CRG McGovern</td><td class="">Bookhouse Boys</td><td class="">5th Avenue Argyle</td><td class="">Bookhouse Boys</td></tr>
-          <tr class=""><td class="season">2023/24</td><td class="champ">🏆 5th Avenue Argyle</td><td class="">Bookhouse Boys</td><td class="">House of Hufflepuff</td><td class="">House of Hufflepuff</td><td class="">Real News</td><td class="">CRG McGovern</td><td class="">Quidpool FC</td></tr>
-          <tr class=""><td class="season">2022/23</td><td class="champ">🏆 House of Hufflepuff</td><td class="">House of Hufflepuff</td><td class="">Quidpool FC</td><td class="">House of Hufflepuff</td><td class="">CRG McGovern</td><td class="">CRG McGovern</td><td class="">Andover City</td></tr>
-          <tr class=""><td class="season">2021/22</td><td class="champ">🏆 Bookhouse Boys</td><td class="">MS 08th</td><td class="">Andover City</td><td class="">CRG McGovern</td><td class="">Bookhouse Boys</td><td class="">House of Hufflepuff</td><td class="">Thottenham Thotspur</td></tr>
-          <tr class=""><td class="season">2020/21</td><td class="champ">🏆 CRG McGovern</td><td class="">CRG McGovern</td><td class="">Thottenham Thotspur</td><td class="">House of Hufflepuff</td><td class="">Thottenham Thotspur</td><td class="">Andover City</td><td class="">Bookhouse Boys</td></tr>
-          <tr class=""><td class="season">2019/20</td><td class="champ">🏆 House of Hufflepuff</td><td class="">What The FC</td><td class="">Bookhouse Boys</td><td class="">Andover City</td><td class="">Thottenham Thotspur</td><td class="">House of Hufflepuff</td><td class="">Bookhouse Boys</td></tr>
-          <tr class=""><td class="season">2018/19</td><td class="champ">🏆 House of Hufflepuff</td><td class="">House of Hufflepuff</td><td class="">CRG McGovern</td><td class="">Andover City</td><td class="">House of Hufflepuff</td><td class="">What The FC</td><td class="">Wholeassed United FC</td></tr>
-          <tr class=""><td class="season">2017/18</td><td class="champ">🏆 CRG McGovern</td><td class="">Quidpool FC</td><td class="">Wholeassed United FC</td><td class="">What The FC</td><td class="">CRG McGovern</td><td class="">Bookhouse Boys</td><td class="">Andover City</td></tr>
-          <tr class=""><td class="season">2016/17</td><td class="champ">🏆 CRG McGovern</td><td class="">Andover City</td><td class="">CRG McGovern</td><td class="">Bookhouse Boys</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-          <tr class=""><td class="season">2015/16</td><td class="champ">🏆 Andover City</td><td class="">Andover City</td><td class="">Bookhouse Boys</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-          <tr class=""><td class="season">2014/15</td><td class="champ">🏆 Battersea Power Bottoms</td><td class="">Wholeassed United FC</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+          <tr class="latest"><td class="season">2025/26</td><td class="champ">CRG McGovern</td><td class="">House of Hufflepuff</td><td class="">Bookhouse Boys</td><td class="">Quidpool FC</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+          <tr class=""><td class="season">2024/25</td><td class="champ">Bookhouse Boys</td><td class="">House of Hufflepuff</td><td class="">Bookhouse Boys</td><td class="">CRG McGovern</td><td class="">Bookhouse Boys</td><td class="">5th Avenue Argyle</td><td class="">Bookhouse Boys</td></tr>
+          <tr class=""><td class="season">2023/24</td><td class="champ">5th Avenue Argyle</td><td class="">Bookhouse Boys</td><td class="">House of Hufflepuff</td><td class="">House of Hufflepuff</td><td class="">Real News</td><td class="">CRG McGovern</td><td class="">Quidpool FC</td></tr>
+          <tr class=""><td class="season">2022/23</td><td class="champ">House of Hufflepuff</td><td class="">House of Hufflepuff</td><td class="">Quidpool FC</td><td class="">House of Hufflepuff</td><td class="">CRG McGovern</td><td class="">CRG McGovern</td><td class="">Andover City</td></tr>
+          <tr class=""><td class="season">2021/22</td><td class="champ">Bookhouse Boys</td><td class="">MS 08th</td><td class="">Andover City</td><td class="">CRG McGovern</td><td class="">Bookhouse Boys</td><td class="">House of Hufflepuff</td><td class="">Thottenham Thotspur</td></tr>
+          <tr class=""><td class="season">2020/21</td><td class="champ">CRG McGovern</td><td class="">CRG McGovern</td><td class="">Thottenham Thotspur</td><td class="">House of Hufflepuff</td><td class="">Thottenham Thotspur</td><td class="">Andover City</td><td class="">Bookhouse Boys</td></tr>
+          <tr class=""><td class="season">2019/20</td><td class="champ">House of Hufflepuff</td><td class="">What The FC</td><td class="">Bookhouse Boys</td><td class="">Andover City</td><td class="">Thottenham Thotspur</td><td class="">House of Hufflepuff</td><td class="">Bookhouse Boys</td></tr>
+          <tr class=""><td class="season">2018/19</td><td class="champ">House of Hufflepuff</td><td class="">House of Hufflepuff</td><td class="">CRG McGovern</td><td class="">Andover City</td><td class="">House of Hufflepuff</td><td class="">What The FC</td><td class="">Wholeassed United FC</td></tr>
+          <tr class=""><td class="season">2017/18</td><td class="champ">CRG McGovern</td><td class="">Quidpool FC</td><td class="">Wholeassed United FC</td><td class="">What The FC</td><td class="">CRG McGovern</td><td class="">Bookhouse Boys</td><td class="">Andover City</td></tr>
+          <tr class=""><td class="season">2016/17</td><td class="champ">CRG McGovern</td><td class="">Andover City</td><td class="">CRG McGovern</td><td class="">Bookhouse Boys</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+          <tr class=""><td class="season">2015/16</td><td class="champ">Andover City</td><td class="">Andover City</td><td class="">Bookhouse Boys</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+          <tr class=""><td class="season">2014/15</td><td class="champ">Battersea Power Bottoms</td><td class="">Wholeassed United FC</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <footer>MEGAVISION &middot; Mega League Archive</footer>
+    <footer>MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a></footer>
   </div>
 </body>
 </html>
