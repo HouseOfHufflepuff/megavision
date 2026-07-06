@@ -1,20 +1,19 @@
 """
 Repeatable roster + financials sync for the 13 MEGAVISION team pages.
 
-Reads the roster/contract table out of each team tab in the master
-spreadsheet (already exported to ../data/ss.xlsx) and regenerates
-team-<code>.html for all 13 teams with current data.
+This script holds NO copy of the spreadsheet and never caches one on disk.
+Every run takes a freshly-fetched export as input, uses it in place, and the
+caller deletes it immediately after. There is no standalone Google credential
+here, so the live fetch itself is done by Claude via the Google Drive
+connector -- the full cycle, every time, is:
 
-Run:
-    python3 update_rosters.py
+    1. Claude fetches the live spreadsheet export to a throwaway temp path
+    2. python3 update_rosters.py --xlsx /path/to/that/temp/file [--push]
+    3. the temp file is deleted
 
-Requires ../data/ss.xlsx to be present and reasonably fresh. That file is
-a straight export of the Google Sheet and isn't something this script can
-refresh itself (no standalone Google credential) -- ask Claude to
-"refresh the spreadsheet data" first if you want the latest numbers, then
-run this script, then git add/commit/push (or just ask Claude to do the
-whole cycle).
+Never point --xlsx at a path inside this repo, and never commit the xlsx.
 """
+import argparse
 import subprocess
 import sys
 from pathlib import Path
@@ -23,10 +22,14 @@ import openpyxl
 
 from common import TEAMS, head, FOOT
 
-SS_PATH = Path("../data/ss.xlsx")
+parser = argparse.ArgumentParser()
+parser.add_argument("--xlsx", required=True, help="Path to a freshly-fetched spreadsheet export (temp file, not stored in this repo)")
+parser.add_argument("--push", action="store_true")
+args = parser.parse_args()
 
+SS_PATH = Path(args.xlsx)
 if not SS_PATH.exists():
-    print(f"ERROR: {SS_PATH} not found. Fetch a fresh export of the spreadsheet first.", file=sys.stderr)
+    print(f"ERROR: {SS_PATH} not found.", file=sys.stderr)
     sys.exit(1)
 
 
@@ -151,7 +154,7 @@ print(f"Updated {len(updated)} team pages:")
 for code, size, payroll in updated:
     print(f"  {code}: {size} players, ${payroll:,.2f} payroll")
 
-if "--push" in sys.argv:
+if args.push:
     files = [f"team-{c.lower()}.html" for c, _, _ in updated]
     subprocess.run(["git", "add"] + files, check=True)
     result = subprocess.run(["git", "diff", "--cached", "--quiet"])
