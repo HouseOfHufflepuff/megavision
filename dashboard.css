@@ -19,17 +19,15 @@ body {
   padding: 0 20px 80px;
 }
 
-/* ---- nav ---- */
+/* ---- nav (no logo -- that's a big hero image in the page content instead) ---- */
 .mv-nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 18px 20px;
+  justify-content: flex-end;
+  padding: 8px 20px;
   border-bottom: 1px solid var(--mv-border);
   margin-bottom: 40px;
 }
-.mv-nav-brand { display: flex; align-items: center; text-decoration: none; }
-.mv-nav-brand img { height: 112px; width: auto; display: block; }
 .mv-nav-links { display: flex; gap: 22px; align-items: center; }
 .mv-nav-links a {
   color: var(--mv-ink-muted);

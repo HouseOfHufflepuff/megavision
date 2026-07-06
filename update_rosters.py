@@ -18,9 +18,9 @@ import subprocess
 import sys
 
 from common import (
-    TEAMS, head, foot, fetch_live_workbook, EXPORT_URL, fetch_trophy_room,
+    TEAMS, head, foot, hero_logo, fetch_live_workbook, EXPORT_URL, fetch_trophy_room,
     tally_trophies, COMP_ABBR, fetch_fans, owner_short, POSITION_ORDER,
-    position_sort_key, fetch_youth,
+    position_sort_key, fetch_youth, find_team_sheet,
 )
 
 STATUS_COLOR = {
@@ -119,10 +119,13 @@ updated = []
 financial_rows = []
 
 for code, name, owners in TEAMS:
-    if code not in wb.sheetnames:
+    sheet_name = find_team_sheet(wb, code)
+    if sheet_name is None:
         print(f"WARN: no tab for {code}, skipping", file=sys.stderr)
         continue
-    data = parse_team_tab(wb[code], code)
+    if sheet_name != code:
+        print(f"NOTE: {code} tab is now named '{sheet_name}' in the live sheet", file=sys.stderr)
+    data = parse_team_tab(wb[sheet_name], code)
     if data is None:
         print(f"WARN: could not find roster header for {code}, skipping", file=sys.stderr)
         continue
@@ -228,7 +231,7 @@ for code, name, owners in TEAMS:
     )
 
     slug = code.lower()
-    page = head(name, "teams.html") + f"""
+    page = head(name, "teams.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">{name}<span class="mv-badge">{code}</span></h1>
       <div class="sub">{", ".join(owners)} &middot; {data["stadium"]} (Capacity {capacity_str})</div>
@@ -320,7 +323,7 @@ fin_table_rows = "\n            ".join(
     for r in financial_rows
 )
 
-financials_html = head("Financials", "financials.html") + f"""
+financials_html = head("Financials", "financials.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Financials</h1>
       <div class="sub">Cost and revenue by team for 26/27, followed by game-by-game detail. No games have been played yet this season.</div>

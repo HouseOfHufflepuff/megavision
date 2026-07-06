@@ -1,4 +1,4 @@
-from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room, resolve_team_code, fetch_stadiums
+from common import TEAMS, head, foot, hero_logo, fetch_live_workbook, fetch_trophy_room, resolve_team_code, fetch_stadiums
 
 print("Fetching live spreadsheet...")
 wb = fetch_live_workbook()
@@ -39,7 +39,7 @@ reigning_html = (
     if reigning_code else reigning
 )
 
-index_html = head("Home", "index.html", nav_logo=False) + f"""
+index_html = head("Home", "index.html") + f"""
     <header style="text-align:center;margin-bottom:36px;">
       <img src="logo-trim.png" alt="MEGAVISION" class="mv-glow" style="width:100%;max-width:640px;height:auto;">
       <p style="color:var(--mv-ink-muted);font-size:14px;letter-spacing:0.04em;margin-top:10px;">MEGA FANTASY SOCCER LEAGUE &nbsp;·&nbsp; EST. 2014</p>
@@ -88,7 +88,7 @@ for code, name, owners in TEAMS:
         <div class="go">View Team &rarr;</div>
       </a>""")
 
-teams_html = head("Teams", "teams.html") + f"""
+teams_html = head("Teams", "teams.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Teams</h1>
       <div class="sub">All {len(TEAMS)} franchises competing this season</div>

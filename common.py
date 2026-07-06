@@ -20,13 +20,26 @@ def fetch_live_workbook():
     return openpyxl.load_workbook(io.BytesIO(data), data_only=True)
 
 
+def find_team_sheet(wb, code):
+    """Team tabs occasionally get renamed in the live sheet (e.g. 'FAV' ->
+    'FAV-Updated'). Try an exact match first, then fall back to any sheet
+    name starting with the code, instead of silently dropping the team."""
+    if code in wb.sheetnames:
+        return code
+    for name in wb.sheetnames:
+        if name.upper().startswith(code.upper()):
+            return name
+    return None
+
+
 def fetch_stadiums(wb):
     """code -> {stadium, capacity}, from row 1 of each team tab."""
     stadiums = {}
     for code, _, _ in TEAMS:
-        if code not in wb.sheetnames:
+        sheet_name = find_team_sheet(wb, code)
+        if sheet_name is None:
             continue
-        row0 = next(wb[code].iter_rows(min_row=1, max_row=1, values_only=True))
+        row0 = next(wb[sheet_name].iter_rows(min_row=1, max_row=1, values_only=True))
         stadiums[code] = {"stadium": row0[1] or "", "capacity": row0[6]}
     return stadiums
 
@@ -208,16 +221,14 @@ NAV_LINKS = [
 ]
 
 
-def head(title, active, nav_logo=True):
+def head(title, active):
+    """No logo in the nav anywhere -- it's a big hero image at the top of
+    every page's content instead (see hero_logo())."""
     nav_items = []
     for href, label in NAV_LINKS:
         cls = ' class="active"' if href == active else ""
         nav_items.append(f'<a href="{href}"{cls}>{label}</a>')
     nav_links = "\n      ".join(nav_items)
-    brand = (
-        '<a href="index.html" class="mv-nav-brand"><img src="logo-trim.png" alt="MEGAVISION"></a>'
-        if nav_logo else '<div class="mv-nav-brand"></div>'
-    )
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -232,12 +243,19 @@ def head(title, active, nav_logo=True):
 </head>
 <body>
   <nav class="mv-nav">
-    {brand}
     <div class="mv-nav-links">
       {nav_links}
     </div>
   </nav>
   <div class="wrap">
+"""
+
+
+def hero_logo():
+    """Big logo, same treatment as index.html, for the top of every other page."""
+    return """    <div style="text-align:center;margin-bottom:36px;">
+      <img src="logo-trim.png" alt="MEGAVISION" class="mv-glow" style="width:100%;max-width:640px;height:auto;">
+    </div>
 """
 
 
