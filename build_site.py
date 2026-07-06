@@ -95,40 +95,7 @@ teams_html = head("Teams", "teams.html") + f"""
 with open("teams.html", "w") as f:
     f.write(teams_html)
 
-# ---------------- financials.html ----------------
-rollup_cards = "\n      ".join(
-    f'<div class="mv-stat"><div class="label">{name}</div><div class="value">$0.00</div></div>'
-    for _, name, _ in sorted(TEAMS, key=lambda t: t[1])
-)
+# financials.html is owned by update_rosters.py now (needs per-team payroll,
+# fan, and trophy data that only that script computes) -- run that after this.
 
-financials_html = head("Financials", "financials.html") + f"""
-    <div class="mv-page-header">
-      <h1 class="mv-chrome-text">Financials</h1>
-      <div class="sub">Season net by team, followed by game-by-game detail. No games have been played yet this season.</div>
-    </div>
-
-    <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(160px,1fr));">
-      {rollup_cards}
-    </div>
-
-    <section class="card mv-card">
-      <h2 class="mv-chrome-text">Game Log</h2>
-      <div class="sub">Modeled on the league schedule &mdash; week, matchup, stadium, attendance, gate receipts</div>
-      <div class="mv-table-scroll">
-        <table class="mv-table">
-          <thead>
-            <tr><th>Week</th><th>Home</th><th>Away</th><th>Stadium</th><th>Attendance</th><th>Gate Receipts</th></tr>
-          </thead>
-        </table>
-      </div>
-      <div class="mv-empty">
-        <div class="big">No games played yet this season</div>
-        Game-by-game financials will appear here once Week 1 kicks off.
-      </div>
-    </section>
-""" + foot()
-
-with open("financials.html", "w") as f:
-    f.write(financials_html)
-
-print("done: index.html, teams.html, financials.html")
+print("done: index.html, teams.html (run update_rosters.py for financials.html + team pages)")

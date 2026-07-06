@@ -1,28 +1,35 @@
 """
-Repeatable roster + financials sync for the 13 MEGAVISION team pages.
+Repeatable roster + financials sync for all 13 MEGAVISION team pages plus
+financials.html.
 
 Run it. That's it:
 
-    python3 update_rosters.py            # fetch live, regenerate the 13 pages
+    python3 update_rosters.py            # fetch live, regenerate the pages
     python3 update_rosters.py --push     # also git commit + push
 
 Every run fetches the spreadsheet live over plain HTTP (it's shared "anyone
 with the link can view", so no login/credential is needed) straight into
 memory and parses it from there. Nothing is written to disk except the
-regenerated team-<code>.html files. No caching, no temp files, no stored
-copy of the spreadsheet, ever.
+regenerated *.html files. No caching, no temp files, no stored copy of the
+spreadsheet, ever.
 """
 import argparse
 import subprocess
 import sys
 
-from common import TEAMS, head, foot, fetch_live_workbook, EXPORT_URL, fetch_trophy_room, tally_trophies
+from common import (
+    TEAMS, head, foot, fetch_live_workbook, EXPORT_URL, fetch_trophy_room,
+    tally_trophies, COMP_ABBR, fetch_fans, owner_short, POSITION_ORDER,
+    position_sort_key,
+)
 
 # 25/26 is over; only players actually signed for 26/27 count as current roster.
 # Match by the literal column label, not position, since some teams' sheets
 # (e.g. CRG) are still labeled a year behind (24/25-25/26-26/27 instead of
 # 25/26-26/27-27/28) -- the label tells us which column is really 26/27.
 CURRENT_SEASON_LABEL = "26/27"
+
+TROPHY_ACCENTS = ["var(--mv-gold)", "var(--mv-blue)", "var(--mv-violet)", "var(--mv-pink)", "var(--mv-crimson)"]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--push", action="store_true")
@@ -94,10 +101,12 @@ print("Fetched. Parsing team tabs...")
 
 comps, seasons = fetch_trophy_room(wb)
 trophy_tally = tally_trophies(comps, seasons)
-TROPHY_ACCENTS = ["var(--mv-gold)", "var(--mv-blue)", "var(--mv-violet)", "var(--mv-pink)", "var(--mv-crimson)"]
 trophy_color = {c: TROPHY_ACCENTS[i % len(TROPHY_ACCENTS)] for i, c in enumerate(comps)}
+fans_by_code = fetch_fans(wb)
 
 updated = []
+financial_rows = []
+
 for code, name, owners in TEAMS:
     if code not in wb.sheetnames:
         print(f"WARN: no tab for {code}, skipping", file=sys.stderr)
@@ -113,7 +122,6 @@ for code, name, owners in TEAMS:
     pos_counts = {}
     for p in roster:
         pos_counts[p["pos"]] = pos_counts.get(p["pos"], 0) + 1
-    pos_summary = " &middot; ".join(f"{v} {k}" for k, v in sorted(pos_counts.items()) if k)
     season_net = -total_payroll  # no games/revenue yet this season
 
     y1_label, y2_label, y3_label = data["year_labels"]
@@ -125,8 +133,11 @@ for code, name, owners in TEAMS:
     cap = data["capacity"]
     capacity_str = f"{cap:,.0f}" if isinstance(cap, (int, float)) else str(cap or "—")
 
+    # group by position (GK, D, M, F, then anything else), salary desc within group
+    grouped = sorted(roster, key=lambda p: (position_sort_key(p["pos"]), -p["current_salary"]))
+
     roster_rows = []
-    for p in sorted(roster, key=lambda p: -p["current_salary"]):
+    for p in grouped:
         cells = [money(p["y1"]), money(p["y2"]), money(p["y3"])]
         cells[current_idx] = f'<strong style="color:var(--mv-gold)">{cells[current_idx]}</strong>'
         roster_rows.append(
@@ -135,10 +146,19 @@ for code, name, owners in TEAMS:
             f'<td class="dim">{money(p["buyout"])}</td></tr>'
         )
 
+    # position-count summary row at the bottom of the table
+    ordered_pos = [p for p in POSITION_ORDER if p in pos_counts] + \
+                  [p for p in pos_counts if p not in POSITION_ORDER]
+    counts_line = "  &middot;  ".join(f"{pos_counts[p]} {p}" for p in ordered_pos)
+    roster_rows.append(
+        f'<tr style="background:var(--mv-black-3);font-weight:700;">'
+        f'<td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
+    )
+
     team_trophies = trophy_tally.get(code, {})
     total_trophies = sum(team_trophies.values())
     trophy_tiles = "\n      ".join(
-        f'<div class="mv-stat"><div class="label">{c}</div>'
+        f'<div class="mv-stat"><div class="label">{COMP_ABBR.get(c, c)}</div>'
         f'<div class="value" style="color:{trophy_color[c]};">{team_trophies.get(c, 0)}</div></div>'
         for c in comps
     )
@@ -169,7 +189,7 @@ for code, name, owners in TEAMS:
 
     <section class="card mv-card">
       <h2 class="mv-chrome-text">Roster</h2>
-      <div class="sub">{roster_size} players signed for 26/27 &middot; {pos_summary} &middot; no games played yet this season</div>
+      <div class="sub">{roster_size} players signed for 26/27, grouped by position &middot; no games played yet this season</div>
       <div class="mv-table-scroll">
         <table class="mv-table">
           <thead><tr><th>Player</th><th>Pos</th><th>{year_th[0]}</th><th>{year_th[1]}</th><th>{year_th[2]}</th><th>BuyOut</th></tr></thead>
@@ -186,13 +206,76 @@ for code, name, owners in TEAMS:
     with open(f"team-{slug}.html", "w") as f:
         f.write(page)
     updated.append((code, roster_size, total_payroll))
+    financial_rows.append({
+        "code": code,
+        "name": name,
+        "owner": owner_short(owners),
+        "cost": total_payroll,
+        "revenue": 0.0,
+        "fans": fans_by_code.get(code),
+        "trophies": total_trophies,
+    })
 
 print(f"Updated {len(updated)} team pages:")
 for code, size, payroll in updated:
     print(f"  {code}: {size} players, ${payroll:,.2f} payroll")
 
+# ---------------- financials.html ----------------
+financial_rows.sort(key=lambda r: -r["cost"])
+
+def fmt_fans(v):
+    return f"{v:,.0f}" if isinstance(v, (int, float)) else "—"
+
+fin_table_rows = "\n            ".join(
+    f'<tr><td><a href="team-{r["code"].lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{r["name"]}</a></td>'
+    f'<td class="dim">{r["owner"]}</td>'
+    f'<td>{money(r["cost"])}</td>'
+    f'<td>{money(r["revenue"])}</td>'
+    f'<td>{fmt_fans(r["fans"])}</td>'
+    f'<td>{r["trophies"]}</td></tr>'
+    for r in financial_rows
+)
+
+financials_html = head("Financials", "financials.html") + f"""
+    <div class="mv-page-header">
+      <h1 class="mv-chrome-text">Financials</h1>
+      <div class="sub">Cost and revenue by team for 26/27, followed by game-by-game detail. No games have been played yet this season.</div>
+    </div>
+
+    <section class="card mv-card">
+      <div class="mv-table-scroll">
+        <table class="mv-table">
+          <thead><tr><th>Team</th><th>Owner</th><th>Cost</th><th>Revenue</th><th>Fans</th><th># Trophies</th></tr></thead>
+          <tbody>
+            {fin_table_rows}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">Game Log</h2>
+      <div class="sub">Modeled on the league schedule &mdash; week, matchup, stadium, attendance, gate receipts</div>
+      <div class="mv-table-scroll">
+        <table class="mv-table">
+          <thead>
+            <tr><th>Week</th><th>Home</th><th>Away</th><th>Stadium</th><th>Attendance</th><th>Gate Receipts</th></tr>
+          </thead>
+        </table>
+      </div>
+      <div class="mv-empty">
+        <div class="big">No games played yet this season</div>
+        Game-by-game financials will appear here once Week 1 kicks off.
+      </div>
+    </section>
+""" + foot()
+
+with open("financials.html", "w") as f:
+    f.write(financials_html)
+print("Updated financials.html")
+
 if args.push:
-    files = [f"team-{c.lower()}.html" for c, _, _ in updated]
+    files = [f"team-{c.lower()}.html" for c, _, _ in updated] + ["financials.html"]
     subprocess.run(["git", "add"] + files, check=True)
     result = subprocess.run(["git", "diff", "--cached", "--quiet"])
     if result.returncode == 0:

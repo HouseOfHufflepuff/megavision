@@ -97,6 +97,64 @@ def tally_trophies(comps, seasons):
     return tally
 
 
+# Short labels so trophy tiles never wrap to 3 lines
+COMP_ABBR = {
+    "Premium Title": "Premium",
+    "Champions League": "Champions Lg",
+    "Europa League": "Europa Lg",
+    "Mega FA Cup": "FA Cup",
+    "Citadel Cup": "Citadel Cup",
+    "Mega Community Shield": "Comm. Shield",
+    "Mega Super Cup": "Super Cup",
+}
+
+
+def fetch_fans(wb):
+    """code -> current fan count, from the Standings tab (not every team
+    always has a row there -- missing means 0/unknown, shown as '—')."""
+    ws = wb["Standings"]
+    rows = list(ws.iter_rows(min_row=1, max_row=15, values_only=True))
+    header_idx = None
+    for i, row in enumerate(rows):
+        if row and row[1] == "Team":
+            header_idx = i
+            break
+    fans = {}
+    if header_idx is None:
+        return fans
+    for row in rows[header_idx + 1:]:
+        if not row or not row[1]:
+            break
+        code = resolve_team_code(row[1])
+        if code:
+            fans[code] = row[12]
+    return fans
+
+
+def owner_short(owners):
+    """'Jeremy Ahrens' -> 'Jeremy A.'; extra owners noted as '+N'."""
+    first = owners[0].strip()
+    parts = first.split()
+    if len(parts) >= 2:
+        short = f"{parts[0]} {parts[-1][0]}."
+    else:
+        short = first
+    if len(owners) > 1:
+        short += f" +{len(owners) - 1}"
+    return short
+
+
+POSITION_ORDER = ["GK", "D", "M", "F"]
+
+
+def position_sort_key(pos):
+    pos = (pos or "").upper()
+    try:
+        return POSITION_ORDER.index(pos)
+    except ValueError:
+        return len(POSITION_ORDER)
+
+
 NAV_LINKS = [
     ("index.html", "Home"),
     ("teams.html", "Teams"),
