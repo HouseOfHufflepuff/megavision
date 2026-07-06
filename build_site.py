@@ -1,70 +1,13 @@
 import json
 
+from common import TEAMS, head, FOOT
+
 d = json.load(open("_trophy_seasons.json"))
 comps = d["comps"]
 seasons = d["seasons"]
 
 total_titles = sum(1 for s in seasons for v in s[1:8] if v)
 reigning = seasons[0][1] or "—"
-
-# code, full name, owners
-TEAMS = [
-    ("FAV", "5th Ave Argyle", ["Jack Weatherman"]),
-    ("POW", "Battersea Power Bottoms", ["Sam Rufer", "Joe Effertz"]),
-    ("CRG", "CRG McGovern", ["Casey McGovern", "Ryan McGovern", "Grady McGovern", "Jadyn McGovern"]),
-    ("DU", "Divided United", ["Chris Gauron"]),
-    ("HUF", "House of Hufflepuff", ["Jeremy Ahrens"]),
-    ("MS8", "MS 08th", ["Raul Templonuevo"]),
-    ("NAC", "NFC Andover City", ["Kris Lien"]),
-    ("QFC", "Quidpool FC", ["Erik Johnson"]),
-    ("REN", "Real News", ["Reid Foster"]),
-    ("BHB", "The Bookhouse Boys", ["Matt O'Laughlin"]),
-    ("TTS", "Thottenham Thotspur", ["Kevin O'Laughlin"]),
-    ("WTF", "What The FC", ["Erik Olson"]),
-    ("ASS", "Wholeassed United FC", ["Kirk Walton", "Dan Hinrichs"]),
-]
-
-
-def head(title, active):
-    links = [
-        ("index.html", "Home"),
-        ("teams.html", "Teams"),
-        ("financials.html", "Financials"),
-        ("style-guide.html", "Style Guide"),
-    ]
-    nav_items = []
-    for href, label in links:
-        cls = ' class="active"' if href == active else ""
-        nav_items.append(f'<a href="{href}"{cls}>{label}</a>')
-    nav_links = "\n      ".join(nav_items)
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{title} — MEGAVISION</title>
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="palette.css">
-<link rel="stylesheet" href="dashboard.css">
-</head>
-<body>
-  <nav class="mv-nav">
-    <a href="index.html" class="mv-nav-brand"><img src="logo.png" alt="MEGAVISION"></a>
-    <div class="mv-nav-links">
-      {nav_links}
-    </div>
-  </nav>
-  <div class="wrap">
-"""
-
-
-FOOT = """  </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a></footer>
-</body>
-</html>
-"""
 
 # ---------------- index.html ----------------
 rows_html = []
@@ -134,36 +77,6 @@ teams_html = head("Teams", "teams.html") + f"""
 with open("teams.html", "w") as f:
     f.write(teams_html)
 
-# ---------------- team-<code>.html (shell pages) ----------------
-for code, name, owners in TEAMS:
-    slug = code.lower()
-    page = head(name, "teams.html") + f"""
-    <div class="mv-page-header">
-      <h1 class="mv-chrome-text">{name}<span class="mv-badge">{code}</span></h1>
-      <div class="sub">{", ".join(owners)}</div>
-    </div>
-
-    <div class="mv-stat-grid">
-      <div class="mv-stat"><div class="label">Record</div><div class="value">0-0-0</div></div>
-      <div class="mv-stat"><div class="label">Points</div><div class="value">0</div></div>
-      <div class="mv-stat"><div class="label">League Rank</div><div class="value">&mdash;</div></div>
-      <div class="mv-stat"><div class="label">Season Net</div><div class="value">$0.00</div></div>
-    </div>
-
-    <section class="card mv-card">
-      <h2 class="mv-chrome-text">Roster</h2>
-      <div class="sub">No games played yet this season</div>
-      <div class="mv-empty">
-        <div class="big">Roster not yet loaded</div>
-        Check back once the season kicks off.
-      </div>
-    </section>
-
-    <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
-""" + FOOT
-    with open(f"team-{slug}.html", "w") as f:
-        f.write(page)
-
 # ---------------- financials.html ----------------
 rollup_cards = "\n      ".join(
     f'<div class="mv-stat"><div class="label">{name}</div><div class="value">$0.00</div></div>'
@@ -200,4 +113,4 @@ financials_html = head("Financials", "financials.html") + f"""
 with open("financials.html", "w") as f:
     f.write(financials_html)
 
-print("done")
+print("done: index.html, teams.html, financials.html")
