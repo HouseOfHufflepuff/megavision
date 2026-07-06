@@ -16,7 +16,7 @@ import argparse
 import subprocess
 import sys
 
-from common import TEAMS, head, foot, fetch_live_workbook, EXPORT_URL
+from common import TEAMS, head, foot, fetch_live_workbook, EXPORT_URL, fetch_trophy_room, tally_trophies
 
 # 25/26 is over; only players actually signed for 26/27 count as current roster.
 # Match by the literal column label, not position, since some teams' sheets
@@ -92,6 +92,11 @@ print(f"Fetching live spreadsheet from {EXPORT_URL} ...")
 wb = fetch_live_workbook()
 print("Fetched. Parsing team tabs...")
 
+comps, seasons = fetch_trophy_room(wb)
+trophy_tally = tally_trophies(comps, seasons)
+TROPHY_ACCENTS = ["var(--mv-gold)", "var(--mv-blue)", "var(--mv-violet)", "var(--mv-pink)", "var(--mv-crimson)"]
+trophy_color = {c: TROPHY_ACCENTS[i % len(TROPHY_ACCENTS)] for i, c in enumerate(comps)}
+
 updated = []
 for code, name, owners in TEAMS:
     if code not in wb.sheetnames:
@@ -130,6 +135,14 @@ for code, name, owners in TEAMS:
             f'<td class="dim">{money(p["buyout"])}</td></tr>'
         )
 
+    team_trophies = trophy_tally.get(code, {})
+    total_trophies = sum(team_trophies.values())
+    trophy_tiles = "\n      ".join(
+        f'<div class="mv-stat"><div class="label">{c}</div>'
+        f'<div class="value" style="color:{trophy_color[c]};">{team_trophies.get(c, 0)}</div></div>'
+        for c in comps
+    )
+
     slug = code.lower()
     page = head(name, "teams.html") + f"""
     <div class="mv-page-header">
@@ -145,6 +158,14 @@ for code, name, owners in TEAMS:
       <div class="mv-stat"><div class="label">Total Payroll</div><div class="value">{money(total_payroll)}</div></div>
       <div class="mv-stat"><div class="label">Season Net</div><div class="value">{money(season_net)}</div></div>
     </div>
+
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">Trophy Case</h2>
+      <div class="sub">{total_trophies} title{"s" if total_trophies != 1 else ""} all-time</div>
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));">
+      {trophy_tiles}
+      </div>
+    </section>
 
     <section class="card mv-card">
       <h2 class="mv-chrome-text">Roster</h2>

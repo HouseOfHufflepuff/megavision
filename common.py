@@ -54,6 +54,49 @@ TEAMS = [
     ("ASS", "Wholeassed United FC", ["Kirk Walton", "Dan Hinrichs"]),
 ]
 
+# Historical Trophy Room winner names don't always match a team's current
+# full name exactly (renames, abbreviations) -- map every variant seen to a code.
+TEAM_ALIASES = {
+    "5th Ave Argyle": "FAV",
+    "5th Avenue Argyle": "FAV",
+    "Battersea Power Bottoms": "POW",
+    "Battersea Power": "POW",
+    "CRG McGovern": "CRG",
+    "Divided United": "DU",
+    "House of Hufflepuff": "HUF",
+    "MS 08th": "MS8",
+    "MS 08th FC": "MS8",
+    "MS08": "MS8",
+    "NFC Andover City": "NAC",
+    "Andover City": "NAC",
+    "Quidpool FC": "QFC",
+    "Real News": "REN",
+    "The Bookhouse Boys": "BHB",
+    "Bookhouse Boys": "BHB",
+    "Thottenham Thotspur": "TTS",
+    "What The FC": "WTF",
+    "Wholeassed United FC": "ASS",
+}
+
+
+def resolve_team_code(name):
+    if not name:
+        return None
+    return TEAM_ALIASES.get(name.strip())
+
+
+def tally_trophies(comps, seasons):
+    """code -> {comp: count}, built from Trophy Room season rows."""
+    tally = {code: {c: 0 for c in comps} for code, _, _ in TEAMS}
+    for row in seasons:
+        for i, comp in enumerate(comps):
+            winner = row[i + 1]
+            code = resolve_team_code(winner)
+            if code:
+                tally[code][comp] += 1
+    return tally
+
+
 NAV_LINKS = [
     ("index.html", "Home"),
     ("teams.html", "Teams"),

@@ -1,4 +1,4 @@
-from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room
+from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room, resolve_team_code
 
 print("Fetching live spreadsheet...")
 wb = fetch_live_workbook()
@@ -7,21 +7,36 @@ print(f"Fetched. {len(seasons)} seasons of trophy history.")
 
 total_titles = sum(1 for s in seasons for v in s[1:8] if v)
 reigning = seasons[0][1] or "—"
+reigning_code = resolve_team_code(reigning)
+
+# poppy per-competition accents, cycling the guide's 5 named accents
+ACCENTS = ["var(--mv-gold)", "var(--mv-blue)", "var(--mv-violet)", "var(--mv-pink)", "var(--mv-crimson)"]
+comp_color = {comp: ACCENTS[i % len(ACCENTS)] for i, comp in enumerate(comps)}
+
+
+def winner_cell(val, comp):
+    if val == "—" or not val:
+        return '<td class="dim">—</td>'
+    code = resolve_team_code(val)
+    color = comp_color[comp]
+    label = f'<a href="team-{code.lower()}.html" style="color:{color};text-decoration:none;">{val}</a>' if code else f'<span style="color:{color};">{val}</span>'
+    return f'<td style="font-weight:600;">{label}</td>'
+
 
 # ---------------- index.html ----------------
 rows_html = []
 for i, s in enumerate(seasons):
-    cells = []
-    for ci, comp in enumerate(comps):
-        val = s[ci + 1] or "—"
-        cls = "dim" if val == "—" else ("champ" if comp == "Premium Title" else "")
-        style = ' style="color:var(--mv-gold);font-weight:600;"' if cls == "champ" else ""
-        cells.append(f'<td class="{cls}"{style}>{val}</td>')
+    cells = [winner_cell(s[ci + 1] or "—", comp) for ci, comp in enumerate(comps)]
     row_style = ' style="background:rgba(255,209,102,0.06);"' if i == 0 else ""
     rows_html.append(f'<tr{row_style}><td style="font-weight:700;">{s[0]}</td>{"".join(cells)}</tr>')
 
-headers_html = "".join(f"<th>{c}</th>" for c in comps)
+headers_html = "".join(f'<th style="color:{comp_color[c]};">{c}</th>' for c in comps)
 rows_joined = "\n            ".join(rows_html)
+
+reigning_html = (
+    f'<a href="team-{reigning_code.lower()}.html" style="color:inherit;text-decoration:none;">{reigning}</a>'
+    if reigning_code else reigning
+)
 
 index_html = head("Home", "index.html", nav_logo=False) + f"""
     <header style="text-align:center;margin-bottom:36px;">
@@ -32,7 +47,7 @@ index_html = head("Home", "index.html", nav_logo=False) + f"""
     <div class="mv-stat-grid">
       <div class="mv-stat"><div class="label">Seasons Played</div><div class="value mv-spark-text">{len(seasons)}</div></div>
       <div class="mv-stat"><div class="label">Titles Awarded</div><div class="value mv-spark-text">{total_titles}</div></div>
-      <div class="mv-stat"><div class="label">Reigning Champion</div><div class="value mv-spark-text" style="font-size:17px;">{reigning}</div></div>
+      <div class="mv-stat"><div class="label">Reigning Champion</div><div class="value mv-spark-text" style="font-size:17px;">{reigning_html}</div></div>
     </div>
 
     <section class="card mv-card">
@@ -47,6 +62,10 @@ index_html = head("Home", "index.html", nav_logo=False) + f"""
         </table>
       </div>
     </section>
+
+    <p style="text-align:center;margin-top:8px;">
+      <a href="teams.html" style="color:var(--mv-violet);font-weight:600;font-size:14px;text-decoration:none;">View All {len(TEAMS)} Teams &rarr;</a>
+    </p>
 """ + foot()
 
 with open("index.html", "w") as f:
