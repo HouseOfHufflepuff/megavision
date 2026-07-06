@@ -25,7 +25,7 @@ rows_joined = "\n            ".join(rows_html)
 
 index_html = head("Home", "index.html", nav_logo=False) + f"""
     <header style="text-align:center;margin-bottom:36px;">
-      <img src="logo.png" alt="MEGAVISION" class="mv-glow" style="width:100%;max-width:640px;height:auto;">
+      <img src="logo-trim.png" alt="MEGAVISION" class="mv-glow" style="width:100%;max-width:640px;height:auto;">
       <p style="color:var(--mv-ink-muted);font-size:14px;letter-spacing:0.04em;margin-top:10px;">MEGA FANTASY SOCCER LEAGUE &nbsp;·&nbsp; EST. 2014</p>
     </header>
 

@@ -68,7 +68,7 @@ def head(title, active, nav_logo=True):
         nav_items.append(f'<a href="{href}"{cls}>{label}</a>')
     nav_links = "\n      ".join(nav_items)
     brand = (
-        '<a href="index.html" class="mv-nav-brand"><img src="logo.png" alt="MEGAVISION"></a>'
+        '<a href="index.html" class="mv-nav-brand"><img src="logo-trim.png" alt="MEGAVISION"></a>'
         if nav_logo else '<div class="mv-nav-brand"></div>'
     )
     return f"""<!DOCTYPE html>
