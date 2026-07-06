@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financials — MEGAVISION</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="palette.css">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <nav class="mv-nav">
+    <a href="index.html" class="mv-nav-brand"><img src="logo.png" alt="MEGAVISION"></a>
+    <div class="mv-nav-links">
+      <a href="index.html">Home</a>
+      <a href="teams.html">Teams</a>
+      <a href="financials.html" class="active">Financials</a>
+      <a href="style-guide.html">Style Guide</a>
+    </div>
+  </nav>
+  <div class="wrap">
+
+    <div class="mv-page-header">
+      <h1 class="mv-chrome-text">Financials</h1>
+      <div class="sub">Season net by team, followed by game-by-game detail. No games have been played yet this season.</div>
+    </div>
+
+    <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(160px,1fr));">
+      <div class="mv-stat"><div class="label">5th Ave Argyle</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">Battersea Power Bottoms</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">CRG McGovern</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">Divided United</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">House of Hufflepuff</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">MS 08th</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">NFC Andover City</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">Quidpool FC</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">Real News</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">The Bookhouse Boys</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">Thottenham Thotspur</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">What The FC</div><div class="value">$0.00</div></div>
+      <div class="mv-stat"><div class="label">Wholeassed United FC</div><div class="value">$0.00</div></div>
+    </div>
+
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">Game Log</h2>
+      <div class="sub">Modeled on the league schedule &mdash; week, matchup, stadium, attendance, gate receipts</div>
+      <div class="mv-table-scroll">
+        <table class="mv-table">
+          <thead>
+            <tr><th>Week</th><th>Home</th><th>Away</th><th>Stadium</th><th>Attendance</th><th>Gate Receipts</th></tr>
+          </thead>
+        </table>
+      </div>
+      <div class="mv-empty">
+        <div class="big">No games played yet this season</div>
+        Game-by-game financials will appear here once Week 1 kicks off.
+      </div>
+    </section>
+  </div>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a></footer>
+</body>
+</html>

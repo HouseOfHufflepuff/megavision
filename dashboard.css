@@ -1,0 +1,171 @@
+/* ==========================================================================
+   MEGAVISION dashboard motif — shared layout components used across pages.
+   Colors come from palette.css; this file is structure/spacing only.
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at 50% -10%, #1b1430 0%, var(--mv-black) 55%);
+  color: var(--mv-ink);
+  font-family: var(--mv-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ---- nav ---- */
+.mv-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--mv-border);
+  margin-bottom: 40px;
+}
+.mv-nav-brand { display: flex; align-items: center; text-decoration: none; }
+.mv-nav-brand img { height: 34px; width: auto; display: block; }
+.mv-nav-links { display: flex; gap: 22px; align-items: center; }
+.mv-nav-links a {
+  color: var(--mv-ink-muted);
+  text-decoration: none;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  font-weight: 600;
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+}
+.mv-nav-links a:hover,
+.mv-nav-links a.active {
+  color: var(--mv-ink);
+  border-bottom-color: var(--mv-violet);
+}
+
+/* ---- page header ---- */
+.mv-page-header { margin-bottom: 36px; }
+.mv-page-header h1 { font-size: 30px; margin: 0 0 6px; }
+.mv-page-header .sub { color: var(--mv-ink-muted); font-size: 14px; }
+.mv-badge {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--mv-black);
+  background: var(--mv-gold);
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* ---- cards / stats ---- */
+.mv-card {
+  background: var(--mv-black-2);
+  border: 1px solid var(--mv-border);
+  border-radius: 16px;
+  padding: 24px;
+}
+.mv-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 40px;
+}
+.mv-stat {
+  background: var(--mv-black-2);
+  border: 1px solid var(--mv-border);
+  border-radius: 12px;
+  padding: 16px 14px;
+  text-align: center;
+}
+.mv-stat .label {
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  color: var(--mv-ink-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.mv-stat .value { font-size: 22px; }
+
+/* ---- team grid (teams.html) ---- */
+.mv-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+.mv-team-card {
+  background: var(--mv-black-2);
+  border: 1px solid var(--mv-border);
+  border-radius: 14px;
+  padding: 20px;
+  text-decoration: none;
+  color: var(--mv-ink);
+  display: block;
+  transition: border-color .15s ease;
+}
+.mv-team-card:hover { border-color: var(--mv-violet); }
+.mv-team-card .code {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--mv-ink-muted);
+  background: var(--mv-black-3);
+  border: 1px solid var(--mv-border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-bottom: 10px;
+}
+.mv-team-card .name { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+.mv-team-card .owners { font-size: 12.5px; color: var(--mv-ink-muted); }
+.mv-team-card .go {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--mv-violet);
+  font-weight: 600;
+}
+
+/* ---- tables ---- */
+.mv-table-scroll { overflow-x: auto; }
+table.mv-table { width: 100%; border-collapse: collapse; font-size: 13.5px; white-space: nowrap; }
+table.mv-table thead th {
+  text-align: left;
+  padding: 10px 12px;
+  color: var(--mv-ink-muted);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--mv-border);
+}
+table.mv-table thead th:first-child { border-bottom-color: var(--mv-gold); }
+table.mv-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--mv-border); }
+table.mv-table tbody tr:hover { background: var(--mv-black-3); }
+table.mv-table tbody td.dim { color: var(--mv-ink-dim); }
+
+/* ---- empty state ---- */
+.mv-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--mv-ink-muted);
+  border: 1px dashed var(--mv-border);
+  border-radius: 12px;
+}
+.mv-empty .big { font-size: 15px; color: var(--mv-ink); margin-bottom: 6px; font-weight: 600; }
+
+section.card { margin-bottom: 28px; }
+section.card h2 { margin: 0 0 4px; font-size: 20px; }
+section.card .sub { color: var(--mv-ink-muted); font-size: 13px; margin-bottom: 20px; }
+
+footer.mv-footer {
+  text-align: center;
+  color: var(--mv-ink-muted);
+  font-size: 12px;
+  margin-top: 32px;
+}
+footer.mv-footer a { color: var(--mv-ink-muted); }

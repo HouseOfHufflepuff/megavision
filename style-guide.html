@@ -8,17 +8,8 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="palette.css">
+<link rel="stylesheet" href="dashboard.css">
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--mv-black);
-    color: var(--mv-ink);
-    font-family: var(--mv-font);
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 20px 80px; }
-
   header { text-align: center; margin-bottom: 12px; }
   header img { width: 220px; height: auto; }
   h1.title { font-size: 32px; margin: 8px 0 4px; }
@@ -70,6 +61,15 @@
 </style>
 </head>
 <body>
+  <nav class="mv-nav">
+    <a href="index.html" class="mv-nav-brand"><img src="logo.png" alt="MEGAVISION"></a>
+    <div class="mv-nav-links">
+      <a href="index.html">Home</a>
+      <a href="teams.html">Teams</a>
+      <a href="financials.html">Financials</a>
+      <a href="style-guide.html" class="active">Style Guide</a>
+    </div>
+  </nav>
   <div class="wrap">
     <header>
       <img src="logo.png" alt="MEGAVISION" class="mv-glow">
