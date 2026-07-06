@@ -23,9 +23,9 @@ for i, s in enumerate(seasons):
 headers_html = "".join(f"<th>{c}</th>" for c in comps)
 rows_joined = "\n            ".join(rows_html)
 
-index_html = head("Home", "index.html") + f"""
+index_html = head("Home", "index.html", nav_logo=False) + f"""
     <header style="text-align:center;margin-bottom:36px;">
-      <img src="logo.png" alt="MEGAVISION" class="mv-glow" style="width:120px;height:auto;opacity:0.92;">
+      <img src="logo.png" alt="MEGAVISION" class="mv-glow" style="width:100%;max-width:640px;height:auto;">
       <p style="color:var(--mv-ink-muted);font-size:14px;letter-spacing:0.04em;margin-top:10px;">MEGA FANTASY SOCCER LEAGUE &nbsp;·&nbsp; EST. 2014</p>
     </header>
 

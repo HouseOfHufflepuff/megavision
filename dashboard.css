@@ -29,7 +29,7 @@ body {
   margin-bottom: 40px;
 }
 .mv-nav-brand { display: flex; align-items: center; text-decoration: none; }
-.mv-nav-brand img { height: 56px; width: auto; display: block; }
+.mv-nav-brand img { height: 112px; width: auto; display: block; }
 .mv-nav-links { display: flex; gap: 22px; align-items: center; }
 .mv-nav-links a {
   color: var(--mv-ink-muted);

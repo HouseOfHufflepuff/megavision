@@ -18,12 +18,18 @@ import sys
 
 from common import TEAMS, head, foot, fetch_live_workbook, EXPORT_URL
 
+# 25/26 is over; only players actually signed for 26/27 count as current roster.
+# Match by the literal column label, not position, since some teams' sheets
+# (e.g. CRG) are still labeled a year behind (24/25-25/26-26/27 instead of
+# 25/26-26/27-27/28) -- the label tells us which column is really 26/27.
+CURRENT_SEASON_LABEL = "26/27"
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--push", action="store_true")
 args = parser.parse_args()
 
 
-def parse_team_tab(ws):
+def parse_team_tab(ws, code):
     rows = list(ws.iter_rows(min_row=1, max_row=40, values_only=True))
     stadium_name = rows[0][1] or ""
     capacity = rows[0][6]
@@ -37,6 +43,14 @@ def parse_team_tab(ws):
         return None
 
     year_labels = [rows[header_idx][3], rows[header_idx][4], rows[header_idx][5]]
+    year_cols = [3, 4, 5]  # column indices in each row matching year_labels
+
+    if CURRENT_SEASON_LABEL in year_labels:
+        current_col = year_cols[year_labels.index(CURRENT_SEASON_LABEL)]
+    else:
+        print(f"WARN: {code} has no column labeled {CURRENT_SEASON_LABEL} "
+              f"(got {year_labels}), falling back to the 2nd year column", file=sys.stderr)
+        current_col = year_cols[1]
 
     roster = []
     for r in rows[header_idx + 1:]:
@@ -44,6 +58,9 @@ def parse_team_tab(ws):
             break
         if r[1] is None:
             continue
+        current_salary = r[current_col]
+        if not isinstance(current_salary, (int, float)):
+            continue  # not signed for 26/27, 25/26 is over -- drop them
         roster.append({
             "player": r[1],
             "pos": r[2] or "",
@@ -51,12 +68,14 @@ def parse_team_tab(ws):
             "y2": r[4],
             "y3": r[5],
             "buyout": r[6],
+            "current_salary": current_salary,
         })
 
     return {
         "stadium": stadium_name,
         "capacity": capacity,
         "year_labels": year_labels,
+        "current_col": current_col,
         "roster": roster,
     }
 
@@ -78,14 +97,14 @@ for code, name, owners in TEAMS:
     if code not in wb.sheetnames:
         print(f"WARN: no tab for {code}, skipping", file=sys.stderr)
         continue
-    data = parse_team_tab(wb[code])
+    data = parse_team_tab(wb[code], code)
     if data is None:
         print(f"WARN: could not find roster header for {code}, skipping", file=sys.stderr)
         continue
 
     roster = data["roster"]
     roster_size = len(roster)
-    total_payroll = sum(p["y1"] for p in roster if isinstance(p["y1"], (int, float)))
+    total_payroll = sum(p["current_salary"] for p in roster)
     pos_counts = {}
     for p in roster:
         pos_counts[p["pos"]] = pos_counts.get(p["pos"], 0) + 1
@@ -93,17 +112,21 @@ for code, name, owners in TEAMS:
     season_net = -total_payroll  # no games/revenue yet this season
 
     y1_label, y2_label, y3_label = data["year_labels"]
+    col_labels = [3, 4, 5]
+    current_idx = col_labels.index(data["current_col"])
+    year_th = [y1_label, y2_label, y3_label]
+    year_th[current_idx] = f'<span style="color:var(--mv-gold)">{year_th[current_idx]}</span>'
+
     cap = data["capacity"]
     capacity_str = f"{cap:,.0f}" if isinstance(cap, (int, float)) else str(cap or "—")
 
-    def sort_key(p):
-        return -p["y1"] if isinstance(p["y1"], (int, float)) else 0
-
     roster_rows = []
-    for p in sorted(roster, key=sort_key):
+    for p in sorted(roster, key=lambda p: -p["current_salary"]):
+        cells = [money(p["y1"]), money(p["y2"]), money(p["y3"])]
+        cells[current_idx] = f'<strong style="color:var(--mv-gold)">{cells[current_idx]}</strong>'
         roster_rows.append(
             f'<tr><td>{p["player"]}</td><td>{p["pos"]}</td>'
-            f'<td>{money(p["y1"])}</td><td>{money(p["y2"])}</td><td>{money(p["y3"])}</td>'
+            f'<td>{cells[0]}</td><td>{cells[1]}</td><td>{cells[2]}</td>'
             f'<td class="dim">{money(p["buyout"])}</td></tr>'
         )
 
@@ -125,10 +148,10 @@ for code, name, owners in TEAMS:
 
     <section class="card mv-card">
       <h2 class="mv-chrome-text">Roster</h2>
-      <div class="sub">{roster_size} players &middot; {pos_summary} &middot; no games played yet this season</div>
+      <div class="sub">{roster_size} players signed for 26/27 &middot; {pos_summary} &middot; no games played yet this season</div>
       <div class="mv-table-scroll">
         <table class="mv-table">
-          <thead><tr><th>Player</th><th>Pos</th><th>{y1_label}</th><th>{y2_label}</th><th>{y3_label}</th><th>BuyOut</th></tr></thead>
+          <thead><tr><th>Player</th><th>Pos</th><th>{year_th[0]}</th><th>{year_th[1]}</th><th>{year_th[2]}</th><th>BuyOut</th></tr></thead>
           <tbody>
             {"".join(roster_rows)}
           </tbody>
