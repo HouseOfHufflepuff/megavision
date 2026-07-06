@@ -1,8 +1,9 @@
-from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room, resolve_team_code
+from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room, resolve_team_code, fetch_stadiums
 
 print("Fetching live spreadsheet...")
 wb = fetch_live_workbook()
 comps, seasons = fetch_trophy_room(wb)
+stadiums = fetch_stadiums(wb)
 print(f"Fetched. {len(seasons)} seasons of trophy history.")
 
 total_titles = sum(1 for s in seasons for v in s[1:8] if v)
@@ -75,10 +76,15 @@ with open("index.html", "w") as f:
 team_cards = []
 for code, name, owners in TEAMS:
     slug = code.lower()
+    stad = stadiums.get(code, {})
+    cap = stad.get("capacity")
+    cap_str = f"{cap:,.0f}" if isinstance(cap, (int, float)) else "—"
+    stadium_line = f'{stad.get("stadium", "—")} &middot; Capacity {cap_str}'
     team_cards.append(f"""      <a class="mv-team-card" href="team-{slug}.html">
         <div class="code">{code}</div>
         <div class="name">{name}</div>
         <div class="owners">{", ".join(owners)}</div>
+        <div class="owners" style="margin-top:4px;">{stadium_line}</div>
         <div class="go">View Team &rarr;</div>
       </a>""")
 

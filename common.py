@@ -20,6 +20,17 @@ def fetch_live_workbook():
     return openpyxl.load_workbook(io.BytesIO(data), data_only=True)
 
 
+def fetch_stadiums(wb):
+    """code -> {stadium, capacity}, from row 1 of each team tab."""
+    stadiums = {}
+    for code, _, _ in TEAMS:
+        if code not in wb.sheetnames:
+            continue
+        row0 = next(wb[code].iter_rows(min_row=1, max_row=1, values_only=True))
+        stadiums[code] = {"stadium": row0[1] or "", "capacity": row0[6]}
+    return stadiums
+
+
 def fetch_youth(wb):
     """code -> list of youth-drafted players (all-time), most recent first,
     straight from the 'Youth' tab. Columns: Year, Team, Player, Pos,
