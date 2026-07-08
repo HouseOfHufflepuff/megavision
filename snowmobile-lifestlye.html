@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snowmobile Lifestyle — MEGAVISION</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="palette.css">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <nav class="mv-nav">
+    <div class="mv-nav-links">
+      <a href="index.html">Home</a>
+      <a href="teams.html">Teams</a>
+      <a href="financials.html">Financials</a>
+      <a href="snowmobile-lifestlye.html" class="active">Snow</a>
+    </div>
+  </nav>
+  <div class="wrap">
+
+<style>
+  @keyframes retroBlink { 0%, 45% { opacity: 1; } 50%, 95% { opacity: 0; } 100% { opacity: 1; } }
+  @keyframes marqueeScroll { 0% { transform: translateX(8%); } 100% { transform: translateX(-108%); } }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 50px 10px rgba(124,58,237,0.45), 0 0 120px 30px rgba(230,63,176,0.15); }
+    50% { box-shadow: 0 0 80px 20px rgba(230,63,176,0.55), 0 0 160px 50px rgba(46,107,255,0.2); }
+  }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  @keyframes spinReverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+  .retro-page {
+    background:
+      repeating-linear-gradient(135deg, rgba(124,58,237,0.10) 0px, rgba(124,58,237,0.10) 2px, transparent 2px, transparent 34px),
+      repeating-linear-gradient(45deg, rgba(46,107,255,0.08) 0px, rgba(46,107,255,0.08) 2px, transparent 2px, transparent 34px),
+      var(--mv-black);
+    padding: 26px 0 60px;
+  }
+
+  .marquee-wrap {
+    overflow: hidden;
+    white-space: nowrap;
+    background: var(--mv-black-2);
+    border-top: 2px solid var(--mv-gold);
+    border-bottom: 2px solid var(--mv-gold);
+    padding: 10px 0;
+    margin-bottom: 30px;
+  }
+  .marquee-text {
+    display: inline-block;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    color: var(--mv-gold);
+    animation: marqueeScroll 16s linear infinite;
+    text-transform: uppercase;
+  }
+
+  .construction-bar {
+    background: repeating-linear-gradient(45deg, #1a1a10, #1a1a10 14px, var(--mv-gold) 14px, var(--mv-gold) 28px);
+    color: #14141a;
+    font-weight: 900;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    border-radius: 8px;
+    margin-bottom: 34px;
+  }
+
+  .retro-hero-title {
+    text-align: center;
+    font-size: 40px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    letter-spacing: 0.02em;
+  }
+  .retro-sub {
+    text-align: center;
+    color: var(--mv-ink-muted);
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .retro-stars {
+    text-align: center;
+    color: var(--mv-gold);
+    letter-spacing: 10px;
+    margin-bottom: 30px;
+  }
+
+  .retro-stage {
+    position: relative;
+    max-width: 980px;
+    margin: 0 auto 40px;
+    min-height: 780px;
+  }
+  .retro-image-wrap {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 62%;
+    max-width: 620px;
+    border-radius: 18px;
+    animation: pulseGlow 3.5s ease-in-out infinite;
+    z-index: 3;
+  }
+  .retro-image-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 18px;
+    border: 3px solid var(--mv-chrome-300);
+  }
+  .retro-burst {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 720px; height: 720px;
+    margin: -360px 0 0 -360px;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      conic-gradient(from 0deg, transparent 0deg 12deg, rgba(255,209,102,0.18) 12deg 14deg,
+      transparent 14deg 30deg, rgba(230,63,176,0.14) 30deg 32deg, transparent 32deg);
+    border-radius: 50%;
+    animation: spin 40s linear infinite;
+  }
+  .retro-burst.reverse {
+    width: 560px; height: 560px;
+    margin: -280px 0 0 -280px;
+    animation: spinReverse 30s linear infinite;
+    background:
+      conic-gradient(from 0deg, transparent 0deg 8deg, rgba(46,107,255,0.16) 8deg 10deg, transparent 10deg);
+  }
+
+  .retro-tagline {
+    position: absolute;
+    z-index: 4;
+    font-weight: 800;
+    text-shadow: 0 2px 0 rgba(0,0,0,0.6), 0 0 18px currentColor;
+    max-width: 220px;
+    line-height: 1.15;
+  }
+  .retro-blink { animation: retroBlink 1.4s steps(1) infinite; }
+
+  .hit-counter {
+    max-width: 260px;
+    margin: 0 auto 40px;
+    text-align: center;
+    background: #000;
+    border: 2px solid var(--mv-chrome-600);
+    border-radius: 6px;
+    padding: 10px;
+  }
+  .hit-counter .lbl {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--mv-ink-muted);
+    margin-bottom: 4px;
+  }
+  .hit-counter .digits {
+    font-family: ui-monospace, 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: 800;
+    color: #3fd17a;
+    letter-spacing: 4px;
+  }
+
+  .retro-cta {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .retro-cta a {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--mv-violet), var(--mv-pink));
+    color: #fff;
+    font-weight: 800;
+    text-decoration: none;
+    padding: 16px 34px;
+    border-radius: 999px;
+    font-size: 16px;
+    letter-spacing: 0.03em;
+    box-shadow: 0 0 30px rgba(230,63,176,0.5);
+    border: 2px solid var(--mv-chrome-100);
+  }
+
+  @media (max-width: 720px) {
+    .retro-stage { min-height: auto; padding-bottom: 20px; }
+    .retro-image-wrap { position: relative; top: auto; left: auto; transform: none; width: 90%; margin: 0 auto 24px; display: block; }
+    .retro-burst { display: none; }
+    .retro-tagline { position: static; display: inline-block; margin: 6px 10px; transform: none !important; }
+  }
+</style>
+
+<div class="retro-page">
+  <div class="marquee-wrap">
+    <span class="marquee-text">&#9733; UNTAMED WINTER DESTINY &#9733; AWAKEN THE YETTI &#9733; IGNITE YOUR ARCTIC SOUL &#9733; SNOW LIFE COMMAND &#9733; CONQUER &#9733; TRANSCEND ORDINARY &#9733; UNTAMED WINTER DESTINY &#9733; AWAKEN THE YETTI &#9733; IGNITE YOUR ARCTIC SOUL &#9733; SNOW LIFE COMMAND &#9733;</span>
+  </div>
+
+  <div class="wrap" style="padding-top:0;">
+    <div class="construction-bar">&#9888; SITE UNDER CONSTRUCTION &mdash; NEW POWDER DROPPING SOON &#9888;</div>
+
+    <h1 class="retro-hero-title mv-spark-text">MEGAVISION SNOWMOBILE LIFESTYLE</h1>
+    <div class="retro-sub">Est. always &middot; Best viewed at any resolution &middot; 100% Arctic Approved</div>
+    <div class="retro-stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+
+    <div class="retro-stage">
+      <div class="retro-burst"></div>
+      <div class="retro-burst reverse"></div>
+      <div class="retro-tagline retro-blink" style="
+        top:12%; left:4%; transform:rotate(-6deg);
+        color:var(--mv-gold); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:26px;
+      ">Untamed Winter Destiny</div>
+      <div class="retro-tagline" style="
+        top:72%; left:6%; transform:rotate(5deg);
+        color:var(--mv-pink); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:34px;
+      ">Awaken the Yetti</div>
+      <div class="retro-tagline" style="
+        top:4%; left:34%; transform:rotate(-3deg);
+        color:var(--mv-blue); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:42px;
+      ">Conquer</div>
+      <div class="retro-tagline retro-blink" style="
+        top:70%; left:28%; transform:rotate(4deg);
+        color:var(--mv-violet); font-family:var(--mv-font); font-size:22px;
+      ">White Wilderness Legacy</div>
+      <div class="retro-tagline" style="
+        top:6%; left:58%; transform:rotate(-5deg);
+        color:var(--mv-crimson); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:24px;
+      ">Ignite Your Arctic Soul</div>
+      <div class="retro-tagline" style="
+        top:58%; left:60%; transform:rotate(2deg);
+        color:var(--mv-gold); font-family:var(--mv-font); font-size:20px;
+      ">Redefine Freedom Through Snow Mastery</div>
+      <div class="retro-tagline retro-blink" style="
+        top:10%; left:80%; transform:rotate(-4deg);
+        color:var(--mv-blue); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:30px;
+      ">Transcend Ordinary</div>
+      <div class="retro-tagline" style="
+        top:62%; left:82%; transform:rotate(6deg);
+        color:var(--mv-pink); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:20px;
+      ">Forge Your Winter Purpose</div>
+      <div class="retro-tagline" style="
+        top:36%; left:3%; transform:rotate(-2deg);
+        color:var(--mv-violet); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:28px;
+      ">Snow Life Command</div>
+      <div class="retro-image-wrap">
+        <img src="megavision.jpg" alt="MEGAVISION Snowmobile Lifestyle">
+      </div>
+    </div>
+
+    <div class="hit-counter">
+      <div class="lbl">YOU ARE ARCTIC EXPLORER NUMBER</div>
+      <div class="digits">004269</div>
+    </div>
+
+    <div class="retro-cta">
+      <a href="teams.html">&#10084; JOIN THE LIFESTYLE &rarr;</a>
+    </div>
+  </div>
+</div>
+  </div>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-08 15:23 UTC</footer>
+  <script>
+    function mvShowTab(btn, panelId) {
+      var tabs = btn.parentElement.querySelectorAll('.mv-tab');
+      var panels = btn.closest('.mv-card').querySelectorAll('.mv-tab-panel');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }
+  </script>
+</body>
+</html>
