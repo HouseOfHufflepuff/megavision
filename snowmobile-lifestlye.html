@@ -32,6 +32,7 @@
   @keyframes spinReverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
 
   .retro-page {
+    overflow-x: hidden;
     background:
       repeating-linear-gradient(135deg, rgba(124,58,237,0.10) 0px, rgba(124,58,237,0.10) 2px, transparent 2px, transparent 34px),
       repeating-linear-gradient(45deg, rgba(46,107,255,0.08) 0px, rgba(46,107,255,0.08) 2px, transparent 2px, transparent 34px),
@@ -93,16 +94,16 @@
 
   .retro-stage {
     position: relative;
-    max-width: 980px;
+    max-width: 1300px;
     margin: 0 auto 40px;
-    min-height: 780px;
+    min-height: 920px;
   }
   .retro-image-wrap {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 62%;
-    max-width: 620px;
+    width: 92%;
+    max-width: 1180px;
     border-radius: 18px;
     animation: pulseGlow 3.5s ease-in-out infinite;
     z-index: 3;
@@ -117,8 +118,8 @@
   .retro-burst {
     position: absolute;
     top: 50%; left: 50%;
-    width: 720px; height: 720px;
-    margin: -360px 0 0 -360px;
+    width: 1360px; height: 1360px;
+    margin: -680px 0 0 -680px;
     z-index: 1;
     pointer-events: none;
     background:
@@ -128,8 +129,8 @@
     animation: spin 40s linear infinite;
   }
   .retro-burst.reverse {
-    width: 560px; height: 560px;
-    margin: -280px 0 0 -280px;
+    width: 1180px; height: 1180px;
+    margin: -590px 0 0 -590px;
     animation: spinReverse 30s linear infinite;
     background:
       conic-gradient(from 0deg, transparent 0deg 8deg, rgba(46,107,255,0.16) 8deg 10deg, transparent 10deg);
@@ -210,40 +211,40 @@
       <div class="retro-burst"></div>
       <div class="retro-burst reverse"></div>
       <div class="retro-tagline retro-blink" style="
-        top:12%; left:4%; transform:rotate(-6deg);
+        top:1%; left:3%; transform:rotate(-4deg);
         color:var(--mv-gold); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:26px;
       ">Untamed Winter Destiny</div>
       <div class="retro-tagline" style="
-        top:72%; left:6%; transform:rotate(5deg);
+        top:1%; left:58%; transform:rotate(4deg);
         color:var(--mv-pink); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:34px;
       ">Awaken the Yetti</div>
       <div class="retro-tagline" style="
-        top:4%; left:34%; transform:rotate(-3deg);
-        color:var(--mv-blue); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:42px;
+        top:10%; left:80%; transform:rotate(-3deg);
+        color:var(--mv-blue); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:38px;
       ">Conquer</div>
       <div class="retro-tagline retro-blink" style="
-        top:70%; left:28%; transform:rotate(4deg);
-        color:var(--mv-violet); font-family:var(--mv-font); font-size:22px;
+        top:50%; left:2%; transform:rotate(3deg);
+        color:var(--mv-violet); font-family:var(--mv-font); font-size:19px;
       ">White Wilderness Legacy</div>
       <div class="retro-tagline" style="
-        top:6%; left:58%; transform:rotate(-5deg);
-        color:var(--mv-crimson); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:24px;
+        top:50%; left:76%; transform:rotate(-5deg);
+        color:var(--mv-crimson); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:20px;
       ">Ignite Your Arctic Soul</div>
       <div class="retro-tagline" style="
-        top:58%; left:60%; transform:rotate(2deg);
-        color:var(--mv-gold); font-family:var(--mv-font); font-size:20px;
+        top:90%; left:52%; transform:rotate(2deg);
+        color:var(--mv-gold); font-family:var(--mv-font); font-size:18px;
       ">Redefine Freedom Through Snow Mastery</div>
       <div class="retro-tagline retro-blink" style="
-        top:10%; left:80%; transform:rotate(-4deg);
-        color:var(--mv-blue); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:30px;
+        top:92%; left:3%; transform:rotate(-4deg);
+        color:var(--mv-blue); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:28px;
       ">Transcend Ordinary</div>
       <div class="retro-tagline" style="
-        top:62%; left:82%; transform:rotate(6deg);
-        color:var(--mv-pink); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:20px;
+        top:84%; left:24%; transform:rotate(5deg);
+        color:var(--mv-pink); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:18px;
       ">Forge Your Winter Purpose</div>
       <div class="retro-tagline" style="
-        top:36%; left:3%; transform:rotate(-2deg);
-        color:var(--mv-violet); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:28px;
+        top:6%; left:28%; transform:rotate(-2deg);
+        color:var(--mv-violet); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:24px;
       ">Snow Life Command</div>
       <div class="retro-image-wrap">
         <img src="megavision.jpg" alt="MEGAVISION Snowmobile Lifestyle">
@@ -258,10 +259,13 @@
     <div class="retro-cta">
       <a href="teams.html">&#10084; JOIN THE LIFESTYLE &rarr;</a>
     </div>
+    <div class="retro-cta">
+      <a href="snow-business-plan.html" style="background:linear-gradient(90deg, var(--mv-gold), var(--mv-crimson));font-size:13px;padding:12px 26px;">&#128176; INVESTORS: SEE THE BIZ PLAN &rarr;</a>
+    </div>
   </div>
 </div>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-08 15:23 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-08 15:35 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

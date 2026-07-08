@@ -1,15 +1,15 @@
 from common import head, foot
 
 TAGLINES = [
-    ("Untamed Winter Destiny", "gold", "display", -6, "12%", "4%", "26px"),
-    ("Awaken the Yetti", "pink", "script", 5, "72%", "6%", "34px"),
-    ("Conquer", "blue", "display", -3, "4%", "34%", "42px"),
-    ("White Wilderness Legacy", "violet", "sans", 4, "70%", "28%", "22px"),
-    ("Ignite Your Arctic Soul", "crimson", "display", -5, "6%", "58%", "24px"),
-    ("Redefine Freedom Through Snow Mastery", "gold", "sans", 2, "58%", "60%", "20px"),
-    ("Transcend Ordinary", "blue", "script", -4, "10%", "80%", "30px"),
-    ("Forge Your Winter Purpose", "pink", "display", 6, "62%", "82%", "20px"),
-    ("Snow Life Command", "violet", "display", -2, "36%", "3%", "28px"),
+    ("Untamed Winter Destiny", "gold", "display", -4, "1%", "3%", "26px"),
+    ("Awaken the Yetti", "pink", "script", 4, "1%", "58%", "34px"),
+    ("Conquer", "blue", "display", -3, "10%", "80%", "38px"),
+    ("White Wilderness Legacy", "violet", "sans", 3, "50%", "2%", "19px"),
+    ("Ignite Your Arctic Soul", "crimson", "display", -5, "50%", "76%", "20px"),
+    ("Redefine Freedom Through Snow Mastery", "gold", "sans", 2, "90%", "52%", "18px"),
+    ("Transcend Ordinary", "blue", "script", -4, "92%", "3%", "28px"),
+    ("Forge Your Winter Purpose", "pink", "display", 5, "84%", "24%", "18px"),
+    ("Snow Life Command", "violet", "display", -2, "6%", "28%", "24px"),
 ]
 
 FONT_STACKS = {
@@ -47,6 +47,7 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   @keyframes spinReverse {{ from {{ transform: rotate(360deg); }} to {{ transform: rotate(0deg); }} }}
 
   .retro-page {{
+    overflow-x: hidden;
     background:
       repeating-linear-gradient(135deg, rgba(124,58,237,0.10) 0px, rgba(124,58,237,0.10) 2px, transparent 2px, transparent 34px),
       repeating-linear-gradient(45deg, rgba(46,107,255,0.08) 0px, rgba(46,107,255,0.08) 2px, transparent 2px, transparent 34px),
@@ -108,16 +109,16 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
 
   .retro-stage {{
     position: relative;
-    max-width: 980px;
+    max-width: 1300px;
     margin: 0 auto 40px;
-    min-height: 780px;
+    min-height: 920px;
   }}
   .retro-image-wrap {{
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 62%;
-    max-width: 620px;
+    width: 92%;
+    max-width: 1180px;
     border-radius: 18px;
     animation: pulseGlow 3.5s ease-in-out infinite;
     z-index: 3;
@@ -132,8 +133,8 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   .retro-burst {{
     position: absolute;
     top: 50%; left: 50%;
-    width: 720px; height: 720px;
-    margin: -360px 0 0 -360px;
+    width: 1360px; height: 1360px;
+    margin: -680px 0 0 -680px;
     z-index: 1;
     pointer-events: none;
     background:
@@ -143,8 +144,8 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
     animation: spin 40s linear infinite;
   }}
   .retro-burst.reverse {{
-    width: 560px; height: 560px;
-    margin: -280px 0 0 -280px;
+    width: 1180px; height: 1180px;
+    margin: -590px 0 0 -590px;
     animation: spinReverse 30s linear infinite;
     background:
       conic-gradient(from 0deg, transparent 0deg 8deg, rgba(46,107,255,0.16) 8deg 10deg, transparent 10deg);
@@ -237,6 +238,9 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
 
     <div class="retro-cta">
       <a href="teams.html">&#10084; JOIN THE LIFESTYLE &rarr;</a>
+    </div>
+    <div class="retro-cta">
+      <a href="snow-business-plan.html" style="background:linear-gradient(90deg, var(--mv-gold), var(--mv-crimson));font-size:13px;padding:12px 26px;">&#128176; INVESTORS: SEE THE BIZ PLAN &rarr;</a>
     </div>
   </div>
 </div>
