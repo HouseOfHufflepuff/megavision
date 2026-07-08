@@ -224,6 +224,29 @@ for code, name, owners in TEAMS:
         )
     depth_html = "".join(depth_groups) or '<div class="mv-empty">No depth beyond the starting 3-4-3.</div>'
 
+    # ---- youth-only depth chart: every player this team has ever drafted, ----
+    # grouped by position, all-time (not just those on the current roster) ----
+    youth_by_pos = {}
+    for y in youth:
+        youth_by_pos.setdefault(y["pos"].upper(), []).append(y)
+    youth_pos_order = [p for p in POSITION_ORDER if p in youth_by_pos] + \
+                       [p for p in youth_by_pos if p not in POSITION_ORDER]
+
+    youth_pitch_groups = []
+    for pos in youth_pos_order:
+        players = sorted(youth_by_pos[pos], key=lambda y: str(y["year"]), reverse=True)
+        items = "".join(
+            f'<div class="mv-slot"><div class="pos">{pos}</div>'
+            f'<div class="player">{y["player"]}</div>'
+            f'<div class="salary" style="color:{STATUS_COLOR[y["status"]]};">{y["status"]}</div></div>'
+            for y in players
+        )
+        youth_pitch_groups.append(
+            f'<div class="mv-depth-group"><div class="heading">{pos} &middot; {len(players)}</div>'
+            f'<div class="mv-pitch-row" style="justify-content:flex-start;">{items}</div></div>'
+        )
+    youth_depth_html = "".join(youth_pitch_groups) or '<div class="mv-empty">No youth players drafted yet.</div>'
+
     # ---- youth table (the cross-reference set was already built above) ----
     youth_rows = "".join(
         f'<tr><td class="dim">{y["year"]}</td><td>{y["player"]}</td><td>{y["pos"]}</td>'
@@ -277,6 +300,7 @@ for code, name, owners in TEAMS:
       <div class="mv-tabs">
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-{code}')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'youthdepth-{code}')">Youth Depth</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">&#127793; = this team's own youth draft product</div>
 
@@ -298,6 +322,11 @@ for code, name, owners in TEAMS:
           {"".join(pitch_rows)}
         </div>
         {depth_html}
+      </div>
+
+      <div id="youthdepth-{code}" class="mv-tab-panel">
+        <div class="sub">Every player this team has ever drafted, grouped by position, most recent first</div>
+        {youth_depth_html}
       </div>
     </section>
 

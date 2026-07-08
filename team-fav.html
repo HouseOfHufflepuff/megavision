@@ -55,6 +55,7 @@
       <div class="mv-tabs">
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-FAV')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-FAV')">Depth Chart</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'youthdepth-FAV')">Youth Depth</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">&#127793; = this team's own youth draft product</div>
 
@@ -77,6 +78,11 @@
         </div>
         <div class="mv-depth-group"><div class="heading">F Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">F</div><div class="player">E. Guessand</div><div class="salary">$9.30</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">R. Ngumoha (on loan last year)</div><div class="salary">$5.72</div></div></div></div><div class="mv-depth-group"><div class="heading">M Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">M</div><div class="player">A. Onana</div><div class="salary">$8.18</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">A. Onana</div><div class="salary">$8.18</div></div></div></div>
       </div>
+
+      <div id="youthdepth-FAV" class="mv-tab-panel">
+        <div class="sub">Every player this team has ever drafted, grouped by position, most recent first</div>
+        <div class="mv-depth-group"><div class="heading">D &middot; 2</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">Ki-Jana Hoever</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Alphonso Davies</div><div class="salary" style="color:var(--mv-ink);">Active</div></div></div></div><div class="mv-depth-group"><div class="heading">M &middot; 5</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">M</div><div class="player">Chris Rigg</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Josh King</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Geovany Quenda</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Franco Mastantuono</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Billy Gillmour</div><div class="salary" style="color:var(--mv-ink);">Active</div></div></div></div><div class="mv-depth-group"><div class="heading">F &middot; 11</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">F</div><div class="player">Mikey Moore</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Jamie Bynoe-Gittens</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Luca Koleosho</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Wilifried Gnonto</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Shola Shoretire</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Kaide Gordon</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Karim Adeyemi</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Youssoufa Moukoko</div><div class="salary" style="color:var(--mv-ink);">Active</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Bukayo Saka</div><div class="salary" style="color:var(--mv-gold);">Promoted</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Justin Kluivert</div><div class="salary" style="color:var(--mv-gold);">Promoted</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Juan Camilo Hernandez</div><div class="salary" style="color:var(--mv-ink);">Active</div></div></div></div>
+      </div>
     </section>
 
     <section class="card mv-card">
@@ -92,7 +98,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-06 23:55 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-07 00:17 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');
