@@ -30,8 +30,36 @@
   }
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
   @keyframes spinReverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+  @keyframes snowFall {
+    0% { transform: translateY(-10vh) translateX(0); }
+    50% { transform: translateY(50vh) translateX(var(--drift)); }
+    100% { transform: translateY(110vh) translateX(0); }
+  }
+  @keyframes sparkleFade {
+    0% { opacity: 1; transform: translate(-50%,-50%) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translate(-50%,-50%) scale(0.2) rotate(90deg); }
+  }
+  @keyframes twinkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.75; } }
+
+  .snow-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 60;
+  }
+  .snowflake {
+    position: absolute;
+    top: -10%;
+    color: #fff;
+    text-shadow: 0 0 6px rgba(255,255,255,0.85);
+    animation-name: snowFall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
 
   .retro-page {
+    position: relative;
     overflow-x: hidden;
     background:
       repeating-linear-gradient(135deg, rgba(124,58,237,0.10) 0px, rgba(124,58,237,0.10) 2px, transparent 2px, transparent 34px),
@@ -39,6 +67,137 @@
       var(--mv-black);
     padding: 26px 0 60px;
   }
+  .retro-page::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.9) 1px, transparent 1.4px),
+      radial-gradient(circle, rgba(255,209,102,0.7) 1px, transparent 1.4px);
+    background-size: 90px 90px, 140px 140px;
+    background-position: 0 0, 45px 70px;
+    animation: twinkle 2.6s ease-in-out infinite;
+  }
+
+  .rainbow-hr {
+    height: 6px;
+    border: none;
+    border-radius: 3px;
+    margin: 26px auto;
+    max-width: 900px;
+    background: linear-gradient(90deg, #ff0000, #ff9900, #ffee00, #33cc33, #3399ff, #6633ff, #ff33cc);
+    box-shadow: 0 0 10px rgba(255,255,255,0.4);
+  }
+
+  .badge-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    max-width: 820px;
+    margin: 0 auto 20px;
+    position: relative;
+    z-index: 5;
+  }
+  .web1-badge {
+    width: 88px;
+    height: 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 8px;
+    line-height: 1.15;
+    font-family: Tahoma, 'MS Sans Serif', Geneva, sans-serif;
+    border: 2px outset #ddd;
+    box-shadow: 1px 1px 0 rgba(0,0,0,0.6);
+  }
+
+  .site-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 0 auto 40px;
+    position: relative;
+    z-index: 5;
+  }
+  .site-tools a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--mv-black-3);
+    border: 2px outset var(--mv-chrome-300);
+    color: var(--mv-ink);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 7px 12px;
+    border-radius: 3px;
+  }
+  .site-tools a:active { border-style: inset; }
+
+  .jukebox {
+    max-width: 420px;
+    margin: 0 auto 26px;
+    background: var(--mv-black-2);
+    border: 2px solid var(--mv-gold);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 5;
+    box-shadow: 0 0 20px rgba(255,209,102,0.25);
+  }
+  .jukebox button {
+    flex: 0 0 auto;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    border: 2px outset var(--mv-gold);
+    background: var(--mv-gold);
+    color: #14141a;
+    font-size: 14px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  .jukebox button:active { border-style: inset; }
+  .jukebox .meta { min-width: 0; flex: 1 1 auto; }
+  .jukebox .now-playing { font-size: 9px; letter-spacing: 0.08em; color: var(--mv-gold); text-transform: uppercase; }
+  .jukebox .track-name {
+    font-size: 12px; font-weight: 700; color: var(--mv-ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .jukebox .track-credit { font-size: 10px; color: var(--mv-ink-muted); }
+  .jukebox .eq { display: flex; align-items: flex-end; gap: 2px; height: 18px; flex: 0 0 auto; }
+  .jukebox .eq span { width: 3px; background: var(--mv-gold); animation: eqBounce 0.9s ease-in-out infinite; }
+  @keyframes eqBounce { 0%, 100% { height: 4px; } 50% { height: 18px; } }
+
+  .sled-section { max-width: 1180px; margin: 0 auto 20px; position: relative; z-index: 5; }
+  .sled-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .sled-card {
+    background: var(--mv-black-2);
+    border: 2px solid var(--mv-chrome-600);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .sled-rank {
+    position: absolute; top: 8px; left: 8px; z-index: 2;
+    background: var(--mv-gold); color: #14141a;
+    font-weight: 900; font-size: 13px;
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  }
+  .sled-card img { width: 100%; height: 150px; object-fit: cover; display: block; }
+  .sled-body { padding: 12px 14px 16px; }
+  .sled-name { font-weight: 800; font-size: 15px; color: var(--mv-ink); }
+  .sled-year { font-size: 11px; color: var(--mv-gold); font-weight: 700; margin-bottom: 6px; }
+  .sled-blurb { font-size: 12px; line-height: 1.5; color: var(--mv-ink-muted); }
 
   .marquee-wrap {
     overflow: hidden;
@@ -195,17 +354,96 @@
   }
 </style>
 
+<div class="snow-layer">
+  <span class="snowflake" style="left:63.94%;font-size:14px;opacity:0.84;--drift:-45px;animation-duration:7.3s;animation-delay:-10.9s;">❄</span>
+      <span class="snowflake" style="left:8.69%;font-size:14px;opacity:0.74;--drift:-40px;animation-duration:11.6s;animation-delay:-14.6s;">❅</span>
+      <span class="snowflake" style="left:70.13%;font-size:15px;opacity:0.44;--drift:-49px;animation-duration:11.6s;animation-delay:-8.3s;">❆</span>
+      <span class="snowflake" style="left:42.26%;font-size:22px;opacity:0.40;--drift:-19px;animation-duration:10.1s;animation-delay:-11.8s;">✳</span>
+      <span class="snowflake" style="left:84.75%;font-size:22px;opacity:0.56;--drift:-59px;animation-duration:13.6s;animation-delay:-2.9s;">*</span>
+      <span class="snowflake" style="left:55.20%;font-size:24px;opacity:0.38;--drift:-47px;animation-duration:16.1s;animation-delay:-5.7s;">❄</span>
+      <span class="snowflake" style="left:22.79%;font-size:14px;opacity:0.60;--drift:-32px;animation-duration:10.2s;animation-delay:-13.8s;">❅</span>
+      <span class="snowflake" style="left:83.41%;font-size:21px;opacity:0.44;--drift:-42px;animation-duration:8.8s;animation-delay:-9.7s;">❆</span>
+      <span class="snowflake" style="left:72.91%;font-size:26px;opacity:0.81;--drift:-46px;animation-duration:8.8s;animation-delay:-9.3s;">✳</span>
+      <span class="snowflake" style="left:77.60%;font-size:16px;opacity:0.85;--drift:18px;animation-duration:9.5s;animation-delay:-14.5s;">*</span>
+      <span class="snowflake" style="left:56.72%;font-size:18px;opacity:0.43;--drift:21px;animation-duration:14.9s;animation-delay:-11.8s;">❄</span>
+      <span class="snowflake" style="left:74.50%;font-size:17px;opacity:0.90;--drift:31px;animation-duration:12.9s;animation-delay:-3.8s;">❅</span>
+      <span class="snowflake" style="left:13.83%;font-size:24px;opacity:0.79;--drift:-43px;animation-duration:12.4s;animation-delay:-3.7s;">❆</span>
+      <span class="snowflake" style="left:42.22%;font-size:26px;opacity:0.82;--drift:59px;animation-duration:7.7s;animation-delay:-9.3s;">✳</span>
+      <span class="snowflake" style="left:1.15%;font-size:19px;opacity:0.54;--drift:50px;animation-duration:14.9s;animation-delay:-4.8s;">*</span>
+      <span class="snowflake" style="left:29.35%;font-size:22px;opacity:0.77;--drift:59px;animation-duration:8.7s;animation-delay:-15.0s;">❄</span>
+      <span class="snowflake" style="left:50.77%;font-size:24px;opacity:0.77;--drift:-22px;animation-duration:8.2s;animation-delay:-5.6s;">❅</span>
+      <span class="snowflake" style="left:53.94%;font-size:11px;opacity:0.41;--drift:37px;animation-duration:15.6s;animation-delay:-7.0s;">❆</span>
+      <span class="snowflake" style="left:36.30%;font-size:15px;opacity:0.87;--drift:-55px;animation-duration:17.8s;animation-delay:-2.9s;">✳</span>
+      <span class="snowflake" style="left:8.57%;font-size:22px;opacity:0.61;--drift:-21px;animation-duration:12.3s;animation-delay:-14.0s;">*</span>
+      <span class="snowflake" style="left:54.98%;font-size:17px;opacity:0.77;--drift:-57px;animation-duration:9.9s;animation-delay:-1.9s;">❄</span>
+      <span class="snowflake" style="left:68.99%;font-size:21px;opacity:0.63;--drift:35px;animation-duration:14.8s;animation-delay:-9.0s;">❅</span>
+      <span class="snowflake" style="left:12.10%;font-size:20px;opacity:0.35;--drift:-41px;animation-duration:9.5s;animation-delay:-9.9s;">❆</span>
+      <span class="snowflake" style="left:70.78%;font-size:11px;opacity:0.48;--drift:18px;animation-duration:7.6s;animation-delay:-14.0s;">✳</span>
+      <span class="snowflake" style="left:66.90%;font-size:25px;opacity:0.61;--drift:26px;animation-duration:9.4s;animation-delay:-13.0s;">*</span>
+      <span class="snowflake" style="left:40.71%;font-size:16px;opacity:0.75;--drift:36px;animation-duration:8.0s;animation-delay:-5.1s;">❄</span>
+      <span class="snowflake" style="left:67.34%;font-size:17px;opacity:0.41;--drift:51px;animation-duration:17.8s;animation-delay:-13.5s;">❅</span>
+      <span class="snowflake" style="left:19.16%;font-size:14px;opacity:0.86;--drift:26px;animation-duration:12.9s;animation-delay:-12.9s;">❆</span>
+      <span class="snowflake" style="left:44.31%;font-size:12px;opacity:0.86;--drift:-59px;animation-duration:16.5s;animation-delay:-6.7s;">✳</span>
+      <span class="snowflake" style="left:84.87%;font-size:14px;opacity:0.44;--drift:56px;animation-duration:8.8s;animation-delay:-7.7s;">*</span>
+      <span class="snowflake" style="left:0.22%;font-size:23px;opacity:0.88;--drift:34px;animation-duration:11.3s;animation-delay:-1.1s;">❄</span>
+      <span class="snowflake" style="left:99.54%;font-size:13px;opacity:0.38;--drift:25px;animation-duration:13.1s;animation-delay:-4.2s;">❅</span>
+      <span class="snowflake" style="left:73.57%;font-size:12px;opacity:0.82;--drift:38px;animation-duration:7.7s;animation-delay:-10.3s;">❆</span>
+      <span class="snowflake" style="left:15.74%;font-size:14px;opacity:0.48;--drift:-45px;animation-duration:17.6s;animation-delay:-13.8s;">✳</span>
+      <span class="snowflake" style="left:11.99%;font-size:20px;opacity:0.67;--drift:-34px;animation-duration:16.8s;animation-delay:-11.3s;">*</span>
+      <span class="snowflake" style="left:52.28%;font-size:22px;opacity:0.42;--drift:-27px;animation-duration:17.3s;animation-delay:-11.9s;">❄</span>
+      <span class="snowflake" style="left:64.55%;font-size:25px;opacity:0.90;--drift:-36px;animation-duration:12.0s;animation-delay:-1.1s;">❅</span>
+      <span class="snowflake" style="left:99.61%;font-size:15px;opacity:0.83;--drift:55px;animation-duration:7.8s;animation-delay:-11.8s;">❆</span>
+      <span class="snowflake" style="left:36.95%;font-size:22px;opacity:0.66;--drift:-45px;animation-duration:8.7s;animation-delay:-2.5s;">✳</span>
+      <span class="snowflake" style="left:93.18%;font-size:15px;opacity:0.44;--drift:-48px;animation-duration:8.1s;animation-delay:-1.8s;">*</span>
+      <span class="snowflake" style="left:28.18%;font-size:21px;opacity:0.49;--drift:38px;animation-duration:9.3s;animation-delay:-9.9s;">❄</span>
+      <span class="snowflake" style="left:90.82%;font-size:23px;opacity:0.77;--drift:-15px;animation-duration:7.6s;animation-delay:-5.5s;">❅</span>
+      <span class="snowflake" style="left:63.71%;font-size:19px;opacity:0.41;--drift:40px;animation-duration:9.9s;animation-delay:-3.9s;">❆</span>
+      <span class="snowflake" style="left:94.51%;font-size:12px;opacity:0.43;--drift:41px;animation-duration:14.6s;animation-delay:-12.8s;">✳</span>
+      <span class="snowflake" style="left:12.74%;font-size:23px;opacity:0.47;--drift:-55px;animation-duration:10.4s;animation-delay:-1.5s;">*</span>
+</div>
+
 <div class="retro-page">
   <div class="marquee-wrap">
     <span class="marquee-text">&#9733; UNTAMED WINTER DESTINY &#9733; AWAKEN THE YETTI &#9733; IGNITE YOUR ARCTIC SOUL &#9733; SNOW LIFE COMMAND &#9733; CONQUER &#9733; TRANSCEND ORDINARY &#9733; UNTAMED WINTER DESTINY &#9733; AWAKEN THE YETTI &#9733; IGNITE YOUR ARCTIC SOUL &#9733; SNOW LIFE COMMAND &#9733;</span>
   </div>
 
   <div class="wrap" style="padding-top:0;">
-    <div class="construction-bar">&#9888; SITE UNDER CONSTRUCTION &mdash; NEW POWDER DROPPING SOON &#9888;</div>
+    <div class="construction-bar">&#128679; SITE UNDER CONSTRUCTION &mdash; NEW POWDER DROPPING SOON &#128679; &nbsp; (last updated: right now, probably)</div>
+
+    <div class="jukebox">
+      <button id="mvPlayBtn" type="button" aria-label="Play/Pause">&#9654;</button>
+      <div class="meta">
+        <div class="now-playing">&#9835; Now Playing</div>
+        <div class="track-name">Frost Waltz</div>
+        <div class="track-credit">by Kevin MacLeod (incompetech.com) &middot; CC BY 4.0</div>
+      </div>
+      <div class="eq">
+        <span style="animation-delay:0s;"></span>
+        <span style="animation-delay:0.2s;"></span>
+        <span style="animation-delay:0.4s;"></span>
+        <span style="animation-delay:0.1s;"></span>
+      </div>
+      <audio id="mvBgm" loop autoplay preload="auto">
+        <source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Frost%20Waltz.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="badge-row">
+      <div class="web1-badge" style="background:#000080;color:#fff;">BEST VIEWED IN<br>NETSCAPE 4.0<br>@ 800&times;600</div>
+      <div class="web1-badge" style="background:#c0c0c0;color:#000;">POWERED BY<br><b>FrontPage&reg; 98</b></div>
+      <div class="web1-badge" style="background:#ffcc00;color:#000;">&#9889; Y2K<br>COMPLIANT &#9889;</div>
+      <div class="web1-badge" style="background:#008000;color:#fff;">WEBRING<br>MEMBER<br>#0042</div>
+      <div class="web1-badge" style="background:#800080;color:#fff;">MADE WITH<br><b>Notepad</b><br>not AI!</div>
+      <div class="web1-badge" style="background:#ff0000;color:#fff;">GET<br><b>Internet<br>Explorer</b></div>
+      <div class="web1-badge" style="background:#000;color:#0f0;">HACKER<br>SAFE&trade;<br>CERTIFIED</div>
+      <div class="web1-badge" style="background:#ffd166;color:#000;">&#11088; TOP 100<br>FANTASY<br>SITES &#11088;</div>
+    </div>
 
     <h1 class="retro-hero-title mv-spark-text">MEGAVISION SNOWMOBILE LIFESTYLE</h1>
     <div class="retro-sub">Est. always &middot; Best viewed at any resolution &middot; 100% Arctic Approved</div>
     <div class="retro-stars">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
+
+    <hr class="rainbow-hr">
 
     <div class="retro-stage">
       <div class="retro-burst"></div>
@@ -251,9 +489,72 @@
       </div>
     </div>
 
+    <hr class="rainbow-hr">
+
+    <section class="sled-section">
+      <h2 class="retro-hero-title mv-spark-text" style="font-size:26px;">TOP 5 SNOWMOBILES OF ALL TIME</h2>
+      <div class="retro-sub" style="margin-bottom:20px;">No debate. This is the list.</div>
+      <div class="sled-grid">
+      <div class="sled-card">
+        <div class="sled-rank">#1</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ski-doo_Olympique_12-3_1969.jpg" alt="Ski-Doo Olympique" loading="lazy">
+        <div class="sled-body">
+          <div class="sled-name">Ski-Doo Olympique</div>
+          <div class="sled-year">1959</div>
+          <p class="sled-blurb">The machine that created the industry. Bombardier built a sled small enough and cheap enough for a normal family driveway, and overnight snow stopped being an obstacle and became a playground. Every snowmobile made since owes it a debt.</p>
+        </div>
+      </div>
+      <div class="sled-card">
+        <div class="sled-rank">#2</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Arctic_Cat_el_Tigre_400_Vintage_Snowmobiles_at_Tip-Up_Town,_Houghton_Lake,_MI_1-21-2012_(6743743895).jpg" alt="Arctic Cat El Tigre" loading="lazy">
+        <div class="sled-body">
+          <div class="sled-name">Arctic Cat El Tigre</div>
+          <div class="sled-year">1970s</div>
+          <p class="sled-blurb">Built to win, not to cruise. The El Tigre turned trail racing into a genuine bloodsport and made Arctic Cat a name people feared on a starting line. Aggressive, loud, uncompromising.</p>
+        </div>
+      </div>
+      <div class="sled-card">
+        <div class="sled-rank">#3</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/1988_Polaris_INDY_500.jpg" alt="Polaris Indy" loading="lazy">
+        <div class="sled-body">
+          <div class="sled-name">Polaris Indy</div>
+          <div class="sled-year">1988</div>
+          <p class="sled-blurb">Independent front suspension changed snowmobiling forever, and the Indy is the sled that proved it. It became the best-selling snowmobile in history for a reason: it simply rode better than anything else on the trail.</p>
+        </div>
+      </div>
+      <div class="sled-card">
+        <div class="sled-rank">#4</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Snowmobile_Ski-Doo_MXZ_800.jpg" alt="Ski-Doo MXZ" loading="lazy">
+        <div class="sled-body">
+          <div class="sled-name">Ski-Doo MXZ</div>
+          <div class="sled-year">Modern Era</div>
+          <p class="sled-blurb">The current benchmark for performance. Sharp, fast, and built to be thrown sideways through a corner without complaint. Every rival brand still measures itself against this chassis.</p>
+        </div>
+      </div>
+      <div class="sled-card">
+        <div class="sled-rank">#5</div>
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Ski_Whiz_by_Massey_Ferguson.jpg" alt="Massey Ferguson Ski-Whiz" loading="lazy">
+        <div class="sled-body">
+          <div class="sled-name">Massey Ferguson Ski-Whiz</div>
+          <div class="sled-year">1960s</div>
+          <p class="sled-blurb">A tractor company built a snowmobile, and it worked. The Ski-Whiz proved winter machines could come from absolutely anywhere and still earn a place in the history books.</p>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <hr class="rainbow-hr">
+
     <div class="hit-counter">
       <div class="lbl">YOU ARE ARCTIC EXPLORER NUMBER</div>
       <div class="digits">004269</div>
+    </div>
+
+    <div class="site-tools">
+      <a href="mailto:webmaster@megavision.example">&#128231; Email the Webmaster</a>
+      <a href="#">&#128213; Sign My Guestbook</a>
+      <a href="#">&#11088; Add to Favorites</a>
+      <a href="#">&#128273; Webring: Next &rarr;</a>
     </div>
 
     <div class="retro-cta">
@@ -262,10 +563,57 @@
     <div class="retro-cta">
       <a href="snow-business-plan.html" style="background:linear-gradient(90deg, var(--mv-gold), var(--mv-crimson));font-size:13px;padding:12px 26px;">&#128176; INVESTORS: SEE THE BIZ PLAN &rarr;</a>
     </div>
+
+    <hr class="rainbow-hr">
+    <div class="retro-sub" style="font-size:11px;">&#128257; This page best experienced with the sound of a dial-up modem playing in another tab.</div>
   </div>
 </div>
+
+<script>
+(function() {
+  var bgm = document.getElementById('mvBgm');
+  var btn = document.getElementById('mvPlayBtn');
+  function setBtn() { btn.innerHTML = bgm.paused ? '&#9654;' : '&#10074;&#10074;'; }
+  function tryPlay() {
+    var p = bgm.play();
+    if (p && p.catch) {
+      p.then(setBtn).catch(function() {
+        setBtn();
+        document.addEventListener('click', function once() {
+          bgm.play().then(setBtn);
+          document.removeEventListener('click', once);
+        }, { once: true });
+      });
+    }
+  }
+  btn.addEventListener('click', function() {
+    if (bgm.paused) { bgm.play().then(setBtn); } else { bgm.pause(); setBtn(); }
+  });
+  bgm.addEventListener('play', setBtn);
+  bgm.addEventListener('pause', setBtn);
+  tryPlay();
+})();
+</script>
+
+<script>
+(function() {
+  var chars = ['\u2726', '\u2727', '\u2744', '\u2b50', '\u2733'];
+  var colors = ['#ffd166', '#e63fb0', '#2e6bff', '#7c3aed', '#f0525c'];
+  document.addEventListener('mousemove', function(e) {
+    if (Math.random() > 0.55) return;
+    var s = document.createElement('span');
+    s.textContent = chars[Math.floor(Math.random() * chars.length)];
+    s.style.cssText = 'position:fixed;left:' + e.clientX + 'px;top:' + e.clientY + 'px;'
+      + 'pointer-events:none;z-index:9999;font-size:' + (10 + Math.random() * 10) + 'px;'
+      + 'color:' + colors[Math.floor(Math.random() * colors.length)] + ';'
+      + 'animation:sparkleFade 0.8s ease-out forwards;';
+    document.body.appendChild(s);
+    setTimeout(function() { s.remove(); }, 800);
+  });
+})();
+</script>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-08 15:35 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-09 17:31 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');
