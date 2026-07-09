@@ -34,10 +34,10 @@ badge_html = "\n      ".join(
     for bg, fg, label in BADGES
 )
 
-TRACK_URL = "https://www.midicities.com/ViewSong?token=a663e677-7e47-4921-899c-58979cd5bf82&fileType=midi&handler=DownloadFile"
+TRACK_URL = "jonas.mp3"
 TRACK_TITLE = "My Name Is Jonas"
 TRACK_ARTIST = "Weezer &middot; MIDI arrangement (1998)"
-TRACK_LICENSE = "via midicities.com"
+TRACK_LICENSE = "rendered from the original .mid"
 
 SNOWMOBILES = [
     (1, "Ski-Doo Olympique", "1959", "The machine that created the industry. Bombardier built a sled small enough and cheap enough for a normal family driveway, and overnight snow stopped being an obstacle and became a playground. Every snowmobile made since owes it a debt.",
@@ -545,7 +545,7 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
         <span style="animation-delay:0.1s;"></span>
       </div>
       <audio id="mvBgm" loop autoplay preload="auto">
-        <source src="{TRACK_URL}" type="audio/midi">
+        <source src="{TRACK_URL}" type="audio/mpeg">
       </audio>
     </div>
 
