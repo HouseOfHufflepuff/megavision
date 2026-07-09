@@ -58,6 +58,39 @@
     animation-iteration-count: infinite;
   }
 
+  .tagline-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 55;
+  }
+  .retro-tagline {
+    position: absolute;
+    font-weight: 800;
+    text-shadow: 0 3px 0 rgba(0,0,0,0.7), 0 0 26px currentColor;
+    max-width: 320px;
+    line-height: 1.1;
+    opacity: 0.88;
+  }
+  .retro-blink { animation: retroBlink 1.4s steps(1) infinite; }
+
+  .heli-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 58;
+  }
+  .heli {
+    position: absolute;
+    top: 40%; left: 40%;
+    font-size: 52px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    transition: left 2.6s ease-in-out, top 2.6s ease-in-out, transform 2.6s ease-in-out;
+    transform: scaleX(1) rotate(0deg);
+  }
+
   .retro-page {
     position: relative;
     overflow-x: hidden;
@@ -176,28 +209,53 @@
   .jukebox .eq span { width: 3px; background: var(--mv-gold); animation: eqBounce 0.9s ease-in-out infinite; }
   @keyframes eqBounce { 0%, 100% { height: 4px; } 50% { height: 18px; } }
 
-  .sled-section { max-width: 1180px; margin: 0 auto 20px; position: relative; z-index: 5; }
-  .sled-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-  .sled-card {
-    background: var(--mv-black-2);
-    border: 2px solid var(--mv-chrome-600);
-    border-radius: 12px;
-    overflow: hidden;
+  .sled-section {
+    max-width: 1180px;
+    margin: 0 auto 20px;
     position: relative;
+    z-index: 5;
+    background: repeating-linear-gradient(45deg, #1a0033, #1a0033 10px, #24004d 10px, #24004d 20px);
+    border: 4px ridge #ffd166;
+    padding: 18px;
+  }
+  .sled-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }
+  .sled-card {
+    background: #c0c0c0;
+    border: 4px outset #eee;
+    overflow: visible;
+    position: relative;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
   }
   .sled-rank {
-    position: absolute; top: 8px; left: 8px; z-index: 2;
-    background: var(--mv-gold); color: #14141a;
-    font-weight: 900; font-size: 13px;
-    width: 30px; height: 30px; border-radius: 50%;
+    position: absolute; top: -14px; left: -14px; z-index: 2;
+    background: #ff0000; color: #ffff00;
+    font-weight: 900; font-size: 16px;
+    width: 34px; height: 34px;
+    border: 3px outset #ffff00;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    transform: rotate(-12deg);
+    text-shadow: 1px 1px 0 #000;
   }
-  .sled-card img { width: 100%; height: 150px; object-fit: cover; display: block; }
-  .sled-body { padding: 12px 14px 16px; }
-  .sled-name { font-weight: 800; font-size: 15px; color: var(--mv-ink); }
-  .sled-year { font-size: 11px; color: var(--mv-gold); font-weight: 700; margin-bottom: 6px; }
-  .sled-blurb { font-size: 12px; line-height: 1.5; color: var(--mv-ink-muted); }
+  .sled-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: fill;
+    display: block;
+    border-bottom: 4px inset #eee;
+    filter: saturate(1.3) contrast(1.1);
+  }
+  .sled-body { padding: 10px 12px 14px; background: #d8d8e8; }
+  .sled-name {
+    font-weight: 900; font-size: 15px; color: #000080;
+    text-shadow: 1px 1px 0 #fff;
+  }
+  .sled-year {
+    display: inline-block;
+    font-size: 10px; color: #fff; font-weight: 700;
+    background: #cc0000; padding: 1px 6px; margin: 4px 0 8px;
+    border: 1px solid #700;
+  }
+  .sled-blurb { font-size: 12px; line-height: 1.5; color: #1a1a1a; }
 
   .marquee-wrap {
     overflow: hidden;
@@ -295,16 +353,6 @@
       conic-gradient(from 0deg, transparent 0deg 8deg, rgba(46,107,255,0.16) 8deg 10deg, transparent 10deg);
   }
 
-  .retro-tagline {
-    position: absolute;
-    z-index: 4;
-    font-weight: 800;
-    text-shadow: 0 2px 0 rgba(0,0,0,0.6), 0 0 18px currentColor;
-    max-width: 220px;
-    line-height: 1.15;
-  }
-  .retro-blink { animation: retroBlink 1.4s steps(1) infinite; }
-
   .hit-counter {
     max-width: 260px;
     margin: 0 auto 40px;
@@ -350,9 +398,52 @@
     .retro-stage { min-height: auto; padding-bottom: 20px; }
     .retro-image-wrap { position: relative; top: auto; left: auto; transform: none; width: 90%; margin: 0 auto 24px; display: block; }
     .retro-burst { display: none; }
-    .retro-tagline { position: static; display: inline-block; margin: 6px 10px; transform: none !important; }
+    .tagline-layer { display: none; }
   }
 </style>
+
+<div class="tagline-layer">
+      <div class="retro-tagline retro-blink" style="
+        top:4%; left:2%; transform:rotate(-4deg);
+        color:var(--mv-gold); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:46px;
+      ">Untamed Winter Destiny</div>
+      <div class="retro-tagline" style="
+        top:12%; left:55%; transform:rotate(4deg);
+        color:var(--mv-pink); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:58px;
+      ">Awaken the Yetti</div>
+      <div class="retro-tagline" style="
+        top:24%; left:78%; transform:rotate(-3deg);
+        color:var(--mv-blue); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:64px;
+      ">Conquer</div>
+      <div class="retro-tagline retro-blink" style="
+        top:38%; left:1%; transform:rotate(3deg);
+        color:var(--mv-violet); font-family:var(--mv-font); font-size:34px;
+      ">White Wilderness Legacy</div>
+      <div class="retro-tagline" style="
+        top:48%; left:62%; transform:rotate(-5deg);
+        color:var(--mv-crimson); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:40px;
+      ">Ignite Your Arctic Soul</div>
+      <div class="retro-tagline" style="
+        top:60%; left:48%; transform:rotate(2deg);
+        color:var(--mv-gold); font-family:var(--mv-font); font-size:32px;
+      ">Redefine Freedom Through Snow Mastery</div>
+      <div class="retro-tagline retro-blink" style="
+        top:70%; left:2%; transform:rotate(-4deg);
+        color:var(--mv-blue); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:52px;
+      ">Transcend Ordinary</div>
+      <div class="retro-tagline" style="
+        top:80%; left:58%; transform:rotate(5deg);
+        color:var(--mv-pink); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:34px;
+      ">Forge Your Winter Purpose</div>
+      <div class="retro-tagline" style="
+        top:90%; left:24%; transform:rotate(-2deg);
+        color:var(--mv-violet); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:44px;
+      ">Snow Life Command</div>
+</div>
+
+<div class="heli-layer">
+  <span class="heli" id="mvHeli">&#128641;</span>
+</div>
 
 <div class="snow-layer">
   <span class="snowflake" style="left:63.94%;font-size:14px;opacity:0.84;--drift:-45px;animation-duration:7.3s;animation-delay:-10.9s;">❄</span>
@@ -414,7 +505,7 @@
       <button id="mvPlayBtn" type="button" aria-label="Play/Pause">&#9654;</button>
       <div class="meta">
         <div class="now-playing">&#9835; Now Playing</div>
-        <div class="track-name">Frost Waltz</div>
+        <div class="track-name">Cheery Monday</div>
         <div class="track-credit">by Kevin MacLeod (incompetech.com) &middot; CC BY 4.0</div>
       </div>
       <div class="eq">
@@ -424,7 +515,7 @@
         <span style="animation-delay:0.1s;"></span>
       </div>
       <audio id="mvBgm" loop autoplay preload="auto">
-        <source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Frost%20Waltz.mp3" type="audio/mpeg">
+        <source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cheery%20Monday.mp3" type="audio/mpeg">
       </audio>
     </div>
 
@@ -448,42 +539,6 @@
     <div class="retro-stage">
       <div class="retro-burst"></div>
       <div class="retro-burst reverse"></div>
-      <div class="retro-tagline retro-blink" style="
-        top:1%; left:3%; transform:rotate(-4deg);
-        color:var(--mv-gold); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:26px;
-      ">Untamed Winter Destiny</div>
-      <div class="retro-tagline" style="
-        top:1%; left:58%; transform:rotate(4deg);
-        color:var(--mv-pink); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:34px;
-      ">Awaken the Yetti</div>
-      <div class="retro-tagline" style="
-        top:10%; left:80%; transform:rotate(-3deg);
-        color:var(--mv-blue); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:38px;
-      ">Conquer</div>
-      <div class="retro-tagline retro-blink" style="
-        top:50%; left:2%; transform:rotate(3deg);
-        color:var(--mv-violet); font-family:var(--mv-font); font-size:19px;
-      ">White Wilderness Legacy</div>
-      <div class="retro-tagline" style="
-        top:50%; left:76%; transform:rotate(-5deg);
-        color:var(--mv-crimson); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:20px;
-      ">Ignite Your Arctic Soul</div>
-      <div class="retro-tagline" style="
-        top:90%; left:52%; transform:rotate(2deg);
-        color:var(--mv-gold); font-family:var(--mv-font); font-size:18px;
-      ">Redefine Freedom Through Snow Mastery</div>
-      <div class="retro-tagline retro-blink" style="
-        top:92%; left:3%; transform:rotate(-4deg);
-        color:var(--mv-blue); font-family:'Brush Script MT', 'Segoe Script', cursive; font-size:28px;
-      ">Transcend Ordinary</div>
-      <div class="retro-tagline" style="
-        top:84%; left:24%; transform:rotate(5deg);
-        color:var(--mv-pink); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:18px;
-      ">Forge Your Winter Purpose</div>
-      <div class="retro-tagline" style="
-        top:6%; left:28%; transform:rotate(-2deg);
-        color:var(--mv-violet); font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size:24px;
-      ">Snow Life Command</div>
       <div class="retro-image-wrap">
         <img src="megavision.jpg" alt="MEGAVISION Snowmobile Lifestyle">
       </div>
@@ -597,6 +652,25 @@
 
 <script>
 (function() {
+  var heli = document.getElementById('mvHeli');
+  var lastX = 40, lastY = 40;
+  function fly() {
+    var x = 4 + Math.random() * 88;
+    var y = 6 + Math.random() * 82;
+    var facingLeft = x < lastX;
+    var tilt = (Math.random() * 16 - 8).toFixed(1);
+    heli.style.left = x + '%';
+    heli.style.top = y + '%';
+    heli.style.transform = 'scaleX(' + (facingLeft ? -1 : 1) + ') rotate(' + tilt + 'deg)';
+    lastX = x; lastY = y;
+    setTimeout(fly, 2200 + Math.random() * 2200);
+  }
+  fly();
+})();
+</script>
+
+<script>
+(function() {
   var chars = ['\u2726', '\u2727', '\u2744', '\u2b50', '\u2733'];
   var colors = ['#ffd166', '#e63fb0', '#2e6bff', '#7c3aed', '#f0525c'];
   document.addEventListener('mousemove', function(e) {
@@ -613,7 +687,7 @@
 })();
 </script>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-09 17:31 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-09 17:53 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

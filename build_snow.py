@@ -34,8 +34,8 @@ badge_html = "\n      ".join(
     for bg, fg, label in BADGES
 )
 
-TRACK_URL = "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Frost%20Waltz.mp3"
-TRACK_TITLE = "Frost Waltz"
+TRACK_URL = "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cheery%20Monday.mp3"
+TRACK_TITLE = "Cheery Monday"
 TRACK_ARTIST = "Kevin MacLeod (incompetech.com)"
 TRACK_LICENSE = "CC BY 4.0"
 
@@ -65,15 +65,15 @@ sled_cards = "\n      ".join(
 )
 
 TAGLINES = [
-    ("Untamed Winter Destiny", "gold", "display", -4, "1%", "3%", "26px"),
-    ("Awaken the Yetti", "pink", "script", 4, "1%", "58%", "34px"),
-    ("Conquer", "blue", "display", -3, "10%", "80%", "38px"),
-    ("White Wilderness Legacy", "violet", "sans", 3, "50%", "2%", "19px"),
-    ("Ignite Your Arctic Soul", "crimson", "display", -5, "50%", "76%", "20px"),
-    ("Redefine Freedom Through Snow Mastery", "gold", "sans", 2, "90%", "52%", "18px"),
-    ("Transcend Ordinary", "blue", "script", -4, "92%", "3%", "28px"),
-    ("Forge Your Winter Purpose", "pink", "display", 5, "84%", "24%", "18px"),
-    ("Snow Life Command", "violet", "display", -2, "6%", "28%", "24px"),
+    ("Untamed Winter Destiny", "gold", "display", -4, "4%", "2%", "46px"),
+    ("Awaken the Yetti", "pink", "script", 4, "12%", "55%", "58px"),
+    ("Conquer", "blue", "display", -3, "24%", "78%", "64px"),
+    ("White Wilderness Legacy", "violet", "sans", 3, "38%", "1%", "34px"),
+    ("Ignite Your Arctic Soul", "crimson", "display", -5, "48%", "62%", "40px"),
+    ("Redefine Freedom Through Snow Mastery", "gold", "sans", 2, "60%", "48%", "32px"),
+    ("Transcend Ordinary", "blue", "script", -4, "70%", "2%", "52px"),
+    ("Forge Your Winter Purpose", "pink", "display", 5, "80%", "58%", "34px"),
+    ("Snow Life Command", "violet", "display", -2, "90%", "24%", "44px"),
 ]
 
 FONT_STACKS = {
@@ -135,6 +135,39 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
     animation-name: snowFall;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+  }}
+
+  .tagline-layer {{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 55;
+  }}
+  .retro-tagline {{
+    position: absolute;
+    font-weight: 800;
+    text-shadow: 0 3px 0 rgba(0,0,0,0.7), 0 0 26px currentColor;
+    max-width: 320px;
+    line-height: 1.1;
+    opacity: 0.88;
+  }}
+  .retro-blink {{ animation: retroBlink 1.4s steps(1) infinite; }}
+
+  .heli-layer {{
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 58;
+  }}
+  .heli {{
+    position: absolute;
+    top: 40%; left: 40%;
+    font-size: 52px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    transition: left 2.6s ease-in-out, top 2.6s ease-in-out, transform 2.6s ease-in-out;
+    transform: scaleX(1) rotate(0deg);
   }}
 
   .retro-page {{
@@ -255,28 +288,53 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   .jukebox .eq span {{ width: 3px; background: var(--mv-gold); animation: eqBounce 0.9s ease-in-out infinite; }}
   @keyframes eqBounce {{ 0%, 100% {{ height: 4px; }} 50% {{ height: 18px; }} }}
 
-  .sled-section {{ max-width: 1180px; margin: 0 auto 20px; position: relative; z-index: 5; }}
-  .sled-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }}
-  .sled-card {{
-    background: var(--mv-black-2);
-    border: 2px solid var(--mv-chrome-600);
-    border-radius: 12px;
-    overflow: hidden;
+  .sled-section {{
+    max-width: 1180px;
+    margin: 0 auto 20px;
     position: relative;
+    z-index: 5;
+    background: repeating-linear-gradient(45deg, #1a0033, #1a0033 10px, #24004d 10px, #24004d 20px);
+    border: 4px ridge #ffd166;
+    padding: 18px;
+  }}
+  .sled-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; }}
+  .sled-card {{
+    background: #c0c0c0;
+    border: 4px outset #eee;
+    overflow: visible;
+    position: relative;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
   }}
   .sled-rank {{
-    position: absolute; top: 8px; left: 8px; z-index: 2;
-    background: var(--mv-gold); color: #14141a;
-    font-weight: 900; font-size: 13px;
-    width: 30px; height: 30px; border-radius: 50%;
+    position: absolute; top: -14px; left: -14px; z-index: 2;
+    background: #ff0000; color: #ffff00;
+    font-weight: 900; font-size: 16px;
+    width: 34px; height: 34px;
+    border: 3px outset #ffff00;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    transform: rotate(-12deg);
+    text-shadow: 1px 1px 0 #000;
   }}
-  .sled-card img {{ width: 100%; height: 150px; object-fit: cover; display: block; }}
-  .sled-body {{ padding: 12px 14px 16px; }}
-  .sled-name {{ font-weight: 800; font-size: 15px; color: var(--mv-ink); }}
-  .sled-year {{ font-size: 11px; color: var(--mv-gold); font-weight: 700; margin-bottom: 6px; }}
-  .sled-blurb {{ font-size: 12px; line-height: 1.5; color: var(--mv-ink-muted); }}
+  .sled-card img {{
+    width: 100%;
+    height: 140px;
+    object-fit: fill;
+    display: block;
+    border-bottom: 4px inset #eee;
+    filter: saturate(1.3) contrast(1.1);
+  }}
+  .sled-body {{ padding: 10px 12px 14px; background: #d8d8e8; }}
+  .sled-name {{
+    font-weight: 900; font-size: 15px; color: #000080;
+    text-shadow: 1px 1px 0 #fff;
+  }}
+  .sled-year {{
+    display: inline-block;
+    font-size: 10px; color: #fff; font-weight: 700;
+    background: #cc0000; padding: 1px 6px; margin: 4px 0 8px;
+    border: 1px solid #700;
+  }}
+  .sled-blurb {{ font-size: 12px; line-height: 1.5; color: #1a1a1a; }}
 
   .marquee-wrap {{
     overflow: hidden;
@@ -374,16 +432,6 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
       conic-gradient(from 0deg, transparent 0deg 8deg, rgba(46,107,255,0.16) 8deg 10deg, transparent 10deg);
   }}
 
-  .retro-tagline {{
-    position: absolute;
-    z-index: 4;
-    font-weight: 800;
-    text-shadow: 0 2px 0 rgba(0,0,0,0.6), 0 0 18px currentColor;
-    max-width: 220px;
-    line-height: 1.15;
-  }}
-  .retro-blink {{ animation: retroBlink 1.4s steps(1) infinite; }}
-
   .hit-counter {{
     max-width: 260px;
     margin: 0 auto 40px;
@@ -429,9 +477,17 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
     .retro-stage {{ min-height: auto; padding-bottom: 20px; }}
     .retro-image-wrap {{ position: relative; top: auto; left: auto; transform: none; width: 90%; margin: 0 auto 24px; display: block; }}
     .retro-burst {{ display: none; }}
-    .retro-tagline {{ position: static; display: inline-block; margin: 6px 10px; transform: none !important; }}
+    .tagline-layer {{ display: none; }}
   }}
 </style>
+
+<div class="tagline-layer">
+{tagline_html}
+</div>
+
+<div class="heli-layer">
+  <span class="heli" id="mvHeli">&#128641;</span>
+</div>
 
 <div class="snow-layer">
   {snow_html}
@@ -476,7 +532,6 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
     <div class="retro-stage">
       <div class="retro-burst"></div>
       <div class="retro-burst reverse"></div>
-{tagline_html}
       <div class="retro-image-wrap">
         <img src="megavision.jpg" alt="MEGAVISION Snowmobile Lifestyle">
       </div>
@@ -541,6 +596,25 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   bgm.addEventListener('play', setBtn);
   bgm.addEventListener('pause', setBtn);
   tryPlay();
+}})();
+</script>
+
+<script>
+(function() {{
+  var heli = document.getElementById('mvHeli');
+  var lastX = 40, lastY = 40;
+  function fly() {{
+    var x = 4 + Math.random() * 88;
+    var y = 6 + Math.random() * 82;
+    var facingLeft = x < lastX;
+    var tilt = (Math.random() * 16 - 8).toFixed(1);
+    heli.style.left = x + '%';
+    heli.style.top = y + '%';
+    heli.style.transform = 'scaleX(' + (facingLeft ? -1 : 1) + ') rotate(' + tilt + 'deg)';
+    lastX = x; lastY = y;
+    setTimeout(fly, 2200 + Math.random() * 2200);
+  }}
+  fly();
 }})();
 </script>
 
