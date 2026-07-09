@@ -34,10 +34,10 @@ badge_html = "\n      ".join(
     for bg, fg, label in BADGES
 )
 
-TRACK_URL = "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cheery%20Monday.mp3"
-TRACK_TITLE = "Cheery Monday"
-TRACK_ARTIST = "Kevin MacLeod (incompetech.com)"
-TRACK_LICENSE = "CC BY 4.0"
+TRACK_URL = "https://www.midicities.com/ViewSong?token=a663e677-7e47-4921-899c-58979cd5bf82&fileType=midi&handler=DownloadFile"
+TRACK_TITLE = "My Name Is Jonas"
+TRACK_ARTIST = "Weezer &middot; MIDI arrangement (1998)"
+TRACK_LICENSE = "via midicities.com"
 
 SNOWMOBILES = [
     (1, "Ski-Doo Olympique", "1959", "The machine that created the industry. Bombardier built a sled small enough and cheap enough for a normal family driveway, and overnight snow stopped being an obstacle and became a playground. Every snowmobile made since owes it a debt.",
@@ -164,8 +164,8 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   .heli {{
     position: absolute;
     top: 40%; left: 40%;
-    font-size: 52px;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    font-size: 108px;
+    text-shadow: 0 6px 16px rgba(0,0,0,0.65);
     transition: left 2.6s ease-in-out, top 2.6s ease-in-out, transform 2.6s ease-in-out;
     transform: scaleX(1) rotate(0deg);
   }}
@@ -252,39 +252,69 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   .site-tools a:active {{ border-style: inset; }}
 
   .jukebox {{
-    max-width: 420px;
+    max-width: 440px;
     margin: 0 auto 26px;
-    background: var(--mv-black-2);
-    border: 2px solid var(--mv-gold);
-    border-radius: 8px;
-    padding: 10px 14px;
+    background: linear-gradient(180deg, #f5f4f7 0%, #c7c5d1 12%, #8b899a 50%, #c7c5d1 88%, #f5f4f7 100%);
+    border: 3px outset #e8e7ec;
+    border-radius: 5px;
+    padding: 3px;
     display: flex;
-    align-items: center;
-    gap: 10px;
+    align-items: stretch;
+    gap: 0;
     position: relative;
     z-index: 5;
-    box-shadow: 0 0 20px rgba(255,209,102,0.25);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.9) inset,
+      0 4px 10px rgba(0,0,0,0.55),
+      0 0 0 1px #55535f;
+  }}
+  .jukebox::before {{
+    content: "♫ MEGAVISION SOUND SYSTEM ♫";
+    position: absolute;
+    top: -9px; left: 50%; transform: translateX(-50%);
+    background: #1a1a22;
+    color: var(--mv-gold);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    padding: 1px 8px;
+    border: 1px solid #55535f;
+    border-radius: 3px;
+    white-space: nowrap;
   }}
   .jukebox button {{
     flex: 0 0 auto;
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    border: 2px outset var(--mv-gold);
-    background: var(--mv-gold);
-    color: #14141a;
-    font-size: 14px;
+    width: 40px; height: 40px;
+    margin: 3px;
+    border-radius: 3px;
+    border: 2px outset #444;
+    background: linear-gradient(180deg, #2a2a32, #0a0a10);
+    color: var(--mv-gold);
+    font-size: 15px;
     font-weight: 900;
     cursor: pointer;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.15) inset;
   }}
   .jukebox button:active {{ border-style: inset; }}
-  .jukebox .meta {{ min-width: 0; flex: 1 1 auto; }}
-  .jukebox .now-playing {{ font-size: 9px; letter-spacing: 0.08em; color: var(--mv-gold); text-transform: uppercase; }}
-  .jukebox .track-name {{
-    font-size: 12px; font-weight: 700; color: var(--mv-ink);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  .jukebox .meta {{
+    min-width: 0; flex: 1 1 auto;
+    background: #0a0a10;
+    border: 2px inset #444;
+    margin: 3px 0;
+    padding: 4px 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }}
-  .jukebox .track-credit {{ font-size: 10px; color: var(--mv-ink-muted); }}
-  .jukebox .eq {{ display: flex; align-items: flex-end; gap: 2px; height: 18px; flex: 0 0 auto; }}
+  .jukebox .now-playing {{ font-size: 8px; letter-spacing: 0.1em; color: #3fd17a; text-transform: uppercase; font-family: ui-monospace, 'Courier New', monospace; }}
+  .jukebox .track-name {{
+    font-size: 12px; font-weight: 700; color: var(--mv-gold);
+    font-family: ui-monospace, 'Courier New', monospace;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    text-shadow: 0 0 6px rgba(255,209,102,0.6);
+  }}
+  .jukebox .track-credit {{ font-size: 9px; color: #8fd6a8; font-family: ui-monospace, 'Courier New', monospace; }}
+  .jukebox .eq {{ display: flex; align-items: flex-end; gap: 2px; height: 18px; flex: 0 0 auto; margin: 3px 6px; }}
   .jukebox .eq span {{ width: 3px; background: var(--mv-gold); animation: eqBounce 0.9s ease-in-out infinite; }}
   @keyframes eqBounce {{ 0%, 100% {{ height: 4px; }} 50% {{ height: 18px; }} }}
 
@@ -515,7 +545,7 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
         <span style="animation-delay:0.1s;"></span>
       </div>
       <audio id="mvBgm" loop autoplay preload="auto">
-        <source src="{TRACK_URL}" type="audio/mpeg">
+        <source src="{TRACK_URL}" type="audio/midi">
       </audio>
     </div>
 
