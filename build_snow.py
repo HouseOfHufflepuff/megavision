@@ -34,6 +34,11 @@ badge_html = "\n      ".join(
     for bg, fg, label in BADGES
 )
 
+HITS_URL = (
+    "https://hits.sh/houseofhufflepuff.github.io/megavision/snow.svg"
+    "?label=YOU+ARE+ARCTIC+EXPLORER+NUMBER&labelColor=0a0a10&color=13131b&style=flat-square"
+)
+
 TRACK_URL = "jonas.mp3"
 TRACK_TITLE = "My Name Is Jonas"
 TRACK_ARTIST = "Weezer &middot; MIDI arrangement (1998)"
@@ -463,26 +468,24 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   }}
 
   .hit-counter {{
-    max-width: 260px;
+    max-width: 320px;
     margin: 0 auto 40px;
     text-align: center;
     background: #000;
     border: 2px solid var(--mv-chrome-600);
     border-radius: 6px;
-    padding: 10px;
+    padding: 12px 10px;
   }}
-  .hit-counter .lbl {{
-    font-size: 10px;
-    letter-spacing: 0.1em;
+  .hit-counter .real-hits {{
+    height: 34px;
+    width: auto;
+    image-rendering: crisp-edges;
+  }}
+  .hit-counter .fine-print {{
+    font-size: 8px;
     color: var(--mv-ink-muted);
-    margin-bottom: 4px;
-  }}
-  .hit-counter .digits {{
-    font-family: ui-monospace, 'Courier New', monospace;
-    font-size: 24px;
-    font-weight: 800;
-    color: #3fd17a;
-    letter-spacing: 4px;
+    margin-top: 6px;
+    letter-spacing: 0.04em;
   }}
 
   .retro-cta {{
@@ -580,8 +583,8 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
     <hr class="rainbow-hr">
 
     <div class="hit-counter">
-      <div class="lbl">YOU ARE ARCTIC EXPLORER NUMBER</div>
-      <div class="digits">004269</div>
+      <img class="real-hits" src="{HITS_URL}" alt="Site hit counter">
+      <div class="fine-print">real count &middot; increments once per page load &middot; powered by hits.sh</div>
     </div>
 
     <div class="site-tools">
