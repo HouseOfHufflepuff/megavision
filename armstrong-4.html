@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackburn :: AdamArmstrongExperience.net</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', 'Comic Sans', 'Chalkboard SE', cursive;
+    background:
+      repeating-linear-gradient(180deg, #1a7a3c 0px, #1a7a3c 40px, #167034 40px, #167034 80px);
+    color: #fff;
+  }
+  a { color: #f2c14e; }
+  .stripe-top {
+    height: 10px;
+    background: repeating-linear-gradient(90deg, #fff 0 20px, #0a0a0a 20px 40px);
+  }
+  marquee, .fake-marquee {
+    display: block;
+    background: #0a0a0a;
+    color: #f2c14e;
+    font-weight: 900;
+    font-size: 15px;
+    padding: 8px 0;
+    border-top: 3px solid #fff;
+    border-bottom: 3px solid #fff;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .fake-marquee span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: azMarquee 18s linear infinite;
+  }
+  @keyframes azMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+  @keyframes azBlink { 0%, 45% { opacity:1; } 50%,95% { opacity:0; } 100% { opacity:1; } }
+  .blink { animation: azBlink 1.1s steps(1) infinite; }
+  @keyframes ballSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  .ball-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 90; }
+  .ball {
+    position: absolute;
+    animation: ballSpin 1s linear infinite;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+    transition: left 2.4s ease-in-out, top 2.4s ease-in-out;
+  }
+
+  .egg {
+    position: fixed;
+    width: 42px; height: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    opacity: 0.85;
+    z-index: 40;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  }
+
+  table.az-frame { width: 100%; border-collapse: collapse; background: #0a0a0a; }
+  .az-nav-cell {
+    background: repeating-linear-gradient(45deg, #0a0a0a, #0a0a0a 10px, #143 10px, #143 20px);
+    border-right: 6px double #fff;
+    padding: 10px 6px;
+    vertical-align: top;
+    width: 150px;
+  }
+  .az-nav-cell a {
+    display: block;
+    background: #0a0a0a;
+    border: 2px outset #f2c14e;
+    color: #f2c14e;
+    text-decoration: none;
+    font-weight: 900;
+    font-size: 11px;
+    text-align: center;
+    padding: 8px 4px;
+    margin-bottom: 6px;
+  }
+  .az-nav-cell a.here { border-style: inset; background: #f2c14e; color: #0a0a0a; }
+  .az-content-cell { padding: 14px 18px; vertical-align: top; }
+
+  .az-title {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 38px;
+    text-align: center;
+    color: #fff;
+    text-shadow: 3px 3px 0 #0a0a0a, -1px -1px 0 #f2c14e;
+    margin: 10px 0;
+  }
+  .az-box {
+    background: #0a0a0a;
+    border: 4px ridge #f2c14e;
+    padding: 14px 16px;
+    margin: 16px 0;
+  }
+  .az-box h2 { color: #f2c14e; font-family: Impact, sans-serif; margin-top:0; }
+  .az-badge-row { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin:14px 0; }
+  .az-badge {
+    width: 88px; height: 31px;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    font-size: 8px; font-weight:700; line-height:1.15; color:#000;
+    border: 2px outset #eee; font-family: Tahoma, sans-serif;
+  }
+  .az-huge-btn {
+    display: block;
+    margin: 24px auto;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    border: 8px solid #0a0a0a;
+    background:
+      radial-gradient(circle at 35% 30%, #fff 0 18%, transparent 19%),
+      radial-gradient(circle at 65% 30%, #fff 0 18%, transparent 19%),
+      radial-gradient(circle at 50% 65%, #fff 0 18%, transparent 19%),
+      #eee;
+    cursor: pointer;
+    font-family: Impact, sans-serif;
+    font-size: 20px;
+    color: #0a0a0a;
+    text-shadow: 0 1px 0 #fff;
+    box-shadow: 0 0 0 6px #fff, 0 10px 24px rgba(0,0,0,0.5);
+  }
+  .az-huge-btn:active { transform: translateY(2px); }
+
+  .gallery-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+  .gcard { background:#0a0a0a; border:3px outset #eee; }
+  .gcard img { width:100%; height:150px; object-fit:cover; display:block; border-bottom:3px inset #eee; }
+  .gcard p { font-size:11px; padding:8px; margin:0; color:#f2c14e; }
+
+  .jukebox {
+    max-width: 420px; margin: 14px auto;
+    background: linear-gradient(180deg,#eee,#0a0a0a 8%,#0a0a0a 92%,#eee);
+    border: 3px outset #fff; border-radius: 6px; padding: 8px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .jukebox button {
+    width:36px;height:36px;border-radius:50%;border:2px outset #f2c14e;
+    background:#f2c14e;color:#0a0a0a;font-weight:900;cursor:pointer;
+  }
+  .jukebox .meta { flex:1; min-width:0; }
+  .jukebox .tn { font-size:11px; font-weight:800; color:#f2c14e; font-family: ui-monospace, monospace; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .jukebox .tc { font-size:9px; color:#9be6ac; font-family: ui-monospace, monospace; }
+
+  .hit-counter { max-width:280px;margin:16px auto;text-align:center;background:#000;border:2px solid #fff;padding:8px; }
+  .hit-counter img { height: 30px; }
+
+  .page-strip { display:flex; flex-wrap:wrap; justify-content:center; gap:4px; margin: 18px 0; }
+  .page-strip a {
+    background:#0a0a0a; border:2px outset #f2c14e; color:#f2c14e;
+    text-decoration:none; font-size:11px; font-weight:800; padding:6px 9px;
+  }
+  .page-strip a.here { background:#f2c14e; color:#0a0a0a; border-style:inset; }
+
+  .rule { height:5px; border:none; margin:18px 0; background: repeating-linear-gradient(90deg,#fff 0 14px,#0a0a0a 14px 28px); }
+
+  table.stat-table { width:100%; border-collapse:collapse; background:#0a0a0a; font-size:13px; }
+  table.stat-table th, table.stat-table td { border: 2px solid #f2c14e; padding:6px 8px; text-align:center; }
+  table.stat-table th { background:#f2c14e; color:#0a0a0a; }
+
+  .dead-link { color: #8bd; text-decoration: underline; cursor: pointer; }
+  footer.az-foot { text-align:center; font-size:11px; color:#cde; padding:20px 0 40px; }
+</style>
+</head>
+<body>
+<div class="ball-layer" id="ballLayer">
+    <span class="ball" id="ball0" style="left:60.7%;top:71.1%;font-size:54px;">&#9917;</span>
+    <span class="ball" id="ball1" style="left:91.9%;top:30.3%;font-size:31px;">&#9917;</span>
+    <span class="ball" id="ball2" style="left:50.8%;top:73.9%;font-size:64px;">&#9917;</span>
+    <span class="ball" id="ball3" style="left:42.2%;top:16.7%;font-size:38px;">&#9917;</span>
+    <span class="ball" id="ball4" style="left:72.6%;top:60.0%;font-size:53px;">&#9917;</span>
+    <span class="ball" id="ball5" style="left:49.1%;top:48.8%;font-size:62px;">&#9917;</span>
+    <span class="ball" id="ball6" style="left:28.9%;top:46.0%;font-size:53px;">&#9917;</span>
+    <span class="ball" id="ball7" style="left:75.7%;top:84.4%;font-size:40px;">&#9917;</span>
+    <span class="ball" id="ball8" style="left:48.4%;top:66.7%;font-size:56px;">&#9917;</span>
+    <span class="ball" id="ball9" style="left:54.8%;top:57.5%;font-size:45px;">&#9917;</span>
+    <span class="ball" id="ball10" style="left:75.9%;top:75.0%;font-size:51px;">&#9917;</span>
+    <span class="ball" id="ball11" style="left:67.8%;top:78.5%;font-size:32px;">&#9917;</span>
+    <span class="ball" id="ball12" style="left:25.8%;top:61.2%;font-size:34px;">&#9917;</span>
+    <span class="ball" id="ball13" style="left:51.7%;top:16.0%;font-size:30px;">&#9917;</span>
+    <span class="ball" id="ball14" style="left:44.0%;top:82.4%;font-size:53px;">&#9917;</span>
+    <span class="ball" id="ball15" style="left:30.9%;top:77.2%;font-size:35px;">&#9917;</span>
+    <span class="ball" id="ball16" style="left:62.4%;top:3.3%;font-size:39px;">&#9917;</span>
+    <span class="ball" id="ball17" style="left:37.9%;top:37.6%;font-size:27px;">&#9917;</span>
+    <span class="ball" id="ball18" style="left:14.2%;top:15.0%;font-size:61px;">&#9917;</span>
+    <span class="ball" id="ball19" style="left:88.4%;top:76.8%;font-size:26px;">&#9917;</span>
+    <span class="ball" id="ball20" style="left:70.4%;top:28.5%;font-size:28px;">&#9917;</span>
+    <span class="ball" id="ball21" style="left:86.7%;top:46.6%;font-size:26px;">&#9917;</span>
+</div>
+<img class="egg" src="https://commons.wikimedia.org/wiki/Special:FilePath/Peter%20Dinklage-32.jpg" alt="" style="bottom:6px;right:6px;transform:rotate(22deg);" loading="lazy">
+  <img class="egg" src="https://commons.wikimedia.org/wiki/Special:FilePath/Comiccon%20France%202025%20-%20Orc.jpg" alt="" style="top:40%;left:2px;transform:rotate(-19deg);" loading="lazy">
+<div class="stripe-top"></div>
+<div class="fake-marquee"><span>&#9917; BLACKBURN ROVERS &#9917; 49 GOALS &#9917; THREE HAT-TRICKS &#9917; PLAYER OF THE SEASON 2019-20 &#9917;</span></div>
+<table class="az-frame"><tr>
+<td class="az-nav-cell">
+    <div style="text-align:center;color:#f2c14e;font-weight:900;font-size:10px;margin-bottom:8px;">SITE MAP</div>
+    <a href="armstrong-1.html">1. HOME</a>
+    <a href="armstrong-2.html">2. BIO</a>
+    <a href="armstrong-3.html">3. EARLY YEARS</a>
+    <a href="armstrong-4.html" class="here">4. BLACKBURN</a>
+    <a href="armstrong-5.html">5. SAINTS+</a>
+    <a href="armstrong-6.html">6. ENGLAND</a>
+    <a href="armstrong-7.html">7. STATS</a>
+    <a href="armstrong-8.html">8. GALLERY</a>
+    <a href="armstrong-9.html">9. FAN ZONE</a>
+    <div class="jukebox">
+      <button id="azPlay" type="button">&#9654;</button>
+      <div class="meta">
+        <div class="tn">I Wish</div>
+        <div class="tc">Skee-Lo &middot; MIDI (1995)</div>
+      </div>
+      <audio id="azBgm" src="iwish.mp3" loop autoplay preload="auto"></audio>
+    </div>
+    <div class="hit-counter">
+      <img src="https://hits.sh/houseofhufflepuff.github.io/megavision/armstrong.svg?label=VISITOR+NUMBER&labelColor=0a0a0a&color=0b3d1f&style=flat-square" alt="hit counter">
+    </div>
+    <a href="index.html" style="margin-top:10px;">&larr; MEGAVISION Home</a>
+</td>
+<td class="az-content-cell">
+
+<div class="az-title">BLACKBURN GLORY DAYS</div>
+<div class="az-box">
+  <h2>BLACKBURN ROVERS (Loan 2017&ndash;18, Permanent 2018&ndash;2021)</h2>
+  <p style="line-height:1.7;">21 appearances and 9 goals on loan convinced Rovers to make it
+  permanent: &pound;1.75 million, signed 6 August 2018. What followed was, frankly, one of the
+  great modern Championship striker runs: <b>130 appearances, 49 goals</b>. THREE hat-tricks in
+  the 2020-21 season alone. Voted Blackburn Rovers Player of the Season for 2019-20. If you know,
+  you know. If you don't know, you are about to know, because we are about to tell you three more
+  times on this page.</p>
+  <p style="line-height:1.7;">Three hat-tricks. In one season. We are going to say it again for
+  the people in the back: <b>THREE HAT-TRICKS.</b></p>
+</div>
+<div class="az-box">
+  <h2>PFA TEAM OF THE YEAR</h2>
+  <p style="line-height:1.7;">2020-21 Championship Team of the Year. This was not a fluke season.
+  This was a MAN AT WORK.</p>
+</div>
+<div class="gallery-grid">
+  <div class="gcard"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Adam%20Armstrong%2022112025%20(3).jpg" loading="lazy"><p>BEHOLD! Adam Armstrong. This is what greatness looks like.</p></div>
+  <div class="gcard"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Adam%20Armstrong%2022112025%20(4).jpg" loading="lazy"><p>LOOK AT THIS MAN! Adam Armstrong. The goblins agree: iconic.</p></div>
+</div>
+
+  <div class="page-strip">
+    <a href="armstrong-1.html">PAGE 1</a>
+    <a href="armstrong-2.html">PAGE 2</a>
+    <a href="armstrong-3.html">PAGE 3</a>
+    <a href="armstrong-4.html" class="here">PAGE 4</a>
+    <a href="armstrong-5.html">PAGE 5</a>
+    <a href="armstrong-6.html">PAGE 6</a>
+    <a href="armstrong-7.html">PAGE 7</a>
+    <a href="armstrong-8.html">PAGE 8</a>
+    <a href="armstrong-9.html">PAGE 9</a>
+  </div>
+  <div class="az-badge-row">
+    <div class="az-badge" style="background:#000080;color:#fff;">BEST VIEWED IN<br>NETSCAPE 4.0<br>@ 800&times;600</div>
+    <div class="az-badge" style="background:#0b6e2f;color:#fff;">100% GRASS<br>FED<br>CONTENT</div>
+    <div class="az-badge" style="background:#ffd700;color:#000;">&#9917; OFFICIAL<br>UNOFFICIAL<br>FAN SITE</div>
+    <div class="az-badge" style="background:#d61f26;color:#fff;">RED CARD<br>TO ALL<br>HATERS</div>
+    <div class="az-badge" style="background:#000;color:#0f0;">HACKER<br>SAFE&trade;<br>CERTIFIED</div>
+  </div>
+  <p style="text-align:center;">
+    <a class="dead-link">Sign My Guestbook</a> &middot;
+    <a class="dead-link">Email The Webmaster</a> &middot;
+    <a class="dead-link">Join The Webring</a> &middot;
+    <a class="dead-link">Vote For Adam (Poll Closed In 2019)</a>
+  </p>
+</td>
+</tr></table>
+<footer class="az-foot">
+  &copy; forever &middot; This is an unofficial fan project, not affiliated with Adam Armstrong, Southampton FC, Wolverhampton Wanderers FC, or anyone with legal authority to stop us.
+  <br>Bio &amp; stats sourced from Wikipedia. Photos via Wikimedia Commons. Music: real 1995 MIDI, rendered locally so it actually plays.
+</footer>
+<script>
+(function() {
+  var bgm = document.getElementById('azBgm');
+  var btn = document.getElementById('azPlay');
+  function setBtn() { btn.innerHTML = bgm.paused ? '&#9654;' : '&#10074;&#10074;'; }
+  function tryPlay() {
+    var p = bgm.play();
+    if (p && p.catch) {
+      p.then(setBtn).catch(function() {
+        setBtn();
+        document.addEventListener('click', function once() {
+          bgm.play().then(setBtn);
+          document.removeEventListener('click', once);
+        }, { once: true });
+      });
+    }
+  }
+  btn.addEventListener('click', function() {
+    if (bgm.paused) { bgm.play().then(setBtn); } else { bgm.pause(); setBtn(); }
+  });
+  bgm.addEventListener('play', setBtn);
+  bgm.addEventListener('pause', setBtn);
+  tryPlay();
+})();
+(function() {
+  var layer = document.getElementById('ballLayer');
+  var balls = layer.querySelectorAll('.ball');
+  balls.forEach(function(ball, i) {
+    function fly() {
+      var x = 2 + Math.random() * 90;
+      var y = 4 + Math.random() * 86;
+      ball.style.left = x + '%';
+      ball.style.top = y + '%';
+      setTimeout(fly, 1400 + Math.random() * 2600);
+    }
+    setTimeout(fly, i * 90);
+  });
+})();
+</script>
+</body>
+</html>

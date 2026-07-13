@@ -219,6 +219,7 @@ NAV_LINKS = [
     ("teams.html", "Teams"),
     ("financials.html", "Financials"),
     ("snowmobile-lifestlye.html", "Snow"),
+    ("armstrong-1.html", "Draft"),
 ]
 
 
