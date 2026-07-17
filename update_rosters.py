@@ -259,14 +259,19 @@ for code, name, owners in TEAMS:
     # group by position (GK, D, M, F, then anything else), salary desc within group
     grouped = sorted(roster, key=lambda p: (position_sort_key(p["pos"]), -p["current_salary"]))
 
+    def fc26_plain(p):
+        return f'{p["fc26"]:,.0f}' if isinstance(p["fc26"], (int, float)) else "—"
+
+    def fpts_plain(p):
+        return f'{p["fpts"]:,.1f}' if isinstance(p["fpts"], (int, float)) else "—"
+
     roster_rows = []
     for p in grouped:
-        cells = [money(p["y1"]), money(p["y2"]), money(p["y3"])]
-        cells[current_idx] = f'<strong style="color:var(--mv-gold)">{cells[current_idx]}</strong>'
         roster_rows.append(
             f'<tr><td>{player_label(p)}</td><td>{p["pos"]}</td>'
-            f'<td>{cells[0]}</td><td>{cells[1]}</td><td>{cells[2]}</td>'
-            f'<td class="dim">{money(p["buyout"])}</td></tr>'
+            f'<td style="color:var(--mv-gold);font-weight:700;">{fc26_plain(p)}</td>'
+            f'<td class="dim">{fpts_plain(p)}</td>'
+            f'<td><strong style="color:var(--mv-gold)">{money(p["current_salary"])}</strong></td></tr>'
         )
 
     # position-count summary row at the bottom of the table
@@ -274,6 +279,21 @@ for code, name, owners in TEAMS:
                   [p for p in pos_counts if p not in POSITION_ORDER]
     counts_line = "  &middot;  ".join(f"{pos_counts[p]} {p}" for p in ordered_pos)
     roster_rows.append(
+        f'<tr style="background:var(--mv-black-3);font-weight:700;">'
+        f'<td colspan="5">{roster_size} total &middot; {counts_line}</td></tr>'
+    )
+
+    # ---- finances: the same roster, salary detail by contract year ----
+    finance_rows = []
+    for p in grouped:
+        cells = [money(p["y1"]), money(p["y2"]), money(p["y3"])]
+        cells[current_idx] = f'<strong style="color:var(--mv-gold)">{cells[current_idx]}</strong>'
+        finance_rows.append(
+            f'<tr><td>{player_label(p)}</td><td>{p["pos"]}</td>'
+            f'<td>{cells[0]}</td><td>{cells[1]}</td><td>{cells[2]}</td>'
+            f'<td class="dim">{money(p["buyout"])}</td></tr>'
+        )
+    finance_rows.append(
         f'<tr style="background:var(--mv-black-3);font-weight:700;">'
         f'<td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
     )
@@ -420,13 +440,6 @@ for code, name, owners in TEAMS:
       <div class="mv-stat"><div class="label">Season Net</div><div class="value">{money(season_net)}</div></div>
     </div>
 
-    <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-top:10px;">
-      {"".join(
-          f'<div class="mv-stat"><div class="label">{lbl} Payroll</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
-          for lbl, tot in zip((y1_label, y2_label, y3_label), year_totals) if lbl
-      )}
-    </div>
-
     <section class="card mv-card">
       <h2 class="mv-chrome-text">Trophy Case</h2>
       <div class="sub">{total_trophies} title{"s" if total_trophies != 1 else ""} all-time</div>
@@ -439,6 +452,7 @@ for code, name, owners in TEAMS:
       <div class="mv-tabs">
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-{code}')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'finances-{code}')">Finances</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);"></span>
@@ -446,10 +460,10 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="roster-{code}" class="mv-tab-panel active">
-        <div class="sub">{roster_size} players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+        <div class="sub">{roster_size} players signed for 26/27, grouped by position &middot; FC 26 rating and live Fantrax points, current-season salary</div>
         <div class="mv-table-scroll">
           <table class="mv-table">
-            <thead><tr><th>Player</th><th>Pos</th><th>{year_th[0]}</th><th>{year_th[1]}</th><th>{year_th[2]}</th><th>BuyOut</th></tr></thead>
+            <thead><tr><th>Player</th><th>Pos</th><th>FC 26 Rating</th><th>Total Pts</th><th>Current Salary</th></tr></thead>
             <tbody>
               {"".join(roster_rows)}
             </tbody>
@@ -463,6 +477,24 @@ for code, name, owners in TEAMS:
           {"".join(pitch_rows)}
         </div>
         {depth_html}
+      </div>
+
+      <div id="finances-{code}" class="mv-tab-panel">
+        <div class="sub">Payroll by contract year, team totals then player-by-player</div>
+        <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
+          {"".join(
+              f'<div class="mv-stat"><div class="label">{lbl} Payroll</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
+              for lbl, tot in zip((y1_label, y2_label, y3_label), year_totals) if lbl
+          )}
+        </div>
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+            <thead><tr><th>Player</th><th>Pos</th><th>{year_th[0]}</th><th>{year_th[1]}</th><th>{year_th[2]}</th><th>BuyOut</th></tr></thead>
+            <tbody>
+              {"".join(finance_rows)}
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 

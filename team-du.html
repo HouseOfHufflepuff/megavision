@@ -39,10 +39,6 @@
       <div class="mv-stat"><div class="label">Season Net</div><div class="value">$-89.86</div></div>
     </div>
 
-    <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-top:10px;">
-      <div class="mv-stat"><div class="label">25/26 Payroll</div><div class="value" style="font-size:18px;">$76.78</div></div><div class="mv-stat"><div class="label">26/27 Payroll</div><div class="value" style="font-size:18px;">$89.86</div></div><div class="mv-stat"><div class="label">27/28 Payroll</div><div class="value" style="font-size:18px;">$80.43</div></div>
-    </div>
-
     <section class="card mv-card">
       <h2 class="mv-chrome-text">Trophy Case</h2>
       <div class="sub">0 titles all-time</div>
@@ -61,6 +57,7 @@
       <div class="mv-tabs">
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-DU')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-DU')">Depth Chart</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'finances-DU')">Finances</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);"></span>
@@ -68,12 +65,12 @@
       </div>
 
       <div id="roster-DU" class="mv-tab-panel active">
-        <div class="sub">11 players signed for 26/27, grouped by position &middot; no games played yet this season</div>
+        <div class="sub">11 players signed for 26/27, grouped by position &middot; FC 26 rating and live Fantrax points, current-season salary</div>
         <div class="mv-table-scroll">
           <table class="mv-table">
-            <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
+            <thead><tr><th>Player</th><th>Pos</th><th>FC 26 Rating</th><th>Total Pts</th><th>Current Salary</th></tr></thead>
             <tbody>
-              <tr><td>Isak, Alexander F - NEW</td><td>D</td><td>$10.50</td><td><strong style="color:var(--mv-gold)">$11.55</strong></td><td>$12.71</td><td class="dim">—</td></tr><tr><td>Botman, Sven D - NEW</td><td>D</td><td>$7.08</td><td><strong style="color:var(--mv-gold)">$7.79</strong></td><td>$10.12</td><td class="dim">—</td></tr><tr><td>Marc Cucurella D - CHE</td><td>D</td><td>$6.05</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td><td>$8.65</td><td class="dim">—</td></tr><tr><td>Gusto, Malo D - CHE</td><td>D</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>$7.87</td><td class="dim">—</td></tr><tr><td>Yoro, Leny D - MUN</td><td>D</td><td>$4.95</td><td><strong style="color:var(--mv-gold)">$5.45</strong></td><td>$7.08</td><td class="dim">—</td></tr><tr><td>Senesi, Marcos D - BOU</td><td>D</td><td>$4.50</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Merino, Mikel M - ARS</td><td>M</td><td>$13.50</td><td><strong style="color:var(--mv-gold)">$20.25</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Iwobi, Alex M - FUL</td><td>M</td><td>$6.05</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td><td>$8.65</td><td class="dim">—</td></tr><tr><td>Damsgaard, Mikkel M - BRE</td><td>M</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr><td>Thiago, Igor F - BRF</td><td>F</td><td>$6.60</td><td><strong style="color:var(--mv-gold)">$7.26</strong></td><td>$9.44</td><td class="dim">—</td></tr><tr><td>Strand Larsen F - WOL</td><td>F</td><td>$6.05</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td><td>$8.65</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">11 total &middot; 6 D  &middot;  3 M  &middot;  2 F</td></tr>
+              <tr><td>Isak, Alexander F - NEW</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">88</td><td class="dim">32.5</td><td><strong style="color:var(--mv-gold)">$11.55</strong></td></tr><tr><td>Botman, Sven D - NEW</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">82</td><td class="dim">122.0</td><td><strong style="color:var(--mv-gold)">$7.79</strong></td></tr><tr><td>Marc Cucurella D - CHE</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">84</td><td class="dim">143.5</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td></tr><tr><td>Gusto, Malo D - CHE</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">79</td><td class="dim">98.5</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td></tr><tr><td>Yoro, Leny D - MUN</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">78</td><td class="dim">53.0</td><td><strong style="color:var(--mv-gold)">$5.45</strong></td></tr><tr><td>Senesi, Marcos D - BOU</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">78</td><td class="dim">213.0</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td></tr><tr><td>Merino, Mikel M - ARS</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">83</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$20.25</strong></td></tr><tr><td>Iwobi, Alex M - FUL</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">80</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td></tr><tr><td>Damsgaard, Mikkel M - BRE</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">80</td><td class="dim">118.0</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td></tr><tr><td>Thiago, Igor F - BRF</td><td>F</td><td style="color:var(--mv-gold);font-weight:700;">75</td><td class="dim">241.5</td><td><strong style="color:var(--mv-gold)">$7.26</strong></td></tr><tr><td>Strand Larsen F - WOL</td><td>F</td><td style="color:var(--mv-gold);font-weight:700;">—</td><td class="dim">58.0</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="5">11 total &middot; 6 D  &middot;  3 M  &middot;  2 F</td></tr>
             </tbody>
           </table>
         </div>
@@ -85,6 +82,21 @@
           <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">Thiago, Igor F - BRF</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">75 OVR</div><div class="salary dim">241.5 pts</div><div class="salary">$7.26</div></div><div class="mv-slot"><div class="pos">F</div><div class="player">Strand Larsen F - WOL</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">— OVR</div><div class="salary dim">58.0 pts</div><div class="salary">$6.66</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player">Merino, Mikel M - ARS</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">83 OVR</div><div class="salary dim">— pts</div><div class="salary">$20.25</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Damsgaard, Mikkel M - BRE</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">80 OVR</div><div class="salary dim">118.0 pts</div><div class="salary">$6.60</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Iwobi, Alex M - FUL</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">80 OVR</div><div class="salary dim">— pts</div><div class="salary">$6.66</div></div><div class="mv-slot empty"><div class="pos">M</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player">Isak, Alexander F - NEW</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">88 OVR</div><div class="salary dim">32.5 pts</div><div class="salary">$11.55</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Marc Cucurella D - CHE</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">84 OVR</div><div class="salary dim">143.5 pts</div><div class="salary">$6.66</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Botman, Sven D - NEW</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">82 OVR</div><div class="salary dim">122.0 pts</div><div class="salary">$7.79</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
         </div>
         <div class="mv-depth-group"><div class="heading">D Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">Gusto, Malo D - CHE</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">79 OVR</div><div class="salary dim">98.5 pts</div><div class="salary">$6.05</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Senesi, Marcos D - BOU</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">78 OVR</div><div class="salary dim">213.0 pts</div><div class="salary">$4.95</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Yoro, Leny D - MUN</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">78 OVR</div><div class="salary dim">53.0 pts</div><div class="salary">$5.45</div></div></div></div>
+      </div>
+
+      <div id="finances-DU" class="mv-tab-panel">
+        <div class="sub">Payroll by contract year, team totals then player-by-player</div>
+        <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
+          <div class="mv-stat"><div class="label">25/26 Payroll</div><div class="value" style="font-size:18px;">$76.78</div></div><div class="mv-stat"><div class="label">26/27 Payroll</div><div class="value" style="font-size:18px;">$89.86</div></div><div class="mv-stat"><div class="label">27/28 Payroll</div><div class="value" style="font-size:18px;">$80.43</div></div>
+        </div>
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+            <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
+            <tbody>
+              <tr><td>Isak, Alexander F - NEW</td><td>D</td><td>$10.50</td><td><strong style="color:var(--mv-gold)">$11.55</strong></td><td>$12.71</td><td class="dim">—</td></tr><tr><td>Botman, Sven D - NEW</td><td>D</td><td>$7.08</td><td><strong style="color:var(--mv-gold)">$7.79</strong></td><td>$10.12</td><td class="dim">—</td></tr><tr><td>Marc Cucurella D - CHE</td><td>D</td><td>$6.05</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td><td>$8.65</td><td class="dim">—</td></tr><tr><td>Gusto, Malo D - CHE</td><td>D</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>$7.87</td><td class="dim">—</td></tr><tr><td>Yoro, Leny D - MUN</td><td>D</td><td>$4.95</td><td><strong style="color:var(--mv-gold)">$5.45</strong></td><td>$7.08</td><td class="dim">—</td></tr><tr><td>Senesi, Marcos D - BOU</td><td>D</td><td>$4.50</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Merino, Mikel M - ARS</td><td>M</td><td>$13.50</td><td><strong style="color:var(--mv-gold)">$20.25</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Iwobi, Alex M - FUL</td><td>M</td><td>$6.05</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td><td>$8.65</td><td class="dim">—</td></tr><tr><td>Damsgaard, Mikkel M - BRE</td><td>M</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr><td>Thiago, Igor F - BRF</td><td>F</td><td>$6.60</td><td><strong style="color:var(--mv-gold)">$7.26</strong></td><td>$9.44</td><td class="dim">—</td></tr><tr><td>Strand Larsen F - WOL</td><td>F</td><td>$6.05</td><td><strong style="color:var(--mv-gold)">$6.66</strong></td><td>$8.65</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">11 total &middot; 6 D  &middot;  3 M  &middot;  2 F</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -102,7 +114,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 04:01 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 04:08 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');
