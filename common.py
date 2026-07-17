@@ -44,6 +44,30 @@ def fetch_stadiums(wb):
     return stadiums
 
 
+def fetch_season_salary_totals(wb, label):
+    """code -> team payroll total for the given season label (e.g. '25/26'),
+    read straight from each team tab's own 'Total' row so it matches
+    whatever the sheet itself computes. Returns None for a team if that
+    season label isn't one of its three year columns."""
+    totals = {}
+    for code, _, _ in TEAMS:
+        sheet_name = find_team_sheet(wb, code)
+        if sheet_name is None:
+            continue
+        rows = list(wb[sheet_name].iter_rows(min_row=1, max_row=40, values_only=True))
+        header_idx = next((i for i, r in enumerate(rows) if r[1] == "Player" and r[2] == "Pos"), None)
+        if header_idx is None:
+            continue
+        year_labels = [rows[header_idx][3], rows[header_idx][4], rows[header_idx][5]]
+        if label not in year_labels:
+            totals[code] = None
+            continue
+        col = 3 + year_labels.index(label)
+        total_row = next((r for r in rows[header_idx + 1:] if r[0] == "Total"), None)
+        totals[code] = total_row[col] if total_row else None
+    return totals
+
+
 def fetch_youth(wb):
     """code -> list of youth-drafted players (all-time), most recent first,
     straight from the 'Youth' tab. Columns: Year, Team, Player, Pos,

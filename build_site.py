@@ -1,9 +1,12 @@
-from common import TEAMS, head, foot, hero_logo, fetch_live_workbook, fetch_trophy_room, resolve_team_code, fetch_stadiums, owner_short
+from common import TEAMS, head, foot, hero_logo, fetch_live_workbook, fetch_trophy_room, resolve_team_code, fetch_stadiums, fetch_season_salary_totals, owner_short
+
+SEASON_25_26 = "25/26"
 
 print("Fetching live spreadsheet...")
 wb = fetch_live_workbook()
 comps, seasons = fetch_trophy_room(wb)
 stadiums = fetch_stadiums(wb)
+salaries_25_26 = fetch_season_salary_totals(wb, SEASON_25_26)
 print(f"Fetched. {len(seasons)} seasons of trophy history.")
 
 total_titles = sum(1 for s in seasons for v in s[1:8] if v)
@@ -80,11 +83,14 @@ for code, name, owners in TEAMS:
     cap = stad.get("capacity")
     cap_str = f"{cap:,.0f}" if isinstance(cap, (int, float)) else "—"
     stadium_line = f'{stad.get("stadium", "—")} &middot; Capacity {cap_str}'
+    salary = salaries_25_26.get(code)
+    salary_str = f"${salary:,.2f}" if isinstance(salary, (int, float)) else "—"
     team_cards.append(f"""      <a class="mv-team-card" href="team-{slug}.html">
         <div class="code">{code}</div>
         <div class="name">{name}</div>
         <div class="owners">{owner_short(owners)}</div>
         <div class="owners" style="margin-top:4px;">{stadium_line}</div>
+        <div class="owners" style="margin-top:4px;">{SEASON_25_26} Final Payroll: {salary_str}</div>
         <div class="go">View Team &rarr;</div>
       </a>""")
 
