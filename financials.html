@@ -27,49 +27,362 @@
 
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Financials</h1>
-      <div class="sub">Cost and revenue by team for 26/27, followed by game-by-game detail. No games have been played yet this season.</div>
+      <div class="sub">Pick a season &mdash; cost, revenue, fans, and (for 25/26) the full game-by-game log.</div>
     </div>
 
+    <div style="text-align:center;margin-bottom:20px;">
+      <label for="seasonSelect" style="font-size:13px;color:var(--mv-ink-muted);margin-right:8px;">Season</label>
+      <select id="seasonSelect" style="background:var(--mv-black-3);color:var(--mv-ink);border:1px solid var(--mv-border);border-radius:6px;padding:6px 10px;font-size:14px;">
+      <option value="24/25">24/25</option>
+      <option value="25/26" selected>25/26</option>
+      <option value="26/27">26/27</option>
+      <option value="27/28">27/28</option>
+      <option value="28/29">28/29</option>
+      </select>
+    </div>
+
+    
+    <div class="season-block" data-season="24/25" style="display:none;">
+      <div class="sub" style="margin-bottom:10px;">24/25 hasn't been played yet &mdash; salary cost only, no games or revenue to show.</div>
+      <section class="card mv-card">
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+          <thead><tr><th>Team</th><th>Owner</th><th>24/25 Salary Cost</th><th># Trophies</th></tr></thead>
+          <tbody>
+            <tr><td><a href="team-nac.html" style="color:inherit;text-decoration:none;font-weight:600;">NFC Andover City</a></td><td class="dim">Kris L.</td><td>$143.50</td><td>9</td></tr>
+            <tr><td><a href="team-fav.html" style="color:inherit;text-decoration:none;font-weight:600;">5th Ave Argyle</a></td><td class="dim">Jack W.</td><td>—</td><td>2</td></tr>
+            <tr><td><a href="team-pow.html" style="color:inherit;text-decoration:none;font-weight:600;">Battersea Power Bottoms</a></td><td class="dim">Sam R. +1</td><td>—</td><td>1</td></tr>
+            <tr><td><a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:600;">CRG McGovern</a></td><td class="dim">Casey M. +3</td><td>—</td><td>13</td></tr>
+            <tr><td><a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:600;">Divided United</a></td><td class="dim">Chris G.</td><td>—</td><td>0</td></tr>
+            <tr><td><a href="team-huf.html" style="color:inherit;text-decoration:none;font-weight:600;">House of Hufflepuff</a></td><td class="dim">Jeremy A.</td><td>—</td><td>14</td></tr>
+            <tr><td><a href="team-ms8.html" style="color:inherit;text-decoration:none;font-weight:600;">MS 08th</a></td><td class="dim">Raul T.</td><td>—</td><td>1</td></tr>
+            <tr><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;font-weight:600;">Quidpool FC</a></td><td class="dim">Erik J.</td><td>—</td><td>4</td></tr>
+            <tr><td><a href="team-ren.html" style="color:inherit;text-decoration:none;font-weight:600;">Real News</a></td><td class="dim">Reid F.</td><td>—</td><td>1</td></tr>
+            <tr><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:600;">The Bookhouse Boys</a></td><td class="dim">Matt O.</td><td>—</td><td>14</td></tr>
+            <tr><td><a href="team-tts.html" style="color:inherit;text-decoration:none;font-weight:600;">Thottenham Thotspur</a></td><td class="dim">Kevin O.</td><td>—</td><td>4</td></tr>
+            <tr><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;font-weight:600;">What The FC</a></td><td class="dim">Erik O.</td><td>—</td><td>3</td></tr>
+            <tr><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td class="dim">Kirk W. +1</td><td>—</td><td>3</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      
+      
+    </div>
+    <div class="season-block" data-season="25/26" style="display:block;">
+      <div class="sub" style="margin-bottom:10px;">Cost and revenue for 25/26, derived from every game played this season.</div>
+      <section class="card mv-card">
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+          <thead><tr><th>Team</th><th>Owner</th><th>GP</th><th>Cost</th><th>Revenue</th><th>Net</th><th>Fans</th><th># Trophies</th></tr></thead>
+          <tbody>
+            <tr><td><a href="team-tts.html" style="color:inherit;text-decoration:none;font-weight:600;">Thottenham Thotspur</a></td><td class="dim">Kevin O.</td><td>22</td><td>$225.22</td><td>$129.60</td><td>$-95.62</td><td>37</td><td>4</td></tr>
+            <tr><td><a href="team-ren.html" style="color:inherit;text-decoration:none;font-weight:600;">Real News</a></td><td class="dim">Reid F.</td><td>22</td><td>$153.62</td><td>$137.74</td><td>$-15.88</td><td>130</td><td>1</td></tr>
+            <tr><td><a href="team-pow.html" style="color:inherit;text-decoration:none;font-weight:600;">Battersea Power Bottoms</a></td><td class="dim">Sam R. +1</td><td>22</td><td>$140.11</td><td>$130.32</td><td>$-9.79</td><td>55</td><td>1</td></tr>
+            <tr><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;font-weight:600;">What The FC</a></td><td class="dim">Erik O.</td><td>22</td><td>$127.34</td><td>$122.92</td><td>$-4.42</td><td>83</td><td>3</td></tr>
+            <tr><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;font-weight:600;">Quidpool FC</a></td><td class="dim">Erik J.</td><td>22</td><td>$121.15</td><td>$181.88</td><td>$60.73</td><td>260</td><td>4</td></tr>
+            <tr><td><a href="team-huf.html" style="color:inherit;text-decoration:none;font-weight:600;">House of Hufflepuff</a></td><td class="dim">Jeremy A.</td><td>22</td><td>$116.15</td><td>$202.00</td><td>$85.85</td><td>303</td><td>14</td></tr>
+            <tr><td><a href="team-fav.html" style="color:inherit;text-decoration:none;font-weight:600;">5th Ave Argyle</a></td><td class="dim">Jack W.</td><td>22</td><td>$114.88</td><td>$180.08</td><td>$65.20</td><td>220</td><td>2</td></tr>
+            <tr><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td class="dim">Kirk W. +1</td><td>22</td><td>$110.88</td><td>$153.18</td><td>$42.30</td><td>98</td><td>3</td></tr>
+            <tr><td><a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:600;">Divided United</a></td><td class="dim">Chris G.</td><td>21</td><td>$109.13</td><td>$142.02</td><td>$32.89</td><td>193</td><td>0</td></tr>
+            <tr><td><a href="team-nac.html" style="color:inherit;text-decoration:none;font-weight:600;">NFC Andover City</a></td><td class="dim">Kris L.</td><td>22</td><td>$86.02</td><td>$119.22</td><td>$33.20</td><td>45</td><td>9</td></tr>
+            <tr><td><a href="team-ms8.html" style="color:inherit;text-decoration:none;font-weight:600;">MS 08th</a></td><td class="dim">Raul T.</td><td>1</td><td>$2.98</td><td>$0.00</td><td>$-2.98</td><td>—</td><td>1</td></tr>
+            <tr><td><a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:600;">CRG McGovern</a></td><td class="dim">Casey M. +3</td><td>22</td><td>—</td><td>$248.28</td><td>—</td><td>386</td><td>13</td></tr>
+            <tr><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:600;">The Bookhouse Boys</a></td><td class="dim">Matt O.</td><td>22</td><td>—</td><td>$172.46</td><td>—</td><td>180</td><td>14</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      
     <section class="card mv-card">
+      <h2 class="mv-chrome-text">25/26 Game Log</h2>
+      <div class="sub">Every fixture from the league schedule &mdash; fan interest, attendance (capacity-capped), gate receipts, and the 80/20 home/away revenue split</div>
       <div class="mv-table-scroll">
         <table class="mv-table">
-          <thead><tr><th>Team</th><th>Owner</th><th>Cost</th><th>Revenue</th><th>Fans</th><th># Trophies</th></tr></thead>
+          <thead><tr><th>Wk</th><th>Home</th><th>Away</th><th>Stadium</th><th>Capacity</th><th>Fan Int (H/A)</th><th>Attendance</th><th>Gate Receipts</th><th>Home Rev</th><th>Away Rev</th></tr></thead>
           <tbody>
-            <tr><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:600;">The Bookhouse Boys</a></td><td class="dim">Matt O.</td><td>$222.32</td><td>$0.00</td><td>40</td><td>14</td></tr>
-            <tr><td><a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:600;">CRG McGovern</a></td><td class="dim">Casey M. +3</td><td>$220.84</td><td>$0.00</td><td>220</td><td>13</td></tr>
-            <tr><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;font-weight:600;">Quidpool FC</a></td><td class="dim">Erik J.</td><td>$143.44</td><td>$0.00</td><td>90</td><td>4</td></tr>
-            <tr><td><a href="team-tts.html" style="color:inherit;text-decoration:none;font-weight:600;">Thottenham Thotspur</a></td><td class="dim">Kevin O.</td><td>$143.13</td><td>$0.00</td><td>35</td><td>4</td></tr>
-            <tr><td><a href="team-ren.html" style="color:inherit;text-decoration:none;font-weight:600;">Real News</a></td><td class="dim">Reid F.</td><td>$135.57</td><td>$0.00</td><td>110</td><td>1</td></tr>
-            <tr><td><a href="team-huf.html" style="color:inherit;text-decoration:none;font-weight:600;">House of Hufflepuff</a></td><td class="dim">Jeremy A.</td><td>$135.31</td><td>$0.00</td><td>150</td><td>14</td></tr>
-            <tr><td><a href="team-fav.html" style="color:inherit;text-decoration:none;font-weight:600;">5th Ave Argyle</a></td><td class="dim">Jack W.</td><td>$127.17</td><td>$0.00</td><td>180</td><td>2</td></tr>
-            <tr><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;font-weight:600;">What The FC</a></td><td class="dim">Erik O.</td><td>$97.79</td><td>$0.00</td><td>70</td><td>3</td></tr>
-            <tr><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td class="dim">Kirk W. +1</td><td>$93.89</td><td>$0.00</td><td>50</td><td>3</td></tr>
-            <tr><td><a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:600;">Divided United</a></td><td class="dim">Chris G.</td><td>$89.86</td><td>$0.00</td><td>135</td><td>0</td></tr>
-            <tr><td><a href="team-nac.html" style="color:inherit;text-decoration:none;font-weight:600;">NFC Andover City</a></td><td class="dim">Kris L.</td><td>$71.93</td><td>$0.00</td><td>30</td><td>9</td></tr>
-            <tr><td><a href="team-ms8.html" style="color:inherit;text-decoration:none;font-weight:600;">MS 08th</a></td><td class="dim">Raul T.</td><td>$55.39</td><td>$0.00</td><td>—</td><td>1</td></tr>
-            <tr><td><a href="team-pow.html" style="color:inherit;text-decoration:none;font-weight:600;">Battersea Power Bottoms</a></td><td class="dim">Sam R. +1</td><td>$52.89</td><td>$0.00</td><td>25</td><td>1</td></tr>
+            <tr><td>1</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">The CA$E</td><td>700</td><td>243 / 238</td><td>481</td><td>$24.05</td><td>$19.24</td><td>$4.81</td></tr>
+            <tr><td>1</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">West East Enders Park</td><td>350</td><td>45 / 40</td><td>85</td><td>$4.25</td><td>$3.40</td><td>$0.85</td></tr>
+            <tr><td>1</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">Gringott's Counting House</td><td>650</td><td>138 / 43</td><td>181</td><td>$9.05</td><td>$7.24</td><td>$1.81</td></tr>
+            <tr><td>1</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">The Stadium of Power</td><td>550</td><td>120 / 78</td><td>198</td><td>$9.90</td><td>$7.92</td><td>$1.98</td></tr>
+            <tr><td>1</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">Dorneywood</td><td>450</td><td>390 / 345</td><td>450</td><td>$22.50</td><td>$18.00</td><td>$4.50</td></tr>
+            <tr><td>1</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">ThoverThere</td><td>450</td><td>62 / 220</td><td>282</td><td>$14.10</td><td>$11.28</td><td>$2.82</td></tr>
+            <tr><td>2</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">Hinfield</td><td>550</td><td>53 / 125</td><td>178</td><td>$8.90</td><td>$7.12</td><td>$1.78</td></tr>
+            <tr><td>2</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">The Great Northern</td><td>600</td><td>81 / 48</td><td>129</td><td>$6.45</td><td>$5.16</td><td>$1.29</td></tr>
+            <tr><td>2</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">The CA$E</td><td>700</td><td>248 / 45</td><td>298</td><td>$14.90</td><td>$11.92</td><td>$2.98</td></tr>
+            <tr><td>2</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">The Sock Drawer</td><td>400</td><td>40 / 420</td><td>400</td><td>$20.00</td><td>$16.00</td><td>$4.00</td></tr>
+            <tr><td>2</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>275 / 103</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>2</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">ThoverThere</td><td>450</td><td>79 / 205</td><td>284</td><td>$14.20</td><td>$11.36</td><td>$2.84</td></tr>
+            <tr><td>3</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">West East Enders Park</td><td>350</td><td>53 / 40</td><td>93</td><td>$4.65</td><td>$3.72</td><td>$0.93</td></tr>
+            <tr><td>3</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">Gringott's Counting House</td><td>650</td><td>313 / 78</td><td>391</td><td>$19.55</td><td>$15.64</td><td>$3.91</td></tr>
+            <tr><td>3</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">The Pit</td><td>500</td><td>60 / 335</td><td>395</td><td>$19.75</td><td>$15.80</td><td>$3.95</td></tr>
+            <tr><td>3</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">Dorneywood</td><td>450</td><td>375 / 77</td><td>450</td><td>$22.50</td><td>$18.00</td><td>$4.50</td></tr>
+            <tr><td>3</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>185 / 175</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>3</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">Stand of Oaks</td><td>350</td><td>38 / 261</td><td>299</td><td>$14.95</td><td>$11.96</td><td>$2.99</td></tr>
+            <tr><td>4</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">The CA$E</td><td>700</td><td>261 / 313</td><td>574</td><td>$28.70</td><td>$22.96</td><td>$5.74</td></tr>
+            <tr><td>4</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">West East Enders Park</td><td>350</td><td>53 / 185</td><td>238</td><td>$11.90</td><td>$9.52</td><td>$2.38</td></tr>
+            <tr><td>4</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">The Sock Drawer</td><td>400</td><td>335 / 78</td><td>400</td><td>$20.00</td><td>$16.00</td><td>$4.00</td></tr>
+            <tr><td>4</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">The Pit</td><td>500</td><td>60 / 40</td><td>100</td><td>$5.00</td><td>$4.00</td><td>$1.00</td></tr>
+            <tr><td>4</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">ThoverThere</td><td>450</td><td>77 / 175</td><td>252</td><td>$12.60</td><td>$10.08</td><td>$2.52</td></tr>
+            <tr><td>4</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">Stand of Oaks</td><td>350</td><td>38 / 375</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>5</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">Hinfield</td><td>550</td><td>118 / 145</td><td>263</td><td>$13.15</td><td>$10.52</td><td>$2.63</td></tr>
+            <tr><td>5</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">The CA$E</td><td>700</td><td>306 / 77</td><td>383</td><td>$19.15</td><td>$15.32</td><td>$3.83</td></tr>
+            <tr><td>5</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">The Sock Drawer</td><td>400</td><td>330 / 108</td><td>400</td><td>$20.00</td><td>$16.00</td><td>$4.00</td></tr>
+            <tr><td>5</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">The Stadium of Power</td><td>550</td><td>65 / 270</td><td>335</td><td>$16.75</td><td>$13.40</td><td>$3.35</td></tr>
+            <tr><td>5</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">Dorneywood</td><td>450</td><td>130 / 343</td><td>450</td><td>$22.50</td><td>$18.00</td><td>$4.50</td></tr>
+            <tr><td>5</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">Stand of Oaks</td><td>350</td><td>38 / 60</td><td>98</td><td>$4.90</td><td>$3.92</td><td>$0.98</td></tr>
+            <tr><td>6</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">Hinfield</td><td>550</td><td>118 / 306</td><td>424</td><td>$21.20</td><td>$16.96</td><td>$4.24</td></tr>
+            <tr><td>6</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">The Great Northern</td><td>600</td><td>270 / 130</td><td>400</td><td>$20.00</td><td>$16.00</td><td>$4.00</td></tr>
+            <tr><td>6</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">Gringott's Counting House</td><td>650</td><td>343 / 108</td><td>451</td><td>$22.55</td><td>$18.04</td><td>$4.51</td></tr>
+            <tr><td>6</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">The Pit</td><td>500</td><td>60 / 77</td><td>137</td><td>$6.85</td><td>$5.48</td><td>$1.37</td></tr>
+            <tr><td>6</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>145 / 65</td><td>210</td><td>$10.50</td><td>$8.40</td><td>$2.10</td></tr>
+            <tr><td>6</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">Stand of Oaks</td><td>350</td><td>38 / 330</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>7</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">Hinfield</td><td>550</td><td>118 / 38</td><td>156</td><td>$7.80</td><td>$6.24</td><td>$1.56</td></tr>
+            <tr><td>7</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">The Great Northern</td><td>600</td><td>270 / 330</td><td>600</td><td>$30.00</td><td>$24.00</td><td>$6.00</td></tr>
+            <tr><td>7</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">The Stadium of Power</td><td>550</td><td>65 / 343</td><td>408</td><td>$20.40</td><td>$16.32</td><td>$4.08</td></tr>
+            <tr><td>7</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">Dorneywood</td><td>450</td><td>130 / 306</td><td>436</td><td>$21.80</td><td>$17.44</td><td>$4.36</td></tr>
+            <tr><td>7</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>145 / 60</td><td>205</td><td>$10.25</td><td>$8.20</td><td>$2.05</td></tr>
+            <tr><td>7</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">ThoverThere</td><td>450</td><td>77 / 108</td><td>185</td><td>$9.25</td><td>$7.40</td><td>$1.85</td></tr>
+            <tr><td>8</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">The Great Northern</td><td>600</td><td>270 / 118</td><td>388</td><td>$19.40</td><td>$15.52</td><td>$3.88</td></tr>
+            <tr><td>8</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">West East Enders Park</td><td>350</td><td>108 / 38</td><td>146</td><td>$7.30</td><td>$5.84</td><td>$1.46</td></tr>
+            <tr><td>8</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">The Pit</td><td>500</td><td>60 / 130</td><td>190</td><td>$9.50</td><td>$7.60</td><td>$1.90</td></tr>
+            <tr><td>8</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">The Stadium of Power</td><td>550</td><td>65 / 306</td><td>371</td><td>$18.55</td><td>$14.84</td><td>$3.71</td></tr>
+            <tr><td>8</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>145 / 343</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>8</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">ThoverThere</td><td>450</td><td>77 / 330</td><td>407</td><td>$20.35</td><td>$16.28</td><td>$4.07</td></tr>
+            <tr><td>9</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">The Great Northern</td><td>600</td><td>130 / 40</td><td>170</td><td>$8.50</td><td>$6.80</td><td>$1.70</td></tr>
+            <tr><td>9</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">The CA$E</td><td>700</td><td>446 / 140</td><td>586</td><td>$29.30</td><td>$23.44</td><td>$5.86</td></tr>
+            <tr><td>9</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">The Sock Drawer</td><td>400</td><td>290 / 233</td><td>400</td><td>$20.00</td><td>$16.00</td><td>$4.00</td></tr>
+            <tr><td>9</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">The Stadium of Power</td><td>550</td><td>55 / 103</td><td>158</td><td>$7.90</td><td>$6.32</td><td>$1.58</td></tr>
+            <tr><td>9</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">Dorneywood</td><td>450</td><td>200 / 173</td><td>373</td><td>$18.65</td><td>$14.92</td><td>$3.73</td></tr>
+            <tr><td>9</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">ThoverThere</td><td>450</td><td>42 / 138</td><td>180</td><td>$9.00</td><td>$7.20</td><td>$1.80</td></tr>
+            <tr><td>10</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">Hinfield</td><td>550</td><td>138 / 200</td><td>338</td><td>$16.90</td><td>$13.52</td><td>$3.38</td></tr>
+            <tr><td>10</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">The CA$E</td><td>700</td><td>446 / 290</td><td>700</td><td>$35.00</td><td>$28.00</td><td>$7.00</td></tr>
+            <tr><td>10</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">West East Enders Park</td><td>350</td><td>173 / 130</td><td>303</td><td>$15.15</td><td>$12.12</td><td>$3.03</td></tr>
+            <tr><td>10</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">Gringott's Counting House</td><td>650</td><td>233 / 40</td><td>273</td><td>$13.65</td><td>$10.92</td><td>$2.73</td></tr>
+            <tr><td>10</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>140 / 103</td><td>243</td><td>$12.15</td><td>$9.72</td><td>$2.43</td></tr>
+            <tr><td>10</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">ThoverThere</td><td>450</td><td>42 / 55</td><td>97</td><td>$4.85</td><td>$3.88</td><td>$0.97</td></tr>
+            <tr><td>11</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">Hinfield</td><td>550</td><td>138 / 173</td><td>311</td><td>$15.55</td><td>$12.44</td><td>$3.11</td></tr>
+            <tr><td>11</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">The Great Northern</td><td>600</td><td>130 / 233</td><td>363</td><td>$18.15</td><td>$14.52</td><td>$3.63</td></tr>
+            <tr><td>11</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">The Pit</td><td>500</td><td>40 / 446</td><td>486</td><td>$24.30</td><td>$19.44</td><td>$4.86</td></tr>
+            <tr><td>11</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">The Stadium of Power</td><td>550</td><td>55 / 200</td><td>255</td><td>$12.75</td><td>$10.20</td><td>$2.55</td></tr>
+            <tr><td>11</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>140 / 290</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>11</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">Stand of Oaks</td><td>350</td><td>103 / 42</td><td>145</td><td>$7.25</td><td>$5.80</td><td>$1.45</td></tr>
+            <tr><td>12</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">The Great Northern</td><td>600</td><td>130 / 55</td><td>185</td><td>$9.25</td><td>$7.40</td><td>$1.85</td></tr>
+            <tr><td>12</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">West East Enders Park</td><td>350</td><td>173 / 290</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>12</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">Gringott's Counting House</td><td>650</td><td>233 / 200</td><td>433</td><td>$21.65</td><td>$17.32</td><td>$4.33</td></tr>
+            <tr><td>12</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">The Pit</td><td>500</td><td>40 / 103</td><td>143</td><td>$7.15</td><td>$5.72</td><td>$1.43</td></tr>
+            <tr><td>12</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>140 / 138</td><td>278</td><td>$13.90</td><td>$11.12</td><td>$2.78</td></tr>
+            <tr><td>12</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">ThoverThere</td><td>450</td><td>42 / 446</td><td>450</td><td>$22.50</td><td>$18.00</td><td>$4.50</td></tr>
+            <tr><td>13</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">Hinfield</td><td>550</td><td>138 / 55</td><td>193</td><td>$9.65</td><td>$7.72</td><td>$1.93</td></tr>
+            <tr><td>13</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">The Great Northern</td><td>600</td><td>130 / 446</td><td>576</td><td>$28.80</td><td>$23.04</td><td>$5.76</td></tr>
+            <tr><td>13</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">The Sock Drawer</td><td>150</td><td>290 / 200</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>13</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">The Pit</td><td>500</td><td>40 / 173</td><td>213</td><td>$10.65</td><td>$8.52</td><td>$2.13</td></tr>
+            <tr><td>13</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">Sunava Pitch</td><td>150</td><td>140 / 42</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>13</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">Stand of Oaks</td><td>350</td><td>103 / 233</td><td>336</td><td>$16.80</td><td>$13.44</td><td>$3.36</td></tr>
+            <tr><td>14</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">Hinfield</td><td>300</td><td>138 / 233</td><td>300</td><td>$15.00</td><td>$12.00</td><td>$3.00</td></tr>
+            <tr><td>14</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">The Great Northern</td><td>300</td><td>130 / 140</td><td>270</td><td>$13.50</td><td>$10.80</td><td>$2.70</td></tr>
+            <tr><td>14</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">The CA$E</td><td>350</td><td>446 / 103</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>14</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">The Sock Drawer</td><td>150</td><td>290 / 40</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>14</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">The Stadium of Power</td><td>300</td><td>55 / 173</td><td>228</td><td>$11.40</td><td>$9.12</td><td>$2.28</td></tr>
+            <tr><td>14</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">ThoverThere</td><td>450</td><td>42 / 200</td><td>242</td><td>$12.10</td><td>$9.68</td><td>$2.42</td></tr>
+            <tr><td>15</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">The Great Northern</td><td>600</td><td>130 / 173</td><td>303</td><td>$15.15</td><td>$12.12</td><td>$3.03</td></tr>
+            <tr><td>15</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">The Sock Drawer</td><td>400</td><td>290 / 446</td><td>400</td><td>$20.00</td><td>$16.00</td><td>$4.00</td></tr>
+            <tr><td>15</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">The Pit</td><td>500</td><td>40 / 233</td><td>273</td><td>$13.65</td><td>$10.92</td><td>$2.73</td></tr>
+            <tr><td>15</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">The Stadium of Power</td><td>550</td><td>55 / 42</td><td>97</td><td>$4.85</td><td>$3.88</td><td>$0.97</td></tr>
+            <tr><td>15</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">Dorneywood</td><td>450</td><td>200 / 138</td><td>338</td><td>$16.90</td><td>$13.52</td><td>$3.38</td></tr>
+            <tr><td>15</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">Stand of Oaks</td><td>350</td><td>103 / 140</td><td>243</td><td>$12.15</td><td>$9.72</td><td>$2.43</td></tr>
+            <tr><td>16</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">The CA$E</td><td>350</td><td>446 / 200</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>16</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">West East Enders Park</td><td>350</td><td>173 / 42</td><td>215</td><td>$10.75</td><td>$8.60</td><td>$2.15</td></tr>
+            <tr><td>16</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">The Sock Drawer</td><td>150</td><td>290 / 130</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>16</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">Gringott's Counting House</td><td>350</td><td>233 / 55</td><td>288</td><td>$14.40</td><td>$11.52</td><td>$2.88</td></tr>
+            <tr><td>16</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">The Pit</td><td>300</td><td>40 / 140</td><td>180</td><td>$9.00</td><td>$7.20</td><td>$1.80</td></tr>
+            <tr><td>16</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">Stand of Oaks</td><td>150</td><td>103 / 138</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>17</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">Hinfield</td><td>300</td><td>138 / 42</td><td>180</td><td>$9.00</td><td>$7.20</td><td>$1.80</td></tr>
+            <tr><td>17</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td class="dim">West East Enders Park</td><td>350</td><td>173 / 200</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>17</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">Gringott's Counting House</td><td>350</td><td>233 / 290</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>17</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">The Pit</td><td>300</td><td>40 / 130</td><td>170</td><td>$8.50</td><td>$6.80</td><td>$1.70</td></tr>
+            <tr><td>17</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">Sunava Pitch</td><td>150</td><td>140 / 446</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>17</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">Stand of Oaks</td><td>150</td><td>103 / 55</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>18</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">West East Enders Park</td><td>350</td><td>173 / 446</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>18</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">Gringott's Counting House</td><td>350</td><td>233 / 42</td><td>275</td><td>$13.75</td><td>$11.00</td><td>$2.75</td></tr>
+            <tr><td>18</td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">The Pit</td><td>300</td><td>40 / 138</td><td>178</td><td>$8.90</td><td>$7.12</td><td>$1.78</td></tr>
+            <tr><td>18</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">The Stadium of Power</td><td>300</td><td>55 / 290</td><td>300</td><td>$15.00</td><td>$12.00</td><td>$3.00</td></tr>
+            <tr><td>18</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">Dorneywood</td><td>200</td><td>200 / 140</td><td>200</td><td>$10.00</td><td>$8.00</td><td>$2.00</td></tr>
+            <tr><td>18</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">Stand of Oaks</td><td>150</td><td>103 / 130</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>19</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">The CA$E</td><td>350</td><td>446 / 138</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>19</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td class="dim">West East Enders Park</td><td>350</td><td>173 / 233</td><td>350</td><td>$17.50</td><td>$14.00</td><td>$3.50</td></tr>
+            <tr><td>19</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">The Sock Drawer</td><td>150</td><td>290 / 103</td><td>150</td><td>$7.50</td><td>$6.00</td><td>$1.50</td></tr>
+            <tr><td>19</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">The Stadium of Power</td><td>300</td><td>55 / 140</td><td>195</td><td>$9.75</td><td>$7.80</td><td>$1.95</td></tr>
+            <tr><td>19</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">Dorneywood</td><td>200</td><td>200 / 130</td><td>200</td><td>$10.00</td><td>$8.00</td><td>$2.00</td></tr>
+            <tr><td>19</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">ThoverThere</td><td>200</td><td>42 / 40</td><td>82</td><td>$4.10</td><td>$3.28</td><td>$0.82</td></tr>
+            <tr><td>20</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td class="dim">Hinfield</td><td>550</td><td>138 / 290</td><td>428</td><td>$21.40</td><td>$17.12</td><td>$4.28</td></tr>
+            <tr><td>20</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">The Great Northern</td><td>600</td><td>130 / 42</td><td>172</td><td>$8.60</td><td>$6.88</td><td>$1.72</td></tr>
+            <tr><td>20</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td class="dim">Gringott's Counting House</td><td>650</td><td>233 / 446</td><td>650</td><td>$32.50</td><td>$26.00</td><td>$6.50</td></tr>
+            <tr><td>20</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">The Stadium of Power</td><td>550</td><td>55 / 40</td><td>95</td><td>$4.75</td><td>$3.80</td><td>$0.95</td></tr>
+            <tr><td>20</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">Dorneywood</td><td>450</td><td>200 / 103</td><td>303</td><td>$15.15</td><td>$12.12</td><td>$3.03</td></tr>
+            <tr><td>20</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td><a href="team-ms8.html" style="color:inherit;font-weight:600;">MS8</a></td><td class="dim">Sunava Pitch</td><td>350</td><td>140 / —</td><td>0</td><td>$0.00</td><td>$0.00</td><td>$0.00</td></tr>
+            <tr><td>21</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">Hinfield</td><td>550</td><td>138 / 130</td><td>268</td><td>$13.40</td><td>$10.72</td><td>$2.68</td></tr>
+            <tr><td>21</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">The CA$E</td><td>700</td><td>446 / 55</td><td>501</td><td>$25.05</td><td>$20.04</td><td>$5.01</td></tr>
+            <tr><td>21</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td class="dim">The Sock Drawer</td><td>400</td><td>290 / 42</td><td>332</td><td>$16.60</td><td>$13.28</td><td>$3.32</td></tr>
+            <tr><td>21</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">Gringott's Counting House</td><td>650</td><td>233 / 140</td><td>373</td><td>$18.65</td><td>$14.92</td><td>$3.73</td></tr>
+            <tr><td>21</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">Dorneywood</td><td>450</td><td>200 / 40</td><td>240</td><td>$12.00</td><td>$9.60</td><td>$2.40</td></tr>
+            <tr><td>21</td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td class="dim">Stand of Oaks</td><td>350</td><td>103 / 173</td><td>276</td><td>$13.80</td><td>$11.04</td><td>$2.76</td></tr>
+            <tr><td>22</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td class="dim">The CA$E</td><td>700</td><td>446 / 40</td><td>486</td><td>$24.30</td><td>$19.44</td><td>$4.86</td></tr>
+            <tr><td>22</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td class="dim">West East Enders Park</td><td>350</td><td>173 / 138</td><td>311</td><td>$15.55</td><td>$12.44</td><td>$3.11</td></tr>
+            <tr><td>22</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td class="dim">The Sock Drawer</td><td>400</td><td>290 / 140</td><td>400</td><td>$20.00</td><td>$16.00</td><td>$4.00</td></tr>
+            <tr><td>22</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td class="dim">Gringott's Counting House</td><td>650</td><td>233 / 130</td><td>363</td><td>$18.15</td><td>$14.52</td><td>$3.63</td></tr>
+            <tr><td>22</td><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td class="dim">Dorneywood</td><td>450</td><td>200 / 55</td><td>255</td><td>$12.75</td><td>$10.20</td><td>$2.55</td></tr>
+            <tr><td>22</td><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td class="dim">ThoverThere</td><td>450</td><td>42 / 103</td><td>145</td><td>$7.25</td><td>$5.80</td><td>$1.45</td></tr>
           </tbody>
         </table>
       </div>
     </section>
-
+      
     <section class="card mv-card">
-      <h2 class="mv-chrome-text">Game Log</h2>
-      <div class="sub">Modeled on the league schedule &mdash; week, matchup, stadium, attendance, gate receipts</div>
+      <h2 class="mv-chrome-text">The Fan Formula</h2>
+      <div class="sub">How each team's final 25/26 fan count is built, live from the league sheet and Fantrax</div>
+      <p style="font-size:13px;line-height:1.7;color:var(--mv-ink-muted);">
+        <b style="color:var(--mv-ink);">Fans = Standings + Firm&amp;Legacy + Top&nbsp;XI + MBP + Points&nbsp;Bonus</b><br>
+        &middot; <b>Standings</b>: tiered by live Fantrax rank (1st = 220 fans down to 12th = 25)<br>
+        &middot; <b>Firm + Legacy</b>: career/trophy legacy value, from the league sheet<br>
+        &middot; <b>Top XI</b>: 20 fans per player a team owns in the league's real live Top XI (1 GK / 3 D / 4 M / 3 F, ranked by actual Fantrax fantasy points)<br>
+        &middot; <b>MBP</b>: 50 fans for owning the single highest-scoring player in the league &mdash; currently <b style="color:var(--mv-ink);">Bruno Fernandes (REN, 340.5 pts)</b><br>
+        &middot; <b>Points Bonus</b>: fixed bonus for the top 5 teams by season points, from the league sheet
+      </p>
       <div class="mv-table-scroll">
         <table class="mv-table">
-          <thead>
-            <tr><th>Week</th><th>Home</th><th>Away</th><th>Stadium</th><th>Attendance</th><th>Gate Receipts</th></tr>
-          </thead>
+          <thead><tr><th>Team</th><th>Standings</th><th>Legacy</th><th>Top XI (#)</th><th>MBP</th><th>Points Bonus</th><th>Total Fans</th></tr></thead>
+          <tbody>
+            <tr><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td>220</td><td>31</td><td>20 <span class="dim">(1)</span></td><td>0</td><td>115</td><td style="font-weight:700;color:var(--mv-gold);">386</td></tr>
+            <tr><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td>180</td><td>28</td><td>40 <span class="dim">(2)</span></td><td>0</td><td>55</td><td style="font-weight:700;color:var(--mv-gold);">303</td></tr>
+            <tr><td><a href="team-qfc.html" style="color:inherit;font-weight:600;">QFC</a></td><td>150</td><td>25</td><td>0 <span class="dim">(0)</span></td><td>0</td><td>85</td><td style="font-weight:700;color:var(--mv-gold);">260</td></tr>
+            <tr><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td>110</td><td>20</td><td>20 <span class="dim">(1)</span></td><td>0</td><td>70</td><td style="font-weight:700;color:var(--mv-gold);">220</td></tr>
+            <tr><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td>135</td><td>18</td><td>40 <span class="dim">(2)</span></td><td>0</td><td>0</td><td style="font-weight:700;color:var(--mv-gold);">193</td></tr>
+            <tr><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td>90</td><td>45</td><td>20 <span class="dim">(1)</span></td><td>0</td><td>25</td><td style="font-weight:700;color:var(--mv-gold);">180</td></tr>
+            <tr><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td>50</td><td>10</td><td>20 <span class="dim">(1)</span></td><td>50</td><td>0</td><td style="font-weight:700;color:var(--mv-gold);">130</td></tr>
+            <tr><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td>40</td><td>18</td><td>40 <span class="dim">(2)</span></td><td>0</td><td>0</td><td style="font-weight:700;color:var(--mv-gold);">98</td></tr>
+            <tr><td><a href="team-wtf.html" style="color:inherit;font-weight:600;">WTF</a></td><td>70</td><td>13</td><td>0 <span class="dim">(0)</span></td><td>0</td><td>0</td><td style="font-weight:700;color:var(--mv-gold);">83</td></tr>
+            <tr><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td>25</td><td>10</td><td>20 <span class="dim">(1)</span></td><td>0</td><td>0</td><td style="font-weight:700;color:var(--mv-gold);">55</td></tr>
+            <tr><td><a href="team-nac.html" style="color:inherit;font-weight:600;">NAC</a></td><td>35</td><td>10</td><td>0 <span class="dim">(0)</span></td><td>0</td><td>0</td><td style="font-weight:700;color:var(--mv-gold);">45</td></tr>
+            <tr><td><a href="team-tts.html" style="color:inherit;font-weight:600;">TTS</a></td><td>30</td><td>7</td><td>0 <span class="dim">(0)</span></td><td>0</td><td>0</td><td style="font-weight:700;color:var(--mv-gold);">37</td></tr>
+          </tbody>
         </table>
       </div>
-      <div class="mv-empty">
-        <div class="big">No games played yet this season</div>
-        Game-by-game financials will appear here once Week 1 kicks off.
+
+      <h3 class="mv-chrome-text" style="font-size:16px;margin-top:24px;">Live Starting XI</h3>
+      <div class="sub">The actual top-scoring owned players league-wide, right now</div>
+      <div class="mv-table-scroll">
+        <table class="mv-table">
+          <thead><tr><th>Pos</th><th>Player</th><th>Team</th><th>Fantasy Pts</th></tr></thead>
+          <tbody>
+            <tr><td>GK</td><td>David Raya</td><td><a href="team-pow.html" style="color:inherit;font-weight:600;">POW</a></td><td>155.5</td></tr>
+            <tr><td>D</td><td>Virgil van Dijk</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td>232.0</td></tr>
+            <tr><td>D</td><td>Marc Guehi</td><td><a href="team-bhb.html" style="color:inherit;font-weight:600;">BHB</a></td><td>213.5</td></tr>
+            <tr><td>D</td><td>Marcos Senesi</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td>213.0</td></tr>
+            <tr><td>M</td><td>Bruno Fernandes</td><td><a href="team-ren.html" style="color:inherit;font-weight:600;">REN</a></td><td>340.5</td></tr>
+            <tr><td>M</td><td>Dominik Szoboszlai</td><td><a href="team-crg.html" style="color:inherit;font-weight:600;">CRG</a></td><td>237.0</td></tr>
+            <tr><td>M</td><td>Morgan Gibbs-White</td><td><a href="team-huf.html" style="color:inherit;font-weight:600;">HUF</a></td><td>228.5</td></tr>
+            <tr><td>M</td><td>Kiernan Dewsbury-Hall</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td>207.0</td></tr>
+            <tr><td>F</td><td>Erling Haaland</td><td><a href="team-ass.html" style="color:inherit;font-weight:600;">ASS</a></td><td>284.5</td></tr>
+            <tr><td>F</td><td>Igor Thiago</td><td><a href="team-du.html" style="color:inherit;font-weight:600;">DU</a></td><td>241.5</td></tr>
+            <tr><td>F</td><td>Antoine Semenyo</td><td><a href="team-fav.html" style="color:inherit;font-weight:600;">FAV</a></td><td>229.5</td></tr>
+          </tbody>
+        </table>
       </div>
     </section>
+    </div>
+    <div class="season-block" data-season="26/27" style="display:none;">
+      <div class="sub" style="margin-bottom:10px;">26/27 hasn't been played yet &mdash; salary cost only, no games or revenue to show.</div>
+      <section class="card mv-card">
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+          <thead><tr><th>Team</th><th>Owner</th><th>26/27 Salary Cost</th><th># Trophies</th></tr></thead>
+          <tbody>
+            <tr><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:600;">The Bookhouse Boys</a></td><td class="dim">Matt O.</td><td>$222.32</td><td>14</td></tr>
+            <tr><td><a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:600;">CRG McGovern</a></td><td class="dim">Casey M. +3</td><td>$220.84</td><td>13</td></tr>
+            <tr><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;font-weight:600;">Quidpool FC</a></td><td class="dim">Erik J.</td><td>$143.44</td><td>4</td></tr>
+            <tr><td><a href="team-tts.html" style="color:inherit;text-decoration:none;font-weight:600;">Thottenham Thotspur</a></td><td class="dim">Kevin O.</td><td>$143.13</td><td>4</td></tr>
+            <tr><td><a href="team-ren.html" style="color:inherit;text-decoration:none;font-weight:600;">Real News</a></td><td class="dim">Reid F.</td><td>$135.57</td><td>1</td></tr>
+            <tr><td><a href="team-huf.html" style="color:inherit;text-decoration:none;font-weight:600;">House of Hufflepuff</a></td><td class="dim">Jeremy A.</td><td>$135.31</td><td>14</td></tr>
+            <tr><td><a href="team-fav.html" style="color:inherit;text-decoration:none;font-weight:600;">5th Ave Argyle</a></td><td class="dim">Jack W.</td><td>$127.17</td><td>2</td></tr>
+            <tr><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;font-weight:600;">What The FC</a></td><td class="dim">Erik O.</td><td>$97.79</td><td>3</td></tr>
+            <tr><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td class="dim">Kirk W. +1</td><td>$93.89</td><td>3</td></tr>
+            <tr><td><a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:600;">Divided United</a></td><td class="dim">Chris G.</td><td>$89.86</td><td>0</td></tr>
+            <tr><td><a href="team-nac.html" style="color:inherit;text-decoration:none;font-weight:600;">NFC Andover City</a></td><td class="dim">Kris L.</td><td>$71.93</td><td>9</td></tr>
+            <tr><td><a href="team-ms8.html" style="color:inherit;text-decoration:none;font-weight:600;">MS 08th</a></td><td class="dim">Raul T.</td><td>$55.39</td><td>1</td></tr>
+            <tr><td><a href="team-pow.html" style="color:inherit;text-decoration:none;font-weight:600;">Battersea Power Bottoms</a></td><td class="dim">Sam R. +1</td><td>$52.89</td><td>1</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      
+      
+    </div>
+    <div class="season-block" data-season="27/28" style="display:none;">
+      <div class="sub" style="margin-bottom:10px;">27/28 hasn't been played yet &mdash; salary cost only, no games or revenue to show.</div>
+      <section class="card mv-card">
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+          <thead><tr><th>Team</th><th>Owner</th><th>27/28 Salary Cost</th><th># Trophies</th></tr></thead>
+          <tbody>
+            <tr><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:600;">The Bookhouse Boys</a></td><td class="dim">Matt O.</td><td>$212.37</td><td>14</td></tr>
+            <tr><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;font-weight:600;">Quidpool FC</a></td><td class="dim">Erik J.</td><td>$158.14</td><td>4</td></tr>
+            <tr><td><a href="team-huf.html" style="color:inherit;text-decoration:none;font-weight:600;">House of Hufflepuff</a></td><td class="dim">Jeremy A.</td><td>$124.86</td><td>14</td></tr>
+            <tr><td><a href="team-tts.html" style="color:inherit;text-decoration:none;font-weight:600;">Thottenham Thotspur</a></td><td class="dim">Kevin O.</td><td>$109.14</td><td>4</td></tr>
+            <tr><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td class="dim">Kirk W. +1</td><td>$93.73</td><td>3</td></tr>
+            <tr><td><a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:600;">CRG McGovern</a></td><td class="dim">Casey M. +3</td><td>$81.68</td><td>13</td></tr>
+            <tr><td><a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:600;">Divided United</a></td><td class="dim">Chris G.</td><td>$80.43</td><td>0</td></tr>
+            <tr><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;font-weight:600;">What The FC</a></td><td class="dim">Erik O.</td><td>$68.80</td><td>3</td></tr>
+            <tr><td><a href="team-pow.html" style="color:inherit;text-decoration:none;font-weight:600;">Battersea Power Bottoms</a></td><td class="dim">Sam R. +1</td><td>$32.93</td><td>1</td></tr>
+            <tr><td><a href="team-ms8.html" style="color:inherit;text-decoration:none;font-weight:600;">MS 08th</a></td><td class="dim">Raul T.</td><td>$4.84</td><td>1</td></tr>
+            <tr><td><a href="team-fav.html" style="color:inherit;text-decoration:none;font-weight:600;">5th Ave Argyle</a></td><td class="dim">Jack W.</td><td>$0.00</td><td>2</td></tr>
+            <tr><td><a href="team-nac.html" style="color:inherit;text-decoration:none;font-weight:600;">NFC Andover City</a></td><td class="dim">Kris L.</td><td>—</td><td>9</td></tr>
+            <tr><td><a href="team-ren.html" style="color:inherit;text-decoration:none;font-weight:600;">Real News</a></td><td class="dim">Reid F.</td><td>—</td><td>1</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      
+      
+    </div>
+    <div class="season-block" data-season="28/29" style="display:none;">
+      <div class="sub" style="margin-bottom:10px;">28/29 hasn't been played yet &mdash; salary cost only, no games or revenue to show.</div>
+      <section class="card mv-card">
+        <div class="mv-table-scroll">
+          <table class="mv-table">
+          <thead><tr><th>Team</th><th>Owner</th><th>28/29 Salary Cost</th><th># Trophies</th></tr></thead>
+          <tbody>
+            <tr><td><a href="team-fav.html" style="color:inherit;text-decoration:none;font-weight:600;">5th Ave Argyle</a></td><td class="dim">Jack W.</td><td>—</td><td>2</td></tr>
+            <tr><td><a href="team-pow.html" style="color:inherit;text-decoration:none;font-weight:600;">Battersea Power Bottoms</a></td><td class="dim">Sam R. +1</td><td>—</td><td>1</td></tr>
+            <tr><td><a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:600;">CRG McGovern</a></td><td class="dim">Casey M. +3</td><td>—</td><td>13</td></tr>
+            <tr><td><a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:600;">Divided United</a></td><td class="dim">Chris G.</td><td>—</td><td>0</td></tr>
+            <tr><td><a href="team-huf.html" style="color:inherit;text-decoration:none;font-weight:600;">House of Hufflepuff</a></td><td class="dim">Jeremy A.</td><td>—</td><td>14</td></tr>
+            <tr><td><a href="team-ms8.html" style="color:inherit;text-decoration:none;font-weight:600;">MS 08th</a></td><td class="dim">Raul T.</td><td>—</td><td>1</td></tr>
+            <tr><td><a href="team-nac.html" style="color:inherit;text-decoration:none;font-weight:600;">NFC Andover City</a></td><td class="dim">Kris L.</td><td>—</td><td>9</td></tr>
+            <tr><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;font-weight:600;">Quidpool FC</a></td><td class="dim">Erik J.</td><td>—</td><td>4</td></tr>
+            <tr><td><a href="team-ren.html" style="color:inherit;text-decoration:none;font-weight:600;">Real News</a></td><td class="dim">Reid F.</td><td>—</td><td>1</td></tr>
+            <tr><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:600;">The Bookhouse Boys</a></td><td class="dim">Matt O.</td><td>$0.00</td><td>14</td></tr>
+            <tr><td><a href="team-tts.html" style="color:inherit;text-decoration:none;font-weight:600;">Thottenham Thotspur</a></td><td class="dim">Kevin O.</td><td>—</td><td>4</td></tr>
+            <tr><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;font-weight:600;">What The FC</a></td><td class="dim">Erik O.</td><td>—</td><td>3</td></tr>
+            <tr><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td class="dim">Kirk W. +1</td><td>—</td><td>3</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      
+      
+    </div>
+
+    <script>
+      document.getElementById('seasonSelect').addEventListener('change', function() {
+        var season = this.value;
+        document.querySelectorAll('.season-block').forEach(function(el) {
+          el.style.display = (el.dataset.season === season) ? 'block' : 'none';
+        });
+      });
+    </script>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-13 22:02 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 02:21 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

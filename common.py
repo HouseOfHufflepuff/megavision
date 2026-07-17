@@ -68,6 +68,114 @@ def fetch_season_salary_totals(wb, label):
     return totals
 
 
+def fetch_all_season_labels(wb):
+    """Every distinct season label (e.g. '25/26') appearing as a year column
+    on any team tab, sorted oldest-first. Used to populate the financials
+    page's season dropdown -- whatever's actually in the sheet, live."""
+    labels = set()
+    for code, _, _ in TEAMS:
+        sheet_name = find_team_sheet(wb, code)
+        if sheet_name is None:
+            continue
+        rows = list(wb[sheet_name].iter_rows(min_row=1, max_row=10, values_only=True))
+        header_idx = next((i for i, r in enumerate(rows) if r[1] == "Player" and r[2] == "Pos"), None)
+        if header_idx is None:
+            continue
+        for v in (rows[header_idx][3], rows[header_idx][4], rows[header_idx][5]):
+            if v:
+                labels.add(v)
+    return sorted(labels, key=lambda s: tuple(int(p) for p in s.split("/")))
+
+
+def fetch_league_schedule_games(wb, weeks=range(1, 23)):
+    """Every fixture row from the 'League Schedule' tab for the given weeks
+    (default: the 22 regular-season weeks), with team names resolved to our
+    codes. Each entry: week, home/away code, stadium, capacity, fan
+    interest (home/away/total), attendance, ticket price, gate receipts,
+    home/away revenue -- straight off the sheet's own computed values."""
+    ws = wb["League Schedule"]
+    games = []
+    for r in ws.iter_rows(min_row=4, max_row=ws.max_row, values_only=True):
+        week = r[0]
+        if week is None or week not in weeks:
+            continue
+        home_code = resolve_team_code(r[2])
+        away_code = resolve_team_code(r[3])
+        if not home_code or not away_code:
+            continue
+        games.append({
+            "week": int(week),
+            "home": home_code, "away": away_code,
+            "stadium": r[4], "capacity": r[5],
+            "home_int": r[6], "away_int": r[7], "total_int": r[8],
+            "attendance": r[9], "ticket_price": r[10], "gate_receipts": r[11],
+            "home_rev": r[12], "away_rev": r[13],
+        })
+    return games
+
+
+def fetch_standings_reference(wb):
+    """The two static reference tables the sheet's own Fan Formula reads
+    from, straight off the 'Standings' tab:
+      - rank_bonus: {rank int -> Standings fan bonus} (Standings!A3:A14 / M3:M14)
+      - points_bonus: {team code -> fan bonus} for the top-5 teams by
+        points (Standings!F16:G20)
+    """
+    ws = wb["Standings"]
+    rows = list(ws.iter_rows(min_row=1, max_row=25, values_only=True))
+    rank_bonus = {}
+    for r in rows[2:14]:  # rows 3-14
+        if isinstance(r[0], (int, float)) and isinstance(r[12], (int, float)):
+            rank_bonus[int(r[0])] = r[12]
+    points_bonus = {}
+    for r in rows[15:20]:  # rows 16-20
+        code, bonus = r[5], r[6]
+        if code and isinstance(bonus, (int, float)):
+            points_bonus[code] = bonus
+    return rank_bonus, points_bonus
+
+
+def fetch_firm_legacy(wb):
+    """code -> Firm + Legacy fan total, from the 'Firms and Legacy' tab's
+    own 'Firm + Legacy' column (U)."""
+    ws = wb["Firms and Legacy"]
+    out = {}
+    for r in ws.iter_rows(min_row=4, max_row=ws.max_row, values_only=True):
+        code = resolve_team_code(r[0])
+        if code and isinstance(r[20], (int, float)):
+            out[code] = r[20]
+    return out
+
+
+def compute_fan_formula(rank_bonus, points_bonus, firm_legacy, fantrax_standings, top_xi, mbp):
+    """The full live Fan Formula for every team with Fantrax standings data:
+    Standings (live rank tier) + Firm+Legacy (sheet) + Top XI (20/player,
+    live from Fantrax) + MBP (50 if you own the top scorer, live from
+    Fantrax) + Points Bonus (sheet, static top-5 table). MS8 has no active
+    Fantrax roster this season and is intentionally excluded.
+    Returns code -> {standings, firm_legacy, top_xi, mbp, points_bonus, total, xi_count}.
+    """
+    xi_counts = {}
+    for p in top_xi:
+        xi_counts[p["code"]] = xi_counts.get(p["code"], 0) + 1
+
+    out = {}
+    for code, s in fantrax_standings.items():
+        standings_v = rank_bonus.get(s["rank"], 0)
+        legacy_v = firm_legacy.get(code, 0)
+        xi_count = xi_counts.get(code, 0)
+        xi_v = xi_count * 20
+        mbp_v = 50 if mbp and mbp["code"] == code else 0
+        pts_v = points_bonus.get(code, 0)
+        out[code] = {
+            "standings": standings_v, "firm_legacy": legacy_v,
+            "top_xi": xi_v, "xi_count": xi_count, "mbp": mbp_v,
+            "points_bonus": pts_v,
+            "total": standings_v + legacy_v + xi_v + mbp_v + pts_v,
+        }
+    return out
+
+
 def fetch_youth(wb):
     """code -> list of youth-drafted players (all-time), most recent first,
     straight from the 'Youth' tab. Columns: Year, Team, Player, Pos,
@@ -158,6 +266,7 @@ TEAM_ALIASES = {
     "Bookhouse Boys": "BHB",
     "Thottenham Thotspur": "TTS",
     "What The FC": "WTF",
+    "What the FC": "WTF",
     "Wholeassed United FC": "ASS",
 }
 

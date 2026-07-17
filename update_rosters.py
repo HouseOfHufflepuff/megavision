@@ -21,8 +21,12 @@ import sys
 from common import (
     TEAMS, head, foot, hero_logo, fetch_live_workbook, EXPORT_URL, fetch_trophy_room,
     tally_trophies, COMP_ABBR, fetch_fans, owner_short, POSITION_ORDER,
-    position_sort_key, fetch_youth, find_team_sheet,
+    position_sort_key, fetch_youth, find_team_sheet, fetch_all_season_labels,
+    fetch_season_salary_totals, fetch_league_schedule_games, fetch_standings_reference,
+    fetch_firm_legacy, compute_fan_formula,
 )
+
+CURRENT_SALARY_SEASON = "25/26"
 
 STATUS_COLOR = {
     "Promoted": "var(--mv-gold)",
@@ -357,53 +361,224 @@ for code, size, payroll in updated:
     print(f"  {code}: {size} players, ${payroll:,.2f} payroll")
 
 # ---------------- financials.html ----------------
-financial_rows.sort(key=lambda r: -r["cost"])
+team_meta = {r["code"]: r for r in financial_rows}  # code -> {name, owner, trophies, ...}
+
+season_labels = fetch_all_season_labels(wb)
+salary_by_season = {label: fetch_season_salary_totals(wb, label) for label in season_labels}
+games = fetch_league_schedule_games(wb)  # weeks 1-22, 25/26 season
+rank_bonus, points_bonus_table = fetch_standings_reference(wb)
+firm_legacy = fetch_firm_legacy(wb)
+
+print("Fetching live Fantrax data (standings + rosters) for the Fan Formula...")
+try:
+    import fantrax_live
+    _sess = fantrax_live._session()
+    fantrax_standings = fantrax_live.fetch_standings(_sess)
+    fantrax_rosters = fantrax_live.fetch_all_rosters(_sess)
+    top_xi, mbp = fantrax_live.compute_top_xi(fantrax_rosters)
+    fan_formula = compute_fan_formula(rank_bonus, points_bonus_table, firm_legacy, fantrax_standings, top_xi, mbp)
+    print(f"  got live standings + rosters for {len(fantrax_standings)} teams, "
+          f"MBP={mbp['name'] if mbp else '—'}")
+except Exception as e:
+    print(f"WARN: live Fantrax fetch failed ({e}); Fan Formula / Starting XI will be omitted", file=sys.stderr)
+    fantrax_standings, top_xi, mbp, fan_formula = {}, [], None, {}
+
+# per-team game aggregates for the 25/26 summary (derived from `games`, not tracked separately)
+games_by_team = {code: [] for code, _, _ in TEAMS}
+for g in games:
+    games_by_team[g["home"]].append((g, "home"))
+    games_by_team[g["away"]].append((g, "away"))
+
 
 def fmt_fans(v):
     return f"{v:,.0f}" if isinstance(v, (int, float)) else "—"
 
-fin_table_rows = "\n            ".join(
-    f'<tr><td><a href="team-{r["code"].lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{r["name"]}</a></td>'
-    f'<td class="dim">{r["owner"]}</td>'
-    f'<td>{money(r["cost"])}</td>'
-    f'<td>{money(r["revenue"])}</td>'
-    f'<td>{fmt_fans(r["fans"])}</td>'
-    f'<td>{r["trophies"]}</td></tr>'
-    for r in financial_rows
+
+def season_summary_rows(label):
+    salaries = salary_by_season.get(label, {})
+    rows = []
+    for code, _, _ in TEAMS:
+        meta = team_meta.get(code)
+        if meta is None:
+            continue
+        team_games = games_by_team.get(code, []) if label == CURRENT_SALARY_SEASON else []
+        gp = len(team_games)
+        revenue = sum(g["home_rev"] if side == "home" else g["away_rev"] for g, side in team_games)
+        season_payroll = salaries.get(code)
+        cost = (season_payroll / 22 * gp) if isinstance(season_payroll, (int, float)) and gp else season_payroll
+        fans = fan_formula.get(code, {}).get("total") if label == CURRENT_SALARY_SEASON else fans_by_code.get(code)
+        rows.append({
+            "code": code, "name": meta["name"], "owner": meta["owner"], "trophies": meta["trophies"],
+            "games": gp, "cost": cost, "revenue": revenue if gp else None, "fans": fans,
+        })
+    rows.sort(key=lambda r: -(r["cost"] or 0))
+    return rows
+
+
+def render_summary_table(label, rows, show_games_col):
+    header = "<th>Team</th><th>Owner</th>"
+    if show_games_col:
+        header += "<th>GP</th><th>Cost</th><th>Revenue</th><th>Net</th><th>Fans</th><th># Trophies</th>"
+    else:
+        header += f"<th>{label} Salary Cost</th><th># Trophies</th>"
+    body_rows = []
+    for r in rows:
+        cells = (
+            f'<td><a href="team-{r["code"].lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{r["name"]}</a></td>'
+            f'<td class="dim">{r["owner"]}</td>'
+        )
+        if show_games_col:
+            net = (r["revenue"] - r["cost"]) if isinstance(r["revenue"], (int, float)) and isinstance(r["cost"], (int, float)) else None
+            cells += (
+                f'<td>{r["games"]}</td><td>{money(r["cost"])}</td><td>{money(r["revenue"])}</td>'
+                f'<td>{money(net)}</td><td>{fmt_fans(r["fans"])}</td><td>{r["trophies"]}</td>'
+            )
+        else:
+            cells += f'<td>{money(r["cost"])}</td><td>{r["trophies"]}</td>'
+        body_rows.append(f"<tr>{cells}</tr>")
+    return f"""<table class="mv-table">
+          <thead><tr>{header}</tr></thead>
+          <tbody>
+            {"\n            ".join(body_rows)}
+          </tbody>
+        </table>"""
+
+
+def render_games_table(label):
+    if label != CURRENT_SALARY_SEASON:
+        return ""
+    body_rows = []
+    for g in sorted(games, key=lambda g: (g["week"], g["home"])):
+        cap = f'{g["capacity"]:,.0f}' if isinstance(g["capacity"], (int, float)) else "—"
+        body_rows.append(
+            f'<tr><td>{g["week"]}</td>'
+            f'<td><a href="team-{g["home"].lower()}.html" style="color:inherit;font-weight:600;">{g["home"]}</a></td>'
+            f'<td><a href="team-{g["away"].lower()}.html" style="color:inherit;font-weight:600;">{g["away"]}</a></td>'
+            f'<td class="dim">{g["stadium"] or "—"}</td>'
+            f'<td>{cap}</td>'
+            f'<td>{fmt_fans(g["home_int"])} / {fmt_fans(g["away_int"])}</td>'
+            f'<td>{fmt_fans(g["attendance"])}</td>'
+            f'<td>{money(g["gate_receipts"])}</td>'
+            f'<td>{money(g["home_rev"])}</td>'
+            f'<td>{money(g["away_rev"])}</td></tr>'
+        )
+    return f"""
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">{label} Game Log</h2>
+      <div class="sub">Every fixture from the league schedule &mdash; fan interest, attendance (capacity-capped), gate receipts, and the 80/20 home/away revenue split</div>
+      <div class="mv-table-scroll">
+        <table class="mv-table">
+          <thead><tr><th>Wk</th><th>Home</th><th>Away</th><th>Stadium</th><th>Capacity</th><th>Fan Int (H/A)</th><th>Attendance</th><th>Gate Receipts</th><th>Home Rev</th><th>Away Rev</th></tr></thead>
+          <tbody>
+            {"\n            ".join(body_rows)}
+          </tbody>
+        </table>
+      </div>
+    </section>"""
+
+
+def render_fan_formula_section(label):
+    if label != CURRENT_SALARY_SEASON or not fan_formula:
+        return ""
+    breakdown_rows = "\n            ".join(
+        f'<tr><td><a href="team-{code.lower()}.html" style="color:inherit;font-weight:600;">{code}</a></td>'
+        f'<td>{f["standings"]:,.0f}</td><td>{f["firm_legacy"]:,.0f}</td>'
+        f'<td>{f["top_xi"]:,.0f} <span class="dim">({f["xi_count"]})</span></td>'
+        f'<td>{f["mbp"]:,.0f}</td><td>{f["points_bonus"]:,.0f}</td>'
+        f'<td style="font-weight:700;color:var(--mv-gold);">{f["total"]:,.0f}</td></tr>'
+        for code, f in sorted(fan_formula.items(), key=lambda kv: -kv[1]["total"])
+    )
+    xi_rows = "\n            ".join(
+        f'<tr><td>{p["pos"]}</td><td>{p["name"]}</td>'
+        f'<td><a href="team-{p["code"].lower()}.html" style="color:inherit;font-weight:600;">{p["code"]}</a></td>'
+        f'<td>{p["fpts"]:,.1f}</td></tr>'
+        for p in top_xi
+    )
+    mbp_line = f'{mbp["name"]} ({mbp["code"]}, {mbp["fpts"]:,.1f} pts)' if mbp else "—"
+    return f"""
+    <section class="card mv-card">
+      <h2 class="mv-chrome-text">The Fan Formula</h2>
+      <div class="sub">How each team's final {CURRENT_SALARY_SEASON} fan count is built, live from the league sheet and Fantrax</div>
+      <p style="font-size:13px;line-height:1.7;color:var(--mv-ink-muted);">
+        <b style="color:var(--mv-ink);">Fans = Standings + Firm&amp;Legacy + Top&nbsp;XI + MBP + Points&nbsp;Bonus</b><br>
+        &middot; <b>Standings</b>: tiered by live Fantrax rank (1st = 220 fans down to 12th = 25)<br>
+        &middot; <b>Firm + Legacy</b>: career/trophy legacy value, from the league sheet<br>
+        &middot; <b>Top XI</b>: 20 fans per player a team owns in the league's real live Top XI (1 GK / 3 D / 4 M / 3 F, ranked by actual Fantrax fantasy points)<br>
+        &middot; <b>MBP</b>: 50 fans for owning the single highest-scoring player in the league &mdash; currently <b style="color:var(--mv-ink);">{mbp_line}</b><br>
+        &middot; <b>Points Bonus</b>: fixed bonus for the top 5 teams by season points, from the league sheet
+      </p>
+      <div class="mv-table-scroll">
+        <table class="mv-table">
+          <thead><tr><th>Team</th><th>Standings</th><th>Legacy</th><th>Top XI (#)</th><th>MBP</th><th>Points Bonus</th><th>Total Fans</th></tr></thead>
+          <tbody>
+            {breakdown_rows}
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="mv-chrome-text" style="font-size:16px;margin-top:24px;">Live Starting XI</h3>
+      <div class="sub">The actual top-scoring owned players league-wide, right now</div>
+      <div class="mv-table-scroll">
+        <table class="mv-table">
+          <thead><tr><th>Pos</th><th>Player</th><th>Team</th><th>Fantasy Pts</th></tr></thead>
+          <tbody>
+            {xi_rows}
+          </tbody>
+        </table>
+      </div>
+    </section>"""
+
+
+season_options = "\n      ".join(
+    f'<option value="{label}"{" selected" if label == CURRENT_SALARY_SEASON else ""}>{label}</option>'
+    for label in season_labels
 )
+
+season_blocks = []
+for label in season_labels:
+    show_games = label == CURRENT_SALARY_SEASON
+    rows = season_summary_rows(label)
+    note = (
+        f"Cost and revenue for {label}, derived from every game played this season."
+        if show_games else
+        f"{label} hasn't been played yet &mdash; salary cost only, no games or revenue to show."
+    )
+    display = "block" if label == CURRENT_SALARY_SEASON else "none"
+    season_blocks.append(f"""
+    <div class="season-block" data-season="{label}" style="display:{display};">
+      <div class="sub" style="margin-bottom:10px;">{note}</div>
+      <section class="card mv-card">
+        <div class="mv-table-scroll">
+          {render_summary_table(label, rows, show_games)}
+        </div>
+      </section>
+      {render_games_table(label)}
+      {render_fan_formula_section(label)}
+    </div>""")
 
 financials_html = head("Financials", "financials.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Financials</h1>
-      <div class="sub">Cost and revenue by team for 26/27, followed by game-by-game detail. No games have been played yet this season.</div>
+      <div class="sub">Pick a season &mdash; cost, revenue, fans, and (for {CURRENT_SALARY_SEASON}) the full game-by-game log.</div>
     </div>
 
-    <section class="card mv-card">
-      <div class="mv-table-scroll">
-        <table class="mv-table">
-          <thead><tr><th>Team</th><th>Owner</th><th>Cost</th><th>Revenue</th><th>Fans</th><th># Trophies</th></tr></thead>
-          <tbody>
-            {fin_table_rows}
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <div style="text-align:center;margin-bottom:20px;">
+      <label for="seasonSelect" style="font-size:13px;color:var(--mv-ink-muted);margin-right:8px;">Season</label>
+      <select id="seasonSelect" style="background:var(--mv-black-3);color:var(--mv-ink);border:1px solid var(--mv-border);border-radius:6px;padding:6px 10px;font-size:14px;">
+      {season_options}
+      </select>
+    </div>
 
-    <section class="card mv-card">
-      <h2 class="mv-chrome-text">Game Log</h2>
-      <div class="sub">Modeled on the league schedule &mdash; week, matchup, stadium, attendance, gate receipts</div>
-      <div class="mv-table-scroll">
-        <table class="mv-table">
-          <thead>
-            <tr><th>Week</th><th>Home</th><th>Away</th><th>Stadium</th><th>Attendance</th><th>Gate Receipts</th></tr>
-          </thead>
-        </table>
-      </div>
-      <div class="mv-empty">
-        <div class="big">No games played yet this season</div>
-        Game-by-game financials will appear here once Week 1 kicks off.
-      </div>
-    </section>
+    {"".join(season_blocks)}
+
+    <script>
+      document.getElementById('seasonSelect').addEventListener('change', function() {{
+        var season = this.value;
+        document.querySelectorAll('.season-block').forEach(function(el) {{
+          el.style.display = (el.dataset.season === season) ? 'block' : 'none';
+        }});
+      }});
+    </script>
 """ + foot()
 
 with open("financials.html", "w") as f:
