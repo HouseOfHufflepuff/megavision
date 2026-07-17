@@ -216,6 +216,29 @@ table.mv-sortable thead th[data-sort-type]:hover { color: var(--mv-ink); }
   margin-bottom: 8px;
 }
 
+.mv-rank-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--mv-border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.mv-rank-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--mv-border);
+}
+.mv-rank-list li:last-child { border-bottom: none; }
+.mv-rank-list li:nth-child(odd) { background: var(--mv-black-3); }
+.mv-rank-list .rank { flex: 0 0 auto; width: 20px; text-align: right; color: var(--mv-ink-dim); font-size: 11px; }
+.mv-rank-list .player { flex: 1 1 auto; color: var(--mv-ink); font-weight: 600; }
+.mv-rank-list .status { flex: 0 0 auto; font-size: 11px; }
+.mv-rank-list .rating { flex: 0 0 auto; color: var(--mv-gold); font-weight: 700; font-size: 12px; }
+
 /* ---- empty state ---- */
 .mv-empty {
   text-align: center;

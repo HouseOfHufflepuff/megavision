@@ -312,45 +312,27 @@ for code, name, owners in TEAMS:
     def rating_label(p):
         return f'{p["fc26"]:,.0f} OVR' if isinstance(p["fc26"], (int, float)) else "— OVR"
 
-    def fpts_label(p):
-        return f'{p["fpts"]:,.1f} pts' if isinstance(p["fpts"], (int, float)) else "— pts"
-
-    pitch_rows = []
-    for pos, need in FORMATION:
-        slots = []
-        players = by_pos.get(pos, [])
-        for i in range(need):
-            if i < len(players):
-                p = players[i]
-                slots.append(
-                    f'<div class="mv-slot"><div class="pos">{pos}</div>'
-                    f'<div class="player">{player_label(p)}</div>'
-                    f'<div class="salary" style="color:var(--mv-gold);font-weight:700;">{rating_label(p)}</div>'
-                    f'<div class="salary dim">{fpts_label(p)}</div>'
-                    f'<div class="salary">{money(p["current_salary"])}</div></div>'
-                )
-            else:
-                slots.append(f'<div class="mv-slot empty"><div class="pos">{pos}</div><div class="player">&mdash;</div></div>')
-        pitch_rows.append(f'<div class="mv-pitch-row">{"".join(slots)}</div>')
-
-    depth_groups = []
-    for pos, need in FORMATION:
-        bench = by_pos.get(pos, [])[need:]
-        if not bench:
-            continue
+    def render_rank_list(players):
+        if not players:
+            return '<div class="mv-empty">No players at this position.</div>'
         items = "".join(
-            f'<div class="mv-slot"><div class="pos">{pos}</div>'
-            f'<div class="player">{player_label(p)}</div>'
-            f'<div class="salary" style="color:var(--mv-gold);font-weight:700;">{rating_label(p)}</div>'
-            f'<div class="salary dim">{fpts_label(p)}</div>'
-            f'<div class="salary">{money(p["current_salary"])}</div></div>'
-            for p in bench
+            f'<li><span class="rank">{i+1}</span><span class="player">{player_label(p)}</span>'
+            f'<span class="rating">{rating_label(p)}</span></li>'
+            for i, p in enumerate(players)
         )
+        return f'<ol class="mv-rank-list">{items}</ol>'
+
+    # ---- depth chart: one ranked list per position, best to worst by EA FC
+    # 26 rating (falls back to live Fantrax fantasy points, then salary) --
+    # no starters/bench split, no pts or salary shown ----
+    depth_groups = []
+    for pos, _need in FORMATION:
+        players = by_pos.get(pos, [])
         depth_groups.append(
-            f'<div class="mv-depth-group"><div class="heading">{pos} Depth</div>'
-            f'<div class="mv-pitch-row" style="justify-content:flex-start;">{items}</div></div>'
+            f'<div class="mv-depth-group"><div class="heading">{pos} &middot; {len(players)}</div>'
+            f'{render_rank_list(players)}</div>'
         )
-    depth_html = "".join(depth_groups) or '<div class="mv-empty">No depth beyond the starting 3-4-3.</div>'
+    depth_html = "".join(depth_groups) or '<div class="mv-empty">No players on this roster.</div>'
 
     # ---- youth: rating (EA FC 26, falling back to live Fantrax fpts),
     # matched league-wide since a youth player may not be on this team's own
@@ -370,13 +352,11 @@ for code, name, owners in TEAMS:
     youth_pos_order = [p for p in POSITION_ORDER if p in youth_by_pos] + \
                        [p for p in youth_by_pos if p not in POSITION_ORDER]
 
-    def rating_pts_label(fc26, fpts):
-        primary = f'{fc26:,.0f} OVR' if isinstance(fc26, (int, float)) else '— OVR'
-        secondary = f'{fpts:,.1f} pts' if isinstance(fpts, (int, float)) else '— pts'
-        return primary, secondary
-
     def rating_plain_label(fc26):
         return f'{fc26:,.0f}' if isinstance(fc26, (int, float)) else '—'
+
+    def youth_rating_label(y):
+        return f'{y["fc26"]:,.0f} OVR' if isinstance(y["fc26"], (int, float)) else '— OVR'
 
     youth_pitch_groups = []
     for pos in youth_pos_order:
@@ -386,16 +366,14 @@ for code, name, owners in TEAMS:
                             -(y["fpts"] if isinstance(y["fpts"], (int, float)) else -1)),
         )
         items = "".join(
-            f'<div class="mv-slot"><div class="pos">{pos}</div>'
-            f'<div class="player">{y["player"]}</div>'
-            f'<div class="salary" style="color:var(--mv-gold);font-weight:700;">{rating_pts_label(y["fc26"], y["fpts"])[0]}</div>'
-            f'<div class="salary dim">{rating_pts_label(y["fc26"], y["fpts"])[1]}</div>'
-            f'<div class="salary" style="color:{STATUS_COLOR[y["status"]]};">{y["status"]}</div></div>'
-            for y in players
+            f'<li><span class="rank">{i+1}</span><span class="player">{y["player"]}</span>'
+            f'<span class="status" style="color:{STATUS_COLOR[y["status"]]};">{y["status"]}</span>'
+            f'<span class="rating">{youth_rating_label(y)}</span></li>'
+            for i, y in enumerate(players)
         )
         youth_pitch_groups.append(
             f'<div class="mv-depth-group"><div class="heading">{pos} &middot; {len(players)} &middot; ranked by rating</div>'
-            f'<div class="mv-pitch-row" style="justify-content:flex-start;">{items}</div></div>'
+            f'<ol class="mv-rank-list">{items}</ol></div>'
         )
     youth_depth_html = "".join(youth_pitch_groups) or '<div class="mv-empty">No youth players drafted yet.</div>'
 
@@ -482,10 +460,7 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="depth-{code}" class="mv-tab-panel">
-        <div class="sub">League formation 3-4-3, ranked by EA FC 26 overall rating at each position</div>
-        <div class="mv-pitch">
-          {"".join(pitch_rows)}
-        </div>
+        <div class="sub">Every player at each position, best to worst by EA FC 26 overall rating</div>
         {depth_html}
       </div>
 
