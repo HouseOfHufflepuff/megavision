@@ -15,6 +15,7 @@ No flexbox, no grid, no frameworks. This is intentional -- see the design
 brief. It looks broken on purpose.
 """
 import base64
+import json
 import random
 
 random.seed(77)
@@ -453,6 +454,109 @@ def flying_pigeons_layer(n=12):
     return f'<div class="pg-flying-layer">{spans}</div>{script}'
 
 
+# ---- win95-style popup ads advertising the snowmobile lifestyle page ----
+POPUP_STYLE = """<style>
+  .pg-popup {
+    position: fixed; z-index: 999; width: 240px;
+    background: #c0c0c0; border: 2px outset #eee; box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+    font-family: Tahoma, "MS Sans Serif", sans-serif; color: #000;
+  }
+  .pg-popup-titlebar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff; font-size: 12px; font-weight: 700; padding: 3px 6px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .pg-popup-close {
+    background: #c0c0c0; border: 1px outset #fff; color: #000; font-size: 10px; font-weight: 900;
+    width: 16px; height: 14px; line-height: 14px; text-align: center; cursor: pointer; padding: 0;
+  }
+  .pg-popup-body { padding: 10px; font-size: 12px; line-height: 1.5; text-align: center; }
+  .pg-popup-body b { display: block; font-size: 14px; margin-bottom: 4px; color: #cc0000; }
+  .pg-popup-cta {
+    display: inline-block; margin-top: 8px; background: #008000; color: #fff; font-weight: 800;
+    text-decoration: none; padding: 6px 14px; border: 2px outset #0c0; font-size: 11px;
+  }
+</style>"""
+
+POPUP_ADS = [
+    ("SNOWMOBILE.EXE", "&#10024; STOP LOOKING AT PIGEONS &#10024;", "There is an ENTIRE Snowmobile Lifestyle happening RIGHT NOW while you sit here reading about birds. Don't you want more out of life???", "SEE THE LIFESTYLE &rarr;"),
+    ("YETIFUEL.EXE", "&#128293; YOUR BLOOD IS TOO WARM &#128293;", "Pigeons don't need Yeti Fuel Energy Elixir because pigeons are already cold-blooded enough. YOU are not a pigeon. Fix that.", "FUEL UP NOW &rarr;"),
+    ("WINNER.EXE", "&#127942; CONGRATULATIONS!!! &#127942;", "You are the LUCKY visitor!!! Click below to claim your FREE trip to the Snowmobile Lifestyle before this window closes forever!", "CLAIM NOW &rarr;"),
+    ("ARCTIC.EXE", "&#10084; UNTAMED WINTER DESTINY &#10084;", "This pigeon site is great and all, but have you considered a SNOWMOBILE? MEGAVISION thinks you should. MEGAVISION is always right.", "ENTER THE LIFESTYLE &rarr;"),
+]
+POPUP_ADS_JSON = json.dumps([list(ad) for ad in POPUP_ADS])
+
+
+def popup_ads_block():
+    return f"""
+<div id="pgPopupLayer"></div>
+<script>
+(function() {{
+  var popupAds = {POPUP_ADS_JSON};
+  var linkPrefix = "../";
+  var layer = document.getElementById('pgPopupLayer');
+  var openPopups = 0;
+  var MAX_POPUPS = 3;
+
+  function spawnPopup() {{
+    if (openPopups >= MAX_POPUPS) return;
+    openPopups++;
+    var ad = popupAds[Math.floor(Math.random() * popupAds.length)];
+    var win = document.createElement('div');
+    win.className = 'pg-popup';
+    var top = 10 + Math.random() * 60;
+    var left = 5 + Math.random() * 60;
+    win.style.top = top + '%';
+    win.style.left = left + '%';
+    win.innerHTML =
+      '<div class="pg-popup-titlebar"><span>' + ad[0] + '</span><button class="pg-popup-close" type="button">&#10005;</button></div>' +
+      '<div class="pg-popup-body"><b>' + ad[1] + '</b>' + ad[2] +
+      '<br><a class="pg-popup-cta" href="' + linkPrefix + 'snowmobile-lifestlye.html">' + ad[3] + '</a></div>';
+    layer.appendChild(win);
+    function close() {{
+      if (win.parentNode) {{ win.parentNode.removeChild(win); openPopups--; }}
+    }}
+    win.querySelector('.pg-popup-close').addEventListener('click', close);
+    setTimeout(close, 9000 + Math.random() * 4000);
+  }}
+
+  function scheduleNextPopup() {{
+    var delay = 6000 + Math.random() * 8000;
+    setTimeout(function() {{ spawnPopup(); scheduleNextPopup(); }}, delay);
+  }}
+  scheduleNextPopup();
+}})();
+</script>"""
+
+
+# ---- gigantic, deliberately inconsistent "NEXT" button at the bottom of every page --
+NEXT_BUTTON_VARIANTS = [
+    dict(size=72, bg="#ff0000", fg="#ffff00", font="Impact, 'Arial Black', sans-serif", align="center", rotate=0, blink=True, label="&#9654;&#9654;&#9654; NEXT &#9654;&#9654;&#9654;"),
+    dict(size=26, bg="#00ff00", fg="#000000", font="'Comic Sans MS', cursive", align="left", rotate=-3, blink=False, label="click here for next page..."),
+    dict(size=90, bg="#000080", fg="#00ffff", font="'Courier New', monospace", align="right", rotate=2, blink=True, label="NEXT &gt;&gt;&gt;"),
+    dict(size=44, bg="#ffcc00", fg="#800080", font="'Arial Black', sans-serif", align="center", rotate=-6, blink=False, label="MORE PIGEONS THIS WAY &#128330;"),
+    dict(size=60, bg="#800000", fg="#00ff00", font="Impact, sans-serif", align="left", rotate=4, blink=True, label="CONTINUE &#9654;"),
+    dict(size=18, bg="#ffffff", fg="#ff00ff", font="'Times New Roman', serif", align="right", rotate=0, blink=False, label="(next page)"),
+    dict(size=80, bg="#00ffff", fg="#ff0000", font="Haettenschweiler, Impact, sans-serif", align="center", rotate=8, blink=True, label="NEXT PAGE NOW!!!"),
+    dict(size=34, bg="#4b0082", fg="#ffd700", font="Verdana, sans-serif", align="left", rotate=-2, blink=False, label="&gt;&gt; onward, pigeon friend &gt;&gt;"),
+]
+
+
+def giant_next_button(page_index):
+    v = NEXT_BUTTON_VARIANTS[page_index % len(NEXT_BUTTON_VARIANTS)]
+    next_index = (page_index + 1) % len(NAV_PAGES)
+    href, _ = NAV_PAGES[next_index]
+    blink_cls = ' class="blk"' if v["blink"] else ""
+    pad_v = max(6, v["size"] // 4)
+    pad_h = max(10, v["size"] // 2)
+    return f"""
+  <div align="{v['align']}" style="margin:26px 0;">
+    <a href="{href}"{blink_cls} style="display:inline-block;font-family:{v['font']};font-size:{v['size']}px;
+      font-weight:900;background:{v['bg']};color:{v['fg']};padding:{pad_v}px {pad_h}px;border:6px outset #fff;
+      text-decoration:none;transform:rotate({v['rotate']}deg);text-shadow:2px 2px 0 #000;">{v['label']}</a>
+  </div>"""
+
+
 NINJA_SPOTS = [
     ("4%", "6%", -8, "2.6s"), ("8%", "92%", 10, "3.1s"), ("22%", "2%", -14, "2.3s"),
     ("35%", "95%", 6, "3.4s"), ("50%", "3%", -6, "2.8s"), ("62%", "93%", 12, "2.5s"),
@@ -479,11 +583,13 @@ def page(filename, title, center_content_html, tile_key="galaxy", page_index=0):
 <link rel="icon" href="data:,">
 {BLINK_STYLE}
 {FLYING_LAYER_STYLE}
+{POPUP_STYLE}
 </head>
 <body {BODY_ATTRS}>
 {bgsound_tags()}
 {flying_pigeons_layer(12)}
 {scattered_ninjas()}
+{popup_ads_block()}
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td colspan="3">
 {banner_stack()}
@@ -502,6 +608,7 @@ def page(filename, title, center_content_html, tile_key="galaxy", page_index=0):
       <font color="#00ff00">
       {center_content_html}
       </font>
+      {giant_next_button(page_index)}
     </td></tr>
     </table>
   </td>

@@ -24,6 +24,28 @@
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6));
   }
 </style>
+<style>
+  .pg-popup {
+    position: fixed; z-index: 999; width: 240px;
+    background: #c0c0c0; border: 2px outset #eee; box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+    font-family: Tahoma, "MS Sans Serif", sans-serif; color: #000;
+  }
+  .pg-popup-titlebar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff; font-size: 12px; font-weight: 700; padding: 3px 6px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .pg-popup-close {
+    background: #c0c0c0; border: 1px outset #fff; color: #000; font-size: 10px; font-weight: 900;
+    width: 16px; height: 14px; line-height: 14px; text-align: center; cursor: pointer; padding: 0;
+  }
+  .pg-popup-body { padding: 10px; font-size: 12px; line-height: 1.5; text-align: center; }
+  .pg-popup-body b { display: block; font-size: 14px; margin-bottom: 4px; color: #cc0000; }
+  .pg-popup-cta {
+    display: inline-block; margin-top: 8px; background: #008000; color: #fff; font-weight: 800;
+    text-decoration: none; padding: 6px 14px; border: 2px outset #0c0; font-size: 11px;
+  }
+</style>
 </head>
 <body bgcolor="#000000" text="#00FF00" link="#0000FF" vlink="#800080" alink="#FF0000">
 
@@ -84,6 +106,45 @@
     <span class="pg-ninja" style="top:62%;left:93%;--r:12deg;animation-duration:2.5s;">&#129399;</span>
     <span class="pg-ninja" style="top:78%;left:5%;--r:-10deg;animation-duration:3.2s;">&#129399;</span>
     <span class="pg-ninja" style="top:88%;left:90%;--r:8deg;animation-duration:2.7s;">&#129399;</span></div>
+
+<div id="pgPopupLayer"></div>
+<script>
+(function() {
+  var popupAds = [["SNOWMOBILE.EXE", "&#10024; STOP LOOKING AT PIGEONS &#10024;", "There is an ENTIRE Snowmobile Lifestyle happening RIGHT NOW while you sit here reading about birds. Don't you want more out of life???", "SEE THE LIFESTYLE &rarr;"], ["YETIFUEL.EXE", "&#128293; YOUR BLOOD IS TOO WARM &#128293;", "Pigeons don't need Yeti Fuel Energy Elixir because pigeons are already cold-blooded enough. YOU are not a pigeon. Fix that.", "FUEL UP NOW &rarr;"], ["WINNER.EXE", "&#127942; CONGRATULATIONS!!! &#127942;", "You are the LUCKY visitor!!! Click below to claim your FREE trip to the Snowmobile Lifestyle before this window closes forever!", "CLAIM NOW &rarr;"], ["ARCTIC.EXE", "&#10084; UNTAMED WINTER DESTINY &#10084;", "This pigeon site is great and all, but have you considered a SNOWMOBILE? MEGAVISION thinks you should. MEGAVISION is always right.", "ENTER THE LIFESTYLE &rarr;"]];
+  var linkPrefix = "../";
+  var layer = document.getElementById('pgPopupLayer');
+  var openPopups = 0;
+  var MAX_POPUPS = 3;
+
+  function spawnPopup() {
+    if (openPopups >= MAX_POPUPS) return;
+    openPopups++;
+    var ad = popupAds[Math.floor(Math.random() * popupAds.length)];
+    var win = document.createElement('div');
+    win.className = 'pg-popup';
+    var top = 10 + Math.random() * 60;
+    var left = 5 + Math.random() * 60;
+    win.style.top = top + '%';
+    win.style.left = left + '%';
+    win.innerHTML =
+      '<div class="pg-popup-titlebar"><span>' + ad[0] + '</span><button class="pg-popup-close" type="button">&#10005;</button></div>' +
+      '<div class="pg-popup-body"><b>' + ad[1] + '</b>' + ad[2] +
+      '<br><a class="pg-popup-cta" href="' + linkPrefix + 'snowmobile-lifestlye.html">' + ad[3] + '</a></div>';
+    layer.appendChild(win);
+    function close() {
+      if (win.parentNode) { win.parentNode.removeChild(win); openPopups--; }
+    }
+    win.querySelector('.pg-popup-close').addEventListener('click', close);
+    setTimeout(close, 9000 + Math.random() * 4000);
+  }
+
+  function scheduleNextPopup() {
+    var delay = 6000 + Math.random() * 8000;
+    setTimeout(function() { spawnPopup(); scheduleNextPopup(); }, delay);
+  }
+  scheduleNextPopup();
+})();
+</script>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td colspan="3">
 <table width="100%" cellpadding="2" cellspacing="0" border="0"><tr><td align="center" bgcolor="#111" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#00ff41"><b style="text-shadow: 3px 3px 0 #ff0000, -1px -1px 0 #000;">&#9733; ARCHIE'S UNDERGROUND HACKER ZONE v3.2 &#9733;</b></font></td></tr><tr><td align="center" bgcolor="#000080" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#ffd700"><b style="text-shadow: 3px 3px 0 #fff, -1px -1px 0 #000;">WELCOME TO THE INFOBAHN</b></font></td></tr><tr><td align="center" bgcolor="#800000" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#ffff00"><b style="text-shadow: 3px 3px 0 #fff, -1px -1px 0 #000;">!! DOWNLOAD ZONE !!</b></font></td></tr><tr><td align="center" bgcolor="#4b0082" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#00ffff"><b style="text-shadow: 3px 3px 0 #ff00ff, -1px -1px 0 #000;">&#128330; PIGEON PALACE ONLINE &#128330;</b></font></td></tr><tr><td align="center" bgcolor="#003300" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#ccff00"><b style="text-shadow: 3px 3px 0 #fff, -1px -1px 0 #000;">YOU ARE VISITOR #999999 -- THANK YOU!</b></font></td></tr></table>
@@ -137,6 +198,12 @@
 <font size="3" color="#00ff00">The good news: regular loft cleaning, fresh water, good ventilation, and routine observation catch the overwhelming majority of issues early. A healthy pigeon is alert, active, and has smooth, glossy plumage.</font><br><br>
 
       </font>
+      
+  <div align="left" style="margin:26px 0;">
+    <a href="breeding.html" style="display:inline-block;font-family:Verdana, sans-serif;font-size:34px;
+      font-weight:900;background:#4b0082;color:#ffd700;padding:8px 17px;border:6px outset #fff;
+      text-decoration:none;transform:rotate(-2deg);text-shadow:2px 2px 0 #000;">&gt;&gt; onward, pigeon friend &gt;&gt;</a>
+  </div>
     </td></tr>
     </table>
   </td>
