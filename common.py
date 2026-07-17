@@ -289,6 +289,28 @@ def tally_trophies(comps, seasons):
     return tally
 
 
+# Real EPL club abbreviations (as used in the sheet's messy "Player" field,
+# already resolved by player_clean.clean_player) -> full club name.
+CLUB_NAMES = {
+    "ARS": "Arsenal", "AVL": "Aston Villa", "BHA": "Brighton", "BOU": "Bournemouth",
+    "BRE": "Brentford", "BRF": "Brentford", "BRI": "Brighton", "BUR": "Burnley",
+    "CHE": "Chelsea", "CPY": "Crystal Palace", "CRY": "Crystal Palace",
+    "EVE": "Everton", "FUL": "Fulham", "LEE": "Leeds United", "LEEDS": "Leeds United",
+    "LIV": "Liverpool", "MCI": "Manchester City", "MUN": "Manchester United",
+    "NEW": "Newcastle United", "NOT": "Nottingham Forest", "SUN": "Sunderland",
+    "TOT": "Tottenham Hotspur", "WHU": "West Ham United", "WOL": "Wolverhampton Wanderers",
+}
+
+
+def club_full_name(abbr):
+    """Real club abbreviation/name -> full name. Passes through anything
+    not in the map (already-full names, or a genuine data artifact in the
+    sheet) rather than guessing or hiding it."""
+    if not abbr:
+        return None
+    return CLUB_NAMES.get(abbr.upper(), abbr)
+
+
 # Short labels so trophy tiles never wrap to 3 lines
 COMP_ABBR = {
     "Premium Title": "Premium",
@@ -407,6 +429,42 @@ def foot():
       btn.classList.add('active');
       document.getElementById(panelId).classList.add('active');
     }}
+
+    // Any <table class="mv-sortable"> gets click-to-sort headers for free.
+    // Mark a <th> with data-sort-type="num" or "text" to make it sortable;
+    // give a <td> a data-sort="..." attribute to sort by a value other than
+    // its displayed text. Only <tbody> rows are reordered -- put running
+    // totals in <tfoot> so they stay pinned.
+    function mvMakeSortable(table) {{
+      var tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      table.querySelectorAll('th').forEach(function(th, idx) {{
+        if (!th.dataset.sortType) return;
+        th.style.cursor = 'pointer';
+        var dir = 1;
+        th.addEventListener('click', function() {{
+          var rows = Array.from(tbody.querySelectorAll('tr'));
+          var type = th.dataset.sortType;
+          rows.sort(function(a, b) {{
+            var ac = a.children[idx], bc = b.children[idx];
+            if (!ac || !bc) return 0;
+            var av = ac.dataset.sort !== undefined ? ac.dataset.sort : ac.textContent.trim();
+            var bv = bc.dataset.sort !== undefined ? bc.dataset.sort : bc.textContent.trim();
+            if (type === 'num') {{
+              av = parseFloat(av); bv = parseFloat(bv);
+              if (isNaN(av)) av = -Infinity;
+              if (isNaN(bv)) bv = -Infinity;
+            }}
+            if (av < bv) return -1 * dir;
+            if (av > bv) return 1 * dir;
+            return 0;
+          }});
+          dir *= -1;
+          rows.forEach(function(r) {{ tbody.appendChild(r); }});
+        }});
+      }});
+    }}
+    document.querySelectorAll('table.mv-sortable').forEach(mvMakeSortable);
   </script>
 </body>
 </html>

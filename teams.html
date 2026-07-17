@@ -68,34 +68,8 @@
         <code>sync_fc26_ratings.py</code> to refresh the ratings in the local database this reads from.
       </p>
     </section>
-
-    <script>
-      (function() {
-        var table = document.getElementById('teamsTable');
-        var headers = table.querySelectorAll('th');
-        var tbody = table.querySelector('tbody');
-        headers.forEach(function(th, idx) {
-          th.style.cursor = 'pointer';
-          var dir = 1;
-          th.addEventListener('click', function() {
-            var rows = Array.from(tbody.querySelectorAll('tr'));
-            var type = th.dataset.sortType;
-            rows.sort(function(a, b) {
-              var av = a.children[idx].dataset.sort || a.children[idx].textContent.trim();
-              var bv = b.children[idx].dataset.sort || b.children[idx].textContent.trim();
-              if (type === 'num') { av = parseFloat(av); bv = parseFloat(bv); }
-              if (av < bv) return -1 * dir;
-              if (av > bv) return 1 * dir;
-              return 0;
-            });
-            dir *= -1;
-            rows.forEach(function(r) { tbody.appendChild(r); });
-          });
-        });
-      })();
-    </script>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 04:08 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 04:15 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');
@@ -105,6 +79,42 @@
       btn.classList.add('active');
       document.getElementById(panelId).classList.add('active');
     }
+
+    // Any <table class="mv-sortable"> gets click-to-sort headers for free.
+    // Mark a <th> with data-sort-type="num" or "text" to make it sortable;
+    // give a <td> a data-sort="..." attribute to sort by a value other than
+    // its displayed text. Only <tbody> rows are reordered -- put running
+    // totals in <tfoot> so they stay pinned.
+    function mvMakeSortable(table) {
+      var tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      table.querySelectorAll('th').forEach(function(th, idx) {
+        if (!th.dataset.sortType) return;
+        th.style.cursor = 'pointer';
+        var dir = 1;
+        th.addEventListener('click', function() {
+          var rows = Array.from(tbody.querySelectorAll('tr'));
+          var type = th.dataset.sortType;
+          rows.sort(function(a, b) {
+            var ac = a.children[idx], bc = b.children[idx];
+            if (!ac || !bc) return 0;
+            var av = ac.dataset.sort !== undefined ? ac.dataset.sort : ac.textContent.trim();
+            var bv = bc.dataset.sort !== undefined ? bc.dataset.sort : bc.textContent.trim();
+            if (type === 'num') {
+              av = parseFloat(av); bv = parseFloat(bv);
+              if (isNaN(av)) av = -Infinity;
+              if (isNaN(bv)) bv = -Infinity;
+            }
+            if (av < bv) return -1 * dir;
+            if (av > bv) return 1 * dir;
+            return 0;
+          });
+          dir *= -1;
+          rows.forEach(function(r) { tbody.appendChild(r); });
+        });
+      });
+    }
+    document.querySelectorAll('table.mv-sortable').forEach(mvMakeSortable);
   </script>
 </body>
 </html>

@@ -65,13 +65,21 @@
       </div>
 
       <div id="roster-POW" class="mv-tab-panel active">
-        <div class="sub">8 players signed for 26/27, grouped by position &middot; FC 26 rating and live Fantrax points, current-season salary</div>
+        <div class="sub">8 players signed for 26/27 &middot; FC 26 rating, live Fantrax points, current-season salary &middot; click a column to sort</div>
         <div class="mv-table-scroll">
-          <table class="mv-table">
-            <thead><tr><th>Player</th><th>Pos</th><th>FC 26 Rating</th><th>Total Pts</th><th>Current Salary</th></tr></thead>
+          <table class="mv-table mv-sortable" id="roster-table-POW">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">FC 26 Rating</th>
+              <th data-sort-type="num">Total Pts</th>
+              <th data-sort-type="num">Current Salary</th>
+            </tr></thead>
             <tbody>
-              <tr><td>Ait Nouri, Rayan D - MCI</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">—</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td></tr><tr><td>DeCuyper, Maxim D - BHA</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">—</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Maatsen, Ian D - AVL</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">79</td><td class="dim">79.0</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Colwill, Levi</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">80</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td></tr><tr><td>Joelinton M - NEW</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">82</td><td class="dim">86.5</td><td><strong style="color:var(--mv-gold)">$14.16</strong></td></tr><tr><td>Tilemans, Youri, M - AVL</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">—</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$10.38</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Wirtz, Florian, M - LIV</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">89</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td></tr><tr><td>Anthony, Jaidon F - BUR</td><td>F</td><td style="color:var(--mv-gold);font-weight:700;">74</td><td class="dim">177.0</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="5">8 total &middot; 4 D  &middot;  3 M  &middot;  1 F</td></tr>
+              <tr><td>Rayan Ait Nouri</td><td class="dim">Manchester City</td><td>D</td><td data-sort="-1" style="color:var(--mv-gold);font-weight:700;">—</td><td data-sort="-1" class="dim">—</td><td data-sort="6.6"><strong style="color:var(--mv-gold)">$6.60</strong></td></tr><tr><td>Maxim DeCuyper</td><td class="dim">Brighton</td><td>D</td><td data-sort="-1" style="color:var(--mv-gold);font-weight:700;">—</td><td data-sort="-1" class="dim">—</td><td data-sort="4.95"><strong style="color:var(--mv-gold)">$4.95</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Ian Maatsen</td><td class="dim">Aston Villa</td><td>D</td><td data-sort="79.0" style="color:var(--mv-gold);font-weight:700;">79</td><td data-sort="79.0" class="dim">79.0</td><td data-sort="4.4"><strong style="color:var(--mv-gold)">$4.40</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Levi Colwill</td><td class="dim">—</td><td>D</td><td data-sort="80.0" style="color:var(--mv-gold);font-weight:700;">80</td><td data-sort="-1" class="dim">—</td><td data-sort="4.4"><strong style="color:var(--mv-gold)">$4.40</strong></td></tr><tr><td>Joelinton</td><td class="dim">Newcastle United</td><td>M</td><td data-sort="82.0" style="color:var(--mv-gold);font-weight:700;">82</td><td data-sort="86.5" class="dim">86.5</td><td data-sort="14.16"><strong style="color:var(--mv-gold)">$14.16</strong></td></tr><tr><td>Youri Tilemans</td><td class="dim">Aston Villa</td><td>M</td><td data-sort="-1" style="color:var(--mv-gold);font-weight:700;">—</td><td data-sort="-1" class="dim">—</td><td data-sort="10.384"><strong style="color:var(--mv-gold)">$10.38</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Florian Wirtz</td><td class="dim">Liverpool</td><td>M</td><td data-sort="89.0" style="color:var(--mv-gold);font-weight:700;">89</td><td data-sort="-1" class="dim">—</td><td data-sort="4.0"><strong style="color:var(--mv-gold)">$4.00</strong></td></tr><tr><td>Jaidon Anthony</td><td class="dim">Burnley</td><td>F</td><td data-sort="74.0" style="color:var(--mv-gold);font-weight:700;">74</td><td data-sort="177.0" class="dim">177.0</td><td data-sort="4.0"><strong style="color:var(--mv-gold)">$4.00</strong></td></tr>
             </tbody>
+            <tfoot><tr><td colspan="6">8 total &middot; 4 D  &middot;  3 M  &middot;  1 F</td></tr></tfoot>
           </table>
         </div>
       </div>
@@ -79,22 +87,31 @@
       <div id="depth-POW" class="mv-tab-panel">
         <div class="sub">League formation 3-4-3, ranked by EA FC 26 overall rating at each position</div>
         <div class="mv-pitch">
-          <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">Anthony, Jaidon F - BUR</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">74 OVR</div><div class="salary dim">177.0 pts</div><div class="salary">$4.00</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Wirtz, Florian, M - LIV</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">89 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.00</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Joelinton M - NEW</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">82 OVR</div><div class="salary dim">86.5 pts</div><div class="salary">$14.16</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Tilemans, Youri, M - AVL</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">— OVR</div><div class="salary dim">— pts</div><div class="salary">$10.38</div></div><div class="mv-slot empty"><div class="pos">M</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Colwill, Levi</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">80 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.40</div></div><div class="mv-slot"><div class="pos">D</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Maatsen, Ian D - AVL</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">79 OVR</div><div class="salary dim">79.0 pts</div><div class="salary">$4.40</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Ait Nouri, Rayan D - MCI</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">— OVR</div><div class="salary dim">— pts</div><div class="salary">$6.60</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
+          <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">Jaidon Anthony</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">74 OVR</div><div class="salary dim">177.0 pts</div><div class="salary">$4.00</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Florian Wirtz</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">89 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.00</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Joelinton</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">82 OVR</div><div class="salary dim">86.5 pts</div><div class="salary">$14.16</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Youri Tilemans</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">— OVR</div><div class="salary dim">— pts</div><div class="salary">$10.38</div></div><div class="mv-slot empty"><div class="pos">M</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Levi Colwill</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">80 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.40</div></div><div class="mv-slot"><div class="pos">D</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Ian Maatsen</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">79 OVR</div><div class="salary dim">79.0 pts</div><div class="salary">$4.40</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Rayan Ait Nouri</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">— OVR</div><div class="salary dim">— pts</div><div class="salary">$6.60</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
         </div>
-        <div class="mv-depth-group"><div class="heading">D Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">DeCuyper, Maxim D - BHA</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">— OVR</div><div class="salary dim">— pts</div><div class="salary">$4.95</div></div></div></div>
+        <div class="mv-depth-group"><div class="heading">D Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">Maxim DeCuyper</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">— OVR</div><div class="salary dim">— pts</div><div class="salary">$4.95</div></div></div></div>
       </div>
 
       <div id="finances-POW" class="mv-tab-panel">
-        <div class="sub">Payroll by contract year, team totals then player-by-player</div>
+        <div class="sub">Payroll by contract year, team totals then player-by-player &middot; click a column to sort</div>
         <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
           <div class="mv-stat"><div class="label">25/26 Payroll</div><div class="value" style="font-size:18px;">$48.33</div></div><div class="mv-stat"><div class="label">26/27 Payroll</div><div class="value" style="font-size:18px;">$52.89</div></div><div class="mv-stat"><div class="label">27/28 Payroll</div><div class="value" style="font-size:18px;">$32.93</div></div>
         </div>
         <div class="mv-table-scroll">
-          <table class="mv-table">
-            <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
+          <table class="mv-table mv-sortable" id="finances-table-POW">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">25/26</th>
+              <th data-sort-type="num"><span style="color:var(--mv-gold)">26/27</span></th>
+              <th data-sort-type="num">27/28</th>
+              <th data-sort-type="num">BuyOut</th>
+            </tr></thead>
             <tbody>
-              <tr><td>Ait Nouri, Rayan D - MCI</td><td>D</td><td>$6.00</td><td><strong style="color:var(--mv-gold)">$6.60</strong></td><td>$7.26</td><td class="dim">—</td></tr><tr><td>DeCuyper, Maxim D - BHA</td><td>D</td><td>$4.50</td><td><strong style="color:var(--mv-gold)">$4.95</strong></td><td>$5.45</td><td class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Maatsen, Ian D - AVL</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>—</td><td class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Colwill, Levi</td><td>D</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>4,84</td><td class="dim">—</td></tr><tr><td>Joelinton M - NEW</td><td>M</td><td>$10.89</td><td><strong style="color:var(--mv-gold)">$14.16</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Tilemans, Youri, M - AVL</td><td>M</td><td>$9.44</td><td><strong style="color:var(--mv-gold)">$10.38</strong></td><td>$11.42</td><td class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Wirtz, Florian, M - LIV</td><td>M</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr><td>Anthony, Jaidon F - BUR</td><td>F</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$4.00</strong></td><td>$4.40</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">8 total &middot; 4 D  &middot;  3 M  &middot;  1 F</td></tr>
+              <tr><td>Rayan Ait Nouri</td><td class="dim">Manchester City</td><td>D</td><td data-sort="6.0">$6.00</td><td data-sort="6.6"><strong style="color:var(--mv-gold)">$6.60</strong></td><td data-sort="7.26">$7.26</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Maxim DeCuyper</td><td class="dim">Brighton</td><td>D</td><td data-sort="4.5">$4.50</td><td data-sort="4.95"><strong style="color:var(--mv-gold)">$4.95</strong></td><td data-sort="5.445">$5.45</td><td data-sort="-1" class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Ian Maatsen</td><td class="dim">Aston Villa</td><td>D</td><td data-sort="4.0">$4.00</td><td data-sort="4.4"><strong style="color:var(--mv-gold)">$4.40</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Levi Colwill</td><td class="dim">—</td><td>D</td><td data-sort="4.0">$4.00</td><td data-sort="4.4"><strong style="color:var(--mv-gold)">$4.40</strong></td><td data-sort="-1">4,84</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Joelinton</td><td class="dim">Newcastle United</td><td>M</td><td data-sort="10.89">$10.89</td><td data-sort="14.16"><strong style="color:var(--mv-gold)">$14.16</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Youri Tilemans</td><td class="dim">Aston Villa</td><td>M</td><td data-sort="9.44">$9.44</td><td data-sort="10.384"><strong style="color:var(--mv-gold)">$10.38</strong></td><td data-sort="11.4224">$11.42</td><td data-sort="-1" class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Florian Wirtz</td><td class="dim">Liverpool</td><td>M</td><td data-sort="4.0">$4.00</td><td data-sort="4.0"><strong style="color:var(--mv-gold)">$4.00</strong></td><td data-sort="4.4">$4.40</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Jaidon Anthony</td><td class="dim">Burnley</td><td>F</td><td data-sort="5.5">$5.50</td><td data-sort="4.0"><strong style="color:var(--mv-gold)">$4.00</strong></td><td data-sort="4.4">$4.40</td><td data-sort="-1" class="dim">—</td></tr>
             </tbody>
+            <tfoot><tr><td colspan="7">8 total &middot; 4 D  &middot;  3 M  &middot;  1 F</td></tr></tfoot>
           </table>
         </div>
       </div>
@@ -114,7 +131,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 04:08 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 04:15 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');
@@ -124,6 +141,42 @@
       btn.classList.add('active');
       document.getElementById(panelId).classList.add('active');
     }
+
+    // Any <table class="mv-sortable"> gets click-to-sort headers for free.
+    // Mark a <th> with data-sort-type="num" or "text" to make it sortable;
+    // give a <td> a data-sort="..." attribute to sort by a value other than
+    // its displayed text. Only <tbody> rows are reordered -- put running
+    // totals in <tfoot> so they stay pinned.
+    function mvMakeSortable(table) {
+      var tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      table.querySelectorAll('th').forEach(function(th, idx) {
+        if (!th.dataset.sortType) return;
+        th.style.cursor = 'pointer';
+        var dir = 1;
+        th.addEventListener('click', function() {
+          var rows = Array.from(tbody.querySelectorAll('tr'));
+          var type = th.dataset.sortType;
+          rows.sort(function(a, b) {
+            var ac = a.children[idx], bc = b.children[idx];
+            if (!ac || !bc) return 0;
+            var av = ac.dataset.sort !== undefined ? ac.dataset.sort : ac.textContent.trim();
+            var bv = bc.dataset.sort !== undefined ? bc.dataset.sort : bc.textContent.trim();
+            if (type === 'num') {
+              av = parseFloat(av); bv = parseFloat(bv);
+              if (isNaN(av)) av = -Infinity;
+              if (isNaN(bv)) bv = -Infinity;
+            }
+            if (av < bv) return -1 * dir;
+            if (av > bv) return 1 * dir;
+            return 0;
+          });
+          dir *= -1;
+          rows.forEach(function(r) { tbody.appendChild(r); });
+        });
+      });
+    }
+    document.querySelectorAll('table.mv-sortable').forEach(mvMakeSortable);
   </script>
 </body>
 </html>

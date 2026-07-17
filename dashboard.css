@@ -145,6 +145,9 @@ table.mv-table thead th:first-child { border-bottom-color: var(--mv-gold); }
 table.mv-table tbody td { padding: 10px 12px; border-bottom: 1px solid var(--mv-border); }
 table.mv-table tbody tr:hover { background: var(--mv-black-3); }
 table.mv-table tbody td.dim { color: var(--mv-ink-dim); }
+table.mv-table tfoot td { padding: 10px 12px; background: var(--mv-black-3); font-weight: 700; }
+table.mv-sortable thead th[data-sort-type] { cursor: pointer; user-select: none; }
+table.mv-sortable thead th[data-sort-type]:hover { color: var(--mv-ink); }
 
 /* ---- tabs ---- */
 .mv-tabs {

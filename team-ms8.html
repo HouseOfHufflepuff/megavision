@@ -65,13 +65,21 @@
       </div>
 
       <div id="roster-MS8" class="mv-tab-panel active">
-        <div class="sub">10 players signed for 26/27, grouped by position &middot; FC 26 rating and live Fantrax points, current-season salary</div>
+        <div class="sub">10 players signed for 26/27 &middot; FC 26 rating, live Fantrax points, current-season salary &middot; click a column to sort</div>
         <div class="mv-table-scroll">
-          <table class="mv-table">
-            <thead><tr><th>Player</th><th>Pos</th><th>FC 26 Rating</th><th>Total Pts</th><th>Current Salary</th></tr></thead>
+          <table class="mv-table mv-sortable" id="roster-table-MS8">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">FC 26 Rating</th>
+              <th data-sort-type="num">Total Pts</th>
+              <th data-sort-type="num">Current Salary</th>
+            </tr></thead>
             <tbody>
-              <tr><td>Aina</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">80</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td></tr><tr><td>Dalot</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">79</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td></tr><tr><td>Truffert</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">77</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td></tr><tr><td>Kayode</td><td>D</td><td style="color:var(--mv-gold);font-weight:700;">73</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td></tr><tr><td>Madison</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">84</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$8.25</strong></td></tr><tr><td>Mateo Kovacic</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">83</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td></tr><tr><td>Oscar Bobb</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">72</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$5.45</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Lavia</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">78</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$4.84</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>McAtee</td><td>M</td><td style="color:var(--mv-gold);font-weight:700;">73</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td></tr><tr><td>R. Ngumoha</td><td>F</td><td style="color:var(--mv-gold);font-weight:700;">68</td><td class="dim">—</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="5">10 total &middot; 4 D  &middot;  5 M  &middot;  1 F</td></tr>
+              <tr><td>Ola Aina</td><td class="dim">—</td><td>D</td><td data-sort="80.0" style="color:var(--mv-gold);font-weight:700;">80</td><td data-sort="-1" class="dim">—</td><td data-sort="5.5"><strong style="color:var(--mv-gold)">$5.50</strong></td></tr><tr><td>Diogo Dalot</td><td class="dim">—</td><td>D</td><td data-sort="79.0" style="color:var(--mv-gold);font-weight:700;">79</td><td data-sort="-1" class="dim">—</td><td data-sort="5.5"><strong style="color:var(--mv-gold)">$5.50</strong></td></tr><tr><td>Adrien Truffert</td><td class="dim">—</td><td>D</td><td data-sort="77.0" style="color:var(--mv-gold);font-weight:700;">77</td><td data-sort="-1" class="dim">—</td><td data-sort="5.5"><strong style="color:var(--mv-gold)">$5.50</strong></td></tr><tr><td>Michael Kayode</td><td class="dim">—</td><td>D</td><td data-sort="73.0" style="color:var(--mv-gold);font-weight:700;">73</td><td data-sort="-1" class="dim">—</td><td data-sort="5.5"><strong style="color:var(--mv-gold)">$5.50</strong></td></tr><tr><td>James Maddison</td><td class="dim">—</td><td>M</td><td data-sort="84.0" style="color:var(--mv-gold);font-weight:700;">84</td><td data-sort="-1" class="dim">—</td><td data-sort="8.25"><strong style="color:var(--mv-gold)">$8.25</strong></td></tr><tr><td>Mateo Kovacic</td><td class="dim">—</td><td>M</td><td data-sort="83.0" style="color:var(--mv-gold);font-weight:700;">83</td><td data-sort="-1" class="dim">—</td><td data-sort="6.05"><strong style="color:var(--mv-gold)">$6.05</strong></td></tr><tr><td>Oscar Bobb</td><td class="dim">—</td><td>M</td><td data-sort="72.0" style="color:var(--mv-gold);font-weight:700;">72</td><td data-sort="-1" class="dim">—</td><td data-sort="5.45"><strong style="color:var(--mv-gold)">$5.45</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Romeo Lavia</td><td class="dim">—</td><td>M</td><td data-sort="78.0" style="color:var(--mv-gold);font-weight:700;">78</td><td data-sort="-1" class="dim">—</td><td data-sort="4.84"><strong style="color:var(--mv-gold)">$4.84</strong></td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>James McAtee</td><td class="dim">—</td><td>M</td><td data-sort="73.0" style="color:var(--mv-gold);font-weight:700;">73</td><td data-sort="-1" class="dim">—</td><td data-sort="4.4"><strong style="color:var(--mv-gold)">$4.40</strong></td></tr><tr><td>Rio Ngumoha</td><td class="dim">—</td><td>F</td><td data-sort="68.0" style="color:var(--mv-gold);font-weight:700;">68</td><td data-sort="-1" class="dim">—</td><td data-sort="4.4"><strong style="color:var(--mv-gold)">$4.40</strong></td></tr>
             </tbody>
+            <tfoot><tr><td colspan="6">10 total &middot; 4 D  &middot;  5 M  &middot;  1 F</td></tr></tfoot>
           </table>
         </div>
       </div>
@@ -79,22 +87,31 @@
       <div id="depth-MS8" class="mv-tab-panel">
         <div class="sub">League formation 3-4-3, ranked by EA FC 26 overall rating at each position</div>
         <div class="mv-pitch">
-          <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">R. Ngumoha</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">68 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.40</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player">Madison</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">84 OVR</div><div class="salary dim">— pts</div><div class="salary">$8.25</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Mateo Kovacic</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">83 OVR</div><div class="salary dim">— pts</div><div class="salary">$6.05</div></div><div class="mv-slot"><div class="pos">M</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Lavia</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">78 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.84</div></div><div class="mv-slot"><div class="pos">M</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>McAtee</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">73 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.40</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player">Aina</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">80 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.50</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Dalot</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">79 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.50</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Truffert</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">77 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.50</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
+          <div class="mv-pitch-row"><div class="mv-slot"><div class="pos">F</div><div class="player">Rio Ngumoha</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">68 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.40</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div><div class="mv-slot empty"><div class="pos">F</div><div class="player">&mdash;</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">M</div><div class="player">James Maddison</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">84 OVR</div><div class="salary dim">— pts</div><div class="salary">$8.25</div></div><div class="mv-slot"><div class="pos">M</div><div class="player">Mateo Kovacic</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">83 OVR</div><div class="salary dim">— pts</div><div class="salary">$6.05</div></div><div class="mv-slot"><div class="pos">M</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Romeo Lavia</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">78 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.84</div></div><div class="mv-slot"><div class="pos">M</div><div class="player"><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>James McAtee</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">73 OVR</div><div class="salary dim">— pts</div><div class="salary">$4.40</div></div></div><div class="mv-pitch-row"><div class="mv-slot"><div class="pos">D</div><div class="player">Ola Aina</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">80 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.50</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Diogo Dalot</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">79 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.50</div></div><div class="mv-slot"><div class="pos">D</div><div class="player">Adrien Truffert</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">77 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.50</div></div></div><div class="mv-pitch-row"><div class="mv-slot empty"><div class="pos">GK</div><div class="player">&mdash;</div></div></div>
         </div>
-        <div class="mv-depth-group"><div class="heading">M Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">M</div><div class="player">Oscar Bobb</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">72 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.45</div></div></div></div><div class="mv-depth-group"><div class="heading">D Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">Kayode</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">73 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.50</div></div></div></div>
+        <div class="mv-depth-group"><div class="heading">M Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">M</div><div class="player">Oscar Bobb</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">72 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.45</div></div></div></div><div class="mv-depth-group"><div class="heading">D Depth</div><div class="mv-pitch-row" style="justify-content:flex-start;"><div class="mv-slot"><div class="pos">D</div><div class="player">Michael Kayode</div><div class="salary" style="color:var(--mv-gold);font-weight:700;">73 OVR</div><div class="salary dim">— pts</div><div class="salary">$5.50</div></div></div></div>
       </div>
 
       <div id="finances-MS8" class="mv-tab-panel">
-        <div class="sub">Payroll by contract year, team totals then player-by-player</div>
+        <div class="sub">Payroll by contract year, team totals then player-by-player &middot; click a column to sort</div>
         <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
           <div class="mv-stat"><div class="label">25/26 Payroll</div><div class="value" style="font-size:18px;">$50.35</div></div><div class="mv-stat"><div class="label">26/27 Payroll</div><div class="value" style="font-size:18px;">$55.39</div></div><div class="mv-stat"><div class="label">27/28 Payroll</div><div class="value" style="font-size:18px;">$4.84</div></div>
         </div>
         <div class="mv-table-scroll">
-          <table class="mv-table">
-            <thead><tr><th>Player</th><th>Pos</th><th>25/26</th><th><span style="color:var(--mv-gold)">26/27</span></th><th>27/28</th><th>BuyOut</th></tr></thead>
+          <table class="mv-table mv-sortable" id="finances-table-MS8">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">25/26</th>
+              <th data-sort-type="num"><span style="color:var(--mv-gold)">26/27</span></th>
+              <th data-sort-type="num">27/28</th>
+              <th data-sort-type="num">BuyOut</th>
+            </tr></thead>
             <tbody>
-              <tr><td>Aina</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Dalot</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Truffert</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Kayode</td><td>D</td><td>$5.00</td><td><strong style="color:var(--mv-gold)">$5.50</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Madison</td><td>M</td><td>$7.50</td><td><strong style="color:var(--mv-gold)">$8.25</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Mateo Kovacic</td><td>M</td><td>$5.50</td><td><strong style="color:var(--mv-gold)">$6.05</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>Oscar Bobb</td><td>M</td><td>$4.95</td><td><strong style="color:var(--mv-gold)">$5.45</strong></td><td>—</td><td class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Lavia</td><td>M</td><td>$4.40</td><td><strong style="color:var(--mv-gold)">$4.84</strong></td><td>—</td><td class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>McAtee</td><td>M</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>—</td><td class="dim">—</td></tr><tr><td>R. Ngumoha</td><td>F</td><td>$4.00</td><td><strong style="color:var(--mv-gold)">$4.40</strong></td><td>$4.84</td><td class="dim">—</td></tr><tr style="background:var(--mv-black-3);font-weight:700;"><td colspan="6">10 total &middot; 4 D  &middot;  5 M  &middot;  1 F</td></tr>
+              <tr><td>Ola Aina</td><td class="dim">—</td><td>D</td><td data-sort="5.0">$5.00</td><td data-sort="5.5"><strong style="color:var(--mv-gold)">$5.50</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Diogo Dalot</td><td class="dim">—</td><td>D</td><td data-sort="5.0">$5.00</td><td data-sort="5.5"><strong style="color:var(--mv-gold)">$5.50</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Adrien Truffert</td><td class="dim">—</td><td>D</td><td data-sort="5.0">$5.00</td><td data-sort="5.5"><strong style="color:var(--mv-gold)">$5.50</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Michael Kayode</td><td class="dim">—</td><td>D</td><td data-sort="5.0">$5.00</td><td data-sort="5.5"><strong style="color:var(--mv-gold)">$5.50</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td>James Maddison</td><td class="dim">—</td><td>M</td><td data-sort="7.5">$7.50</td><td data-sort="8.25"><strong style="color:var(--mv-gold)">$8.25</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Mateo Kovacic</td><td class="dim">—</td><td>M</td><td data-sort="5.5">$5.50</td><td data-sort="6.05"><strong style="color:var(--mv-gold)">$6.05</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Oscar Bobb</td><td class="dim">—</td><td>M</td><td data-sort="4.95">$4.95</td><td data-sort="5.45"><strong style="color:var(--mv-gold)">$5.45</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>Romeo Lavia</td><td class="dim">—</td><td>M</td><td data-sort="4.4">$4.40</td><td data-sort="4.84"><strong style="color:var(--mv-gold)">$4.84</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td><span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>James McAtee</td><td class="dim">—</td><td>M</td><td data-sort="4.0">$4.00</td><td data-sort="4.4"><strong style="color:var(--mv-gold)">$4.40</strong></td><td data-sort="-1">—</td><td data-sort="-1" class="dim">—</td></tr><tr><td>Rio Ngumoha</td><td class="dim">—</td><td>F</td><td data-sort="4.0">$4.00</td><td data-sort="4.4"><strong style="color:var(--mv-gold)">$4.40</strong></td><td data-sort="4.84">$4.84</td><td data-sort="-1" class="dim">—</td></tr>
             </tbody>
+            <tfoot><tr><td colspan="7">10 total &middot; 4 D  &middot;  5 M  &middot;  1 F</td></tr></tfoot>
           </table>
         </div>
       </div>
@@ -114,7 +131,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 04:08 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-07-17 04:15 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');
@@ -124,6 +141,42 @@
       btn.classList.add('active');
       document.getElementById(panelId).classList.add('active');
     }
+
+    // Any <table class="mv-sortable"> gets click-to-sort headers for free.
+    // Mark a <th> with data-sort-type="num" or "text" to make it sortable;
+    // give a <td> a data-sort="..." attribute to sort by a value other than
+    // its displayed text. Only <tbody> rows are reordered -- put running
+    // totals in <tfoot> so they stay pinned.
+    function mvMakeSortable(table) {
+      var tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      table.querySelectorAll('th').forEach(function(th, idx) {
+        if (!th.dataset.sortType) return;
+        th.style.cursor = 'pointer';
+        var dir = 1;
+        th.addEventListener('click', function() {
+          var rows = Array.from(tbody.querySelectorAll('tr'));
+          var type = th.dataset.sortType;
+          rows.sort(function(a, b) {
+            var ac = a.children[idx], bc = b.children[idx];
+            if (!ac || !bc) return 0;
+            var av = ac.dataset.sort !== undefined ? ac.dataset.sort : ac.textContent.trim();
+            var bv = bc.dataset.sort !== undefined ? bc.dataset.sort : bc.textContent.trim();
+            if (type === 'num') {
+              av = parseFloat(av); bv = parseFloat(bv);
+              if (isNaN(av)) av = -Infinity;
+              if (isNaN(bv)) bv = -Infinity;
+            }
+            if (av < bv) return -1 * dir;
+            if (av > bv) return 1 * dir;
+            return 0;
+          });
+          dir *= -1;
+          rows.forEach(function(r) { tbody.appendChild(r); });
+        });
+      });
+    }
+    document.querySelectorAll('table.mv-sortable').forEach(mvMakeSortable);
   </script>
 </body>
 </html>

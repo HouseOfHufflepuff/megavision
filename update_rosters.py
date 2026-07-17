@@ -23,7 +23,7 @@ from common import (
     tally_trophies, COMP_ABBR, fetch_fans, owner_short, POSITION_ORDER,
     position_sort_key, fetch_youth, find_team_sheet, fetch_all_season_labels,
     fetch_season_salary_totals, fetch_league_schedule_games, fetch_standings_reference,
-    fetch_firm_legacy, compute_fan_formula, fetch_stadiums,
+    fetch_firm_legacy, compute_fan_formula, fetch_stadiums, club_full_name,
 )
 from player_clean import clean_player
 
@@ -241,13 +241,16 @@ for code, name, owners in TEAMS:
     YOUTH_MARK = '<span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>'
 
     def player_label(p):
-        return (YOUTH_MARK if is_youth_product(p["player"]) else "") + p["player"]
+        return (YOUTH_MARK if is_youth_product(p["player"]) else "") + (p["clean_name"] or p["player"])
 
-    # ---- live Fantrax fantasy points + FC 26 rating per player, matched by
-    # cleaned last name ----
+    # ---- scrub the raw "R Dias - D MCI" sheet field into its own columns:
+    # clean name, club, live Fantrax fantasy points, EA FC 26 rating -- all
+    # matched by cleaned last name ----
     team_fpts = fpts_lookup(code)
     for p in roster:
         cleaned = clean_player(p["player"], p["pos"])
+        p["clean_name"] = cleaned["player_name"]
+        p["club_full"] = club_full_name(cleaned["real_club"])
         last = (cleaned["player_name"] or "").split()[-1].lower() if cleaned["player_name"] else ""
         p["fpts"] = team_fpts.get(last)
         p["fc26"] = global_fc26_lookup.get(last)
@@ -265,23 +268,23 @@ for code, name, owners in TEAMS:
     def fpts_plain(p):
         return f'{p["fpts"]:,.1f}' if isinstance(p["fpts"], (int, float)) else "—"
 
+    def sort_val(v):
+        return v if isinstance(v, (int, float)) else -1
+
     roster_rows = []
     for p in grouped:
         roster_rows.append(
-            f'<tr><td>{player_label(p)}</td><td>{p["pos"]}</td>'
-            f'<td style="color:var(--mv-gold);font-weight:700;">{fc26_plain(p)}</td>'
-            f'<td class="dim">{fpts_plain(p)}</td>'
-            f'<td><strong style="color:var(--mv-gold)">{money(p["current_salary"])}</strong></td></tr>'
+            f'<tr><td>{player_label(p)}</td><td class="dim">{p["club_full"] or "—"}</td><td>{p["pos"]}</td>'
+            f'<td data-sort="{sort_val(p["fc26"])}" style="color:var(--mv-gold);font-weight:700;">{fc26_plain(p)}</td>'
+            f'<td data-sort="{sort_val(p["fpts"])}" class="dim">{fpts_plain(p)}</td>'
+            f'<td data-sort="{p["current_salary"]}"><strong style="color:var(--mv-gold)">{money(p["current_salary"])}</strong></td></tr>'
         )
 
-    # position-count summary row at the bottom of the table
+    # position-count summary row -- <tfoot>, so it's excluded from sorting
     ordered_pos = [p for p in POSITION_ORDER if p in pos_counts] + \
                   [p for p in pos_counts if p not in POSITION_ORDER]
     counts_line = "  &middot;  ".join(f"{pos_counts[p]} {p}" for p in ordered_pos)
-    roster_rows.append(
-        f'<tr style="background:var(--mv-black-3);font-weight:700;">'
-        f'<td colspan="5">{roster_size} total &middot; {counts_line}</td></tr>'
-    )
+    roster_total_row = f'<tr><td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
 
     # ---- finances: the same roster, salary detail by contract year ----
     finance_rows = []
@@ -289,14 +292,13 @@ for code, name, owners in TEAMS:
         cells = [money(p["y1"]), money(p["y2"]), money(p["y3"])]
         cells[current_idx] = f'<strong style="color:var(--mv-gold)">{cells[current_idx]}</strong>'
         finance_rows.append(
-            f'<tr><td>{player_label(p)}</td><td>{p["pos"]}</td>'
-            f'<td>{cells[0]}</td><td>{cells[1]}</td><td>{cells[2]}</td>'
-            f'<td class="dim">{money(p["buyout"])}</td></tr>'
+            f'<tr><td>{player_label(p)}</td><td class="dim">{p["club_full"] or "—"}</td><td>{p["pos"]}</td>'
+            f'<td data-sort="{sort_val(p["y1"])}">{cells[0]}</td>'
+            f'<td data-sort="{sort_val(p["y2"])}">{cells[1]}</td>'
+            f'<td data-sort="{sort_val(p["y3"])}">{cells[2]}</td>'
+            f'<td data-sort="{sort_val(p["buyout"])}" class="dim">{money(p["buyout"])}</td></tr>'
         )
-    finance_rows.append(
-        f'<tr style="background:var(--mv-black-3);font-weight:700;">'
-        f'<td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
-    )
+    finance_total_row = f'<tr><td colspan="7">{roster_size} total &middot; {counts_line}</td></tr>'
 
     # ---- depth chart: 3-4-3, ranked by EA FC 26 overall rating within each
     # position (falls back to live Fantrax fantasy points, then salary, for
@@ -460,13 +462,21 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="roster-{code}" class="mv-tab-panel active">
-        <div class="sub">{roster_size} players signed for 26/27, grouped by position &middot; FC 26 rating and live Fantrax points, current-season salary</div>
+        <div class="sub">{roster_size} players signed for 26/27 &middot; FC 26 rating, live Fantrax points, current-season salary &middot; click a column to sort</div>
         <div class="mv-table-scroll">
-          <table class="mv-table">
-            <thead><tr><th>Player</th><th>Pos</th><th>FC 26 Rating</th><th>Total Pts</th><th>Current Salary</th></tr></thead>
+          <table class="mv-table mv-sortable" id="roster-table-{code}">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">FC 26 Rating</th>
+              <th data-sort-type="num">Total Pts</th>
+              <th data-sort-type="num">Current Salary</th>
+            </tr></thead>
             <tbody>
               {"".join(roster_rows)}
             </tbody>
+            <tfoot>{roster_total_row}</tfoot>
           </table>
         </div>
       </div>
@@ -480,7 +490,7 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="finances-{code}" class="mv-tab-panel">
-        <div class="sub">Payroll by contract year, team totals then player-by-player</div>
+        <div class="sub">Payroll by contract year, team totals then player-by-player &middot; click a column to sort</div>
         <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
           {"".join(
               f'<div class="mv-stat"><div class="label">{lbl} Payroll</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
@@ -488,11 +498,20 @@ for code, name, owners in TEAMS:
           )}
         </div>
         <div class="mv-table-scroll">
-          <table class="mv-table">
-            <thead><tr><th>Player</th><th>Pos</th><th>{year_th[0]}</th><th>{year_th[1]}</th><th>{year_th[2]}</th><th>BuyOut</th></tr></thead>
+          <table class="mv-table mv-sortable" id="finances-table-{code}">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">{year_th[0]}</th>
+              <th data-sort-type="num">{year_th[1]}</th>
+              <th data-sort-type="num">{year_th[2]}</th>
+              <th data-sort-type="num">BuyOut</th>
+            </tr></thead>
             <tbody>
               {"".join(finance_rows)}
             </tbody>
+            <tfoot>{finance_total_row}</tfoot>
           </table>
         </div>
       </div>
@@ -579,32 +598,6 @@ teams_html = head("Teams", "teams.html") + hero_logo() + f"""
         <code>sync_fc26_ratings.py</code> to refresh the ratings in the local database this reads from.
       </p>
     </section>
-
-    <script>
-      (function() {{
-        var table = document.getElementById('teamsTable');
-        var headers = table.querySelectorAll('th');
-        var tbody = table.querySelector('tbody');
-        headers.forEach(function(th, idx) {{
-          th.style.cursor = 'pointer';
-          var dir = 1;
-          th.addEventListener('click', function() {{
-            var rows = Array.from(tbody.querySelectorAll('tr'));
-            var type = th.dataset.sortType;
-            rows.sort(function(a, b) {{
-              var av = a.children[idx].dataset.sort || a.children[idx].textContent.trim();
-              var bv = b.children[idx].dataset.sort || b.children[idx].textContent.trim();
-              if (type === 'num') {{ av = parseFloat(av); bv = parseFloat(bv); }}
-              if (av < bv) return -1 * dir;
-              if (av > bv) return 1 * dir;
-              return 0;
-            }});
-            dir *= -1;
-            rows.forEach(function(r) {{ tbody.appendChild(r); }});
-          }});
-        }});
-      }})();
-    </script>
 """ + foot()
 
 with open("teams.html", "w") as f:
