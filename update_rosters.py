@@ -312,27 +312,39 @@ for code, name, owners in TEAMS:
     def rating_label(p):
         return f'{p["fc26"]:,.0f} OVR' if isinstance(p["fc26"], (int, float)) else "— OVR"
 
-    def render_rank_list(players):
-        if not players:
-            return '<div class="mv-empty">No players at this position.</div>'
-        items = "".join(
-            f'<li><span class="rank">{i+1}</span><span class="player">{player_label(p)}</span>'
-            f'<span class="rating">{rating_label(p)}</span></li>'
-            for i, p in enumerate(players)
-        )
-        return f'<ol class="mv-rank-list">{items}</ol>'
+    # box fill order for a row of N boxes: middle first, then outward --
+    # e.g. 3 boxes -> [center, left, right]; 4 boxes -> [inner two, then outer two]
+    CENTER_OUT_ORDER = {1: [0], 3: [1, 0, 2], 4: [1, 2, 0, 3]}
 
-    # ---- depth chart: one ranked list per position, best to worst by EA FC
-    # 26 rating (falls back to live Fantrax fantasy points, then salary) --
-    # no starters/bench split, no pts or salary shown ----
-    depth_groups = []
-    for pos, _need in FORMATION:
-        players = by_pos.get(pos, [])
-        depth_groups.append(
-            f'<div class="mv-depth-group"><div class="heading">{pos} &middot; {len(players)}</div>'
-            f'{render_rank_list(players)}</div>'
+    def distribute_center_out(players, need):
+        order = CENTER_OUT_ORDER.get(need, list(range(need)))
+        boxes = [[] for _ in range(need)]
+        for i, p in enumerate(players):
+            boxes[order[i % need]].append(p)
+        return boxes
+
+    def render_box(pos, box_players):
+        if not box_players:
+            return f'<div class="mv-slot empty"><div class="pos">{pos}</div><div class="player">&mdash;</div></div>'
+        rows = "".join(
+            f'<div class="mv-box-player"><span class="player">{player_label(p)}</span>'
+            f'<span class="rating">{rating_label(p)}</span></div>'
+            for p in box_players
         )
-    depth_html = "".join(depth_groups) or '<div class="mv-empty">No players on this roster.</div>'
+        return f'<div class="mv-slot"><div class="pos">{pos}</div>{rows}</div>'
+
+    # ---- depth chart: real 3-4-3 formation. Each row is `need` boxes for
+    # that position; every player at that position (not just starters) is
+    # distributed across the row's boxes, best rating first, filling the
+    # middle box before working outward, so a deep position piles up in the
+    # middle rather than only ever showing one name per box ----
+    pitch_rows = []
+    for pos, need in FORMATION:
+        players = by_pos.get(pos, [])
+        boxes = distribute_center_out(players, need)
+        row_html = "".join(render_box(pos, box) for box in boxes)
+        pitch_rows.append(f'<div class="mv-pitch-row">{row_html}</div>')
+    depth_html = "".join(pitch_rows)
 
     # ---- youth: rating (EA FC 26, falling back to live Fantrax fpts),
     # matched league-wide since a youth player may not be on this team's own
@@ -462,8 +474,10 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="depth-{code}" class="mv-tab-panel">
-        <div class="sub">Every player at each position, best to worst by EA FC 26 overall rating</div>
-        {depth_html}
+        <div class="sub">3-4-3 formation &middot; every player at each position, filled center-out, best to worst by EA FC 26 rating</div>
+        <div class="mv-pitch">
+          {depth_html}
+        </div>
       </div>
 
       <div id="finances-{code}" class="mv-tab-panel">
