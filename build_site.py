@@ -1,12 +1,8 @@
-from common import TEAMS, head, foot, hero_logo, fetch_live_workbook, fetch_trophy_room, resolve_team_code, fetch_stadiums, fetch_season_salary_totals, owner_short
-
-SEASON_25_26 = "25/26"
+from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room, resolve_team_code
 
 print("Fetching live spreadsheet...")
 wb = fetch_live_workbook()
 comps, seasons = fetch_trophy_room(wb)
-stadiums = fetch_stadiums(wb)
-salaries_25_26 = fetch_season_salary_totals(wb, SEASON_25_26)
 print(f"Fetched. {len(seasons)} seasons of trophy history.")
 
 total_titles = sum(1 for s in seasons for v in s[1:8] if v)
@@ -75,39 +71,8 @@ index_html = head("Home", "index.html") + f"""
 with open("index.html", "w") as f:
     f.write(index_html)
 
-# ---------------- teams.html ----------------
-team_cards = []
-for code, name, owners in TEAMS:
-    slug = code.lower()
-    stad = stadiums.get(code, {})
-    cap = stad.get("capacity")
-    cap_str = f"{cap:,.0f}" if isinstance(cap, (int, float)) else "—"
-    stadium_line = f'{stad.get("stadium", "—")} &middot; Capacity {cap_str}'
-    salary = salaries_25_26.get(code)
-    salary_str = f"${salary:,.2f}" if isinstance(salary, (int, float)) else "—"
-    team_cards.append(f"""      <a class="mv-team-card" href="team-{slug}.html">
-        <div class="code">{code}</div>
-        <div class="name">{name}</div>
-        <div class="owners">{owner_short(owners)}</div>
-        <div class="owners" style="margin-top:4px;">{stadium_line}</div>
-        <div class="owners" style="margin-top:4px;">{SEASON_25_26} Final Payroll: {salary_str}</div>
-        <div class="go">View Team &rarr;</div>
-      </a>""")
+# teams.html is owned by update_rosters.py now (needs per-team payroll, fan,
+# win, trophy, and live-rating data that only that script computes) -- run
+# that after this.
 
-teams_html = head("Teams", "teams.html") + hero_logo() + f"""
-    <div class="mv-page-header">
-      <h1 class="mv-chrome-text">Teams</h1>
-      <div class="sub">All {len(TEAMS)} franchises competing this season</div>
-    </div>
-    <div class="mv-team-grid">
-{chr(10).join(team_cards)}
-    </div>
-""" + foot()
-
-with open("teams.html", "w") as f:
-    f.write(teams_html)
-
-# financials.html is owned by update_rosters.py now (needs per-team payroll,
-# fan, and trophy data that only that script computes) -- run that after this.
-
-print("done: index.html, teams.html (run update_rosters.py for financials.html + team pages)")
+print("done: index.html (run update_rosters.py for teams.html + financials.html + team pages)")
