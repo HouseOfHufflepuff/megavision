@@ -628,7 +628,15 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   }});
   bgm.addEventListener('play', setBtn);
   bgm.addEventListener('pause', setBtn);
-  tryPlay();
+  // when embedded from the soccer game's frame, Jonas is already playing
+  // on the containing page -- don't also start it here, just leave it
+  // paused and ready if the visitor wants to hit play themselves.
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('noauto') === '1') {{
+    setBtn();
+  }} else {{
+    tryPlay();
+  }}
 }})();
 </script>
 

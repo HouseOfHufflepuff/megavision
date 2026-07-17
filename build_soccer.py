@@ -49,6 +49,37 @@ badge_html = "\n      ".join(
     for bg, fg, label in BADGES
 )
 
+# 5 helicopters, flying around the whole page independently (same random-walk
+# pattern as the snowmobile lifestyle page)
+heli_html = "\n    ".join(f'<span class="sc-heli" id="scHeli{i}">&#128641;</span>' for i in range(5))
+
+# extra decorative ninjas (the goalkeeper stays a ninja too -- this is on
+# purpose) scattered around the page with a lazy idle bob
+NINJA_SPOTS = [
+    ("6%", "10%", -10, "3.1s"), ("10%", "88%", 8, "2.6s"), ("40%", "6%", -6, "3.6s"),
+    ("55%", "90%", 12, "2.9s"), ("85%", "8%", -12, "3.3s"), ("90%", "85%", 6, "2.4s"),
+]
+ninja_html = "\n    ".join(
+    f'<span class="sc-ninja" style="top:{top};left:{left};--r:{rot}deg;animation-duration:{dur};">&#129399;</span>'
+    for top, left, rot, dur in NINJA_SPOTS
+)
+
+# bouncing soccer balls scattered across the page, each losing height on
+# every bounce like it's actually got gravity
+random.seed(22)
+BALL_COUNT = 10
+bounce_balls = []
+for i in range(BALL_COUNT):
+    left = random.uniform(2, 94)
+    size = random.randint(20, 40)
+    dur = random.uniform(2.2, 4.0)
+    delay = random.uniform(0, 2.5)
+    bounce_balls.append(
+        f'<span class="sc-bounce-ball" style="left:{left:.1f}%;font-size:{size}px;'
+        f'animation-duration:{dur:.2f}s;animation-delay:-{delay:.2f}s;">&#9917;</span>'
+    )
+bounce_ball_html = "\n    ".join(bounce_balls)
+
 page = head("Soccer", "soccer.html") + f"""
 <style>
   @keyframes scBlink {{ 0%, 45% {{ opacity: 1; }} 50%, 95% {{ opacity: 0; }} 100% {{ opacity: 1; }} }}
@@ -62,6 +93,36 @@ page = head("Soccer", "soccer.html") + f"""
   }}
   @keyframes scPulse {{ 0%, 100% {{ transform: scale(1); }} 50% {{ transform: scale(1.15); }} }}
   @keyframes scShake {{ 0%,100% {{ transform: translateX(0); }} 20% {{ transform: translateX(-8px); }} 40% {{ transform: translateX(8px); }} 60% {{ transform: translateX(-6px); }} 80% {{ transform: translateX(6px); }} }}
+  @keyframes scBob {{ 0%, 100% {{ transform: translateY(0) rotate(var(--r, 0deg)); }} 50% {{ transform: translateY(-14px) rotate(var(--r, 0deg)); }} }}
+  @keyframes scBounce {{
+    0%   {{ transform: translateY(0) scale(1, 1); }}
+    12%  {{ transform: translateY(-160px) scale(1, 1); }}
+    24%  {{ transform: translateY(0) scale(1.2, 0.8); }}
+    36%  {{ transform: translateY(-90px) scale(1, 1); }}
+    48%  {{ transform: translateY(0) scale(1.15, 0.85); }}
+    60%  {{ transform: translateY(-45px) scale(1, 1); }}
+    72%  {{ transform: translateY(0) scale(1.1, 0.9); }}
+    84%  {{ transform: translateY(-16px) scale(1, 1); }}
+    92%  {{ transform: translateY(0) scale(1.05, 0.95); }}
+    100% {{ transform: translateY(0) scale(1, 1); }}
+  }}
+
+  .sc-heli-layer {{ position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 60; }}
+  .sc-heli {{
+    position: absolute; top: 30%; left: 30%; font-size: 46px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    transition: left 2.6s ease-in-out, top 2.6s ease-in-out, transform 2.6s ease-in-out;
+  }}
+  .sc-ninja {{
+    position: absolute; font-size: 30px; z-index: 2; opacity: 0.85;
+    animation: scBob ease-in-out infinite;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+  }}
+  .sc-bounce-layer {{ position: absolute; inset: 0; bottom: 0; pointer-events: none; overflow: hidden; z-index: 1; }}
+  .sc-bounce-ball {{
+    position: absolute; bottom: 0; animation: scBounce ease-out infinite;
+    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
+  }}
 
   .sc-page {{
     position: relative;
@@ -106,18 +167,39 @@ page = head("Soccer", "soccer.html") + f"""
   .sc-scorebox .val {{ font-size: 22px; font-weight: 800; color: #3fd17a; }}
 
   .sc-arena {{ max-width: 640px; margin: 0 auto 20px; position: relative; z-index: 5; }}
+  .sc-goal-frame {{
+    position: relative;
+    padding: 0 16px 0 16px;
+    background: linear-gradient(180deg, #1a6b33 0%, #0d3d1f 70%, #0a2a15 100%);
+    box-shadow: 0 0 40px rgba(255,209,102,0.25), inset 0 -20px 40px rgba(0,0,0,0.4);
+  }}
+  .sc-crossbar {{
+    height: 16px;
+    background: linear-gradient(180deg, #fff 0%, #d8d8e0 45%, #9a9aa8 55%, #fff 100%);
+    border-radius: 6px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+    margin: 0 -16px;
+  }}
+  .sc-post {{
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 16px;
+    background: linear-gradient(90deg, #fff 0%, #d8d8e0 45%, #9a9aa8 55%, #fff 100%);
+    box-shadow: 0 0 6px rgba(0,0,0,0.5);
+  }}
+  .sc-post.left {{ left: 0; }}
+  .sc-post.right {{ right: 0; }}
   .sc-goal {{
     position: relative;
     height: 320px;
     background:
-      repeating-linear-gradient(0deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 18px),
-      repeating-linear-gradient(90deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 18px),
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.16) 0 1px, transparent 1px 16px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,0.16) 0 1px, transparent 1px 16px),
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 32px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 32px),
       linear-gradient(180deg, #0d3d1f, #0a2a15);
-    border: 10px solid #fff;
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
     cursor: crosshair;
-    box-shadow: 0 0 40px rgba(255,209,102,0.25);
+    overflow: hidden;
   }}
   .sc-keeper {{
     position: absolute; bottom: 6px; font-size: 46px; left: 14%;
@@ -165,8 +247,16 @@ page = head("Soccer", "soccer.html") + f"""
   audio {{ display: none; }}
 </style>
 
+<div class="sc-heli-layer">
+  {heli_html}
+</div>
+
 <div class="sc-page">
   {floater_html}
+  {ninja_html}
+  <div class="sc-bounce-layer">
+    {bounce_ball_html}
+  </div>
 
   <div class="sc-marquee-wrap">
     <span class="sc-marquee-text">&#9917; MEGA PENALTY SHOOTOUT &#9917; AIM WITH YOUR MOUSE &#9917; CLICK TO SHOOT &#9917; NOW WITH REAL AUDIO &#9917; MEGA PENALTY SHOOTOUT &#9917; AIM WITH YOUR MOUSE &#9917; CLICK TO SHOOT &#9917;</span>
@@ -186,10 +276,15 @@ page = head("Soccer", "soccer.html") + f"""
     </div>
 
     <div class="sc-arena">
-      <div class="sc-goal" id="goalBox">
-        <div class="sc-keeper" id="keeper">&#129399;</div>
-        <div class="sc-ball" id="ball">&#9917;</div>
-        <div class="sc-result" id="resultOverlay"></div>
+      <div class="sc-goal-frame">
+        <div class="sc-crossbar"></div>
+        <div class="sc-post left"></div>
+        <div class="sc-post right"></div>
+        <div class="sc-goal" id="goalBox">
+          <div class="sc-keeper" id="keeper">&#129399;</div>
+          <div class="sc-ball" id="ball">&#9917;</div>
+          <div class="sc-result" id="resultOverlay"></div>
+        </div>
       </div>
       <div class="sc-instructions blink">&#128071; CLICK INSIDE THE GOAL TO AIM AND FIRE &#128071;</div>
     </div>
@@ -328,9 +423,30 @@ page = head("Soccer", "soccer.html") + f"""
         frameStatus.textContent = 'CONNECTED &mdash; ENJOY THE FEED';
         placeholder.style.display = 'none';
         frame.style.display = 'block';
-        frame.src = 'snowmobile-lifestlye.html';
+        frame.src = 'snowmobile-lifestlye.html?noauto=1';
       }}
     }}, 1000);
+  }});
+}})();
+</script>
+
+<script>
+(function() {{
+  var helis = document.querySelectorAll('.sc-heli');
+  helis.forEach(function(heli, i) {{
+    var lastX = 20 + i * 15;
+    function fly() {{
+      var x = 4 + Math.random() * 88;
+      var y = 6 + Math.random() * 82;
+      var facingLeft = x < lastX;
+      var tilt = (Math.random() * 16 - 8).toFixed(1);
+      heli.style.left = x + '%';
+      heli.style.top = y + '%';
+      heli.style.transform = 'scaleX(' + (facingLeft ? -1 : 1) + ') rotate(' + tilt + 'deg)';
+      lastX = x;
+      setTimeout(fly, 2000 + Math.random() * 2400);
+    }}
+    setTimeout(fly, i * 400);
   }});
 }})();
 </script>
