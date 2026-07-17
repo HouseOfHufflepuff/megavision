@@ -348,11 +348,13 @@ BGSOUND_FILE = "allstar.mp3"
 
 
 def bgsound_tags():
-    # a real <audio> so it genuinely plays, PLUS the cosmetic <bgsound>/<embed>
-    # tags for period authenticity (harmless no-ops in every modern browser)
+    # a real <audio> so it genuinely plays, PLUS the cosmetic <bgsound> tag
+    # for period authenticity (a true no-op in every modern browser).
+    # NOTE: <embed autostart> used to be here too, but modern browsers give
+    # it a real native audio player and actually autoplay it -- that was
+    # duplicating the <audio> track and playing the song twice. Dropped it.
     return f"""
   <bgsound src="{BGSOUND_FILE}" loop="infinite">
-  <embed src="{BGSOUND_FILE}" autostart="true" loop="true" hidden="true" width="2" height="2">
   <audio id="chaosBgm" autoplay loop style="display:none;"><source src="{BGSOUND_FILE}" type="audio/mpeg"></audio>
   <script>
     (function() {{

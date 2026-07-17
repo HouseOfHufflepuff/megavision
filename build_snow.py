@@ -1,3 +1,4 @@
+import json
 import random
 from common import head, foot
 
@@ -43,6 +44,18 @@ TRACK_URL = "jonas.mp3"
 TRACK_TITLE = "My Name Is Jonas"
 TRACK_ARTIST = "Weezer &middot; MIDI arrangement (1998)"
 TRACK_LICENSE = "rendered from the original .mid"
+
+# ---- win95-style popup ads, spawning at random while you browse the lifestyle ----
+POPUP_ADS = [
+    ("YETIFUEL.EXE", "&#10024; YOUR BLOOD IS TOO WARM &#10024;", "Yeti Fuel Energy Elixir was engineered for humans who find room temperature offensive. One can and you will NEVER be lukewarm again. Arctic Soul or nothing.", "snow-business-plan.html", "FUEL UP NOW &rarr;"),
+    ("MEMBERSHIP.EXE", "&#127942; UNTAMED DESTINY AWAITS &#127942;", "You have been PRE-APPROVED for the Untamed Destiny Membership Club. Ordinary people need not apply. Are you ordinary? Prove it wrong.", "teams.html", "JOIN THE LIFESTYLE &rarr;"),
+    ("APPAREL.EXE", "&#10084; ARCTIC SOUL APPAREL CO. &#10084;", "Regular jackets keep you warm. Ours make you FEEL like you personally invented winter. Limited stock. The tundra is watching.", "snow-business-plan.html", "GEAR UP &rarr;"),
+    ("SLEDALERT.EXE", "&#9888; FINAL WARNING &#9888;", "You have gone 0 days without owning a snowmobile. This is not a drill. FunBoy Snowmobile Rentals can fix this TODAY, no questions asked.", "snow-business-plan.html", "RENT A SLED &rarr;"),
+    ("APP.EXE", "&#128241; DOWNLOAD NOW &#128241;", "The Snow Life Command App has been silently judging you from the App Store for weeks. Install it. Command your snow life. Do it now.", "snow-business-plan.html", "GET THE APP &rarr;"),
+    ("RETREAT.EXE", "&#10024; YOU DESERVE THIS &#10024;", "Winter Purpose Retreats: find yourself, or at minimum find a hot tub at 9,000 feet. Spots vanishing faster than spring snowpack.", "snow-business-plan.html", "BOOK MY RETREAT &rarr;"),
+    ("INVESTOR.EXE", "&#128176; GET IN EARLY &#128176;", "MEGAVISION Snowmobile Lifestyle is the single greatest investment opportunity currently rendered in a web browser. Our biz plan has charts. REAL ones.", "snow-business-plan.html", "SEE THE BIZ PLAN &rarr;"),
+]
+popup_ads_json = json.dumps([list(ad) for ad in POPUP_ADS])
 
 SNOWMOBILES = [
     (1, "Ski-Doo Olympique", "1959", "The machine that created the industry. Bombardier built a sled small enough and cheap enough for a normal family driveway, and overnight snow stopped being an obstacle and became a playground. Every snowmobile made since owes it a debt.",
@@ -488,6 +501,29 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
     letter-spacing: 0.04em;
   }}
 
+  /* ---- popup ad windows (spawned randomly, Windows-95-ish) ---- */
+  .retro-popup {{
+    position: fixed; z-index: 300; width: 250px;
+    background: #c0c0c0; border: 2px outset #eee; box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+    font-family: Tahoma, 'MS Sans Serif', sans-serif; color: #000;
+  }}
+  .retro-popup-titlebar {{
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff; font-size: 12px; font-weight: 700; padding: 3px 6px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: default;
+  }}
+  .retro-popup-close {{
+    background: #c0c0c0; border: 1px outset #fff; color: #000; font-size: 10px; font-weight: 900;
+    width: 16px; height: 14px; line-height: 14px; text-align: center; cursor: pointer; padding: 0;
+  }}
+  .retro-popup-body {{ padding: 10px; font-size: 12px; line-height: 1.5; text-align: center; }}
+  .retro-popup-body b {{ display: block; font-size: 14px; margin-bottom: 4px; }}
+  .retro-popup-cta {{
+    display: inline-block; margin-top: 8px; background: #008000; color: #fff; font-weight: 800;
+    text-decoration: none; padding: 6px 14px; border: 2px outset #0c0; font-size: 11px;
+  }}
+
   .retro-cta {{
     text-align: center;
     margin-bottom: 10px;
@@ -606,6 +642,8 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
   </div>
 </div>
 
+<div id="popupLayer"></div>
+
 <script>
 (function() {{
   var bgm = document.getElementById('mvBgm');
@@ -674,6 +712,44 @@ page = head("Snowmobile Lifestyle", "snowmobile-lifestlye.html") + f"""
     document.body.appendChild(s);
     setTimeout(function() {{ s.remove(); }}, 800);
   }});
+}})();
+</script>
+
+<script>
+(function() {{
+  // ---- popup ads: spawn at random intervals, random position, max 3 at once ----
+  var popupAds = {popup_ads_json};
+  var layer = document.getElementById('popupLayer');
+  var openPopups = 0;
+  var MAX_POPUPS = 3;
+
+  function spawnPopup() {{
+    if (openPopups >= MAX_POPUPS) return;
+    openPopups++;
+    var ad = popupAds[Math.floor(Math.random() * popupAds.length)];
+    var win = document.createElement('div');
+    win.className = 'retro-popup';
+    var top = 10 + Math.random() * 60;
+    var left = 5 + Math.random() * 60;
+    win.style.top = top + '%';
+    win.style.left = left + '%';
+    win.innerHTML =
+      '<div class="retro-popup-titlebar"><span>' + ad[0] + '</span><button class="retro-popup-close" type="button">&#10005;</button></div>' +
+      '<div class="retro-popup-body"><b>' + ad[1] + '</b>' + ad[2] +
+      '<br><a class="retro-popup-cta" href="' + ad[3] + '">' + ad[4] + '</a></div>';
+    layer.appendChild(win);
+    function close() {{
+      if (win.parentNode) {{ win.parentNode.removeChild(win); openPopups--; }}
+    }}
+    win.querySelector('.retro-popup-close').addEventListener('click', close);
+    setTimeout(close, 9000 + Math.random() * 4000);
+  }}
+
+  function scheduleNextPopup() {{
+    var delay = 6000 + Math.random() * 8000;
+    setTimeout(function() {{ spawnPopup(); scheduleNextPopup(); }}, delay);
+  }}
+  scheduleNextPopup();
 }})();
 </script>
 """ + foot()
