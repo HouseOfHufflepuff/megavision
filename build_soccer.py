@@ -7,6 +7,7 @@ effects via Web Audio (no external files needed), and "My Name Is Jonas"
 kick. Ten seconds after a shot, the lifestyle page loads into an on-page
 frame.
 """
+import json
 import random
 
 from common import head, foot
@@ -79,6 +80,27 @@ for i in range(BALL_COUNT):
         f'animation-duration:{dur:.2f}s;animation-delay:-{delay:.2f}s;">&#9917;</span>'
     )
 bounce_ball_html = "\n    ".join(bounce_balls)
+
+# ---- banner ads + popup ads advertising the snowmobile lifestyle page,
+# firing at random while you play ----
+BANNER_ADS = [
+    ("#000080", "#ffd166", "&#9973; GET WILD!!! Visit the SNOWMOBILE LIFESTYLE page NOW &#9973; &#128072; CLICK HERE &#128072;"),
+    ("#800080", "#fff", "&#127942; YOU could be Arctic Explorer #1,000,000 &#127942; ENTER THE LIFESTYLE &rarr;"),
+    ("#006400", "#fff", "&#10024; 100% FREE Snowmobile Rides (offer not real) &#10024; CLICK NOW!!!"),
+    ("#c00", "#ffd166", "&#128293; HOT HOT HOT Winter Deals Inside &#128293; DO NOT MISS OUT"),
+]
+banner_html = "\n    ".join(
+    f'<div class="sc-banner-ad" data-bg="{bg}" data-fg="{fg}" style="display:none;background:{bg};color:{fg};">'
+    f'<a href="snowmobile-lifestlye.html" style="color:{fg};text-decoration:none;">{copy}</a></div>'
+    for bg, fg, copy in BANNER_ADS
+)
+
+POPUP_ADS = [
+    ("AD.EXE", "&#127942; CONGRATULATIONS!!! &#127942;", "You are the LUCKY visitor!!! Click below to claim your FREE trip to the Snowmobile Lifestyle!"),
+    ("WINNER.EXE", "&#10024; YOU'VE WON! &#10024;", "Our system has selected YOU for a complimentary Arctic Soul Seeker starter pack. Do not refresh!"),
+    ("HOTDEAL.EXE", "&#128293; LAST CHANCE &#128293;", "Prices this low will NEVER be seen again. The Lifestyle is calling. Answer it."),
+]
+popup_ads_json = json.dumps([list(ad) for ad in POPUP_ADS])
 
 page = head("Soccer", "soccer.html") + f"""
 <style>
@@ -245,6 +267,43 @@ page = head("Soccer", "soccer.html") + f"""
   .sc-tools a {{ background: var(--mv-black-3); border: 2px outset var(--mv-chrome-300); color: var(--mv-ink); text-decoration: none; font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 3px; }}
 
   audio {{ display: none; }}
+
+  /* ---- banner ad dock (bottom, cycling) ---- */
+  .sc-banner-dock {{
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 150;
+    display: flex; justify-content: center;
+  }}
+  .sc-banner-ad {{
+    width: 100%; max-width: 468px; height: 60px;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+    font-weight: 800; font-size: 13px; line-height: 1.3; padding: 4px 14px;
+    border: 3px outset #fff; box-shadow: 0 -2px 14px rgba(0,0,0,0.6);
+    animation: scBlink 1.3s steps(1) infinite;
+  }}
+
+  /* ---- popup ad windows (spawned randomly, Windows-95-ish) ---- */
+  .sc-popup {{
+    position: fixed; z-index: 200; width: 250px;
+    background: #c0c0c0; border: 2px outset #eee; box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+    font-family: Tahoma, 'MS Sans Serif', sans-serif; color: #000;
+  }}
+  .sc-popup-titlebar {{
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff; font-size: 12px; font-weight: 700; padding: 3px 6px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: default;
+  }}
+  .sc-popup-close {{
+    background: #c0c0c0; border: 1px outset #fff; color: #000; font-size: 10px; font-weight: 900;
+    width: 16px; height: 14px; line-height: 14px; text-align: center; cursor: pointer; padding: 0;
+  }}
+  .sc-popup-body {{ padding: 10px; font-size: 12px; line-height: 1.5; text-align: center; }}
+  .sc-popup-body b {{ display: block; font-size: 14px; margin-bottom: 4px; }}
+  .sc-popup-cta {{
+    display: inline-block; margin-top: 8px; background: #008000; color: #fff; font-weight: 800;
+    text-decoration: none; padding: 6px 14px; border: 2px outset #0c0; font-size: 11px;
+  }}
 </style>
 
 <div class="sc-heli-layer">
@@ -315,6 +374,11 @@ page = head("Soccer", "soccer.html") + f"""
     </audio>
   </div>
 </div>
+
+<div class="sc-banner-dock" id="bannerDock">
+  {banner_html}
+</div>
+<div id="popupLayer"></div>
 
 <script>
 (function() {{
@@ -448,6 +512,57 @@ page = head("Soccer", "soccer.html") + f"""
     }}
     setTimeout(fly, i * 400);
   }});
+}})();
+</script>
+
+<script>
+(function() {{
+  // ---- banner ad dock: cycle through the ads every few seconds ----
+  var banners = document.querySelectorAll('.sc-banner-ad');
+  var bi = 0;
+  function showBanner() {{
+    banners.forEach(function(b) {{ b.style.display = 'none'; }});
+    banners[bi].style.display = 'flex';
+    bi = (bi + 1) % banners.length;
+  }}
+  if (banners.length) {{
+    showBanner();
+    setInterval(showBanner, 5500);
+  }}
+
+  // ---- popup ads: spawn at random intervals, random position, max 3 at once ----
+  var popupAds = {popup_ads_json};
+  var layer = document.getElementById('popupLayer');
+  var openPopups = 0;
+  var MAX_POPUPS = 3;
+
+  function spawnPopup() {{
+    if (openPopups >= MAX_POPUPS) return;
+    openPopups++;
+    var ad = popupAds[Math.floor(Math.random() * popupAds.length)];
+    var win = document.createElement('div');
+    win.className = 'sc-popup';
+    var top = 10 + Math.random() * 60;
+    var left = 5 + Math.random() * 60;
+    win.style.top = top + '%';
+    win.style.left = left + '%';
+    win.innerHTML =
+      '<div class="sc-popup-titlebar"><span>' + ad[0] + '</span><button class="sc-popup-close" type="button">&#10005;</button></div>' +
+      '<div class="sc-popup-body"><b>' + ad[1] + '</b>' + ad[2] +
+      '<br><a class="sc-popup-cta" href="snowmobile-lifestlye.html">ENTER THE LIFESTYLE &rarr;</a></div>';
+    layer.appendChild(win);
+    function close() {{
+      if (win.parentNode) {{ win.parentNode.removeChild(win); openPopups--; }}
+    }}
+    win.querySelector('.sc-popup-close').addEventListener('click', close);
+    setTimeout(close, 9000 + Math.random() * 4000);
+  }}
+
+  function scheduleNextPopup() {{
+    var delay = 7000 + Math.random() * 9000;
+    setTimeout(function() {{ spawnPopup(); scheduleNextPopup(); }}, delay);
+  }}
+  scheduleNextPopup();
 }})();
 </script>
 """ + foot()
