@@ -342,6 +342,8 @@ for code, name, owners in TEAMS:
         last = (cleaned["player_name"] or "").split()[-1].lower() if cleaned["player_name"] else ""
         y["fc26"] = global_fc26_lookup.get(last)
         y["fpts"] = global_fpts_lookup.get(last)
+    _matched_youth_fc26 = [y["fc26"] for y in youth if isinstance(y["fc26"], (int, float))]
+    avg_youth_fc26 = (sum(_matched_youth_fc26) / len(_matched_youth_fc26)) if _matched_youth_fc26 else None
 
     # ---- youth depth chart, now folded directly into the Youth section: ----
     # every player this team has ever drafted, grouped by position, ranked
@@ -513,6 +515,7 @@ for code, name, owners in TEAMS:
         "fans": fan_formula.get(code, {}).get("total", fans_by_code.get(code)),
         "trophies": total_trophies,
         "avg_fc26": avg_fc26,
+        "avg_youth_fc26": avg_youth_fc26,
         "avg_fpts": avg_fpts,
         "wins": team_wins.get(code),
         "capacity": stadiums.get(code, {}).get("capacity"),
@@ -537,6 +540,7 @@ teams_table_rows = "\n            ".join(
     f'<td data-sort="{r["wins"] if isinstance(r["wins"], (int, float)) else -1}">{fmt_num(r["wins"])}</td>'
     f'<td data-sort="{r["trophies"]}">{r["trophies"]}</td>'
     f'<td data-sort="{r["avg_fc26"] if isinstance(r["avg_fc26"], (int, float)) else -1}">{fmt_num(r["avg_fc26"], 1)}</td>'
+    f'<td data-sort="{r["avg_youth_fc26"] if isinstance(r["avg_youth_fc26"], (int, float)) else -1}">{fmt_num(r["avg_youth_fc26"], 1)}</td>'
     f'</tr>'
     for r in financial_rows
 )
@@ -559,6 +563,7 @@ teams_html = head("Teams", "teams.html") + hero_logo() + f"""
               <th data-sort-type="num">Wins &#9650;&#9660;</th>
               <th data-sort-type="num"># Trophies &#9650;&#9660;</th>
               <th data-sort-type="num">Avg FC 26 Rating &#9650;&#9660;</th>
+              <th data-sort-type="num">Avg Youth Rating &#9650;&#9660;</th>
             </tr>
           </thead>
           <tbody>
@@ -568,8 +573,9 @@ teams_html = head("Teams", "teams.html") + hero_logo() + f"""
       </div>
       <p style="font-size:11px;color:var(--mv-ink-muted);margin-top:10px;">
         &ldquo;Avg FC 26 Rating&rdquo; is each team's average EA Sports FC 26 overall rating across matched
-        roster players (source: a community CSV mirror of the FC 26 database on GitHub, since EA's own site,
-        sofifa.com, and futwiz.com all explicitly disallow ClaudeBot in robots.txt). Run
+        roster players; &ldquo;Avg Youth Rating&rdquo; is the same across all-time drafted youth players
+        (source: a community CSV mirror of the FC 26 database on GitHub, since EA's own site, sofifa.com,
+        and futwiz.com all explicitly disallow ClaudeBot in robots.txt). Run
         <code>sync_fc26_ratings.py</code> to refresh the ratings in the local database this reads from.
       </p>
     </section>
