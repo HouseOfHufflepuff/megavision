@@ -25,6 +25,7 @@ from common import (
     fetch_season_salary_totals, fetch_league_schedule_games, fetch_standings_reference,
     fetch_firm_legacy, compute_fan_formula,
 )
+from player_clean import clean_player
 
 CURRENT_SALARY_SEASON = "25/26"
 
@@ -120,6 +121,31 @@ trophy_color = {c: TROPHY_ACCENTS[i % len(TROPHY_ACCENTS)] for i, c in enumerate
 fans_by_code = fetch_fans(wb)
 youth_by_code = fetch_youth(wb)
 
+# Live Fantrax fantasy points, used to rank the depth chart within each
+# position (EA FC ratings were the original plan, but EA's robots.txt has an
+# explicit rights-reservation notice prohibiting AI/scraping use of their
+# ratings data, so real live Fantrax scoring is used instead -- it's actually
+# more relevant to this league anyway). Also feeds the Fan Formula below.
+print("Fetching live Fantrax rosters (for depth-chart ranking + Fan Formula)...")
+try:
+    import fantrax_live
+    _fx_sess = fantrax_live._session()
+    fantrax_standings = fantrax_live.fetch_standings(_fx_sess)
+    fantrax_rosters = fantrax_live.fetch_all_rosters(_fx_sess)
+    top_xi, mbp = fantrax_live.compute_top_xi(fantrax_rosters)
+except Exception as e:
+    print(f"WARN: live Fantrax fetch failed ({e}); depth charts fall back to salary order, "
+          f"Fan Formula will be omitted", file=sys.stderr)
+    fantrax_standings, fantrax_rosters, top_xi, mbp = {}, {}, [], None
+
+
+def fpts_lookup(code):
+    """last-name (lowercase) -> fantasy points, for this team's live Fantrax
+    roster. Matched against the sheet's raw player field via clean_player()
+    since the two sources spell/format names differently."""
+    roster = fantrax_rosters.get(code, [])
+    return {p["name"].split()[-1].lower(): p["fpts"] for p in roster}
+
 updated = []
 financial_rows = []
 
@@ -144,6 +170,12 @@ for code, name, owners in TEAMS:
     season_net = -total_payroll  # no games/revenue yet this season
 
     y1_label, y2_label, y3_label = data["year_labels"]
+    # salary summed by contract year, across the WHOLE roster (not just the
+    # current-season column) -- players not signed for a given year contribute 0
+    year_totals = [
+        sum(p[key] for p in roster if isinstance(p[key], (int, float)))
+        for key in ("y1", "y2", "y3")
+    ]
     col_labels = [3, 4, 5]
     current_idx = col_labels.index(data["current_col"])
     year_th = [y1_label, y2_label, y3_label]
@@ -166,10 +198,17 @@ for code, name, owners in TEAMS:
         tokens = set(re.split(r"[^a-zA-Z]+", core.lower())) - {""}
         return bool(tokens & youth_last_names)
 
-    YOUTH_MARK = '<span title="Youth product" style="color:var(--mv-blue);">&#127793;</span> '
+    YOUTH_MARK = '<span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>'
 
     def player_label(p):
         return (YOUTH_MARK if is_youth_product(p["player"]) else "") + p["player"]
+
+    # ---- live Fantrax fantasy points per player, matched by cleaned last name ----
+    team_fpts = fpts_lookup(code)
+    for p in roster:
+        cleaned = clean_player(p["player"], p["pos"])
+        last = (cleaned["player_name"] or "").split()[-1].lower() if cleaned["player_name"] else ""
+        p["fpts"] = team_fpts.get(last)
 
     # group by position (GK, D, M, F, then anything else), salary desc within group
     grouped = sorted(roster, key=lambda p: (position_sort_key(p["pos"]), -p["current_salary"]))
@@ -193,8 +232,14 @@ for code, name, owners in TEAMS:
         f'<td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
     )
 
-    # ---- depth chart: 3-4-3, ranked by salary within each position ----
-    by_pos = {pos: [p for p in grouped if p["pos"] == pos] for pos, _ in FORMATION}
+    # ---- depth chart: 3-4-3, ranked by live Fantrax fantasy points within
+    # each position (unmatched/scoreless players sort to the bottom, salary
+    # as a tiebreaker) ----
+    depth_sorted = sorted(roster, key=lambda p: (position_sort_key(p["pos"]), -(p["fpts"] or -1), -p["current_salary"]))
+    by_pos = {pos: [p for p in depth_sorted if p["pos"] == pos] for pos, _ in FORMATION}
+    def fpts_label(p):
+        return f'{p["fpts"]:,.1f} pts' if isinstance(p["fpts"], (int, float)) else "— pts"
+
     pitch_rows = []
     for pos, need in FORMATION:
         slots = []
@@ -205,6 +250,7 @@ for code, name, owners in TEAMS:
                 slots.append(
                     f'<div class="mv-slot"><div class="pos">{pos}</div>'
                     f'<div class="player">{player_label(p)}</div>'
+                    f'<div class="salary" style="color:var(--mv-gold);">{fpts_label(p)}</div>'
                     f'<div class="salary">{money(p["current_salary"])}</div></div>'
                 )
             else:
@@ -219,6 +265,7 @@ for code, name, owners in TEAMS:
         items = "".join(
             f'<div class="mv-slot"><div class="pos">{pos}</div>'
             f'<div class="player">{player_label(p)}</div>'
+            f'<div class="salary" style="color:var(--mv-gold);">{fpts_label(p)}</div>'
             f'<div class="salary">{money(p["current_salary"])}</div></div>'
             for p in bench
         )
@@ -292,6 +339,13 @@ for code, name, owners in TEAMS:
       <div class="mv-stat"><div class="label">Season Net</div><div class="value">{money(season_net)}</div></div>
     </div>
 
+    <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-top:10px;">
+      {"".join(
+          f'<div class="mv-stat"><div class="label">{lbl} Payroll</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
+          for lbl, tot in zip((y1_label, y2_label, y3_label), year_totals) if lbl
+      )}
+    </div>
+
     <section class="card mv-card">
       <h2 class="mv-chrome-text">Trophy Case</h2>
       <div class="sub">{total_trophies} title{"s" if total_trophies != 1 else ""} all-time</div>
@@ -306,7 +360,10 @@ for code, name, owners in TEAMS:
         <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
         <button class="mv-tab" onclick="mvShowTab(this,'youthdepth-{code}')">Youth Depth</button>
       </div>
-      <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">&#127793; = this team's own youth draft product</div>
+      <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);"></span>
+        this team's own youth draft product &middot; Depth Chart is ranked by live Fantrax fantasy points
+      </div>
 
       <div id="roster-{code}" class="mv-tab-panel active">
         <div class="sub">{roster_size} players signed for 26/27, grouped by position &middot; no games played yet this season</div>
@@ -369,18 +426,14 @@ games = fetch_league_schedule_games(wb)  # weeks 1-22, 25/26 season
 rank_bonus, points_bonus_table = fetch_standings_reference(wb)
 firm_legacy = fetch_firm_legacy(wb)
 
-print("Fetching live Fantrax data (standings + rosters) for the Fan Formula...")
+# fantrax_standings / top_xi / mbp were already fetched above (used for
+# depth-chart ranking too) -- just compute the formula from them here.
 try:
-    import fantrax_live
-    _sess = fantrax_live._session()
-    fantrax_standings = fantrax_live.fetch_standings(_sess)
-    fantrax_rosters = fantrax_live.fetch_all_rosters(_sess)
-    top_xi, mbp = fantrax_live.compute_top_xi(fantrax_rosters)
     fan_formula = compute_fan_formula(rank_bonus, points_bonus_table, firm_legacy, fantrax_standings, top_xi, mbp)
-    print(f"  got live standings + rosters for {len(fantrax_standings)} teams, "
-          f"MBP={mbp['name'] if mbp else '—'}")
+    print(f"  Fan Formula computed for {len(fantrax_standings)} teams, MBP={mbp['name'] if mbp else '—'}")
 except Exception as e:
-    print(f"WARN: live Fantrax fetch failed ({e}); Fan Formula / Starting XI will be omitted", file=sys.stderr)
+    print(f"WARN: Fan Formula computation failed ({e}); it will be omitted", file=sys.stderr)
+    fan_formula = {}
     fantrax_standings, top_xi, mbp, fan_formula = {}, [], None, {}
 
 # per-team game aggregates for the 25/26 summary (derived from `games`, not tracked separately)
