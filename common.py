@@ -376,6 +376,7 @@ NAV_LINKS = [
     ("snowmobile-lifestlye.html", "Snow"),
     ("armstrong-1.html", "Draft"),
     ("soccer.html", "Soccer"),
+    ("pigeons/index.html", "Pigeons"),
 ]
 
 

@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>*~*~* Fancy Breeds I *~*~* Pigeon Pages *~*~*</title>
+<link rel="icon" href="data:,">
+<style>
+  @keyframes chaosBlink { 0%,45% {visibility:visible;} 50%,95% {visibility:hidden;} 100% {visibility:visible;} }
+  .blk { animation: chaosBlink 0.8s steps(1) infinite; }
+  @keyframes chaosBlink2 { 0%,55% {visibility:visible;} 60%,95% {visibility:hidden;} 100% {visibility:visible;} }
+  .blk2 { animation: chaosBlink2 0.6s steps(1) infinite; }
+</style>
+<style>
+  @keyframes chaosBob { 0%,100% { transform: translateY(0) rotate(var(--r,0deg)); } 50% { transform: translateY(-14px) rotate(var(--r,0deg)); } }
+  .pg-flying-layer, .pg-ninja-layer { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 500; }
+  .pg-pigeon {
+    position: absolute; top: 30%; left: 30%; font-size: 34px;
+    text-shadow: 0 3px 6px rgba(0,0,0,0.6);
+    transition: left 2.4s ease-in-out, top 2.4s ease-in-out, transform 2.4s ease-in-out;
+  }
+  .pg-ninja {
+    position: absolute; font-size: 26px; opacity: 0.85;
+    animation: chaosBob ease-in-out infinite;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.6));
+  }
+</style>
+</head>
+<body bgcolor="#000000" text="#00FF00" link="#0000FF" vlink="#800080" alink="#FF0000">
+
+  <bgsound src="allstar.mp3" loop="infinite">
+  <embed src="allstar.mp3" autostart="true" loop="true" hidden="true" width="2" height="2">
+  <audio id="chaosBgm" autoplay loop style="display:none;"><source src="allstar.mp3" type="audio/mpeg"></audio>
+  <script>
+    (function() {
+      var a = document.getElementById('chaosBgm');
+      if (!a) return;
+      var p = a.play();
+      if (p && p.catch) {
+        p.catch(function() {
+          document.addEventListener('click', function once() {
+            a.play();
+            document.removeEventListener('click', once);
+          }, { once: true });
+        });
+      }
+    })();
+  </script>
+<div class="pg-flying-layer"><span class="pg-pigeon" id="pgBird0">&#128330;</span>
+    <span class="pg-pigeon" id="pgBird1">&#128059;</span>
+    <span class="pg-pigeon" id="pgBird2">&#128330;</span>
+    <span class="pg-pigeon" id="pgBird3">&#128059;</span>
+    <span class="pg-pigeon" id="pgBird4">&#128330;</span>
+    <span class="pg-pigeon" id="pgBird5">&#128059;</span>
+    <span class="pg-pigeon" id="pgBird6">&#128330;</span>
+    <span class="pg-pigeon" id="pgBird7">&#128059;</span>
+    <span class="pg-pigeon" id="pgBird8">&#128330;</span>
+    <span class="pg-pigeon" id="pgBird9">&#128059;</span>
+    <span class="pg-pigeon" id="pgBird10">&#128330;</span>
+    <span class="pg-pigeon" id="pgBird11">&#128059;</span></div>
+<script>
+(function() {
+  var birds = document.querySelectorAll('.pg-pigeon');
+  birds.forEach(function(b, i) {
+    var lastX = 20 + (i * 7) % 80;
+    function fly() {
+      var x = 4 + Math.random() * 88;
+      var y = 4 + Math.random() * 88;
+      var facingLeft = x < lastX;
+      var tilt = (Math.random() * 20 - 10).toFixed(1);
+      b.style.left = x + '%';
+      b.style.top = y + '%';
+      b.style.transform = 'scaleX(' + (facingLeft ? -1 : 1) + ') rotate(' + tilt + 'deg)';
+      lastX = x;
+      setTimeout(fly, 1800 + Math.random() * 2200);
+    }
+    setTimeout(fly, i * 260);
+  });
+})();
+</script>
+<div class="pg-ninja-layer"><span class="pg-ninja" style="top:4%;left:6%;--r:-8deg;animation-duration:2.6s;">&#129399;</span>
+    <span class="pg-ninja" style="top:8%;left:92%;--r:10deg;animation-duration:3.1s;">&#129399;</span>
+    <span class="pg-ninja" style="top:22%;left:2%;--r:-14deg;animation-duration:2.3s;">&#129399;</span>
+    <span class="pg-ninja" style="top:35%;left:95%;--r:6deg;animation-duration:3.4s;">&#129399;</span>
+    <span class="pg-ninja" style="top:50%;left:3%;--r:-6deg;animation-duration:2.8s;">&#129399;</span>
+    <span class="pg-ninja" style="top:62%;left:93%;--r:12deg;animation-duration:2.5s;">&#129399;</span>
+    <span class="pg-ninja" style="top:78%;left:5%;--r:-10deg;animation-duration:3.2s;">&#129399;</span>
+    <span class="pg-ninja" style="top:88%;left:90%;--r:8deg;animation-duration:2.7s;">&#129399;</span></div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr><td colspan="3">
+<table width="100%" cellpadding="2" cellspacing="0" border="0"><tr><td align="center" bgcolor="#111" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#00ff41"><b style="text-shadow: 3px 3px 0 #ff0000, -1px -1px 0 #000;">&#9733; ARCHIE'S UNDERGROUND HACKER ZONE v3.2 &#9733;</b></font></td></tr><tr><td align="center" bgcolor="#000080" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#ffd700"><b style="text-shadow: 3px 3px 0 #fff, -1px -1px 0 #000;">WELCOME TO THE INFOBAHN</b></font></td></tr><tr><td align="center" bgcolor="#800000" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#ffff00"><b style="text-shadow: 3px 3px 0 #fff, -1px -1px 0 #000;">!! DOWNLOAD ZONE !!</b></font></td></tr><tr><td align="center" bgcolor="#4b0082" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#00ffff"><b style="text-shadow: 3px 3px 0 #ff00ff, -1px -1px 0 #000;">&#128330; PIGEON PALACE ONLINE &#128330;</b></font></td></tr><tr><td align="center" bgcolor="#003300" style="padding:6px;"><font face="Arial Black, Impact" size="6" color="#ccff00"><b style="text-shadow: 3px 3px 0 #fff, -1px -1px 0 #000;">YOU ARE VISITOR #999999 -- THANK YOU!</b></font></td></tr></table>
+
+  <marquee behavior="scroll" direction="left" scrollamount="15" bgcolor="#000080" style="color:#ffff00;font-weight:bold;font-size:16px;">
+    &#9733; PIGEON PAGES &#9733; 20+ PAGES OF PURE PIGEON POWER &#9733; NOW ONLINE &#9733; TELL YOUR FRIENDS &#9733; PIGEON PAGES &#9733;
+  </marquee>
+  <marquee behavior="scroll" direction="right" scrollamount="8" bgcolor="#330033" style="color:#00ffff;font-size:14px;">
+    &lt;&lt; best viewed in Netscape Navigator 4.0 at 800x600 &gt;&gt; no framez required &gt;&gt; 100% pigeon approved &gt;&gt;
+  </marquee>
+  <marquee behavior="alternate" scrollamount="6" bgcolor="#800000" style="color:#fff;font-weight:bold;">
+    &#128330; BOUNCE BOUNCE BOUNCE &#128330; THIS TEXT CANNOT DECIDE WHERE IT WANTS TO GO &#128330;
+  </marquee>
+  <marquee behavior="scroll" direction="left" scrollamount="2" bgcolor="#003300" style="color:#00ff00;font-size:11px;">
+    slow.......dial....up.......modem.......speeds.......connecting.......please.......wait.......
+  </marquee>
+  <marquee behavior="scroll" direction="left" scrollamount="30" bgcolor="#000" style="color:#ff00ff;font-size:20px;">
+    FAST!!! FAST!!! FAST!!!
+  </marquee>
+  <table width="100%"><tr>
+    <td width="70%">
+      <marquee behavior="alternate" scrollamount="10" bgcolor="#1a0033" style="color:#ffd700;">
+        &#9917;&#9733;&#9917; nested marquee inside a table cell because we can &#9733;&#9917;&#9733;
+      </marquee>
+    </td>
+    <td width="30%" valign="top">
+      <marquee behavior="scroll" direction="up" scrollamount="3" height="60" bgcolor="#000" style="color:#00ff00;font-size:10px;">
+        PGN +0.02!!!<br>DOVE -0.01<br>SQUAB +1.40!!!<br>LOFT&amp;CO steady<br>!!!!!!!!!!!!<br>BUY BUY BUY
+      </marquee>
+    </td>
+  </tr></table>
+
+</td></tr>
+<tr>
+  <td width="17%" valign="top" background="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSIyMCI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjNmI2YjZiIi8+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjkiIGZpbGw9IiM4YThhOGEiIHN0cm9rZT0iIzJiMmIyYiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHJlY3QgeD0iMjAiIHk9IjAiIHdpZHRoPSIxOCIgaGVpZ2h0PSI5IiBmaWxsPSIjN2Q3ZDdkIiBzdHJva2U9IiMyYjJiMmIiIHN0cm9rZS13aWR0aD0iMSIvPjxyZWN0IHg9Ii0xMCIgeT0iMTAiIHdpZHRoPSIxOCIgaGVpZ2h0PSI5IiBmaWxsPSIjODI4MjgyIiBzdHJva2U9IiMyYjJiMmIiIHN0cm9rZS13aWR0aD0iMSIvPjxyZWN0IHg9IjEwIiB5PSIxMCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjkiIGZpbGw9IiM3Njc2NzYiIHN0cm9rZT0iIzJiMmIyYiIgc3Ryb2tlLXdpZHRoPSIxIi8+PHJlY3QgeD0iMzAiIHk9IjEwIiB3aWR0aD0iMTgiIGhlaWdodD0iOSIgZmlsbD0iIzgyODI4MiIgc3Ryb2tlPSIjMmIyYjJiIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=" style="padding:8px;border:4px ridge #888;">
+    <font color="#ffff00" size="3"><b class="blk">&#9776; NAVIGATION &#9776;</b></font><br><br>
+    <font size="5" style="font-size:26px;">&#128128; <a href="index.html">Home</a></font><br><font size="5" style="font-size:26px;">&#9762; <a href="history.html">History</a></font><br><font size="4" style="font-size:20px;">&#128293; <a href="http://localhost/coolstuff.html">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128293; <a href="war-pigeons.html">War Pigeons</a></font><br><font size="5" style="font-size:26px;">&#128340; <a href="famous-fanciers.html">Famous Fanciers</a></font><br><font size="4" style="font-size:20px;">&#128679; <a href="http://geocities.com/pigeonzone/">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128679; <a href="famous-pigeons.html">Famous Pigeons</a></font><br><font size="5" style="font-size:26px;">&#128128; <a href="breeds-fancy2.html">Fancy Breeds II</a></font><br><font size="4" style="font-size:20px;">&#9762; <a href="#">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#9762; <a href="breeds-racing.html">Racing Breeds</a></font><br><font size="5" style="font-size:26px;">&#128293; <a href="breeds-utility.html">Utility Breeds</a></font><br><font size="4" style="font-size:20px;">&#128340; <a href="#">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128340; <a href="anatomy.html">Anatomy</a></font><br><font size="5" style="font-size:26px;">&#128679; <a href="homing-navigation.html">Homing Navigation</a></font><br><font size="4" style="font-size:20px;">&#128128; <a href="#">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128128; <a href="pigeon-racing.html">The Sport</a></font><br><font size="5" style="font-size:26px;">&#9762; <a href="pigeon-post.html">Pigeon Post</a></font><br><font size="4" style="font-size:20px;">&#128293; <a href="http://localhost/coolstuff.html">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128293; <a href="building-lofts.html">Lofts</a></font><br><font size="5" style="font-size:26px;">&#128340; <a href="feeding-care.html">Feeding &amp; Care</a></font><br><font size="4" style="font-size:20px;">&#128679; <a href="http://geocities.com/pigeonzone/">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128679; <a href="health.html">Health</a></font><br><font size="5" style="font-size:26px;">&#128128; <a href="breeding.html">Breeding</a></font><br><font size="4" style="font-size:20px;">&#9762; <a href="#">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#9762; <a href="behavior.html">Behavior</a></font><br><font size="5" style="font-size:26px;">&#128293; <a href="mythology.html">Myth &amp; Culture</a></font><br><font size="4" style="font-size:20px;">&#128340; <a href="#">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128340; <a href="gallery1.html">Gallery I</a></font><br><font size="5" style="font-size:26px;">&#128679; <a href="gallery2.html">Gallery II</a></font><br><font size="4" style="font-size:20px;">&#128128; <a href="#">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128128; <a href="gallery3.html">Gallery III</a></font><br><font size="5" style="font-size:26px;">&#9762; <a href="gallery4.html">Gallery IV</a></font><br><font size="4" style="font-size:20px;">&#128293; <a href="http://localhost/coolstuff.html">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128293; <a href="gallery5.html">Gallery V</a></font><br><font size="5" style="font-size:26px;">&#128340; <a href="faq.html">FAQ</a></font><br><font size="4" style="font-size:20px;">&#128679; <a href="http://geocities.com/pigeonzone/">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#128679; <a href="guestbook.html">Guestbook</a></font><br><font size="5" style="font-size:26px;">&#128128; <a href="links.html">Links</a></font><br><font size="4" style="font-size:20px;">&#9762; <a href="#">&gt;&gt; secret bonus link &lt;&lt;</a></font><br><font size="5" style="font-size:26px;">&#9762; <a href="webmaster.html">Webmaster</a></font><br>
+    <br><hr>
+    <font size="1" color="#888">&#9888; ActiveX controls must be enabled to view the trailing fire particle cursor effect. &#9888;</font>
+  </td>
+  <td width="66%" valign="top" background="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCI+PHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjZThkY2I1Ii8+PGNpcmNsZSBjeD0iOCIgY3k9IjEwIiByPSIyIiBmaWxsPSIjZDhjODk2IiBvcGFjaXR5PSIwLjUiLz48Y2lyY2xlIGN4PSIzMCIgY3k9IjM1IiByPSIzIiBmaWxsPSIjY2JiODdmIiBvcGFjaXR5PSIwLjQiLz48Y2lyY2xlIGN4PSI0MiIgY3k9IjgiIHI9IjEuNSIgZmlsbD0iI2Q4Yzg5NiIgb3BhY2l0eT0iMC41Ii8+PGNpcmNsZSBjeD0iMTgiIGN5PSI0MiIgcj0iMi4yIiBmaWxsPSIjY2JiODdmIiBvcGFjaXR5PSIwLjQiLz48L3N2Zz4=" style="padding:10px;border:4px ridge #444;">
+    <table width="100%" bgcolor="#000000" style="border:3px double #ffd700;" cellpadding="14">
+    <tr><td>
+      <font color="#00ff00">
+      
+<font size="7" color="#ffd700"><b class="blk">&#9733; FANCY PIGEON BREEDS -- PART I &#9733;</b></font><br><hr>
+<font size="3" color="#00ff00">Of the 350+ recognized pigeon breeds, the "fancy" or exhibition breeds are bred purely for looks -- and some of them look almost nothing like a pigeon at all.</font><br><br>
+<table width="100%"><tr>
+<td width="50%" valign="top"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Fantail%28silver%20barred%29.jpg" width="260" style="border:3px outset #fff;margin:4px;" alt="pigeon">
+<font size="3" color="#00ff00"><b>FANTAIL</b> &mdash; instantly recognizable by its dramatically fanned, peacock-like tail, held erect and spread. Fantails carry their heads pulled back so far they nearly touch their own tail feathers. A favorite of Pablo Picasso.</font><br><br></td>
+<td width="50%" valign="top"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/A%20Jacobin%20Pigeon.JPG" width="260" style="border:3px outset #fff;margin:4px;" alt="pigeon">
+<font size="3" color="#00ff00"><b>JACOBIN</b> &mdash; wears an elaborate feathered "hood" or mane around its head and neck, resembling a monk's cowl (hence the name, after the Jacobin friars). Queen Elizabeth II's personal favorite breed.</font><br><br></td>
+</tr><tr>
+<td width="50%" valign="top"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Silesian%20cropper%28blue%20bar%29.jpg" width="260" style="border:3px outset #fff;margin:4px;" alt="pigeon">
+<font size="3" color="#00ff00"><b>ENGLISH POUTER</b> &mdash; famous for its dramatically inflated crop, which it puffs up like a balloon, combined with a long, elegant, upright body. One of the oldest and most exaggerated fancy breeds.</font><br><br></td>
+<td width="50%" valign="top"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Frillback%20pigeon.jpg" width="260" style="border:3px outset #fff;margin:4px;" alt="pigeon">
+<font size="3" color="#00ff00"><b>FRILLBACK</b> &mdash; its wing and body feathers curl and frill at the edges, giving it a wonderfully textured, almost curly-haired appearance unlike any other breed.</font><br><br></td>
+</tr></table>
+
+      </font>
+    </td></tr>
+    </table>
+  </td>
+  <td width="17%" valign="top" background="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjYjIyMjM0Ii8+PHJlY3QgeT0iMCIgd2lkdGg9IjQwIiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48cmVjdCB5PSIxNiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48cmVjdCB5PSIzMiIgd2lkdGg9IjQwIiBoZWlnaHQ9IjgiIGZpbGw9IiNmZmYiLz48cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IiMzYzNiNmUiLz48L3N2Zz4=" style="padding:8px;border:4px ridge #888;">
+    <font color="#00ffff" size="3"><b class="blk2">&#9733; COOL LINKS &amp; BADGES &#9733;</b></font><br><br>
+    <table cellpadding="0" cellspacing="0"><tr><td align="center" bgcolor="#000080" width="88" height="31" style="border:2px outset #ccc;"><font face="Arial" size="1" color="#fff">Netscape<br>Navigator 4.0<br><b>Enhanced</b></font></td></tr><tr><td height="4"></td></tr><tr><td align="center" bgcolor="#c0c0c0" width="88" height="31" style="border:2px outset #ccc;"><font face="Arial" size="1" color="#000">Made with<br><b>Notepad</b></font></td></tr><tr><td height="4"></td></tr><tr><td align="center" bgcolor="#800000" width="88" height="31" style="border:2px outset #ccc;"><font face="Arial" size="1" color="#fff">Internet<br>Explorer<br><b>ENEMY</b></font></td></tr><tr><td height="4"></td></tr><tr><td align="center" bgcolor="#003366" width="88" height="31" style="border:2px outset #ccc;"><font face="Arial" size="1" color="#0ff">Get <b>ICQ</b><br>Now! &#128172;</font></td></tr><tr><td height="4"></td></tr><tr><td align="center" bgcolor="#330066" width="88" height="31" style="border:2px outset #ccc;"><font face="Arial" size="1" color="#fff"><b>RealAudio</b><br>Enabled</font></td></tr><tr><td height="4"></td></tr><tr><td align="center" bgcolor="#ff6600" width="88" height="31" style="border:2px outset #ccc;"><font face="Arial" size="1" color="#000"><b>Winamp</b><br>It Really Kicks<br>the Ass</font></td></tr><tr><td height="4"></td></tr><tr><td align="center" bgcolor="#996600" width="88" height="31" style="border:2px outset #ccc;"><font face="Arial" size="1" color="#fff">&#9749; <b>Java</b><br>Powered</font></td></tr><tr><td height="4"></td></tr><tr><td align="center" bgcolor="#111" width="88" height="31" style="border:2px outset #ccc;"><font face="Arial" size="1" color="#0f0"><b>DirectX</b><br>6.0 Ready</font></td></tr><tr><td height="4"></td></tr></table><br>
+    <table bgcolor="#000066" cellpadding="4" border="2" width="130">
+      <tr><td align="center"><font color="#ffff00" size="2"><b>&#128371; The Paranormal<br>Pigeon WebRing &#128371;</b></font></td></tr>
+      <tr><td align="center"><font color="#fff" size="1">
+        [<a href="#">Prev</a>] [<a href="#">Next</a>]<br>[<a href="#">Random</a>] [<a href="#">List All</a>]
+      </font></td></tr>
+      <tr><td align="center"><font color="#ccc" size="1">Site 47 of 212</font></td></tr>
+    </table>
+  </td>
+</tr>
+<tr><td colspan="3">
+  <marquee behavior="alternate" scrollamount="4" bgcolor="#ff0000"><font size="4" color="#ffff00"><b class="blk">SITE BEST VIEWED IN 800x600 RESOLUTION WITH 16-BIT HIGH COLOR. IF YOU USE OPERA, LEAVE NOW.</b></font></marquee>
+  <center><table><tr>
+    <td align="center"><table cellpadding="0" cellspacing="1" bgcolor="#00ff00"><tr><td bgcolor="#000" style="border:1px solid #00ff00;padding:2px 4px;"><font face="Courier New" size="5" color="#00ff00"><b>0</b></font></td><td bgcolor="#000" style="border:1px solid #00ff00;padding:2px 4px;"><font face="Courier New" size="5" color="#00ff00"><b>0</b></font></td><td bgcolor="#000" style="border:1px solid #00ff00;padding:2px 4px;"><font face="Courier New" size="5" color="#00ff00"><b>0</b></font></td><td bgcolor="#000" style="border:1px solid #00ff00;padding:2px 4px;"><font face="Courier New" size="5" color="#00ff00"><b>3</b></font></td><td bgcolor="#000" style="border:1px solid #00ff00;padding:2px 4px;"><font face="Courier New" size="5" color="#00ff00"><b>4</b></font></td><td bgcolor="#000" style="border:1px solid #00ff00;padding:2px 4px;"><font face="Courier New" size="5" color="#00ff00"><b>2</b></font></td></tr></table><center><font size="1" color="#ccc">Hits Today</font></center></td>
+    <td width="14"></td>
+    <td align="center"><table cellpadding="0" cellspacing="1" bgcolor="#ffd700"><tr><td bgcolor="#000" style="border:1px solid #ffd700;padding:2px 4px;"><font face="Courier New" size="5" color="#ffd700"><b>9</b></font></td><td bgcolor="#000" style="border:1px solid #ffd700;padding:2px 4px;"><font face="Courier New" size="5" color="#ffd700"><b>9</b></font></td><td bgcolor="#000" style="border:1px solid #ffd700;padding:2px 4px;"><font face="Courier New" size="5" color="#ffd700"><b>9</b></font></td><td bgcolor="#000" style="border:1px solid #ffd700;padding:2px 4px;"><font face="Courier New" size="5" color="#ffd700"><b>9</b></font></td><td bgcolor="#000" style="border:1px solid #ffd700;padding:2px 4px;"><font face="Courier New" size="5" color="#ffd700"><b>9</b></font></td><td bgcolor="#000" style="border:1px solid #ffd700;padding:2px 4px;"><font face="Courier New" size="5" color="#ffd700"><b>9</b></font></td></tr></table><center><font size="1" color="#ccc">Total Visitors Since 1995</font></center></td>
+    <td width="14"></td>
+    <td align="center"><table cellpadding="0" cellspacing="1" bgcolor="#ff0000"><tr><td bgcolor="#000" style="border:1px solid #ff0000;padding:2px 4px;"><font face="Courier New" size="5" color="#ff0000"><b>E</b></font></td><td bgcolor="#000" style="border:1px solid #ff0000;padding:2px 4px;"><font face="Courier New" size="5" color="#ff0000"><b>R</b></font></td><td bgcolor="#000" style="border:1px solid #ff0000;padding:2px 4px;"><font face="Courier New" size="5" color="#ff0000"><b>R</b></font></td><td bgcolor="#000" style="border:1px solid #ff0000;padding:2px 4px;"><font face="Courier New" size="5" color="#ff0000"><b>-</b></font></td><td bgcolor="#000" style="border:1px solid #ff0000;padding:2px 4px;"><font face="Courier New" size="5" color="#ff0000"><b>4</b></font></td><td bgcolor="#000" style="border:1px solid #ff0000;padding:2px 4px;"><font face="Courier New" size="5" color="#ff0000"><b>2</b></font></td></tr></table><center><font size="1" color="#ccc">ERROR: COUNTER.PL NOT FOUND</font></center></td>
+  </tr></table></center>
+  <br>
+  <marquee behavior="scroll" direction="left" scrollamount="12" bgcolor="#000">
+    <font color="#00ff00" size="1">&copy; forever &middot; Pigeon Pages is not affiliated with any actual pigeons &middot; view source if you dare &middot; &lt;a href="../index.html"&gt;back to MEGAVISION&lt;/a&gt;</font>
+  </marquee>
+</td></tr>
+</table>
+<center><font size="1" color="#444">&larr; <a href="../index.html">Back to MEGAVISION</a></font></center>
+</body>
+</html>
