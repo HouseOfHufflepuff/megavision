@@ -167,6 +167,25 @@ for _code, _s in fantrax_standings.items():
     except (ValueError, IndexError, AttributeError):
         team_wins[_code] = None
 
+# EA FC 26 overall ratings, read from mega.db (populated by the separate
+# sync_fc26_ratings.py script -- run that periodically, it's not fetched
+# live on every site build). last name (lower) -> rating.
+global_fc26_lookup = {}
+try:
+    import db as _db
+    _conn = _db.connect()
+    for _pname, _rating in _conn.execute(
+        "SELECT player_name, fc26_rating FROM team_players WHERE fc26_rating IS NOT NULL"
+    ):
+        if _pname:
+            global_fc26_lookup[_pname.split()[-1].lower()] = _rating
+    _conn.close()
+    print(f"Loaded {len(global_fc26_lookup)} FC 26 ratings from mega.db "
+          f"(run sync_fc26_ratings.py to refresh).")
+except Exception as e:
+    print(f"WARN: could not read FC 26 ratings from mega.db ({e}); "
+          f"ratings will fall back to live Fantrax fantasy points", file=sys.stderr)
+
 updated = []
 financial_rows = []
 
@@ -224,14 +243,18 @@ for code, name, owners in TEAMS:
     def player_label(p):
         return (YOUTH_MARK if is_youth_product(p["player"]) else "") + p["player"]
 
-    # ---- live Fantrax fantasy points per player, matched by cleaned last name ----
+    # ---- live Fantrax fantasy points + FC 26 rating per player, matched by
+    # cleaned last name ----
     team_fpts = fpts_lookup(code)
     for p in roster:
         cleaned = clean_player(p["player"], p["pos"])
         last = (cleaned["player_name"] or "").split()[-1].lower() if cleaned["player_name"] else ""
         p["fpts"] = team_fpts.get(last)
+        p["fc26"] = global_fc26_lookup.get(last)
     _matched_fpts = [p["fpts"] for p in roster if isinstance(p["fpts"], (int, float))]
     avg_fpts = (sum(_matched_fpts) / len(_matched_fpts)) if _matched_fpts else None
+    _matched_fc26 = [p["fc26"] for p in roster if isinstance(p["fc26"], (int, float))]
+    avg_fc26 = (sum(_matched_fc26) / len(_matched_fc26)) if _matched_fc26 else None
 
     # group by position (GK, D, M, F, then anything else), salary desc within group
     grouped = sorted(roster, key=lambda p: (position_sort_key(p["pos"]), -p["current_salary"]))
@@ -255,11 +278,18 @@ for code, name, owners in TEAMS:
         f'<td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
     )
 
-    # ---- depth chart: 3-4-3, ranked by live Fantrax fantasy points within
-    # each position (unmatched/scoreless players sort to the bottom, salary
-    # as a tiebreaker) ----
-    depth_sorted = sorted(roster, key=lambda p: (position_sort_key(p["pos"]), -(p["fpts"] or -1), -p["current_salary"]))
+    # ---- depth chart: 3-4-3, ranked by EA FC 26 overall rating within each
+    # position (falls back to live Fantrax fantasy points, then salary, for
+    # players with no FC 26 match) ----
+    depth_sorted = sorted(
+        roster,
+        key=lambda p: (position_sort_key(p["pos"]), -(p["fc26"] or -1), -(p["fpts"] or -1), -p["current_salary"]),
+    )
     by_pos = {pos: [p for p in depth_sorted if p["pos"] == pos] for pos, _ in FORMATION}
+
+    def rating_label(p):
+        return f'{p["fc26"]:,.0f} OVR' if isinstance(p["fc26"], (int, float)) else "— OVR"
+
     def fpts_label(p):
         return f'{p["fpts"]:,.1f} pts' if isinstance(p["fpts"], (int, float)) else "— pts"
 
@@ -273,7 +303,8 @@ for code, name, owners in TEAMS:
                 slots.append(
                     f'<div class="mv-slot"><div class="pos">{pos}</div>'
                     f'<div class="player">{player_label(p)}</div>'
-                    f'<div class="salary" style="color:var(--mv-gold);">{fpts_label(p)}</div>'
+                    f'<div class="salary" style="color:var(--mv-gold);font-weight:700;">{rating_label(p)}</div>'
+                    f'<div class="salary dim">{fpts_label(p)}</div>'
                     f'<div class="salary">{money(p["current_salary"])}</div></div>'
                 )
             else:
@@ -288,7 +319,8 @@ for code, name, owners in TEAMS:
         items = "".join(
             f'<div class="mv-slot"><div class="pos">{pos}</div>'
             f'<div class="player">{player_label(p)}</div>'
-            f'<div class="salary" style="color:var(--mv-gold);">{fpts_label(p)}</div>'
+            f'<div class="salary" style="color:var(--mv-gold);font-weight:700;">{rating_label(p)}</div>'
+            f'<div class="salary dim">{fpts_label(p)}</div>'
             f'<div class="salary">{money(p["current_salary"])}</div></div>'
             for p in bench
         )
@@ -298,11 +330,13 @@ for code, name, owners in TEAMS:
         )
     depth_html = "".join(depth_groups) or '<div class="mv-empty">No depth beyond the starting 3-4-3.</div>'
 
-    # ---- youth: rating (live Fantrax fpts, matched league-wide since a ----
-    # youth player may not be on this team's own active Fantrax roster) ----
+    # ---- youth: rating (EA FC 26, falling back to live Fantrax fpts),
+    # matched league-wide since a youth player may not be on this team's own
+    # active Fantrax roster ----
     for y in youth:
         cleaned = clean_player(y["player"], y["pos"])
         last = (cleaned["player_name"] or "").split()[-1].lower() if cleaned["player_name"] else ""
+        y["fc26"] = global_fc26_lookup.get(last)
         y["fpts"] = global_fpts_lookup.get(last)
 
     # ---- youth depth chart, now folded directly into the Youth section: ----
@@ -314,19 +348,26 @@ for code, name, owners in TEAMS:
     youth_pos_order = [p for p in POSITION_ORDER if p in youth_by_pos] + \
                        [p for p in youth_by_pos if p not in POSITION_ORDER]
 
-    def fpts_pts_label(fpts):
-        return f'{fpts:,.1f} pts' if isinstance(fpts, (int, float)) else '— pts'
+    def rating_pts_label(fc26, fpts):
+        primary = f'{fc26:,.0f} OVR' if isinstance(fc26, (int, float)) else '— OVR'
+        secondary = f'{fpts:,.1f} pts' if isinstance(fpts, (int, float)) else '— pts'
+        return primary, secondary
 
-    def fpts_plain_label(fpts):
-        return f'{fpts:,.1f}' if isinstance(fpts, (int, float)) else '—'
+    def rating_plain_label(fc26):
+        return f'{fc26:,.0f}' if isinstance(fc26, (int, float)) else '—'
 
     youth_pitch_groups = []
     for pos in youth_pos_order:
-        players = sorted(youth_by_pos[pos], key=lambda y: -(y["fpts"] if isinstance(y["fpts"], (int, float)) else -1))
+        players = sorted(
+            youth_by_pos[pos],
+            key=lambda y: (-(y["fc26"] if isinstance(y["fc26"], (int, float)) else -1),
+                            -(y["fpts"] if isinstance(y["fpts"], (int, float)) else -1)),
+        )
         items = "".join(
             f'<div class="mv-slot"><div class="pos">{pos}</div>'
             f'<div class="player">{y["player"]}</div>'
-            f'<div class="salary" style="color:var(--mv-gold);">{fpts_pts_label(y["fpts"])}</div>'
+            f'<div class="salary" style="color:var(--mv-gold);font-weight:700;">{rating_pts_label(y["fc26"], y["fpts"])[0]}</div>'
+            f'<div class="salary dim">{rating_pts_label(y["fc26"], y["fpts"])[1]}</div>'
             f'<div class="salary" style="color:{STATUS_COLOR[y["status"]]};">{y["status"]}</div></div>'
             for y in players
         )
@@ -340,7 +381,7 @@ for code, name, owners in TEAMS:
     youth_rows = "".join(
         f'<tr><td class="dim">{y["year"]}</td><td>{y["player"]}</td><td>{y["pos"]}</td>'
         f'<td>{y["age"] if y["age"] is not None else "—"}</td><td>{y["club"]}</td>'
-        f'<td>{fpts_plain_label(y["fpts"])}</td>'
+        f'<td>{rating_plain_label(y["fc26"])}</td>'
         f'<td style="color:{STATUS_COLOR[y["status"]]};font-weight:600;">{y["status"]}</td></tr>'
         for y in youth
     )
@@ -401,7 +442,7 @@ for code, name, owners in TEAMS:
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);"></span>
-        this team's own youth draft product &middot; Depth Chart is ranked by live Fantrax fantasy points
+        this team's own youth draft product &middot; Depth Chart is ranked by EA FC 26 overall rating (Fantrax fantasy points as fallback/tiebreak)
       </div>
 
       <div id="roster-{code}" class="mv-tab-panel active">
@@ -417,7 +458,7 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="depth-{code}" class="mv-tab-panel">
-        <div class="sub">League formation 3-4-3, ranked by live Fantrax fantasy points at each position</div>
+        <div class="sub">League formation 3-4-3, ranked by EA FC 26 overall rating at each position</div>
         <div class="mv-pitch">
           {"".join(pitch_rows)}
         </div>
@@ -445,6 +486,7 @@ for code, name, owners in TEAMS:
         "revenue": 0.0,
         "fans": fan_formula.get(code, {}).get("total", fans_by_code.get(code)),
         "trophies": total_trophies,
+        "avg_fc26": avg_fc26,
         "avg_fpts": avg_fpts,
         "wins": team_wins.get(code),
         "capacity": stadiums.get(code, {}).get("capacity"),
@@ -468,7 +510,7 @@ teams_table_rows = "\n            ".join(
     f'<td data-sort="{r["capacity"] if isinstance(r["capacity"], (int, float)) else -1}">{fmt_num(r["capacity"])}</td>'
     f'<td data-sort="{r["wins"] if isinstance(r["wins"], (int, float)) else -1}">{fmt_num(r["wins"])}</td>'
     f'<td data-sort="{r["trophies"]}">{r["trophies"]}</td>'
-    f'<td data-sort="{r["avg_fpts"] if isinstance(r["avg_fpts"], (int, float)) else -1}">{fmt_num(r["avg_fpts"], 1)}</td>'
+    f'<td data-sort="{r["avg_fc26"] if isinstance(r["avg_fc26"], (int, float)) else -1}">{fmt_num(r["avg_fc26"], 1)}</td>'
     f'</tr>'
     for r in financial_rows
 )
@@ -476,7 +518,7 @@ teams_table_rows = "\n            ".join(
 teams_html = head("Teams", "teams.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Teams</h1>
-      <div class="sub">All {len(TEAMS)} franchises &middot; click a column to sort &middot; Rating is each roster's average live Fantrax fantasy points (EA FC 26 ratings were blocked -- see note below)</div>
+      <div class="sub">All {len(TEAMS)} franchises &middot; click a column to sort &middot; Rating is each roster's average EA FC 26 overall rating</div>
     </div>
 
     <section class="card mv-card">
@@ -490,7 +532,7 @@ teams_html = head("Teams", "teams.html") + hero_logo() + f"""
               <th data-sort-type="num">Capacity &#9650;&#9660;</th>
               <th data-sort-type="num">Wins &#9650;&#9660;</th>
               <th data-sort-type="num"># Trophies &#9650;&#9660;</th>
-              <th data-sort-type="num">Avg Rating &#9650;&#9660;</th>
+              <th data-sort-type="num">Avg FC 26 Rating &#9650;&#9660;</th>
             </tr>
           </thead>
           <tbody>
@@ -499,10 +541,10 @@ teams_html = head("Teams", "teams.html") + hero_logo() + f"""
         </table>
       </div>
       <p style="font-size:11px;color:var(--mv-ink-muted);margin-top:10px;">
-        &ldquo;Avg Rating&rdquo; is each team's average live Fantrax fantasy points across matched roster
-        players, standing in for EA FC 26 ratings. EA's own site, sofifa.com, and futwiz.com all explicitly
-        disallow AI/scraper access to that data in their robots.txt (sofifa names ClaudeBot directly), so it
-        isn't sourced here.
+        &ldquo;Avg FC 26 Rating&rdquo; is each team's average EA Sports FC 26 overall rating across matched
+        roster players (source: a community CSV mirror of the FC 26 database on GitHub, since EA's own site,
+        sofifa.com, and futwiz.com all explicitly disallow ClaudeBot in robots.txt). Run
+        <code>sync_fc26_ratings.py</code> to refresh the ratings in the local database this reads from.
       </p>
     </section>
 
