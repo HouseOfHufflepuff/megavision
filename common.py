@@ -377,6 +377,7 @@ NAV_LINKS = [
     ("armstrong-1.html", "Draft"),
     ("soccer.html", "Soccer"),
     ("pigeons/index.html", "Pigeons"),
+    ("lazy-river.html", "Lazy River"),
 ]
 
 
