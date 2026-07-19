@@ -1,0 +1,186 @@
+[
+  {
+    "rank": 1,
+    "river_name": "River Ride (Lazy River)",
+    "park_name": "Aquaventure Waterpark, Atlantis The Palm",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "length_ft": 7546,
+    "length_m": 2300,
+    "notes": [
+      "Widely reported as roughly 2.3 km (about 1.4 miles) of flowing water winding through the entire park past waterfalls, rapids-adjacent zones, pools and splash areas; a full float reportedly takes about 45 minutes.",
+      "Aquaventure also operates a separate, shorter 1.6 km whitewater tube ride called 'The Rapids' distinct from this lazy river circuit - do not conflate the two when citing length.",
+      "The 2.3 km figure is consistently repeated across multiple independent travel/booking platforms (Headout, Sparkli Motourism, others), but this research pass could not load an official Atlantis/Kerzner page to confirm the number directly at the primary source (repeated fetch timeouts) - flag as widely-reported, not independently primary-sourced here.",
+      "Not marketed by the park itself as a Guinness-certified 'world's longest' record; several other parks in this list (Waco Surf, Everland's Caribbean Bay, Siam Park) separately market their own rivers as 'world's longest,' so treat any single 'world's longest' claim across this whole list with humor-appropriate skepticism."
+    ],
+    "sources": [
+      {"title": "Aquaventure Waterpark facts (Sparkli Motourism)", "url": "https://sparklimotourism.com/blog/some-facts-about-atlantis-aquaventure-waterpark-dubai/"},
+      {"title": "Aquaventure Waterpark Dubai – Rides, Tickets, Timings & More (Headout)", "url": "https://www.headout.com/blog/aquaventure-waterpark-dubai/"}
+    ]
+  },
+  {
+    "rank": 2,
+    "river_name": "Lazy River",
+    "park_name": "Waco Surf (formerly BSR Cable Park & Surf Resort / BSR Surf Resort)",
+    "city": "Waco",
+    "country": "United States",
+    "length_ft": 5280,
+    "length_m": 1609.34,
+    "notes": [
+      "Most current press (Explore.com, KSAT, Islands.com, Royal Caribbean's own travel guide) describes the river as 5,280 ft, i.e. exactly one mile.",
+      "Length reporting has varied notably across time and outlets: the park's own April 2018 opening-week coverage (Click2Houston) described it only as 'more than 3/4 of a mile' (~3,960+ ft); Listverse (Feb. 2018, pre-opening) cited 'just shy of 1.6 km'; other aggregator sites cite figures like 3,600 ft. Treat the exact figure as marketing-approximate rather than a single fixed, independently surveyed number.",
+      "This research could not locate or load an accessible Guinness World Records page confirming an official certified record for this attraction (direct queries to guinnessworldrecords.com returned no matching record page). Press coverage universally calls it 'the world's longest lazy river' but appears to be repeating the park's own marketing claim rather than citing a verifiable GWR certificate.",
+      "Note for site continuity: the brief for this project referenced a specific prior claim of '3,000 ft / 914.4 m, Guinness-certified July 2020' for this same attraction (elsewhere on this site). This research pass could not independently corroborate that specific figure or certification date from public sources - it may reflect an earlier/smaller version of the river before a later expansion to the mile-long figure now widely reported, but that connection is speculative and unconfirmed here.",
+      "One float lap reportedly takes about 45 minutes to an hour depending on the source. The venue (originally Barefoot Ski Ranch Cable Park) was founded in 2002; the record-length lazy river itself opened/expanded around April 2018."
+    ],
+    "sources": [
+      {"title": "Float Down The World's Longest Natural Lazy River At This Thrilling Texas Waterpark (Explore.com)", "url": "https://www.explore.com/1668918/longest-lazy-river-world-waco-surf-texas-us-state/"},
+      {"title": "World's longest lazy river opens Friday in Texas (Click2Houston, April 2018)", "url": "https://www.click2houston.com/news/2018/04/19/worlds-longest-lazy-river-opens-friday-in-texas/"},
+      {"title": "Top 10 Record-Breaking Water Park Attractions (Listverse)", "url": "https://listverse.com/2018/02/20/top-10-record-breaking-water-park-attractions/"}
+    ]
+  },
+  {
+    "rank": 3,
+    "river_name": "Lazy River",
+    "park_name": "Chimelong Water Park",
+    "city": "Guangzhou, Guangdong Province",
+    "country": "China",
+    "length_ft": 4199,
+    "length_m": 1280,
+    "notes": [
+      "Recognized as the longest lazy river in Asia by the Asia Records Institute (ASRI), as documented in ASRI's 2024 'Journey to Promote Records in Asia' coverage.",
+      "Chimelong Water Park is frequently described in trade/travel press as the world's largest water park by area/attendance.",
+      "The river winds through both calm and stronger-current sections rather than a single uniform flow speed."
+    ],
+    "sources": [
+      {"title": "ASRI 2024: The Longest Lazy River in Asia at Chimelong Water Park, China (Worldkings)", "url": "https://worldkings.org/news/asia-records-institute/asri-2024-journey-to-promote-records-in-asia-p102-the-longest-lazy-river-in-asia-at-chimelong-water-park-china"},
+      {"title": "Chime Long Water Park, Guangzhou, China (Aquatics International)", "url": "https://www.aquaticsintl.com/Awards/chime-long-water-park-guangzhou-china_o"}
+    ]
+  },
+  {
+    "rank": 4,
+    "river_name": "Mai Thai River",
+    "park_name": "Siam Park",
+    "city": "Costa Adeje, Tenerife",
+    "country": "Spain",
+    "length_ft": 3281,
+    "length_m": 1000,
+    "notes": [
+      "Marketed by the park and repeated on its Wikipedia page as 'the world's longest lazy river' - a claim that directly conflicts with competing 'world's longest' claims made for Waco Surf, Chimelong (Asia-only claim), and Everland's Caribbean Bay elsewhere in this list. Treat as a contested marketing superlative rather than a settled fact.",
+      "Per Wikipedia, it has the highest elevation of any lazy river at 8 m (26 ft), and features waterfalls, tunnels, and a diversion into a lift leading to a shark-viewing slide.",
+      "A full float takes approximately 30 minutes.",
+      "Siam Park opened September 15, 2008; it's an 18.5-hectare (46-acre) park owned by Loro Parque."
+    ],
+    "sources": [
+      {"title": "Siam Park (Tenerife) - Wikipedia", "url": "https://en.wikipedia.org/wiki/Siam_Park_(Tenerife)"},
+      {"title": "All about Mai Thai Lazy River at Siam Park - Tenerife", "url": "https://www.tickets-tenerife.com/siam-park-tickets/siam-park-lazy-river/"}
+    ]
+  },
+  {
+    "rank": 5,
+    "river_name": "Castaway Creek",
+    "park_name": "Disney's Typhoon Lagoon",
+    "city": "Lake Buena Vista (Orlando)",
+    "country": "United States",
+    "length_ft": 2100,
+    "length_m": 640,
+    "notes": [
+      "Wikipedia describes it as a continuously flowing 2,100 ft (640 m) lazy river that slowly circles the entire park, passing gentle waterfalls, lush rainforest scenery, mist screens, and around the park's central Mount Mayday structure.",
+      "Some secondary tourism sites (e.g. waterparkhotelsorlando.com) describe the length as 2,000 ft with a roughly 20-minute float and five tube-launch landings around the loop - a minor discrepancy from Wikipedia's 2,100 ft figure worth flagging rather than silently resolving.",
+      "Disney's Typhoon Lagoon park opened June 1, 1989; no separate opening date is documented specifically for Castaway Creek."
+    ],
+    "sources": [
+      {"title": "Disney's Typhoon Lagoon - Wikipedia", "url": "https://en.wikipedia.org/wiki/Disney's_Typhoon_Lagoon"},
+      {"title": "Disney Typhoon Lagoon Lazy River Castaway Creek", "url": "https://waterparkhotelsorlando.com/disney-typhoon-lagoon-lazy-river-castaway-creek/"}
+    ]
+  },
+  {
+    "rank": 6,
+    "river_name": "Caribbean Bay Lazy River",
+    "park_name": "Caribbean Bay, Everland Resort",
+    "city": "Yongin, Gyeonggi-do",
+    "country": "South Korea",
+    "length_ft": 1804,
+    "length_m": 550,
+    "notes": [
+      "Everland's own operator, Samsung C&T, describes the attraction as a '550-meter lazy river' that is fully heated along its entire length.",
+      "Marketed in some park/travel coverage as 'the world's longest lazy river' - another entry in this list's running theme of multiple, mutually exclusive 'world's longest' marketing claims (see Waco Surf and Siam Park entries).",
+      "Caribbean Bay opened in 1996 as part of the Everland Resort complex near Seoul."
+    ],
+    "sources": [
+      {"title": "Everland and Caribbean Bay newsroom coverage (Samsung C&T Newsroom)", "url": "https://news.samsungcnt.com/en/features/resort/2024-07-guide-to-a-relaxing-family-day-out-at-caribbean-bay-this-summer/"},
+      {"title": "Caribbean Bay - Wikipedia", "url": "https://en.wikipedia.org/wiki/Caribbean_Bay"}
+    ]
+  },
+  {
+    "rank": 7,
+    "river_name": "Calypso Beach",
+    "park_name": "Wet'n'Wild Gold Coast",
+    "city": "Oxenford, Queensland",
+    "country": "Australia",
+    "length_ft": 1476,
+    "length_m": 450,
+    "notes": [
+      "Installed at the park in 1997, per Wikipedia's Wet'n'Wild Gold Coast article.",
+      "The commonly cited length of 450 m comes from secondary travel/tourism sources rather than a directly confirmed measurement on the park's own attraction page in this research pass - flagged accordingly.",
+      "Reported float time is about 15 minutes; riders float in single-person tubes past themed pirate-castle and Caribbean shanty-town scenery, per secondary sources."
+    ],
+    "sources": [
+      {"title": "Wet'n'Wild Gold Coast - Wikipedia", "url": "https://en.wikipedia.org/wiki/Wet'n'Wild_Gold_Coast"},
+      {"title": "Relax and Unwind on Calypso Beach at Wet'n'Wild Gold Coast (official)", "url": "https://wetnwild.com.au/attractions/calypso-beach"}
+    ]
+  },
+  {
+    "rank": 8,
+    "river_name": "Kopiko Wai Winding River",
+    "park_name": "Universal's Volcano Bay",
+    "city": "Orlando",
+    "country": "United States",
+    "length_ft": 1300,
+    "length_m": 396,
+    "notes": [
+      "DATA FLAGGED AS THIN: the commonly cited length of approximately 1,300 ft is repeated consistently across third-party theme-park tourism sites (Orlando Informer, waterparkhotelsorlando.com, Amusable), but this research could not locate an official Universal-published measurement to confirm it firsthand.",
+      "The ride passes through the park's central Krakatau volcano structure, featuring decorated caves and randomized special effects.",
+      "A full float reportedly takes about 6 minutes.",
+      "Universal's Volcano Bay opened May 25, 2017 (per Wikipedia); no separate opening date is documented specifically for this river."
+    ],
+    "sources": [
+      {"title": "Kopiko Wai Winding River at Universal Volcano Bay (Orlando Informer)", "url": "https://orlandoinformer.com/universal/volcano-bay-kopiko-wai-winding-river/"},
+      {"title": "Universal's Volcano Bay - Wikipedia", "url": "https://en.wikipedia.org/wiki/Universal's_Volcano_Bay"}
+    ]
+  },
+  {
+    "rank": 9,
+    "river_name": "Loggerhead Lane",
+    "park_name": "Aquatica San Antonio",
+    "city": "San Antonio",
+    "country": "United States",
+    "length_ft": 1200,
+    "length_m": 366,
+    "notes": [
+      "Official Aquatica San Antonio website describes it as a '1,200-foot-long water route' featuring tunnel jets, foam shooters, and misters; open to floating, swimming, or walking.",
+      "IMPORTANT DISCREPANCY: a separate ride sharing the same name, 'Loggerhead Lane,' exists at Aquatica Orlando, but is reported by some tourism sites as only about 800 ft long. These are two distinct attractions at two different Aquatica park locations that happen to share a name - don't conflate the two lengths.",
+      "Children under 39 inches are advised to wear a life vest, per the official park page."
+    ],
+    "sources": [
+      {"title": "Loggerhead Lane Lazy River - Aquatica San Antonio (official)", "url": "https://aquatica.com/san-antonio/pools/loggerhead-lane/"}
+    ]
+  },
+  {
+    "rank": 10,
+    "river_name": "Juha's Journey",
+    "park_name": "Wild Wadi Waterpark",
+    "city": "Dubai",
+    "country": "United Arab Emirates",
+    "length_ft": 1181,
+    "length_m": 360,
+    "notes": [
+      "Official Wild Wadi website confirms the ride offers '360 metres of gentle currents,' rated as the lowest intensity level (Thrill Level 1) in the park.",
+      "Height requirement is 90cm-110cm for riders without an accompanying adult, per the official page.",
+      "Described by the park as 'Wild Wadi's most peaceful adventure.'"
+    ],
+    "sources": [
+      {"title": "Juha's Journey | Lazy River at Wild Wadi Waterpark (official)", "url": "https://www.wildwadi.com/en/juhas-journey"}
+    ]
+  }
+]
