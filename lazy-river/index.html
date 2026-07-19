@@ -75,6 +75,28 @@
   .lrv-jukebox .now-playing { font-size: 10px; color: #66ccff; }
   .lrv-jukebox .track-name { font-size: 14px; color: #ffff00; font-weight: bold; }
   .lrv-jukebox .track-credit { font-size: 10px; color: #66ccff; }
+
+  .lrv-showcase { position: relative; max-width: 100%; margin: 0 0 16px; border: 6px ridge #00ffff; background: #000; }
+  .lrv-showcase-slide { position: relative; }
+  .lrv-showcase-slide img { width: 100%; height: auto; display: block; }
+  .lrv-showcase-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
+    text-align: center;
+  }
+  .lrv-showcase-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+    background: rgba(0,0,0,0.5); color: #00ffff; border: 2px outset #0099cc;
+    font-size: 22px; width: 40px; height: 46px; cursor: pointer;
+  }
+  .lrv-showcase-arrow.left { left: 8px; }
+  .lrv-showcase-arrow.right { right: 8px; }
+  .lrv-showcase-dots { position: absolute; bottom: 6px; right: 12px; z-index: 5; }
+  .lrv-showcase-dot {
+    display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px;
+    background: rgba(255,255,255,0.4); border: 1px solid #000; cursor: pointer;
+  }
+  .lrv-showcase-dot.active { background: #ffff00; }
 </style>
 
 </head>
@@ -163,12 +185,12 @@
 <tr>
   <td width="16%" valign="top" bgcolor="#001a33" style="padding:8px;border:4px ridge #0099cc;">
     <font color="#ffff00" size="3" face="Arial, Helvetica, sans-serif"><b class="blk">&#9776; RIVER MENU &#9776;</b></font><br><br>
-    <font size="1" color="#66ccff">&#9660; Home</font><br><font size="2" color="#00ffff"><b><font color="#ffff00">Home</font></b> | <a href="top-10.html">Top 10 Rivers</a> | <a href="shop.html">Rent-A-River Shop</a> | <a href="firehose.html">Tap The Firehose</a></font><br><br><font size="1" color="#66ccff">&#9660; The Top 10 Rivers</font><br><font size="2" color="#00ffff"><a href="river-01.html">#1 River</a> | <a href="river-02.html">#2 River</a> | <a href="river-03.html">#3 River</a> | <a href="river-04.html">#4 River</a> | <a href="river-05.html">#5 River</a> | <a href="river-06.html">#6 River</a> | <a href="river-07.html">#7 River</a> | <a href="river-08.html">#8 River</a> | <a href="river-09.html">#9 River</a> | <a href="river-10.html">#10 River</a></font><br><br><font size="1" color="#66ccff">&#9660; Rent-A-River Use Cases</font><br><font size="2" color="#00ffff"><a href="shop-bar-mitzvah.html">Bar/Bat Mitzvah</a> | <a href="shop-pride.html">Pride</a> | <a href="shop-quinceanera.html">Quinceañera</a> | <a href="shop-wedding.html">Wedding</a> | <a href="shop-corporate.html">Corporate</a> | <a href="shop-birthday.html">Birthday</a> | <a href="shop-bachelorette.html">Bachelor(ette)</a> | <a href="shop-graduation.html">Graduation</a> | <a href="shop-festival.html">Festival</a> | <a href="shop-holiday.html">Holiday Party</a></font><br><br><font size="1" color="#66ccff">&#9660; River Guide</font><br><font size="2" color="#00ffff"><a href="history.html">History</a> | <a href="engineering.html">Engineering</a> | <a href="tubes101.html">Tubes 101</a> | <a href="safety.html">Safety</a> | <a href="records.html">World Records</a> | <a href="best-usa.html">Best in USA</a> | <a href="best-europe.html">Best in Europe</a> | <a href="best-asia.html">Best in Asia</a> | <a href="pop-culture.html">Pop Culture</a></font><br><br><font size="1" color="#66ccff">&#9660; More</font><br><font size="2" color="#00ffff"><a href="gallery1.html">Gallery I</a> | <a href="gallery2.html">Gallery II</a> | <a href="gallery3.html">Gallery III</a> | <a href="faq.html">FAQ</a> | <a href="links.html">Links</a> | <a href="webmaster.html">Webmaster</a> | <a href="guestbook.html">Guestbook</a></font><br><br>
+    <font size="1" color="#66ccff">&#9660; Home</font><br><font size="2" color="#00ffff"><b><font color="#ffff00">Home</font></b> | <a href="top-10.html">Top 10 Rivers</a> | <a href="shop.html">Rent-A-River Shop</a> | <a href="firehose.html">Tap The Firehose</a></font><br><br><font size="1" color="#66ccff">&#9660; The Top 10 Rivers</font><br><font size="2" color="#00ffff"><a href="river-01.html">#1 River</a> | <a href="river-02.html">#2 River</a> | <a href="river-03.html">#3 River</a> | <a href="river-04.html">#4 River</a> | <a href="river-05.html">#5 River</a> | <a href="river-06.html">#6 River</a> | <a href="river-07.html">#7 River</a> | <a href="river-08.html">#8 River</a> | <a href="river-09.html">#9 River</a> | <a href="river-10.html">#10 River</a></font><br><br><font size="1" color="#66ccff">&#9660; Rent-A-River Use Cases</font><br><font size="2" color="#00ffff"><a href="shop-bar-mitzvah.html">Bar/Bat Mitzvah</a> | <a href="shop-pride.html">Pride</a> | <a href="shop-quinceanera.html">Quinceañera</a> | <a href="shop-wedding.html">Wedding</a> | <a href="shop-corporate.html">Corporate</a> | <a href="shop-birthday.html">Birthday</a> | <a href="shop-bachelorette.html">Bachelor(ette)</a> | <a href="shop-graduation.html">Graduation</a> | <a href="shop-festival.html">Festival</a> | <a href="shop-holiday.html">Holiday Party</a> | <a href="shop-lan-party.html">LAN Party</a> | <a href="shop-petting-zoo.html">Petting Zoo</a></font><br><br><font size="1" color="#66ccff">&#9660; River Guide</font><br><font size="2" color="#00ffff"><a href="history.html">History</a> | <a href="engineering.html">Engineering</a> | <a href="tubes101.html">Tubes 101</a> | <a href="safety.html">Safety</a> | <a href="records.html">World Records</a> | <a href="best-usa.html">Best in USA</a> | <a href="best-europe.html">Best in Europe</a> | <a href="best-asia.html">Best in Asia</a> | <a href="pop-culture.html">Pop Culture</a></font><br><br><font size="1" color="#66ccff">&#9660; More</font><br><font size="2" color="#00ffff"><a href="gallery1.html">Gallery I</a> | <a href="gallery2.html">Gallery II</a> | <a href="gallery3.html">Gallery III</a> | <a href="faq.html">FAQ</a> | <a href="links.html">Links</a> | <a href="webmaster.html">Webmaster</a> | <a href="guestbook.html">Guestbook</a></font><br><br>
     <hr size="2" color="#0099cc">
     <font size="1" color="#66ccff">&#9888; Best viewed in Netscape Navigator 4.0 at 800&times;600. Waterfalls require ActiveX.</font>
   </td>
 
-  <td width="68%" valign="top" bgcolor="#000022" background="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI1MCI+PHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjMDAyNjNkIi8+PHJlY3QgeD0iNCIgeT0iMCIgd2lkdGg9IjMiIGhlaWdodD0iNTAiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuNSIvPjxyZWN0IHg9IjE0IiB5PSIwIiB3aWR0aD0iMiIgaGVpZ2h0PSI1MCIgZmlsbD0iI2FlZWVmZiIgb3BhY2l0eT0iMC42Ii8+PHJlY3QgeD0iMjQiIHk9IjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjUwIiBmaWxsPSIjZmZmZmZmIiBvcGFjaXR5PSIwLjQiLz48cmVjdCB4PSIzMyIgeT0iMCIgd2lkdGg9IjIiIGhlaWdodD0iNTAiIGZpbGw9IiNhZWVlZmYiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg==" style="padding:12px;border:4px ridge #0099cc;">
+  <td width="68%" valign="top" bgcolor="#000022" background="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSIzMCI+PHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjMwIiBmaWxsPSIjMDAzMzY2Ii8+PHBhdGggZD0iTTAgOCBRMTUgMiAzMCA4IFQ2MCA4IiBzdHJva2U9IiMwMDk5Y2MiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDE4IFExNSAxMiAzMCAxOCBUNjAgMTgiIHN0cm9rZT0iIzAwY2NmZiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjciLz48cGF0aCBkPSJNMCAyNyBRMTUgMjIgMzAgMjcgVDYwIDI3IiBzdHJva2U9IiM2NmUwZmYiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjUiLz48L3N2Zz4=" style="padding:12px;border:4px ridge #0099cc;">
     
     <div class="lrv-jukebox">
       <button id="lrvPlayBtn" type="button" aria-label="Play/Pause">&#9654;</button>
@@ -227,6 +249,32 @@
     <center><font face="Courier New, monospace" size="4" color="#00ffff">40+ pages of obsessive lazy river content, because someone had to do it</font></center>
 
     
+    <div class="lrv-showcase" id="lrvShowcaseHome">
+      <button class="lrv-showcase-arrow left" type="button" aria-label="Previous">&#10094;</button>
+      <div class="lrv-showcase-slide" style="display:block;"><img src="images/pride-river.jpg" alt="PRIDE RIVER"><div class="lrv-showcase-caption"><font face="Arial Black, Impact" size="5" color="#ffff00">PRIDE RIVER</font><br><font color="#fff" size="2">Rent the river. Rent the vibe. Rent this exact pool if we're being honest.</font></div></div><div class="lrv-showcase-slide" style="display:none;"><img src="images/quince-anos.jpg" alt="MIS QUINCE AÑOS"><div class="lrv-showcase-caption"><font face="Arial Black, Impact" size="5" color="#ffff00">MIS QUINCE AÑOS</font><br><font color="#fff" size="2">The court, the current, the cantina. All in one loop.</font></div></div><div class="lrv-showcase-slide" style="display:none;"><img src="images/lan-party.jpg" alt="THE LAN PARTY LOOP"><div class="lrv-showcase-caption"><font face="Arial Black, Impact" size="5" color="#ffff00">THE LAN PARTY LOOP</font><br><font color="#fff" size="2">Pac-Man pods. Boombox stacks. A current that never disconnects.</font></div></div><div class="lrv-showcase-slide" style="display:none;"><img src="images/petting-zoo.jpg" alt="KOOL-AID KINGDOM"><div class="lrv-showcase-caption"><font face="Arial Black, Impact" size="5" color="#ffff00">KOOL-AID KINGDOM</font><br><font color="#fff" size="2">We do not know why there's a tiger. We are not going to ask.</font></div></div>
+      <button class="lrv-showcase-arrow right" type="button" aria-label="Next">&#10095;</button>
+      <div class="lrv-showcase-dots"><span class="lrv-showcase-dot active" data-i="0"></span><span class="lrv-showcase-dot" data-i="1"></span><span class="lrv-showcase-dot" data-i="2"></span><span class="lrv-showcase-dot" data-i="3"></span></div>
+    </div>
+    <script>
+    (function() {
+      var root = document.getElementById('lrvShowcaseHome');
+      var slides = root.querySelectorAll('.lrv-showcase-slide');
+      var dots = root.querySelectorAll('.lrv-showcase-dot');
+      var idx = 0, timer = null;
+      function show(i) {
+        idx = (i + slides.length) % slides.length;
+        slides.forEach(function(s, j) { s.style.display = j === idx ? 'block' : 'none'; });
+        dots.forEach(function(d, j) { d.classList.toggle('active', j === idx); });
+      }
+      root.querySelector('.lrv-showcase-arrow.left').addEventListener('click', function() { show(idx - 1); reset(); });
+      root.querySelector('.lrv-showcase-arrow.right').addEventListener('click', function() { show(idx + 1); reset(); });
+      dots.forEach(function(d) { d.addEventListener('click', function() { show(parseInt(d.dataset.i, 10)); reset(); }); });
+      function reset() { if (timer) clearInterval(timer); timer = setInterval(function() { show(idx + 1); }, 5000); }
+      reset();
+    })();
+    </script>
+
+    
   <table width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td>
     <div class="lrv-static-fall">
       <div class="lrv-static-fall-water"></div>
@@ -262,7 +310,7 @@
         <tr><td align="center">
           <font size="6">&#128176;</font><br>
           <font color="#ffff00" size="3"><b>Rent-A-River Shop</b></font><br>
-          <font color="#fff" size="2">Bar mitzvahs. Pride. Quinceañeras. We've thought about all of it.</font><br><br>
+          <font color="#fff" size="2">Bar mitzvahs. Pride. Quinceañeras. LAN parties. Petting zoos. We've thought about all of it.</font><br><br>
           <a href="shop.html"><font color="#00ffff" size="2">VISIT THE SHOP &rarr;</font></a>
         </td></tr></table>
       </td>
@@ -297,7 +345,7 @@
     <center><font size="1" color="#444">&larr; <a href="../index.html">Back to MEGAVISION</a> &middot; <a href="index.html">Lazy River Home</a></font></center>
   </td>
 
-  <td width="16%" valign="top" bgcolor="#001a33" background="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSIzMCI+PHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjMwIiBmaWxsPSIjMDAzMzY2Ii8+PHBhdGggZD0iTTAgOCBRMTUgMiAzMCA4IFQ2MCA4IiBzdHJva2U9IiMwMDk5Y2MiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDE4IFExNSAxMiAzMCAxOCBUNjAgMTgiIHN0cm9rZT0iIzAwY2NmZiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjciLz48cGF0aCBkPSJNMCAyNyBRMTUgMjIgMzAgMjcgVDYwIDI3IiBzdHJva2U9IiM2NmUwZmYiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSJub25lIiBvcGFjaXR5PSIwLjUiLz48L3N2Zz4=" style="padding:8px;border:4px ridge #0099cc;">
+  <td width="16%" valign="top" bgcolor="#001a33" background="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NSIgaGVpZ2h0PSI0NSI+PHJlY3Qgd2lkdGg9IjU1IiBoZWlnaHQ9IjQ1IiBmaWxsPSIjMGI0ZDNhIi8+PHJlY3QgeD0iNiIgeT0iMCIgd2lkdGg9IjQiIGhlaWdodD0iNDUiIGZpbGw9IiNiZmYyZmYiIG9wYWNpdHk9IjAuNTUiLz48cmVjdCB4PSIyNCIgeT0iMCIgd2lkdGg9IjMiIGhlaWdodD0iNDUiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuNDUiLz48Y2lyY2xlIGN4PSI0NSIgY3k9IjEwIiByPSI2IiBmaWxsPSIjMTQ2YjRkIi8+PGNpcmNsZSBjeD0iMTIiIGN5PSIzNiIgcj0iNSIgZmlsbD0iIzE0NmI0ZCIvPjwvc3ZnPg==" style="padding:8px;border:4px ridge #0099cc;">
     <font color="#00ffff" size="3" face="Arial, Helvetica, sans-serif"><b class="blk">&#127754; SPLASH ZONE &#127754;</b></font><br><br>
     <font size="1" color="#66ccff">
     &#128167; did you know? &#128167;<br>

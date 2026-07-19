@@ -182,6 +182,54 @@ def scattered_ninjas():
     return f'<div class="lrv-ninja-layer">{spans}</div>'
 
 
+# -------------------------------------------------------- showcase hero --
+SHOWCASE_IMAGES = [
+    ("images/pride-river.jpg", "PRIDE RIVER", "Rent the river. Rent the vibe. Rent this exact pool if we're being honest."),
+    ("images/quince-anos.jpg", "MIS QUINCE AÑOS", "The court, the current, the cantina. All in one loop."),
+    ("images/lan-party.jpg", "THE LAN PARTY LOOP", "Pac-Man pods. Boombox stacks. A current that never disconnects."),
+    ("images/petting-zoo.jpg", "KOOL-AID KINGDOM", "We do not know why there's a tiger. We are not going to ask."),
+]
+
+
+def showcase_carousel(dot_id_prefix="lrvShowcase"):
+    slides = "".join(
+        f'<div class="lrv-showcase-slide" style="display:{"block" if i == 0 else "none"};">'
+        f'<img src="{src}" alt="{label}"><div class="lrv-showcase-caption">'
+        f'<font face="Arial Black, Impact" size="5" color="#ffff00">{label}</font><br>'
+        f'<font color="#fff" size="2">{caption}</font></div></div>'
+        for i, (src, label, caption) in enumerate(SHOWCASE_IMAGES)
+    )
+    dots = "".join(
+        f'<span class="lrv-showcase-dot{" active" if i == 0 else ""}" data-i="{i}"></span>'
+        for i in range(len(SHOWCASE_IMAGES))
+    )
+    return f"""
+    <div class="lrv-showcase" id="{dot_id_prefix}">
+      <button class="lrv-showcase-arrow left" type="button" aria-label="Previous">&#10094;</button>
+      {slides}
+      <button class="lrv-showcase-arrow right" type="button" aria-label="Next">&#10095;</button>
+      <div class="lrv-showcase-dots">{dots}</div>
+    </div>
+    <script>
+    (function() {{
+      var root = document.getElementById('{dot_id_prefix}');
+      var slides = root.querySelectorAll('.lrv-showcase-slide');
+      var dots = root.querySelectorAll('.lrv-showcase-dot');
+      var idx = 0, timer = null;
+      function show(i) {{
+        idx = (i + slides.length) % slides.length;
+        slides.forEach(function(s, j) {{ s.style.display = j === idx ? 'block' : 'none'; }});
+        dots.forEach(function(d, j) {{ d.classList.toggle('active', j === idx); }});
+      }}
+      root.querySelector('.lrv-showcase-arrow.left').addEventListener('click', function() {{ show(idx - 1); reset(); }});
+      root.querySelector('.lrv-showcase-arrow.right').addEventListener('click', function() {{ show(idx + 1); reset(); }});
+      dots.forEach(function(d) {{ d.addEventListener('click', function() {{ show(parseInt(d.dataset.i, 10)); reset(); }}); }});
+      function reset() {{ if (timer) clearInterval(timer); timer = setInterval(function() {{ show(idx + 1); }}, 5000); }}
+      reset();
+    }})();
+    </script>"""
+
+
 # -------------------------------------------------------------- jukebox --
 def jukebox_block():
     return """
@@ -259,6 +307,8 @@ NAV_GROUPS = [
         ("shop-graduation.html", "Graduation"),
         ("shop-festival.html", "Festival"),
         ("shop-holiday.html", "Holiday Party"),
+        ("shop-lan-party.html", "LAN Party"),
+        ("shop-petting-zoo.html", "Petting Zoo"),
     ]),
     ("River Guide", [
         ("history.html", "History"),
@@ -372,6 +422,28 @@ STYLE_BLOCK = """<style>
   .lrv-jukebox .now-playing { font-size: 10px; color: #66ccff; }
   .lrv-jukebox .track-name { font-size: 14px; color: #ffff00; font-weight: bold; }
   .lrv-jukebox .track-credit { font-size: 10px; color: #66ccff; }
+
+  .lrv-showcase { position: relative; max-width: 100%; margin: 0 0 16px; border: 6px ridge #00ffff; background: #000; }
+  .lrv-showcase-slide { position: relative; }
+  .lrv-showcase-slide img { width: 100%; height: auto; display: block; }
+  .lrv-showcase-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
+    text-align: center;
+  }
+  .lrv-showcase-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+    background: rgba(0,0,0,0.5); color: #00ffff; border: 2px outset #0099cc;
+    font-size: 22px; width: 40px; height: 46px; cursor: pointer;
+  }
+  .lrv-showcase-arrow.left { left: 8px; }
+  .lrv-showcase-arrow.right { right: 8px; }
+  .lrv-showcase-dots { position: absolute; bottom: 6px; right: 12px; z-index: 5; }
+  .lrv-showcase-dot {
+    display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-left: 6px;
+    background: rgba(255,255,255,0.4); border: 1px solid #000; cursor: pointer;
+  }
+  .lrv-showcase-dot.active { background: #ffff00; }
 </style>"""
 
 

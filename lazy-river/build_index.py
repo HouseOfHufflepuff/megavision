@@ -1,8 +1,10 @@
-from _shared import page, static_waterfall_bar
+from _shared import page, static_waterfall_bar, showcase_carousel
 
 content = f"""
     <center><font face="Arial Black, Impact" size="7" color="#ffff00"><b class="blk">&#127754; THE LAZY RIVER OUTPOST &#127754;</b></font></center>
     <center><font face="Courier New, monospace" size="4" color="#00ffff">40+ pages of obsessive lazy river content, because someone had to do it</font></center>
+
+    {showcase_carousel("lrvShowcaseHome")}
 
     {static_waterfall_bar("WHAT'S HERE")}
     <font color="#fff" face="Arial, Helvetica, sans-serif" size="2">
@@ -28,7 +30,7 @@ content = f"""
         <tr><td align="center">
           <font size="6">&#128176;</font><br>
           <font color="#ffff00" size="3"><b>Rent-A-River Shop</b></font><br>
-          <font color="#fff" size="2">Bar mitzvahs. Pride. Quinceañeras. We've thought about all of it.</font><br><br>
+          <font color="#fff" size="2">Bar mitzvahs. Pride. Quinceañeras. LAN parties. Petting zoos. We've thought about all of it.</font><br><br>
           <a href="shop.html"><font color="#00ffff" size="2">VISIT THE SHOP &rarr;</font></a>
         </td></tr></table>
       </td>
