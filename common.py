@@ -378,6 +378,7 @@ NAV_LINKS = [
     ("soccer.html", "Soccer"),
     ("pigeons/index.html", "Pigeons"),
     ("lazy-river/index.html", "Lazy River"),
+    ("https://houseofhufflepuff.github.io/two-halves/", "Two Halves"),
 ]
 
 
@@ -387,7 +388,9 @@ def head(title, active):
     nav_items = []
     for href, label in NAV_LINKS:
         cls = ' class="active"' if href == active else ""
-        nav_items.append(f'<a href="{href}"{cls}>{label}</a>')
+        external = href.startswith("http")
+        attrs = ' target="_blank" rel="noopener"' if external else ""
+        nav_items.append(f'<a href="{href}"{cls}{attrs}>{label}</a>')
     nav_links = "\n      ".join(nav_items)
     return f"""<!DOCTYPE html>
 <html lang="en">
