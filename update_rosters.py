@@ -14,14 +14,13 @@ regenerated *.html files. No caching, no temp files, no stored copy of the
 spreadsheet, ever.
 """
 import argparse
-import re
 import subprocess
 import sys
 
 from common import (
     TEAMS, head, foot, hero_logo, fetch_live_workbook, EXPORT_URL, fetch_trophy_room,
     tally_trophies, COMP_ABBR, fetch_fans, owner_short, POSITION_ORDER,
-    position_sort_key, fetch_youth, find_team_sheet, fetch_all_season_labels,
+    position_sort_key, fetch_youth, fetch_all_season_labels,
     fetch_season_salary_totals, fetch_league_schedule_games, fetch_standings_reference,
     fetch_firm_legacy, compute_fan_formula, fetch_stadiums, club_full_name,
 )
@@ -36,12 +35,6 @@ STATUS_COLOR = {
     "Active": "var(--mv-ink)",
 }
 
-# 25/26 is over; only players actually signed for 26/27 count as current roster.
-# Match by the literal column label, not position, since some teams' sheets
-# (e.g. CRG) are still labeled a year behind (24/25-25/26-26/27 instead of
-# 25/26-26/27-27/28) -- the label tells us which column is really 26/27.
-CURRENT_SEASON_LABEL = "26/27"
-
 TROPHY_ACCENTS = ["var(--mv-gold)", "var(--mv-blue)", "var(--mv-violet)", "var(--mv-pink)", "var(--mv-crimson)"]
 
 # league formation: 3-4-3 (+ 1 GK), field order top (attack) to bottom (GK)
@@ -52,63 +45,72 @@ parser.add_argument("--push", action="store_true")
 args = parser.parse_args()
 
 
-def parse_team_tab(ws, code):
-    rows = list(ws.iter_rows(min_row=1, max_row=40, values_only=True))
-    stadium_name = rows[0][1] or ""
-    capacity = rows[0][6]
-
-    header_idx = None
-    for i, r in enumerate(rows):
-        if r[1] == "Player" and r[2] == "Pos":
-            header_idx = i
-            break
-    if header_idx is None:
-        return None
-
-    year_labels = [rows[header_idx][3], rows[header_idx][4], rows[header_idx][5]]
-    year_cols = [3, 4, 5]  # column indices in each row matching year_labels
-
-    if CURRENT_SEASON_LABEL in year_labels:
-        current_col = year_cols[year_labels.index(CURRENT_SEASON_LABEL)]
-    else:
-        print(f"WARN: {code} has no column labeled {CURRENT_SEASON_LABEL} "
-              f"(got {year_labels}), falling back to the 2nd year column", file=sys.stderr)
-        current_col = year_cols[1]
-
-    roster = []
-    for r in rows[header_idx + 1:]:
-        if r[0] == "Total":
-            break
-        if r[1] is None:
-            continue
-        current_salary = r[current_col]
-        if not isinstance(current_salary, (int, float)):
-            continue  # not signed for 26/27, 25/26 is over -- drop them
-        roster.append({
-            "player": r[1],
-            "pos": r[2] or "",
-            "y1": r[3],
-            "y2": r[4],
-            "y3": r[5],
-            "buyout": r[6],
-            "current_salary": current_salary,
-        })
-
-    return {
-        "stadium": stadium_name,
-        "capacity": capacity,
-        "year_labels": year_labels,
-        "current_col": current_col,
-        "roster": roster,
-    }
-
-
 def money(v):
     if v is None:
         return "—"
     if isinstance(v, (int, float)):
         return f"${v:,.2f}"
     return str(v)
+
+
+# Row ranges for each box within a team's column block on the "CUT EM IF YA
+# GOT EM" tab -- the single source of truth for who's actually on the 26/27
+# roster. "Into Draft Pool" is deliberately excluded: those players simply
+# aren't in any of these three boxes, so they're excluded from the site by
+# construction, not by a name-matching guess.
+KEEP_BOX_ROWS = {
+    "kept": (22, 29),
+    "youth_legend": (31, 31),
+    "youth_players": (34, 40),
+}
+CATEGORY_LABEL = {"kept": "Kept", "youth_legend": "Youth Legend", "youth_players": "Youth Player"}
+CATEGORY_BADGE_COLOR = {"kept": "var(--mv-ink-muted)", "youth_legend": "var(--mv-gold)", "youth_players": "var(--mv-blue)"}
+
+
+def find_keeper_block_col(label_row, code):
+    # the sheet labels this team's block "RNE"; every other code matches TEAMS directly
+    sheet_code = "RNE" if code == "REN" else code
+    for i, v in enumerate(label_row):
+        if v == sheet_code:
+            return i
+    return None
+
+
+def parse_keeper_roster(wb, code):
+    """This team's actual 26/27 roster: Kept Contracts + Youth Legend of the
+    Club + Youth Players, straight from the CUT EM IF YA GOT EM tab. Each
+    player carries which box they came from (category) and their 26/27 +
+    27/28 salary, which is all that tab tracks (no buyout/3rd-year column
+    here -- that lives on each team's own roster tab, which this
+    intentionally does NOT read from anymore, since that tab still lists
+    players who were actually cut)."""
+    ws = wb["CUT EM IF YA GOT EM"]
+    rows = list(ws.iter_rows(min_row=1, max_row=101, values_only=True))
+    label_row = rows[4]
+    col = find_keeper_block_col(label_row, code)
+    if col is None:
+        return None
+
+    roster = []
+    for category, (start, end) in KEEP_BOX_ROWS.items():
+        for r in range(start, end + 1):
+            row = rows[r - 1]
+            if not row[col]:
+                continue
+            y1 = row[col + 2] if isinstance(row[col + 2], (int, float)) else None
+            y2 = row[col + 3] if isinstance(row[col + 3], (int, float)) else None
+            pos = (row[col + 1] or "").strip().upper()
+            if pos == "G":
+                pos = "GK"
+            roster.append({
+                "player": row[col],
+                "pos": pos,
+                "category": category,
+                "y1": y1,
+                "y2": y2,
+                "current_salary": y1 or 0,
+            })
+    return roster
 
 
 print(f"Fetching live spreadsheet from {EXPORT_URL} ...")
@@ -190,58 +192,45 @@ updated = []
 financial_rows = []
 
 for code, name, owners in TEAMS:
-    sheet_name = find_team_sheet(wb, code)
-    if sheet_name is None:
-        print(f"WARN: no tab for {code}, skipping", file=sys.stderr)
-        continue
-    if sheet_name != code:
-        print(f"NOTE: {code} tab is now named '{sheet_name}' in the live sheet", file=sys.stderr)
-    data = parse_team_tab(wb[sheet_name], code)
-    if data is None:
-        print(f"WARN: could not find roster header for {code}, skipping", file=sys.stderr)
+    roster = parse_keeper_roster(wb, code)
+    if roster is None:
+        print(f"WARN: no CUT EM IF YA GOT EM block for {code}, skipping", file=sys.stderr)
         continue
 
-    roster = data["roster"]
     roster_size = len(roster)
+    # only Kept Contracts + Youth Legend + Youth Players count toward payroll --
+    # this IS the roster now, so every player on it counts; nothing else to filter
     total_payroll = sum(p["current_salary"] for p in roster)
     pos_counts = {}
     for p in roster:
         pos_counts[p["pos"]] = pos_counts.get(p["pos"], 0) + 1
     season_net = -total_payroll  # no games/revenue yet this season
 
-    y1_label, y2_label, y3_label = data["year_labels"]
-    # salary summed by contract year, across the WHOLE roster (not just the
-    # current-season column) -- players not signed for a given year contribute 0
+    # CUT EM IF YA GOT EM only tracks 2 salary years (26/27, 27/28) -- no
+    # buyout/3rd-year column, unlike each team's own roster tab (which this
+    # script deliberately no longer reads from for the active roster, since
+    # that tab still lists players who were actually cut)
     year_totals = [
         sum(p[key] for p in roster if isinstance(p[key], (int, float)))
-        for key in ("y1", "y2", "y3")
+        for key in ("y1", "y2")
     ]
-    col_labels = [3, 4, 5]
-    current_idx = col_labels.index(data["current_col"])
-    year_th = [y1_label, y2_label, y3_label]
-    year_th[current_idx] = f'<span style="color:var(--mv-gold)">{year_th[current_idx]}</span>'
+    y1_label, y2_label = "26/27", "27/28"
 
-    cap = data["capacity"]
+    stadium_info = stadiums.get(code, {})
+    stadium_name = stadium_info.get("stadium") or ""
+    cap = stadium_info.get("capacity")
     capacity_str = f"{cap:,.0f}" if isinstance(cap, (int, float)) else str(cap or "—")
 
-    # ---- youth cross-reference: flag roster/depth players this team drafted ----
-    youth = youth_by_code.get(code, [])
-    youth_last_names = {
-        parts[-1].lower()
-        for y in youth
-        for parts in [y["player"].replace(".", " ").split()]
-        if parts and len(parts[-1]) >= 3
-    }
-
-    def is_youth_product(player_field):
-        core = player_field.split(" - ")[0]
-        tokens = set(re.split(r"[^a-zA-Z]+", core.lower())) - {""}
-        return bool(tokens & youth_last_names)
-
-    YOUTH_MARK = '<span title="Youth product" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);margin-right:5px;"></span>'
+    def category_badge(p):
+        cat = p["category"]
+        if cat == "kept":
+            return ""
+        color = CATEGORY_BADGE_COLOR[cat]
+        return (f'<span class="mv-badge" style="background:transparent;border:1px solid {color};'
+                f'color:{color};font-size:9px;padding:1px 6px;margin-left:6px;">{CATEGORY_LABEL[cat]}</span>')
 
     def player_label(p):
-        return (YOUTH_MARK if is_youth_product(p["player"]) else "") + (p["clean_name"] or p["player"])
+        return (p["clean_name"] or p["player"]) + category_badge(p)
 
     # ---- scrub the raw "R Dias - D MCI" sheet field into its own columns:
     # clean name, club, live Fantrax fantasy points, EA FC 26 rating -- all
@@ -275,6 +264,7 @@ for code, name, owners in TEAMS:
     for p in grouped:
         roster_rows.append(
             f'<tr><td>{player_label(p)}</td><td class="dim">{p["club_full"] or "—"}</td><td>{p["pos"]}</td>'
+            f'<td style="color:{CATEGORY_BADGE_COLOR[p["category"]]};">{CATEGORY_LABEL[p["category"]]}</td>'
             f'<td data-sort="{sort_val(p["fc26"])}" style="color:var(--mv-gold);font-weight:700;">{fc26_plain(p)}</td>'
             f'<td data-sort="{sort_val(p["fpts"])}" class="dim">{fpts_plain(p)}</td>'
             f'<td data-sort="{p["current_salary"]}"><strong style="color:var(--mv-gold)">{money(p["current_salary"])}</strong></td></tr>'
@@ -284,21 +274,21 @@ for code, name, owners in TEAMS:
     ordered_pos = [p for p in POSITION_ORDER if p in pos_counts] + \
                   [p for p in pos_counts if p not in POSITION_ORDER]
     counts_line = "  &middot;  ".join(f"{pos_counts[p]} {p}" for p in ordered_pos)
-    roster_total_row = f'<tr><td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
+    roster_total_row = f'<tr><td colspan="7">{roster_size} total &middot; {counts_line}</td></tr>'
 
-    # ---- finances: the same roster, salary detail by contract year ----
+    # ---- finances: the same roster, salary detail by contract year (26/27 + 27/28,
+    # the only two years CUT EM IF YA GOT EM tracks) ----
     finance_rows = []
     for p in grouped:
-        cells = [money(p["y1"]), money(p["y2"]), money(p["y3"])]
-        cells[current_idx] = f'<strong style="color:var(--mv-gold)">{cells[current_idx]}</strong>'
+        cells = [money(p["y1"]), money(p["y2"])]
+        cells[0] = f'<strong style="color:var(--mv-gold)">{cells[0]}</strong>'
         finance_rows.append(
             f'<tr><td>{player_label(p)}</td><td class="dim">{p["club_full"] or "—"}</td><td>{p["pos"]}</td>'
+            f'<td style="color:{CATEGORY_BADGE_COLOR[p["category"]]};">{CATEGORY_LABEL[p["category"]]}</td>'
             f'<td data-sort="{sort_val(p["y1"])}">{cells[0]}</td>'
-            f'<td data-sort="{sort_val(p["y2"])}">{cells[1]}</td>'
-            f'<td data-sort="{sort_val(p["y3"])}">{cells[2]}</td>'
-            f'<td data-sort="{sort_val(p["buyout"])}" class="dim">{money(p["buyout"])}</td></tr>'
+            f'<td data-sort="{sort_val(p["y2"])}">{cells[1]}</td></tr>'
         )
-    finance_total_row = f'<tr><td colspan="7">{roster_size} total &middot; {counts_line}</td></tr>'
+    finance_total_row = f'<tr><td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
 
     # ---- depth chart: 3-4-3, ranked by EA FC 26 overall rating within each
     # position (falls back to live Fantrax fantasy points, then salary, for
@@ -328,7 +318,8 @@ for code, name, owners in TEAMS:
             return f'<div class="mv-slot empty"><div class="pos">{pos}</div><div class="player">&mdash;</div></div>'
         rows = "".join(
             f'<div class="mv-box-player"><span class="player">{player_label(p)}</span>'
-            f'<span class="rating">{rating_label(p)}</span></div>'
+            f'<span class="rating">{rating_label(p)}</span>'
+            f'<span class="rating" style="color:var(--mv-gold);">{money(p["current_salary"])}</span></div>'
             for p in box_players
         )
         return f'<div class="mv-slot"><div class="pos">{pos}</div>{rows}</div>'
@@ -346,6 +337,13 @@ for code, name, owners in TEAMS:
         pitch_rows.append(f'<div class="mv-pitch-row">{row_html}</div>')
     depth_html = "".join(pitch_rows)
 
+    # ---- youth draft history: all-time, purely informational -- these are
+    # NOT the same as the "Youth Legend"/"Youth Player" categories above
+    # (which are the subset currently kept and counted in payroll); this is
+    # every player the team has ever drafted, shown for reference, never
+    # counted toward salary ----
+    youth = youth_by_code.get(code, [])
+
     # ---- youth: rating (EA FC 26, falling back to live Fantrax fpts),
     # matched league-wide since a youth player may not be on this team's own
     # active Fantrax roster ----
@@ -357,41 +355,15 @@ for code, name, owners in TEAMS:
     _matched_youth_fc26 = [y["fc26"] for y in youth if isinstance(y["fc26"], (int, float))]
     avg_youth_fc26 = (sum(_matched_youth_fc26) / len(_matched_youth_fc26)) if _matched_youth_fc26 else None
 
-    # ---- youth depth chart, now folded directly into the Youth section: ----
-    # every player this team has ever drafted, grouped by position, ranked
-    # by live rating within each group (all-time, not just current roster) ----
-    youth_by_pos = {}
-    for y in youth:
-        youth_by_pos.setdefault(y["pos"].upper(), []).append(y)
-    youth_pos_order = [p for p in POSITION_ORDER if p in youth_by_pos] + \
-                       [p for p in youth_by_pos if p not in POSITION_ORDER]
-
     def rating_plain_label(fc26):
         return f'{fc26:,.0f}' if isinstance(fc26, (int, float)) else '—'
 
-    def youth_rating_label(y):
-        return f'{y["fc26"]:,.0f} OVR' if isinstance(y["fc26"], (int, float)) else '— OVR'
-
-    youth_pitch_groups = []
-    for pos in youth_pos_order:
-        players = sorted(
-            youth_by_pos[pos],
-            key=lambda y: (-(y["fc26"] if isinstance(y["fc26"], (int, float)) else -1),
-                            -(y["fpts"] if isinstance(y["fpts"], (int, float)) else -1)),
-        )
-        items = "".join(
-            f'<li><span class="rank">{i+1}</span><span class="player">{y["player"]}</span>'
-            f'<span class="status" style="color:{STATUS_COLOR[y["status"]]};">{y["status"]}</span>'
-            f'<span class="rating">{youth_rating_label(y)}</span></li>'
-            for i, y in enumerate(players)
-        )
-        youth_pitch_groups.append(
-            f'<div class="mv-depth-group"><div class="heading">{pos} &middot; {len(players)} &middot; ranked by rating</div>'
-            f'<ol class="mv-rank-list">{items}</ol></div>'
-        )
-    youth_depth_html = "".join(youth_pitch_groups) or '<div class="mv-empty">No youth players drafted yet.</div>'
-
-    # ---- youth table (the cross-reference set was already built above) ----
+    # ---- youth draft history: ONE table, all-time, sorted most recent
+    # draft first. This is a historical record (informational only, salary
+    # doesn't count here) -- the currently-kept youth players with real
+    # salary are already in the main roster table above, tagged "Youth
+    # Legend"/"Youth Player" ----
+    # fetch_youth() already returns most-recent-first straight off the sheet
     youth_rows = "".join(
         f'<tr><td class="dim">{y["year"]}</td><td>{y["player"]}</td><td>{y["pos"]}</td>'
         f'<td>{y["age"] if y["age"] is not None else "—"}</td><td>{y["club"]}</td>'
@@ -402,10 +374,13 @@ for code, name, owners in TEAMS:
     if not youth:
         youth_section = '<div class="mv-empty">No youth players drafted yet.</div>'
     else:
-        youth_section = f"""<div class="mv-depth-group-wrap">{youth_depth_html}</div>
-      <div class="mv-table-scroll" style="margin-top:18px;">
-        <table class="mv-table">
-          <thead><tr><th>Draft</th><th>Player</th><th>Pos</th><th>Age</th><th>Club</th><th>Rating</th><th>Status</th></tr></thead>
+        youth_section = f"""<div class="mv-table-scroll">
+        <table class="mv-table mv-sortable" id="youth-table-{code}">
+          <thead><tr>
+            <th data-sort-type="text">Draft</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="num">Age</th><th data-sort-type="text">Club</th><th data-sort-type="num">Rating</th>
+            <th data-sort-type="text">Status</th>
+          </tr></thead>
           <tbody>{youth_rows}</tbody>
         </table>
       </div>"""
@@ -422,7 +397,7 @@ for code, name, owners in TEAMS:
     page = head(name, "teams.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">{name}<span class="mv-badge">{code}</span></h1>
-      <div class="sub">{owner_short(owners)} &middot; {data["stadium"]} (Capacity {capacity_str})</div>
+      <div class="sub">{owner_short(owners)} &middot; {stadium_name} (Capacity {capacity_str})</div>
     </div>
 
     <div class="mv-stat-grid">
@@ -448,19 +423,22 @@ for code, name, owners in TEAMS:
         <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
         <button class="mv-tab" onclick="mvShowTab(this,'finances-{code}')">Finances</button>
       </div>
-      <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
-        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-blue);"></span>
-        this team's own youth draft product &middot; Depth Chart is ranked by EA FC 26 overall rating (Fantrax fantasy points as fallback/tiebreak)
+      <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
+        Roster is Kept Contracts + Youth Legend + Youth Players, straight from the league's keeper sheet &mdash;
+        <span style="color:{CATEGORY_BADGE_COLOR["youth_legend"]};">Youth Legend</span> and
+        <span style="color:{CATEGORY_BADGE_COLOR["youth_players"]};">Youth Player</span> tags mark this year's kept youth.
+        Depth Chart is ranked by EA FC 26 overall rating (Fantrax fantasy points as fallback/tiebreak).
       </div>
 
       <div id="roster-{code}" class="mv-tab-panel active">
-        <div class="sub">{roster_size} players signed for 26/27 &middot; FC 26 rating, live Fantrax points, current-season salary &middot; click a column to sort</div>
+        <div class="sub">{roster_size} players kept for 26/27 &middot; FC 26 rating, live Fantrax points, current-season salary &middot; click a column to sort</div>
         <div class="mv-table-scroll">
           <table class="mv-table mv-sortable" id="roster-table-{code}">
             <thead><tr>
               <th data-sort-type="text">Player</th>
               <th data-sort-type="text">Club</th>
               <th data-sort-type="text">Pos</th>
+              <th data-sort-type="text">Category</th>
               <th data-sort-type="num">FC 26 Rating</th>
               <th data-sort-type="num">Total Pts</th>
               <th data-sort-type="num">Current Salary</th>
@@ -474,7 +452,7 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="depth-{code}" class="mv-tab-panel">
-        <div class="sub">3-4-3 formation &middot; every player at each position, filled center-out, best to worst by EA FC 26 rating</div>
+        <div class="sub">3-4-3 formation &middot; every player at each position, filled center-out, best to worst by EA FC 26 rating &middot; rating and current salary shown per player</div>
         <div class="mv-pitch">
           {depth_html}
         </div>
@@ -485,7 +463,7 @@ for code, name, owners in TEAMS:
         <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
           {"".join(
               f'<div class="mv-stat"><div class="label">{lbl} Payroll</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
-              for lbl, tot in zip((y1_label, y2_label, y3_label), year_totals) if lbl
+              for lbl, tot in zip((y1_label, y2_label), year_totals) if lbl
           )}
         </div>
         <div class="mv-table-scroll">
@@ -494,10 +472,9 @@ for code, name, owners in TEAMS:
               <th data-sort-type="text">Player</th>
               <th data-sort-type="text">Club</th>
               <th data-sort-type="text">Pos</th>
-              <th data-sort-type="num">{year_th[0]}</th>
-              <th data-sort-type="num">{year_th[1]}</th>
-              <th data-sort-type="num">{year_th[2]}</th>
-              <th data-sort-type="num">BuyOut</th>
+              <th data-sort-type="text">Category</th>
+              <th data-sort-type="num"><span style="color:var(--mv-gold)">{y1_label}</span></th>
+              <th data-sort-type="num">{y2_label}</th>
             </tr></thead>
             <tbody>
               {"".join(finance_rows)}
@@ -509,8 +486,8 @@ for code, name, owners in TEAMS:
     </section>
 
     <section class="card mv-card">
-      <h2 class="mv-chrome-text">Youth</h2>
-      <div class="sub">{len(youth)} player{"s" if len(youth) != 1 else ""} drafted all-time</div>
+      <h2 class="mv-chrome-text">Youth Draft History</h2>
+      <div class="sub">{len(youth)} player{"s" if len(youth) != 1 else ""} drafted all-time &middot; informational only, does not count toward payroll</div>
       {youth_section}
     </section>
 
