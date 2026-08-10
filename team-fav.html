@@ -63,6 +63,7 @@
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-FAV')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-FAV')">Depth Chart</button>
         <button class="mv-tab" onclick="mvShowTab(this,'finances-FAV')">Finances</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'scouting-FAV')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
         Roster is Kept Contracts + Youth Legend + Youth Players, straight from the league's keeper sheet &mdash;
@@ -121,6 +122,41 @@
           </table>
         </div>
       </div>
+
+      <div id="scouting-FAV" class="mv-tab-panel">
+        <div class="sub">EA Sports FC 26 ratings (all leagues) + 2025/26 Premier League season totals &middot; click a column to sort</div>
+        <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:10px;">
+          Sourced from a live FC 26 ratings feed and the official Fantasy Premier League API &mdash;
+          not FBref (fbref.com blocks automated access). "Starts" is starts, not total appearances;
+          "CBI" is clearances+blocks+interceptions combined, not pure clearances; SCA/90, GCA/90, and
+          pass-completion counts aren't available from either source and are omitted rather than
+          guessed. A dash means no match was found (different name spelling, or the player didn't
+          play in the Premier League last season).
+        </div>
+        <div class="mv-table-scroll">
+          <table class="mv-table mv-sortable" id="scouting-table-FAV">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">FC26 OVR</th>
+              <th data-sort-type="num">FC26 POT</th>
+              <th data-sort-type="num">FC26 Value</th>
+              <th data-sort-type="num">25/26 Starts</th>
+              <th data-sort-type="num">25/26 Goals</th>
+              <th data-sort-type="num">25/26 Assists</th>
+              <th data-sort-type="num">G/90</th>
+              <th data-sort-type="num">G+A/90</th>
+              <th data-sort-type="num">xG/90</th>
+              <th data-sort-type="num">Tackles</th>
+              <th data-sort-type="num">CBI</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>Pedro Porro</td><td class="dim">—</td><td>D</td><td data-sort="82.0" style="color:var(--mv-gold);">82</td><td data-sort="85.0">85</td><td data-sort="37000000.0">€37.0M</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr><tr><td>Ezri Konsa</td><td class="dim">—</td><td>D</td><td data-sort="82.0" style="color:var(--mv-gold);">82</td><td data-sort="83.0">83</td><td data-sort="30500000.0">€30.5M</td><td data-sort="34">34</td><td data-sort="0">0</td><td data-sort="1">1</td><td data-sort="0.0">0.0</td><td data-sort="0.029654036243822075">0.0</td><td data-sort="0.03766062602965404">0.0</td><td data-sort="22">22</td><td data-sort="174">174</td></tr><tr><td>D. Gomez</td><td class="dim">—</td><td>M</td><td data-sort="79.0" style="color:var(--mv-gold);">79</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr><tr><td>Bukayo Saka<span class="mv-badge" style="background:transparent;border:1px solid var(--mv-gold);color:var(--mv-gold);font-size:9px;padding:1px 6px;margin-left:6px;">Youth Legend</span></td><td class="dim">—</td><td>M</td><td data-sort="88.0" style="color:var(--mv-gold);">88</td><td data-sort="90.0">90</td><td data-sort="118500000.0">€118.5M</td><td data-sort="25">25</td><td data-sort="7">7</td><td data-sort="10">10</td><td data-sort="0.2840396753832281">0.3</td><td data-sort="0.6898106402164111">0.7</td><td data-sort="0.3071686203787196">0.3</td><td data-sort="40">40</td><td data-sort="28">28</td></tr><tr><td>Iliman Ndiaye</td><td class="dim">—</td><td>M</td><td data-sort="79.0" style="color:var(--mv-gold);">79</td><td data-sort="82.0">82</td><td data-sort="23000000.0">€23.0M</td><td data-sort="32">32</td><td data-sort="6">6</td><td data-sort="3">3</td><td data-sort="0.1941747572815534">0.2</td><td data-sort="0.2912621359223301">0.3</td><td data-sort="0.21618122977346277">0.2</td><td data-sort="67">67</td><td data-sort="38">38</td></tr><tr><td>Cody Gakpo</td><td class="dim">—</td><td>F</td><td data-sort="84.0" style="color:var(--mv-gold);">84</td><td data-sort="85.0">85</td><td data-sort="49500000.0">€49.5M</td><td data-sort="32">32</td><td data-sort="7">7</td><td data-sort="5">5</td><td data-sort="0.23026315789473684">0.2</td><td data-sort="0.39473684210526316">0.4</td><td data-sort="0.2746710526315789">0.3</td><td data-sort="28">28</td><td data-sort="37">37</td></tr><tr><td>Omar Marmoush</td><td class="dim">—</td><td>F</td><td data-sort="84.0" style="color:var(--mv-gold);">84</td><td data-sort="85.0">85</td><td data-sort="50500000.0">€50.5M</td><td data-sort="8">8</td><td data-sort="3">3</td><td data-sort="3">3</td><td data-sort="0.3907380607814761">0.4</td><td data-sort="0.7814761215629522">0.8</td><td data-sort="0.36208393632416785">0.4</td><td data-sort="13">13</td><td data-sort="6">6</td></tr><tr><td>Rio Ngumoha</td><td class="dim">—</td><td>F</td><td data-sort="68.0" style="color:var(--mv-gold);">68</td><td data-sort="88.0">88</td><td data-sort="3300000.0">€3.3M</td><td data-sort="5">5</td><td data-sort="2">2</td><td data-sort="1">1</td><td data-sort="0.3290676416819013">0.3</td><td data-sort="0.4936014625228519">0.5</td><td data-sort="0.2204753199268739">0.2</td><td data-sort="4">4</td><td data-sort="7">7</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
     <section class="card mv-card">
@@ -140,7 +176,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-10 19:43 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-10 20:13 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

@@ -1,5 +1,7 @@
 """
-EA Sports FC 26 overall player ratings, live.
+EA Sports FC 26 player ratings (overall, potential, transfer value), live,
+across all leagues -- players move clubs/leagues, so ratings are looked up
+wherever a player currently is, not restricted to the Premier League.
 
 Not sourced from EA's own site or sofifa.com/futwiz.com directly -- all
 three explicitly disallow ClaudeBot in robots.txt. Instead this pulls a
@@ -24,17 +26,17 @@ def _fold(s):
     return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii").lower()
 
 
-def fetch_epl_players():
-    """List of {last_name, full_name, overall, club, positions} for every
-    Premier League player in the live FC 26 dataset."""
+def fetch_all_players():
+    """List of {last_names, full_name, overall, potential, value_eur, club,
+    positions} for every player in the live FC 26 dataset, any league --
+    players move clubs/leagues (loans, transfers), so this isn't filtered
+    to the Premier League."""
     req = urllib.request.Request(CSV_URL, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         data = resp.read().decode("utf-8")
     reader = csv.DictReader(io.StringIO(data))
     players = []
     for row in reader:
-        if row.get("league_name") != "Premier League":
-            continue
         full_name = row.get("long_name") or row.get("short_name") or ""
         if not full_name:
             continue
@@ -42,6 +44,14 @@ def fetch_epl_players():
             overall = float(row["overall"])
         except (KeyError, ValueError):
             continue
+        try:
+            potential = float(row["potential"])
+        except (KeyError, ValueError):
+            potential = None
+        try:
+            value_eur = float(row["value_eur"])
+        except (KeyError, ValueError):
+            value_eur = None
         short_name = row.get("short_name", "") or ""
         players.append({
             # both the full legal surname AND the short/known name's last
@@ -52,6 +62,8 @@ def fetch_epl_players():
             "full_name": full_name,
             "short_name": short_name,
             "overall": overall,
+            "potential": potential,
+            "value_eur": value_eur,
             "club": row.get("club_name", ""),
             "positions": row.get("player_positions", ""),
         })
@@ -68,28 +80,28 @@ def build_lookup(players):
 
 
 def match(lookup, last_name, first_initial=None):
-    """Resolve a last name to a single rating, disambiguating same-surname
-    players by first initial when there's more than one candidate. Returns
-    None if there's no match or it's still ambiguous."""
+    """Resolve a last name to a single player dict, disambiguating
+    same-surname players by first initial when there's more than one
+    candidate. Returns None if there's no match or it's still ambiguous."""
     candidates = lookup.get(_fold(last_name))
     if not candidates:
         return None
     if len(candidates) == 1:
-        return candidates[0]["overall"]
+        return candidates[0]
     if first_initial:
         narrowed = [c for c in candidates if _fold(c["short_name"].strip()[:1]) == _fold(first_initial)
                     or _fold(c["full_name"].strip()[:1]) == _fold(first_initial)]
         if len(narrowed) == 1:
-            return narrowed[0]["overall"]
+            return narrowed[0]
     return None  # still ambiguous
 
 
 if __name__ == "__main__":
     print(f"Fetching live FC 26 ratings from {CSV_URL} ...")
-    players = fetch_epl_players()
-    print(f"Got {len(players)} Premier League players.")
+    players = fetch_all_players()
+    print(f"Got {len(players)} players across all leagues.")
     lookup = build_lookup(players)
     dupes = {k: len(v) for k, v in lookup.items() if len(v) > 1}
-    print(f"{len(dupes)} surnames shared by more than one EPL player (need first-initial disambiguation).")
+    print(f"{len(dupes)} surnames shared by more than one player (need first-initial disambiguation).")
     grealish = match(lookup, "grealish")
-    print(f"Sanity check -- Grealish overall: {grealish} (sofifa.com/player/206517 shows 80)")
+    print(f"Sanity check -- Grealish overall: {grealish['overall'] if grealish else None} (sofifa.com/player/206517 shows 80)")

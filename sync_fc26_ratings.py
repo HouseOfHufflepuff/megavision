@@ -1,7 +1,8 @@
 """
-Upsert live EA Sports FC 26 overall ratings into mega.db's team_players
-table, matched by player name (which db.py already stores cleaned via
-player_clean.clean_player, run by sync_players.py).
+Upsert live EA Sports FC 26 ratings (overall, potential, transfer value)
+into mega.db's team_players table, matched by player name (which db.py
+already stores cleaned via player_clean.clean_player, run by
+sync_players.py).
 
 Run it periodically -- ratings shift with EA's live squad updates:
 
@@ -9,19 +10,19 @@ Run it periodically -- ratings shift with EA's live squad updates:
     python3 sync_fc26_ratings.py
 
 Always fetches live (see fc26_ratings.py). Nothing about the CSV is cached
-to disk; only the matched rating value is written to mega.db.
+to disk; only the matched values are written to mega.db.
 """
 from datetime import datetime, timezone
 
 from db import connect
-from fc26_ratings import fetch_epl_players, build_lookup, match
+from fc26_ratings import fetch_all_players, build_lookup, match
 
 
 def main():
     print("Fetching live FC 26 ratings...")
-    players = fetch_epl_players()
+    players = fetch_all_players()
     lookup = build_lookup(players)
-    print(f"Got {len(players)} Premier League players.")
+    print(f"Got {len(players)} players across all leagues.")
 
     conn = connect()
     cur = conn.cursor()
@@ -35,8 +36,8 @@ def main():
         tokens = player_name.split()
         last = tokens[-1]
         first_initial = tokens[0][0] if tokens else None
-        rating = match(lookup, last, first_initial)
-        if rating is None:
+        p = match(lookup, last, first_initial)
+        if p is None:
             if last.lower() in lookup:
                 ambiguous += 1
             else:
@@ -44,13 +45,14 @@ def main():
             continue
         matched += 1
         cur.execute(
-            "UPDATE team_players SET fc26_rating = ?, fc26_rating_updated_at = ? WHERE id = ?",
-            (rating, now, row_id),
+            "UPDATE team_players SET fc26_rating = ?, fc26_potential = ?, fc26_value_eur = ?, "
+            "fc26_rating_updated_at = ? WHERE id = ?",
+            (p["overall"], p["potential"], p["value_eur"], now, row_id),
         )
     conn.commit()
     conn.close()
     print(f"Matched {matched} players. {ambiguous} ambiguous (shared surname, couldn't disambiguate), "
-          f"{unmatched} not found in the FC 26 EPL list (not in the game, or a naming mismatch).")
+          f"{unmatched} not found in the FC 26 dataset (not in the game, or a naming mismatch).")
 
 
 if __name__ == "__main__":

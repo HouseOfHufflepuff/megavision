@@ -63,6 +63,7 @@
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-REN')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-REN')">Depth Chart</button>
         <button class="mv-tab" onclick="mvShowTab(this,'finances-REN')">Finances</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'scouting-REN')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
         Roster is Kept Contracts + Youth Legend + Youth Players, straight from the league's keeper sheet &mdash;
@@ -121,6 +122,41 @@
           </table>
         </div>
       </div>
+
+      <div id="scouting-REN" class="mv-tab-panel">
+        <div class="sub">EA Sports FC 26 ratings (all leagues) + 2025/26 Premier League season totals &middot; click a column to sort</div>
+        <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:10px;">
+          Sourced from a live FC 26 ratings feed and the official Fantasy Premier League API &mdash;
+          not FBref (fbref.com blocks automated access). "Starts" is starts, not total appearances;
+          "CBI" is clearances+blocks+interceptions combined, not pure clearances; SCA/90, GCA/90, and
+          pass-completion counts aren't available from either source and are omitted rather than
+          guessed. A dash means no match was found (different name spelling, or the player didn't
+          play in the Premier League last season).
+        </div>
+        <div class="mv-table-scroll">
+          <table class="mv-table mv-sortable" id="scouting-table-REN">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">FC26 OVR</th>
+              <th data-sort-type="num">FC26 POT</th>
+              <th data-sort-type="num">FC26 Value</th>
+              <th data-sort-type="num">25/26 Starts</th>
+              <th data-sort-type="num">25/26 Goals</th>
+              <th data-sort-type="num">25/26 Assists</th>
+              <th data-sort-type="num">G/90</th>
+              <th data-sort-type="num">G+A/90</th>
+              <th data-sort-type="num">xG/90</th>
+              <th data-sort-type="num">Tackles</th>
+              <th data-sort-type="num">CBI</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>Jeremie Frimong</td><td class="dim">Liverpool</td><td>D</td><td data-sort="-1" style="color:var(--mv-gold);">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr><tr><td>Riccardo Calafiori</td><td class="dim">Arsenal</td><td>D</td><td data-sort="78.0" style="color:var(--mv-gold);">78</td><td data-sort="84.0">84</td><td data-sort="21000000.0">€21.0M</td><td data-sort="22">22</td><td data-sort="1">1</td><td data-sort="2">2</td><td data-sort="0.05303476723629935">0.1</td><td data-sort="0.15910430170889805">0.2</td><td data-sort="0.1781968179139658">0.2</td><td data-sort="32">32</td><td data-sort="70">70</td></tr><tr><td>Destiny Udogie<span class="mv-badge" style="background:transparent;border:1px solid var(--mv-blue);color:var(--mv-blue);font-size:9px;padding:1px 6px;margin-left:6px;">Youth Player</span></td><td class="dim">Tottenham Hotspur</td><td>D</td><td data-sort="80.0" style="color:var(--mv-gold);">80</td><td data-sort="84.0">84</td><td data-sort="28500000.0">€28.5M</td><td data-sort="14">14</td><td data-sort="0">0</td><td data-sort="1">1</td><td data-sort="0.0">0.0</td><td data-sort="0.06741573033707865">0.1</td><td data-sort="0.012134831460674157">0.0</td><td data-sort="31">31</td><td data-sort="37">37</td></tr><tr><td>Wesley Fofana<span class="mv-badge" style="background:transparent;border:1px solid var(--mv-gold);color:var(--mv-gold);font-size:9px;padding:1px 6px;margin-left:6px;">Youth Legend</span></td><td class="dim">Chelsea</td><td>D</td><td data-sort="79.0" style="color:var(--mv-gold);">79</td><td data-sort="82.0">82</td><td data-sort="21500000.0">€21.5M</td><td data-sort="20">20</td><td data-sort="0">0</td><td data-sort="2">2</td><td data-sort="0.0">0.0</td><td data-sort="0.10477299185098952">0.1</td><td data-sort="0.03771827706635623">0.0</td><td data-sort="19">19</td><td data-sort="187">187</td></tr><tr><td>Milos Kerkez<span class="mv-badge" style="background:transparent;border:1px solid var(--mv-blue);color:var(--mv-blue);font-size:9px;padding:1px 6px;margin-left:6px;">Youth Player</span></td><td class="dim">Liverpool</td><td>D</td><td data-sort="82.0" style="color:var(--mv-gold);">82</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="27">27</td><td data-sort="2">2</td><td data-sort="1">1</td><td data-sort="0.07996446023989338">0.1</td><td data-sort="0.11994669035984007">0.1</td><td data-sort="0.059973345179920035">0.1</td><td data-sort="41">41</td><td data-sort="93">93</td></tr><tr><td>Bruno Fernandes</td><td class="dim">Manchester United</td><td>M</td><td data-sort="76.0" style="color:var(--mv-gold);">76</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="35">35</td><td data-sort="3">3</td><td data-sort="4">4</td><td data-sort="0.08949287371561153">0.1</td><td data-sort="0.2088167053364269">0.2</td><td data-sort="0.05936360623135565">0.1</td><td data-sort="103">103</td><td data-sort="84">84</td></tr><tr><td>Marcus Tavernier</td><td class="dim">Bournemouth</td><td>M</td><td data-sort="76.0" style="color:var(--mv-gold);">76</td><td data-sort="77.0">77</td><td data-sort="9000000.0">€9.0M</td><td data-sort="31">31</td><td data-sort="7">7</td><td data-sort="4">4</td><td data-sort="0.23060029282576866">0.2</td><td data-sort="0.3623718887262079">0.4</td><td data-sort="0.2984626647144949">0.3</td><td data-sort="39">39</td><td data-sort="62">62</td></tr><tr><td>Manuel M Ugarte</td><td class="dim">—</td><td>M</td><td data-sort="79.0" style="color:var(--mv-gold);">79</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="8">8</td><td data-sort="0">0</td><td data-sort="0">0</td><td data-sort="0.0">0.0</td><td data-sort="0.0">0.0</td><td data-sort="0.07397260273972603">0.1</td><td data-sort="46">46</td><td data-sort="45">45</td></tr><tr><td>Richarlison</td><td class="dim">Tottenham Hotspur</td><td>F</td><td data-sort="78.0" style="color:var(--mv-gold);">78</td><td data-sort="78.0">78</td><td data-sort="14500000.0">€14.5M</td><td data-sort="20">20</td><td data-sort="11">11</td><td data-sort="4">4</td><td data-sort="0.5066530194472876">0.5</td><td data-sort="0.6908904810644831">0.7</td><td data-sort="0.3979529170931423">0.4</td><td data-sort="27">27</td><td data-sort="60">60</td></tr><tr><td>Callum Hudson-Odoi</td><td class="dim">Nottingham Forest</td><td>F</td><td data-sort="78.0" style="color:var(--mv-gold);">78</td><td data-sort="82.0">82</td><td data-sort="20000000.0">€20.0M</td><td data-sort="21">21</td><td data-sort="3">3</td><td data-sort="4">4</td><td data-sort="0.14689880304678998">0.1</td><td data-sort="0.34276387377584333">0.3</td><td data-sort="0.13563656147986944">0.1</td><td data-sort="14">14</td><td data-sort="24">24</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
     <section class="card mv-card">
@@ -140,7 +176,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-10 19:43 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-10 20:13 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

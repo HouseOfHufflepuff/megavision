@@ -63,6 +63,7 @@
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-NAC')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-NAC')">Depth Chart</button>
         <button class="mv-tab" onclick="mvShowTab(this,'finances-NAC')">Finances</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'scouting-NAC')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
         Roster is Kept Contracts + Youth Legend + Youth Players, straight from the league's keeper sheet &mdash;
@@ -121,6 +122,41 @@
           </table>
         </div>
       </div>
+
+      <div id="scouting-NAC" class="mv-tab-panel">
+        <div class="sub">EA Sports FC 26 ratings (all leagues) + 2025/26 Premier League season totals &middot; click a column to sort</div>
+        <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:10px;">
+          Sourced from a live FC 26 ratings feed and the official Fantasy Premier League API &mdash;
+          not FBref (fbref.com blocks automated access). "Starts" is starts, not total appearances;
+          "CBI" is clearances+blocks+interceptions combined, not pure clearances; SCA/90, GCA/90, and
+          pass-completion counts aren't available from either source and are omitted rather than
+          guessed. A dash means no match was found (different name spelling, or the player didn't
+          play in the Premier League last season).
+        </div>
+        <div class="mv-table-scroll">
+          <table class="mv-table mv-sortable" id="scouting-table-NAC">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">FC26 OVR</th>
+              <th data-sort-type="num">FC26 POT</th>
+              <th data-sort-type="num">FC26 Value</th>
+              <th data-sort-type="num">25/26 Starts</th>
+              <th data-sort-type="num">25/26 Goals</th>
+              <th data-sort-type="num">25/26 Assists</th>
+              <th data-sort-type="num">G/90</th>
+              <th data-sort-type="num">G+A/90</th>
+              <th data-sort-type="num">xG/90</th>
+              <th data-sort-type="num">Tackles</th>
+              <th data-sort-type="num">CBI</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>Tyrick Mitchell</td><td class="dim">Crystal Palace</td><td>D</td><td data-sort="78.0" style="color:var(--mv-gold);">78</td><td data-sort="80.0">80</td><td data-sort="16000000.0">€16.0M</td><td data-sort="36">36</td><td data-sort="1">1</td><td data-sort="3">3</td><td data-sort="0.027666769136181987">0.0</td><td data-sort="0.11066707654472795">0.1</td><td data-sort="0.04399016292652935">0.0</td><td data-sort="100">100</td><td data-sort="145">145</td></tr><tr><td>Dejan Kulusevski</td><td class="dim">Tottenham Hotspur</td><td>M</td><td data-sort="83.0" style="color:var(--mv-gold);">83</td><td data-sort="86.0">86</td><td data-sort="47500000.0">€47.5M</td><td data-sort="0">0</td><td data-sort="0">0</td><td data-sort="0">0</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="0">0</td><td data-sort="0">0</td></tr><tr><td>Anthony Gordon</td><td class="dim">Everton</td><td>M</td><td data-sort="83.0" style="color:var(--mv-gold);">83</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr><tr><td>Cole Palmer*<span class="mv-badge" style="background:transparent;border:1px solid var(--mv-gold);color:var(--mv-gold);font-size:9px;padding:1px 6px;margin-left:6px;">Youth Legend</span></td><td class="dim">Chelsea</td><td>M</td><td data-sort="-1" style="color:var(--mv-gold);">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr><tr><td>Enzo Le Fee</td><td class="dim">Sunderland</td><td>M</td><td data-sort="76.0" style="color:var(--mv-gold);">76</td><td data-sort="80.0">80</td><td data-sort="10500000.0">€10.5M</td><td data-sort="33">33</td><td data-sort="5">5</td><td data-sort="6">6</td><td data-sort="0.15358361774744028">0.2</td><td data-sort="0.3378839590443686">0.3</td><td data-sort="0.16034129692832763">0.2</td><td data-sort="89">89</td><td data-sort="77">77</td></tr><tr><td>Curtis Jones M LIV</td><td class="dim">—</td><td>M</td><td data-sort="-1" style="color:var(--mv-gold);">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr><tr><td>Yoane Wissa</td><td class="dim">Newcastle United</td><td>F</td><td data-sort="82.0" style="color:var(--mv-gold);">82</td><td data-sort="82.0">82</td><td data-sort="31000000.0">€31.0M</td><td data-sort="4">4</td><td data-sort="1">1</td><td data-sort="1">1</td><td data-sort="0.17408123791102514">0.2</td><td data-sort="0.3481624758220503">0.3</td><td data-sort="0.5448742746615087">0.5</td><td data-sort="5">5</td><td data-sort="3">3</td></tr><tr><td>Metata</td><td class="dim">Crystal Palace</td><td>F</td><td data-sort="-1" style="color:var(--mv-gold);">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr><tr><td>Alejandro Garnacho<span class="mv-badge" style="background:transparent;border:1px solid var(--mv-blue);color:var(--mv-blue);font-size:9px;padding:1px 6px;margin-left:6px;">Youth Player</span></td><td class="dim">—</td><td>F</td><td data-sort="-1" style="color:var(--mv-gold);">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
     <section class="card mv-card">
@@ -140,7 +176,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-10 19:43 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-10 20:13 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

@@ -63,6 +63,7 @@
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-TTS')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-TTS')">Depth Chart</button>
         <button class="mv-tab" onclick="mvShowTab(this,'finances-TTS')">Finances</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'scouting-TTS')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
         Roster is Kept Contracts + Youth Legend + Youth Players, straight from the league's keeper sheet &mdash;
@@ -121,6 +122,41 @@
           </table>
         </div>
       </div>
+
+      <div id="scouting-TTS" class="mv-tab-panel">
+        <div class="sub">EA Sports FC 26 ratings (all leagues) + 2025/26 Premier League season totals &middot; click a column to sort</div>
+        <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:10px;">
+          Sourced from a live FC 26 ratings feed and the official Fantasy Premier League API &mdash;
+          not FBref (fbref.com blocks automated access). "Starts" is starts, not total appearances;
+          "CBI" is clearances+blocks+interceptions combined, not pure clearances; SCA/90, GCA/90, and
+          pass-completion counts aren't available from either source and are omitted rather than
+          guessed. A dash means no match was found (different name spelling, or the player didn't
+          play in the Premier League last season).
+        </div>
+        <div class="mv-table-scroll">
+          <table class="mv-table mv-sortable" id="scouting-table-TTS">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">FC26 OVR</th>
+              <th data-sort-type="num">FC26 POT</th>
+              <th data-sort-type="num">FC26 Value</th>
+              <th data-sort-type="num">25/26 Starts</th>
+              <th data-sort-type="num">25/26 Goals</th>
+              <th data-sort-type="num">25/26 Assists</th>
+              <th data-sort-type="num">G/90</th>
+              <th data-sort-type="num">G+A/90</th>
+              <th data-sort-type="num">xG/90</th>
+              <th data-sort-type="num">Tackles</th>
+              <th data-sort-type="num">CBI</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>D Daniel Munoz</td><td class="dim">—</td><td>D</td><td data-sort="81.0" style="color:var(--mv-gold);">81</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="29">29</td><td data-sort="4">4</td><td data-sort="4">4</td><td data-sort="0.15">0.1</td><td data-sort="0.3">0.3</td><td data-sort="0.09187500000000001">0.1</td><td data-sort="72">72</td><td data-sort="124">124</td></tr><tr><td>Neco Williams</td><td class="dim">Nottingham Forest</td><td>D</td><td data-sort="78.0" style="color:var(--mv-gold);">78</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="36">36</td><td data-sort="2">2</td><td data-sort="3">3</td><td data-sort="0.0561973150171714">0.1</td><td data-sort="0.1404932875429285">0.1</td><td data-sort="0.05647830159225725">0.1</td><td data-sort="96">96</td><td data-sort="151">151</td></tr><tr><td>Martin Odegaaard</td><td class="dim">Arsenal</td><td>M</td><td data-sort="-1" style="color:var(--mv-gold);">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="-1">—</td></tr><tr><td>Mateus Fernandes</td><td class="dim">Tottenham Hotspur</td><td>M</td><td data-sort="76.0" style="color:var(--mv-gold);">76</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="35">35</td><td data-sort="3">3</td><td data-sort="4">4</td><td data-sort="0.08949287371561153">0.1</td><td data-sort="0.2088167053364269">0.2</td><td data-sort="0.05936360623135565">0.1</td><td data-sort="103">103</td><td data-sort="84">84</td></tr><tr><td>James Garner</td><td class="dim">Everton</td><td>M</td><td data-sort="76.0" style="color:var(--mv-gold);">76</td><td data-sort="-1">—</td><td data-sort="-1">—</td><td data-sort="38">38</td><td data-sort="2">2</td><td data-sort="7">7</td><td data-sort="0.0527395253442719">0.1</td><td data-sort="0.23732786404922357">0.2</td><td data-sort="0.055376501611485496">0.1</td><td data-sort="119">119</td><td data-sort="154">154</td></tr><tr><td>John McGinn</td><td class="dim">Aston Villa</td><td>M</td><td data-sort="81.0" style="color:var(--mv-gold);">81</td><td data-sort="81.0">81</td><td data-sort="25000000.0">€25.0M</td><td data-sort="28">28</td><td data-sort="5">5</td><td data-sort="4">4</td><td data-sort="0.21067415730337077">0.2</td><td data-sort="0.3792134831460674">0.4</td><td data-sort="0.12640449438202248">0.1</td><td data-sort="29">29</td><td data-sort="32">32</td></tr><tr><td>Dilane Bakwa</td><td class="dim">Nottingham Forest</td><td>F</td><td data-sort="78.0" style="color:var(--mv-gold);">78</td><td data-sort="84.0">84</td><td data-sort="22500000.0">€22.5M</td><td data-sort="6">6</td><td data-sort="0">0</td><td data-sort="2">2</td><td data-sort="0.0">0.0</td><td data-sort="0.32786885245901637">0.3</td><td data-sort="0.08852459016393444">0.1</td><td data-sort="4">4</td><td data-sort="3">3</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
 
     <section class="card mv-card">
@@ -140,7 +176,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-10 19:43 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-10 20:13 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

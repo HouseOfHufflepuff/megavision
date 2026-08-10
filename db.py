@@ -36,7 +36,17 @@ CREATE TABLE IF NOT EXISTS team_players (
     salary_24_25 REAL,
     salary_24_25_source TEXT,
     fc26_rating REAL,
+    fc26_potential REAL,
+    fc26_value_eur REAL,
     fc26_rating_updated_at TEXT,
+    fpl_starts INTEGER,
+    fpl_goals INTEGER,
+    fpl_assists INTEGER,
+    fpl_minutes INTEGER,
+    fpl_tackles INTEGER,
+    fpl_cbi INTEGER,
+    fpl_xg REAL,
+    fpl_stats_updated_at TEXT,
     updated_at TEXT NOT NULL,
     UNIQUE(team_code, player_name_raw)
 );
@@ -58,7 +68,13 @@ def connect():
     conn.executescript(SCHEMA)
     # migrate columns added after a DB already existed on disk
     existing = {r[1] for r in conn.execute("PRAGMA table_info(team_players)")}
-    for col, decl in (("fc26_rating", "REAL"), ("fc26_rating_updated_at", "TEXT")):
+    for col, decl in (
+        ("fc26_rating", "REAL"), ("fc26_rating_updated_at", "TEXT"),
+        ("fc26_potential", "REAL"), ("fc26_value_eur", "REAL"),
+        ("fpl_starts", "INTEGER"), ("fpl_goals", "INTEGER"), ("fpl_assists", "INTEGER"),
+        ("fpl_minutes", "INTEGER"), ("fpl_tackles", "INTEGER"), ("fpl_cbi", "INTEGER"),
+        ("fpl_xg", "REAL"), ("fpl_stats_updated_at", "TEXT"),
+    ):
         if col not in existing:
             conn.execute(f"ALTER TABLE team_players ADD COLUMN {col} {decl}")
     conn.commit()

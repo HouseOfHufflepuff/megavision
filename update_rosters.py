@@ -53,6 +53,24 @@ def money(v):
     return str(v)
 
 
+def eur(v):
+    if not isinstance(v, (int, float)):
+        return "—"
+    if v >= 1_000_000:
+        return f"€{v / 1_000_000:,.1f}M"
+    if v >= 1_000:
+        return f"€{v / 1_000:,.0f}K"
+    return f"€{v:,.0f}"
+
+
+def num1(v):
+    return f"{v:.1f}" if isinstance(v, (int, float)) else "—"
+
+
+def numi(v):
+    return f"{v:,.0f}" if isinstance(v, (int, float)) else "—"
+
+
 # Row ranges for each box within a team's column block on the "CUT EM IF YA
 # GOT EM" tab -- the single source of truth for who's actually on the 26/27
 # roster. "Into Draft Pool" is deliberately excluded: those players simply
@@ -169,10 +187,12 @@ for _code, _s in fantrax_standings.items():
     except (ValueError, IndexError, AttributeError):
         team_wins[_code] = None
 
-# EA FC 26 overall ratings, read from mega.db (populated by the separate
-# sync_fc26_ratings.py script -- run that periodically, it's not fetched
-# live on every site build). last name (lower) -> rating.
+# EA FC 26 ratings + 2025/26 FPL performance stats, read from mega.db
+# (populated by the separate sync_fc26_ratings.py / sync_fpl_stats.py
+# scripts -- run those periodically, not fetched live on every site
+# build). last name (lower) -> record.
 global_fc26_lookup = {}
+global_stats_lookup = {}
 try:
     import db as _db
     _conn = _db.connect()
@@ -181,11 +201,23 @@ try:
     ):
         if _pname:
             global_fc26_lookup[_pname.split()[-1].lower()] = _rating
+    for _row in _conn.execute(
+        "SELECT player_name, fc26_rating, fc26_potential, fc26_value_eur, "
+        "fpl_starts, fpl_goals, fpl_assists, fpl_minutes, fpl_tackles, fpl_cbi, fpl_xg "
+        "FROM team_players WHERE fc26_rating IS NOT NULL OR fpl_minutes IS NOT NULL"
+    ):
+        _pname = _row[0]
+        if _pname:
+            global_stats_lookup[_pname.split()[-1].lower()] = {
+                "fc26": _row[1], "fc26_pot": _row[2], "fc26_value": _row[3],
+                "fpl_starts": _row[4], "fpl_goals": _row[5], "fpl_assists": _row[6],
+                "fpl_minutes": _row[7], "fpl_tackles": _row[8], "fpl_cbi": _row[9], "fpl_xg": _row[10],
+            }
     _conn.close()
-    print(f"Loaded {len(global_fc26_lookup)} FC 26 ratings from mega.db "
-          f"(run sync_fc26_ratings.py to refresh).")
+    print(f"Loaded {len(global_fc26_lookup)} FC 26 ratings and {len(global_stats_lookup)} scouting "
+          f"records from mega.db (run sync_fc26_ratings.py / sync_fpl_stats.py to refresh).")
 except Exception as e:
-    print(f"WARN: could not read FC 26 ratings from mega.db ({e}); "
+    print(f"WARN: could not read FC 26/FPL stats from mega.db ({e}); "
           f"ratings will fall back to live Fantrax fantasy points", file=sys.stderr)
 
 updated = []
@@ -243,6 +275,23 @@ for code, name, owners in TEAMS:
         last = (cleaned["player_name"] or "").split()[-1].lower() if cleaned["player_name"] else ""
         p["fpts"] = team_fpts.get(last)
         p["fc26"] = global_fc26_lookup.get(last)
+        stats = global_stats_lookup.get(last) or {}
+        p["fc26_pot"] = stats.get("fc26_pot")
+        p["fc26_value"] = stats.get("fc26_value")
+        p["fpl_starts"] = stats.get("fpl_starts")
+        p["fpl_goals"] = stats.get("fpl_goals")
+        p["fpl_assists"] = stats.get("fpl_assists")
+        p["fpl_minutes"] = stats.get("fpl_minutes")
+        p["fpl_tackles"] = stats.get("fpl_tackles")
+        p["fpl_cbi"] = stats.get("fpl_cbi")
+        p["fpl_xg"] = stats.get("fpl_xg")
+        mins = p["fpl_minutes"]
+        if isinstance(mins, (int, float)) and mins > 0:
+            p["g_per90"] = (p["fpl_goals"] or 0) * 90 / mins
+            p["ga_per90"] = ((p["fpl_goals"] or 0) + (p["fpl_assists"] or 0)) * 90 / mins
+            p["xg_per90"] = (p["fpl_xg"] or 0) * 90 / mins
+        else:
+            p["g_per90"] = p["ga_per90"] = p["xg_per90"] = None
     _matched_fpts = [p["fpts"] for p in roster if isinstance(p["fpts"], (int, float))]
     avg_fpts = (sum(_matched_fpts) / len(_matched_fpts)) if _matched_fpts else None
     _matched_fc26 = [p["fc26"] for p in roster if isinstance(p["fc26"], (int, float))]
@@ -289,6 +338,25 @@ for code, name, owners in TEAMS:
             f'<td data-sort="{sort_val(p["y2"])}">{cells[1]}</td></tr>'
         )
     finance_total_row = f'<tr><td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
+
+    # ---- scouting: EA FC 26 ratings + 2025/26 Premier League performance
+    # (from mega.db -- see sync_fc26_ratings.py / sync_fpl_stats.py) ----
+    scouting_rows = []
+    for p in grouped:
+        scouting_rows.append(
+            f'<tr><td>{player_label(p)}</td><td class="dim">{p["club_full"] or "—"}</td><td>{p["pos"]}</td>'
+            f'<td data-sort="{sort_val(p["fc26"])}" style="color:var(--mv-gold);">{numi(p["fc26"])}</td>'
+            f'<td data-sort="{sort_val(p["fc26_pot"])}">{numi(p["fc26_pot"])}</td>'
+            f'<td data-sort="{sort_val(p["fc26_value"])}">{eur(p["fc26_value"])}</td>'
+            f'<td data-sort="{sort_val(p["fpl_starts"])}">{numi(p["fpl_starts"])}</td>'
+            f'<td data-sort="{sort_val(p["fpl_goals"])}">{numi(p["fpl_goals"])}</td>'
+            f'<td data-sort="{sort_val(p["fpl_assists"])}">{numi(p["fpl_assists"])}</td>'
+            f'<td data-sort="{sort_val(p["g_per90"])}">{num1(p["g_per90"])}</td>'
+            f'<td data-sort="{sort_val(p["ga_per90"])}">{num1(p["ga_per90"])}</td>'
+            f'<td data-sort="{sort_val(p["xg_per90"])}">{num1(p["xg_per90"])}</td>'
+            f'<td data-sort="{sort_val(p["fpl_tackles"])}">{numi(p["fpl_tackles"])}</td>'
+            f'<td data-sort="{sort_val(p["fpl_cbi"])}">{numi(p["fpl_cbi"])}</td></tr>'
+        )
 
     # ---- depth chart: 3-4-3, ranked by EA FC 26 overall rating within each
     # position (falls back to live Fantrax fantasy points, then salary, for
@@ -422,6 +490,7 @@ for code, name, owners in TEAMS:
         <button class="mv-tab active" onclick="mvShowTab(this,'roster-{code}')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
         <button class="mv-tab" onclick="mvShowTab(this,'finances-{code}')">Finances</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'scouting-{code}')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
         Roster is Kept Contracts + Youth Legend + Youth Players, straight from the league's keeper sheet &mdash;
@@ -480,6 +549,41 @@ for code, name, owners in TEAMS:
               {"".join(finance_rows)}
             </tbody>
             <tfoot>{finance_total_row}</tfoot>
+          </table>
+        </div>
+      </div>
+
+      <div id="scouting-{code}" class="mv-tab-panel">
+        <div class="sub">EA Sports FC 26 ratings (all leagues) + 2025/26 Premier League season totals &middot; click a column to sort</div>
+        <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:10px;">
+          Sourced from a live FC 26 ratings feed and the official Fantasy Premier League API &mdash;
+          not FBref (fbref.com blocks automated access). "Starts" is starts, not total appearances;
+          "CBI" is clearances+blocks+interceptions combined, not pure clearances; SCA/90, GCA/90, and
+          pass-completion counts aren't available from either source and are omitted rather than
+          guessed. A dash means no match was found (different name spelling, or the player didn't
+          play in the Premier League last season).
+        </div>
+        <div class="mv-table-scroll">
+          <table class="mv-table mv-sortable" id="scouting-table-{code}">
+            <thead><tr>
+              <th data-sort-type="text">Player</th>
+              <th data-sort-type="text">Club</th>
+              <th data-sort-type="text">Pos</th>
+              <th data-sort-type="num">FC26 OVR</th>
+              <th data-sort-type="num">FC26 POT</th>
+              <th data-sort-type="num">FC26 Value</th>
+              <th data-sort-type="num">25/26 Starts</th>
+              <th data-sort-type="num">25/26 Goals</th>
+              <th data-sort-type="num">25/26 Assists</th>
+              <th data-sort-type="num">G/90</th>
+              <th data-sort-type="num">G+A/90</th>
+              <th data-sort-type="num">xG/90</th>
+              <th data-sort-type="num">Tackles</th>
+              <th data-sort-type="num">CBI</th>
+            </tr></thead>
+            <tbody>
+              {"".join(scouting_rows)}
+            </tbody>
           </table>
         </div>
       </div>
