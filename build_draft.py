@@ -11,7 +11,8 @@ browser-cookie session fantrax_live.py already uses.
 import browser_cookie3
 import requests
 
-from common import head, foot, hero_logo
+from common import head, foot, hero_logo, CLUB_NAMES
+from fc26_ratings import fetch_all_players, build_lookup, match
 
 LEAGUE_ID = "9rv5verjmrz6rjuo"
 
@@ -64,8 +65,40 @@ def num_or_sentinel(s, sentinel="-1"):
         return sentinel
 
 
+def eur(v):
+    if not isinstance(v, (int, float)):
+        return "—"
+    if v >= 1_000_000:
+        return f"€{v / 1_000_000:,.1f}M"
+    if v >= 1_000:
+        return f"€{v / 1_000:,.0f}K"
+    return f"€{v:,.0f}"
+
+
+def attach_fc26(players):
+    print("Fetching live FC 26 ratings...")
+    fc26_players = fetch_all_players()
+    lookup = build_lookup(fc26_players)
+    matched = 0
+    for p in players:
+        tokens = p["name"].split()
+        last = tokens[-1]
+        first_initial = tokens[0][0] if tokens else None
+        club_hint = CLUB_NAMES.get(p["club"])
+        m = match(lookup, last, first_initial, club_hint)
+        if m is None:
+            p["fc26"] = p["fc26_pot"] = p["fc26_value"] = None
+            continue
+        matched += 1
+        p["fc26"] = m["overall"]
+        p["fc26_pot"] = m["potential"]
+        p["fc26_value"] = m["value_eur"]
+    print(f"Matched {matched}/{len(players)} players to FC 26 ratings.")
+
+
 def build():
     players = fetch_draft_pool()
+    attach_fc26(players)
     # ADP ascending, with blanks ("-") sinking to the bottom
     players.sort(key=lambda p: float(num_or_sentinel(p["adp"], "999999")))
 
@@ -75,6 +108,9 @@ def build():
         f'<td>{p["pos"]}</td>'
         f'<td class="dim">{p["club"]}</td>'
         f'<td data-sort="{num_or_sentinel(p["age"])}">{p["age"]}</td>'
+        f'<td data-sort="{p["fc26"] if isinstance(p["fc26"], (int, float)) else -1}" style="color:var(--mv-gold);">{f"{p['fc26']:,.0f}" if isinstance(p["fc26"], (int, float)) else "—"}</td>'
+        f'<td data-sort="{p["fc26_pot"] if isinstance(p["fc26_pot"], (int, float)) else -1}">{f"{p['fc26_pot']:,.0f}" if isinstance(p["fc26_pot"], (int, float)) else "—"}</td>'
+        f'<td data-sort="{p["fc26_value"] if isinstance(p["fc26_value"], (int, float)) else -1}">{eur(p["fc26_value"])}</td>'
         f'<td data-sort="{num_or_sentinel(p["fpts"])}">{p["fpts"]}</td>'
         f'<td data-sort="{num_or_sentinel(p["fpg"])}">{p["fpg"]}</td>'
         f'<td data-sort="{num_or_sentinel(p["adp"], "999999")}">{p["adp"]}</td>'
@@ -86,7 +122,7 @@ def build():
     html = head("Draft Board", "draft.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Draft Board</h1>
-      <div class="sub">{len(players)} players eligible for the 26/27 senior draft &mdash; not currently on any Fantrax roster. Click a column header to sort.</div>
+      <div class="sub">{len(players)} players eligible for the 26/27 senior draft &mdash; not currently on any Fantrax roster. FC26 ratings cover all leagues. Click a column header to sort.</div>
     </div>
 
     <section class="card mv-card">
@@ -98,6 +134,9 @@ def build():
               <th data-sort-type="text">Pos</th>
               <th data-sort-type="text">Club</th>
               <th data-sort-type="num">Age</th>
+              <th data-sort-type="num">FC26 OVR</th>
+              <th data-sort-type="num">FC26 POT</th>
+              <th data-sort-type="num">FC26 Value</th>
               <th data-sort-type="num">FPts</th>
               <th data-sort-type="num">FP/G</th>
               <th data-sort-type="num">ADP</th>

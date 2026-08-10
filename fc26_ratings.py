@@ -79,18 +79,23 @@ def build_lookup(players):
     return lookup
 
 
-def match(lookup, last_name, first_initial=None):
+def match(lookup, last_name, first_initial=None, club_hint=None):
     """Resolve a last name to a single player dict, disambiguating
-    same-surname players by first initial when there's more than one
-    candidate. Returns None if there's no match or it's still ambiguous."""
+    same-surname players by first initial and then (if still ambiguous --
+    common once the lookup spans every league, not just one) by club name.
+    Returns None if there's no match or it's still ambiguous."""
     candidates = lookup.get(_fold(last_name))
     if not candidates:
         return None
     if len(candidates) == 1:
         return candidates[0]
     if first_initial:
-        narrowed = [c for c in candidates if _fold(c["short_name"].strip()[:1]) == _fold(first_initial)
-                    or _fold(c["full_name"].strip()[:1]) == _fold(first_initial)]
+        candidates = [c for c in candidates if _fold(c["short_name"].strip()[:1]) == _fold(first_initial)
+                      or _fold(c["full_name"].strip()[:1]) == _fold(first_initial)] or candidates
+        if len(candidates) == 1:
+            return candidates[0]
+    if club_hint:
+        narrowed = [c for c in candidates if _fold(club_hint) in _fold(c["club"]) or _fold(c["club"]) in _fold(club_hint)]
         if len(narrowed) == 1:
             return narrowed[0]
     return None  # still ambiguous

@@ -14,6 +14,7 @@ to disk; only the matched values are written to mega.db.
 """
 from datetime import datetime, timezone
 
+from common import CLUB_NAMES
 from db import connect
 from fc26_ratings import fetch_all_players, build_lookup, match
 
@@ -26,17 +27,18 @@ def main():
 
     conn = connect()
     cur = conn.cursor()
-    rows = cur.execute("SELECT id, player_name FROM team_players WHERE player_name IS NOT NULL").fetchall()
+    rows = cur.execute("SELECT id, player_name, real_club FROM team_players WHERE player_name IS NOT NULL").fetchall()
 
     now = datetime.now(timezone.utc).isoformat()
     matched = 0
     ambiguous = 0
     unmatched = 0
-    for row_id, player_name in rows:
+    for row_id, player_name, real_club in rows:
         tokens = player_name.split()
         last = tokens[-1]
         first_initial = tokens[0][0] if tokens else None
-        p = match(lookup, last, first_initial)
+        club_hint = CLUB_NAMES.get(real_club, real_club)
+        p = match(lookup, last, first_initial, club_hint)
         if p is None:
             if last.lower() in lookup:
                 ambiguous += 1
