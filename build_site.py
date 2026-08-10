@@ -1,5 +1,7 @@
 from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room, resolve_team_code
 
+CURRENT_CODES = {code for code, _, _ in TEAMS}
+
 print("Fetching live spreadsheet...")
 wb = fetch_live_workbook()
 comps, seasons = fetch_trophy_room(wb)
@@ -8,6 +10,8 @@ print(f"Fetched. {len(seasons)} seasons of trophy history.")
 total_titles = sum(1 for s in seasons for v in s[1:8] if v)
 reigning = seasons[0][1] or "—"
 reigning_code = resolve_team_code(reigning)
+if reigning_code not in CURRENT_CODES:
+    reigning_code = None
 
 # poppy per-competition accents, cycling the guide's 5 named accents
 ACCENTS = ["var(--mv-gold)", "var(--mv-blue)", "var(--mv-violet)", "var(--mv-pink)", "var(--mv-crimson)"]
@@ -19,7 +23,7 @@ def winner_cell(val, comp):
         return '<td class="dim">—</td>'
     code = resolve_team_code(val)
     color = comp_color[comp]
-    label = f'<a href="team-{code.lower()}.html" style="color:{color};text-decoration:none;">{val}</a>' if code else f'<span style="color:{color};">{val}</span>'
+    label = f'<a href="team-{code.lower()}.html" style="color:{color};text-decoration:none;">{val}</a>' if code in CURRENT_CODES else f'<span style="color:{color};">{val}</span>'
     return f'<td style="font-weight:600;">{label}</td>'
 
 

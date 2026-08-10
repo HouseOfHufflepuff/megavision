@@ -235,7 +235,6 @@ TEAMS = [
     ("CRG", "CRG McGovern", ["Casey McGovern", "Ryan McGovern", "Grady McGovern", "Jadyn McGovern"]),
     ("DU", "Divided United", ["Chris Gauron"]),
     ("HUF", "House of Hufflepuff", ["Jeremy Ahrens"]),
-    ("MS8", "MS 08th", ["Raul Templonuevo"]),
     ("NAC", "NFC Andover City", ["Kris Lien"]),
     ("QFC", "Quidpool FC", ["Erik Johnson"]),
     ("REN", "Real News", ["Reid Foster"]),
@@ -284,7 +283,7 @@ def tally_trophies(comps, seasons):
         for i, comp in enumerate(comps):
             winner = row[i + 1]
             code = resolve_team_code(winner)
-            if code:
+            if code and code in tally:
                 tally[code][comp] += 1
     return tally
 
