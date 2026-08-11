@@ -51,6 +51,27 @@ CREATE TABLE IF NOT EXISTS team_players (
     UNIQUE(team_code, player_name_raw)
 );
 
+CREATE TABLE IF NOT EXISTS fbref_players (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    club TEXT,
+    games INTEGER,
+    games_started INTEGER,
+    goals INTEGER,
+    assists INTEGER,
+    goals_per90 REAL,
+    goals_assists_per90 REAL,
+    xg_per90 REAL,
+    sca_per90 REAL,
+    gca_per90 REAL,
+    tackles INTEGER,
+    clearances INTEGER,
+    passes_completed INTEGER,
+    updated_at TEXT NOT NULL,
+    UNIQUE(player_name, club)
+);
+
 CREATE TABLE IF NOT EXISTS team_week_financials (
     team_code TEXT NOT NULL REFERENCES teams(code),
     week INTEGER NOT NULL,
