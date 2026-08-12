@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Draft Grades — MEGAVISION</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="palette.css">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <nav class="mv-nav">
+    <div class="mv-nav-links">
+      <a href="index.html">Home</a>
+      <a href="teams.html">Teams</a>
+      <a href="financials.html">Financials</a>
+      <a href="draft.html">Draft Board</a>
+      <a href="draft-grades.html" class="active">Draft Grades</a>
+      <a href="snowmobile-lifestlye.html">Snow</a>
+      <a href="armstrong-1.html">Draft</a>
+      <a href="soccer.html">Soccer</a>
+      <a href="pigeons/index.html">Pigeons</a>
+      <a href="lazy-river/index.html">Lazy River</a>
+      <a href="https://houseofhufflepuff.github.io/two-halves/" target="_blank" rel="noopener">Two Halves</a>
+    </div>
+  </nav>
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:36px;">
+      <img src="logo-trim.png" alt="MEGAVISION" class="mv-glow" style="width:100%;max-width:640px;height:auto;">
+    </div>
+
+    <div class="mv-page-header">
+      <h1 class="mv-chrome-text">26/27 Draft Grades</h1>
+      <div class="sub">Every junior team's actual live draft, graded pick by pick against a weighted expected-value model.</div>
+    </div>
+
+    <section class="card mv-card">
+      <div style="font-size:12px;color:var(--mv-ink-muted);line-height:1.6;">Only the 12 junior teams actually drafted -- senior rosters were already set from keepers, so their picks were passed every round. "Value" per pick is the actual overall pick number minus where a weighted composite score (FC26 overall 30%, 25/26 fantasy points 30%, 25/26 goals 15%, ADP 15%, age 10%, younger better) ranked that player among all 549 draft-eligible players. Positive value means a team got a good player later than consensus said they had to; negative means they paid an early pick for a player the model rated well below that slot.</div>
+    </section>
+
+    <section class="card mv-card" style="border-left:4px solid var(--mv-violet);">
+      <h2 class="mv-chrome-text" style="margin-top:0;">Bull Case: Rayan</h2>
+      <div class="sub" style="margin-bottom:12px;">Youngest player picked in the whole draft &mdash; NFCA Juniors, Round 1, Pick 3</div>
+      <p style="line-height:1.7;">The model can't even find him an FC26 rating -- too new, too unproven by EA's own database. The real-world numbers say something completely different. 183.5 fantasy points on the season is the 5th-highest total of ANY player drafted, including plenty of established Premier League regulars picked well behind him. Five goals and two assists in just 13 starts is a 0.4 G/90, 0.6 G+A/90 rate that a lot of full-time strikers would sign for. And an ADP of 22.6 shows the wider market already treats him as an early-round asset, not a lottery ticket. This is the classic "the algorithm hasn't caught up to the highlight reel" pick -- a 20-year-old already outproducing his role off the bench. Give him a nailed-on starting workload in 26/27 and the ceiling here isn't a bench piece, it's a breakout season.</p>
+    </section>
+
+    
+    <section class="card mv-card" style="border-left:4px solid var(--mv-gold);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">Power Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-gold);">A</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">Disciplined, no wasted reaches -- Cunha, Brobbey and Barnes all landed at or better than expected, and nothing in the back half blew up the board. The model's cleanest draft in the league: nobody made fireworks, nobody torched a pick either.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Harvey Barnes (R3, M NEW)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">Landed a proven double-digit-goal wide player in round 3 when the model had him rated as a top-25 player overall &mdash; he just fell further than he had any business falling.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>9</strong> goals, <strong>3</strong> assists projected for 26/27<br><span style="font-size:11px;">Projected off a 0.3 G/90 rate across a fuller ~30-start workload than the 19 he got in 25/26.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Abdul Fatawu (R4, F IPS)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-4 pick on a stat line that reads like a dead wifi signal &mdash; zero goals, zero assists on record, and a bench role at Ipswich. Fun name, empty page.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Matheus Cunha</td><td class="dim">F</td><td class="dim">MUN</td><td data-sort="27.0">27</td><td data-sort="83.0">83</td><td data-sort="208.0">208</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="0" style="color:var(--mv-gold);">+0</td></tr>
+              <tr><td>2</td><td>Brian Brobbey</td><td class="dim">F</td><td class="dim">SUN</td><td data-sort="24.0">24</td><td data-sort="77.0">77</td><td data-sort="131.5">131.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="0" style="color:var(--mv-gold);">+0</td></tr>
+              <tr><td>3</td><td>Harvey Barnes</td><td class="dim">M</td><td class="dim">NEW</td><td data-sort="28.0">28</td><td data-sort="80.0">80</td><td data-sort="128.5">128.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="16" style="color:var(--mv-gold);">+16</td></tr>
+              <tr><td>4</td><td>Abdul Fatawu</td><td class="dim">F</td><td class="dim">IPS</td><td data-sort="22.0">22</td><td data-sort="76.0">76</td><td data-sort="72.0">72</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-57" style="color:var(--mv-crimson);">-57</td></tr>
+              <tr><td>5</td><td>Chris Richards</td><td class="dim">D</td><td class="dim">CRY</td><td data-sort="26.0">26</td><td data-sort="77.0">77</td><td data-sort="123.5">123.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="9" style="color:var(--mv-gold);">+9</td></tr>
+              <tr><td>6</td><td>Dean Henderson</td><td class="dim">GK</td><td class="dim">CRY</td><td data-sort="29.0">29</td><td data-sort="81.0">81</td><td data-sort="115.0">115</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="2" style="color:var(--mv-gold);">+2</td></tr>
+              <tr><td>7</td><td>Djed Spence</td><td class="dim">D</td><td class="dim">TOT</td><td data-sort="26.0">26</td><td data-sort="78.0">78</td><td data-sort="95.5">95.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-1" style="color:var(--mv-crimson);">-1</td></tr>
+              <tr><td>8</td><td>Omari Hutchinson</td><td class="dim">F</td><td class="dim">NOT</td><td data-sort="22.0">22</td><td data-sort="75.0">75</td><td data-sort="113.5">113.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="16" style="color:var(--mv-gold);">+16</td></tr>
+              <tr><td>9</td><td>Trai Hume</td><td class="dim">D</td><td class="dim">SUN</td><td data-sort="24.0">24</td><td data-sort="74.0">74</td><td data-sort="83.5">83.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="6" style="color:var(--mv-gold);">+6</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-gold);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">Divided United Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-gold);">A-</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">A weird shape &mdash; burned an early pick badly, then more or less nailed everything after it, closing with four straight picks that all graded as positive value. A draft that started in the shower and ended on the podium.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Boubacar Kamara (R8, M AVL)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A Villa engine-room starter, still on the board in round 8. That's pure last-picks-of-the-draft theft.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>3</strong> goals, <strong>5</strong> assists projected for 26/27<br><span style="font-size:11px;">Projected off a 0.1 G/90, 0.3 G+A/90 rate over a healthier ~26-start season than the 17 he managed in 25/26.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Ronald Araujo (R2, D LIV)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-2 pick off the back of a name that used to mean something &mdash; zero goal involvements, a season mostly spent in a walking boot or a transfer saga, and a reach that cost this team a real round.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Maxence Lacroix</td><td class="dim">D</td><td class="dim">CHE</td><td data-sort="26.0">26</td><td data-sort="79.0">79</td><td data-sort="114.5">114.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-23" style="color:var(--mv-crimson);">-23</td></tr>
+              <tr><td>2</td><td>Ronald Araujo</td><td class="dim">D</td><td class="dim">LIV</td><td data-sort="27.0">27</td><td data-sort="83.0">83</td><td data-sort="0.0">0</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-185" style="color:var(--mv-crimson);">-185</td></tr>
+              <tr><td>3</td><td>Kaoru Mitoma</td><td class="dim">M</td><td class="dim">BHA</td><td data-sort="29.0">29</td><td data-sort="82.0">82</td><td data-sort="147.0">147</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="25" style="color:var(--mv-gold);">+25</td></tr>
+              <tr><td>4</td><td>Noah Okafor</td><td class="dim">F</td><td class="dim">LEE</td><td data-sort="26.0">26</td><td data-sort="76.0">76</td><td data-sort="98.5">98.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="11" style="color:var(--mv-gold);">+11</td></tr>
+              <tr><td>5</td><td>Nathan Collins</td><td class="dim">D</td><td class="dim">BRF</td><td data-sort="25.0">25</td><td data-sort="79.0">79</td><td data-sort="141.0">141</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="20" style="color:var(--mv-gold);">+20</td></tr>
+              <tr><td>6</td><td>Oscar Bobb</td><td class="dim">M</td><td class="dim">FUL</td><td data-sort="23.0">23</td><td data-sort="72.0">72</td><td data-sort="54.0">54</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-57" style="color:var(--mv-crimson);">-57</td></tr>
+              <tr><td>7</td><td>Emiliano Martinez</td><td class="dim">GK</td><td class="dim">AVL</td><td data-sort="33.0">33</td><td data-sort="85.0">85</td><td data-sort="120.5">120.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="40" style="color:var(--mv-gold);">+40</td></tr>
+              <tr><td>8</td><td>Boubacar Kamara</td><td class="dim">M</td><td class="dim">AVL</td><td data-sort="26.0">26</td><td data-sort="83.0">83</td><td data-sort="133.0">133</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="48" style="color:var(--mv-gold);">+48</td></tr>
+              <tr><td>9</td><td>Calvin Bassey</td><td class="dim">D</td><td class="dim">FUL</td><td data-sort="26.0">26</td><td data-sort="78.0">78</td><td data-sort="131.5">131.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="32" style="color:var(--mv-gold);">+32</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-blue);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">NFCA Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-blue);">B+</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">Front-loaded with the draft's youngest player at pick 3, then closed with the single best value pick anybody made in rounds 7-9. The middle rounds sagged, but the top and bottom of this board were genuinely sharp.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Pascal Struijk (R9, D BHA)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A 33-start Brighton starting centre-back, sitting there in round 9 like nobody remembered defenders exist.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>1</strong> goals, <strong>2</strong> assists, <strong>11</strong> clean sheets projected for 26/27<br><span style="font-size:11px;">Projected off a full 34-start season for a reliable Brighton centre-back; clean sheets estimated off Brighton's typical mid-table defensive record.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Nilson Angulo (R5, M SUN)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-5 pick on a fringe Sunderland squad name with 85.5 fantasy points to his entire season and a per-90 goal rate that rounds to "please stop."</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Rayan</td><td class="dim">F</td><td class="dim">BOU</td><td data-sort="20.0">20</td><td data-sort="-1">&mdash;</td><td data-sort="183.5">183.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-43" style="color:var(--mv-crimson);">-43</td></tr>
+              <tr><td>2</td><td>Emiliano Buendia</td><td class="dim">M</td><td class="dim">AVL</td><td data-sort="29.0">29</td><td data-sort="77.0">77</td><td data-sort="123.0">123</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="-9" style="color:var(--mv-crimson);">-9</td></tr>
+              <tr><td>3</td><td>Oliver McBurnie</td><td class="dim">F</td><td class="dim">HUL</td><td data-sort="30.0">30</td><td data-sort="74.0">74</td><td data-sort="113.5">113.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-33" style="color:var(--mv-crimson);">-33</td></tr>
+              <tr><td>4</td><td>Ethan Ampadu</td><td class="dim">M</td><td class="dim">LEE</td><td data-sort="25.0">25</td><td data-sort="76.0">76</td><td data-sort="82.0">82</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-42" style="color:var(--mv-crimson);">-42</td></tr>
+              <tr><td>5</td><td>Nilson Angulo</td><td class="dim">M</td><td class="dim">SUN</td><td data-sort="23.0">23</td><td data-sort="67.0">67</td><td data-sort="85.5">85.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-61" style="color:var(--mv-crimson);">-61</td></tr>
+              <tr><td>6</td><td>Caoimhin Kelleher</td><td class="dim">GK</td><td class="dim">BRF</td><td data-sort="27.0">27</td><td data-sort="79.0">79</td><td data-sort="99.0">99</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="2" style="color:var(--mv-gold);">+2</td></tr>
+              <tr><td>7</td><td>Nordi Mukiele</td><td class="dim">D</td><td class="dim">SUN</td><td data-sort="28.0">28</td><td data-sort="79.0">79</td><td data-sort="123.0">123</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="55" style="color:var(--mv-gold);">+55</td></tr>
+              <tr><td>8</td><td>Sasa Lukic</td><td class="dim">M</td><td class="dim">IPS</td><td data-sort="29.0">29</td><td data-sort="78.0">78</td><td data-sort="64.5">64.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-42" style="color:var(--mv-crimson);">-42</td></tr>
+              <tr><td>9</td><td>Pascal Struijk</td><td class="dim">D</td><td class="dim">BHA</td><td data-sort="26.0">26</td><td data-sort="76.0">76</td><td data-sort="153.0">153</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="60" style="color:var(--mv-gold);">+60</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-blue);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">WTF Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-blue);">B</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">The steady-hand draft. Calvert-Lewin, Tarkowski and Stach at the top all landed near or above expectation, and even the one real reach barely dented an otherwise sensible board.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Chris Wood (R5, F NOT)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A 34-year-old still scoring at a strong per-90 clip whenever fit &mdash; a classic buy-low-on-name-recognition pick that actually worked.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>6</strong> goals, <strong>1</strong> assists projected for 26/27<br><span style="font-size:11px;">Projected off a 0.3 G/90 rate scaled to ~22 starts, roughly double his injury-hit 25/26 workload.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Mamadou Sangaré (R9, M BRF)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">The second-to-last pick of the draft on a Brentford afterthought with 49 fantasy points on the year, whose main job is filling a bench slot.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Dominic Calvert-Lewin</td><td class="dim">F</td><td class="dim">LEE</td><td data-sort="29.0">29</td><td data-sort="74.0">74</td><td data-sort="112.5">112.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="3" style="color:var(--mv-gold);">+3</td></tr>
+              <tr><td>2</td><td>James Tarkowski</td><td class="dim">D</td><td class="dim">EVE</td><td data-sort="33.0">33</td><td data-sort="80.0">80</td><td data-sort="144.5">144.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="5" style="color:var(--mv-gold);">+5</td></tr>
+              <tr><td>3</td><td>Anton Stach</td><td class="dim">M</td><td class="dim">LEE</td><td data-sort="27.0">27</td><td data-sort="79.0">79</td><td data-sort="120.0">120</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="21" style="color:var(--mv-gold);">+21</td></tr>
+              <tr><td>4</td><td>Danny Ballard</td><td class="dim">D</td><td class="dim">SUN</td><td data-sort="26.0">26</td><td data-sort="73.0">73</td><td data-sort="129.5">129.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="0" style="color:var(--mv-gold);">+0</td></tr>
+              <tr><td>5</td><td>Chris Wood</td><td class="dim">F</td><td class="dim">NOT</td><td data-sort="34.0">34</td><td data-sort="82.0">82</td><td data-sort="121.5">121.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="24" style="color:var(--mv-gold);">+24</td></tr>
+              <tr><td>6</td><td>Robin Roefs</td><td class="dim">GK</td><td class="dim">SUN</td><td data-sort="23.0">23</td><td data-sort="74.0">74</td><td data-sort="100.0">100</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-12" style="color:var(--mv-crimson);">-12</td></tr>
+              <tr><td>7</td><td>Mohamed Belloumi</td><td class="dim">M</td><td class="dim">HUL</td><td data-sort="24.0">24</td><td data-sort="73.0">73</td><td data-sort="65.5">65.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-53" style="color:var(--mv-crimson);">-53</td></tr>
+              <tr><td>8</td><td>Leif Davis</td><td class="dim">D</td><td class="dim">IPS</td><td data-sort="26.0">26</td><td data-sort="76.0">76</td><td data-sort="53.0">53</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-28" style="color:var(--mv-crimson);">-28</td></tr>
+              <tr><td>9</td><td>Mamadou Sangaré</td><td class="dim">M</td><td class="dim">BRF</td><td data-sort="24.0">24</td><td data-sort="72.0">72</td><td data-sort="49.0">49</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-77" style="color:var(--mv-crimson);">-77</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-blue);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">THOT Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-blue);">B-</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">Leaned hard into star power early (O'Reilly, Van de Ven) and paid for it in the middle rounds &mdash; Igor Jesus and Kevin were both real reaches this draft never fully recovered from.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Adrien Truffert (R6, D BOU)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">An ever-present Bournemouth left-back with 38 starts, still producing chances at a rate nobody in round 6 has any business getting.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>1</strong> goals, <strong>7</strong> assists, <strong>10</strong> clean sheets projected for 26/27<br><span style="font-size:11px;">Projected off a 0.2 G+A/90 rate across a similar 36-start workload to his ever-present 25/26; clean sheets estimated off Bournemouth's solid defensive record.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Simon Adingra (R9, F SUN)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">The second-to-last pick of the entire draft on a Sunderland wide man with 17.5 fantasy points to his name all season &mdash; that's closer to a scouting report than a fantasy asset.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Nico O'Reilly</td><td class="dim">D</td><td class="dim">MCI</td><td data-sort="21.0">21</td><td data-sort="73.0">73</td><td data-sort="148.0">148</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="-10" style="color:var(--mv-crimson);">-10</td></tr>
+              <tr><td>2</td><td>Igor Jesus</td><td class="dim">F</td><td class="dim">NOT</td><td data-sort="25.0">25</td><td data-sort="77.0">77</td><td data-sort="29.5">29.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-100" style="color:var(--mv-crimson);">-100</td></tr>
+              <tr><td>3</td><td>Kevin</td><td class="dim">F</td><td class="dim">FUL</td><td data-sort="23.0">23</td><td data-sort="76.0">76</td><td data-sort="76.0">76</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-67" style="color:var(--mv-crimson);">-67</td></tr>
+              <tr><td>4</td><td>Micky van de Ven</td><td class="dim">D</td><td class="dim">TOT</td><td data-sort="25.0">25</td><td data-sort="82.0">82</td><td data-sort="125.5">125.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="9" style="color:var(--mv-gold);">+9</td></tr>
+              <tr><td>5</td><td>Marcus Rashford</td><td class="dim">F</td><td class="dim">MUN</td><td data-sort="28.0">28</td><td data-sort="80.0">80</td><td data-sort="39.5">39.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-51" style="color:var(--mv-crimson);">-51</td></tr>
+              <tr><td>6</td><td>Adrien Truffert</td><td class="dim">D</td><td class="dim">BOU</td><td data-sort="24.0">24</td><td data-sort="77.0">77</td><td data-sort="126.0">126</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="36" style="color:var(--mv-gold);">+36</td></tr>
+              <tr><td>7</td><td>Mathias Jensen</td><td class="dim">M</td><td class="dim">BRF</td><td data-sort="30.0">30</td><td data-sort="77.0">77</td><td data-sort="109.0">109</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="9" style="color:var(--mv-gold);">+9</td></tr>
+              <tr><td>8</td><td>James Trafford</td><td class="dim">GK</td><td class="dim">LEE</td><td data-sort="23.0">23</td><td data-sort="76.0">76</td><td data-sort="88.5">88.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-13" style="color:var(--mv-crimson);">-13</td></tr>
+              <tr><td>9</td><td>Simon Adingra</td><td class="dim">F</td><td class="dim">SUN</td><td data-sort="24.0">24</td><td data-sort="76.0">76</td><td data-sort="17.5">17.5</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-121" style="color:var(--mv-crimson);">-121</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-violet);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">5th Ave Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-violet);">C+</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">Erratic. Harry Wilson and Wieffer were both legitimate value, but Victor Muñoz and Antonio Silva in the same five-round stretch dragged the whole board back to the middle of the pack.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Mats Wieffer (R7, D BHA)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A genuine Brighton first-team midfielder, still sitting there in round 7.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>3</strong> goals, <strong>6</strong> assists, <strong>11</strong> clean sheets projected for 26/27<br><span style="font-size:11px;">Projected off a 0.1 G/90, 0.3 G+A/90 rate scaled up to a fuller ~30-start season; clean sheets estimated off Brighton's typical defensive record.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Antonio Silva (R6, D BOU)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-6 pick on a Bournemouth defender the model can't even find an FC26 rating for &mdash; that's not a "deep sleeper," that's drafting a rumor.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Johan Manzambi</td><td class="dim">M</td><td class="dim">AVL</td><td data-sort="20.0">20</td><td data-sort="67.0">67</td><td data-sort="164.0">164</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-32" style="color:var(--mv-crimson);">-32</td></tr>
+              <tr><td>2</td><td>Harry Wilson</td><td class="dim">M</td><td class="dim">LEE</td><td data-sort="29.0">29</td><td data-sort="76.0">76</td><td data-sort="124.5">124.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="17" style="color:var(--mv-gold);">+17</td></tr>
+              <tr><td>3</td><td>Michael Kayode</td><td class="dim">D</td><td class="dim">BRF</td><td data-sort="22.0">22</td><td data-sort="73.0">73</td><td data-sort="100.5">100.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-29" style="color:var(--mv-crimson);">-29</td></tr>
+              <tr><td>4</td><td>Victor Muñoz</td><td class="dim">F</td><td class="dim">LIV</td><td data-sort="23.0">23</td><td data-sort="65.0">65</td><td data-sort="47.5">47.5</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-127" style="color:var(--mv-crimson);">-127</td></tr>
+              <tr><td>5</td><td>Jordan Pickford</td><td class="dim">GK</td><td class="dim">EVE</td><td data-sort="32.0">32</td><td data-sort="84.0">84</td><td data-sort="122.0">122</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="20" style="color:var(--mv-gold);">+20</td></tr>
+              <tr><td>6</td><td>Antonio Silva</td><td class="dim">D</td><td class="dim">BOU</td><td data-sort="22.0">22</td><td data-sort="-1">&mdash;</td><td data-sort="119.0">119</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-171" style="color:var(--mv-crimson);">-171</td></tr>
+              <tr><td>7</td><td>Mats Wieffer</td><td class="dim">D</td><td class="dim">BHA</td><td data-sort="26.0">26</td><td data-sort="78.0">78</td><td data-sort="138.0">138</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="57" style="color:var(--mv-gold);">+57</td></tr>
+              <tr><td>8</td><td>Xaver Schlager</td><td class="dim">M</td><td class="dim">NOT</td><td data-sort="28.0">28</td><td data-sort="80.0">80</td><td data-sort="36.5">36.5</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-76" style="color:var(--mv-crimson);">-76</td></tr>
+              <tr><td>9</td><td>Dan Ndoye</td><td class="dim">F</td><td class="dim">NOT</td><td data-sort="25.0">25</td><td data-sort="79.0">79</td><td data-sort="80.0">80</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="8" style="color:var(--mv-gold);">+8</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-violet);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">Quidpool Juniors FC</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-violet);">C</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">Kudus and Thiaw at the top were fine value, but Jeremy Jacquet and Marco Palestra back-to-back in rounds 4-5 turned a promising start into a shrug.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Hayden Hackney (R7, M EVE)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">No per-90 data to lean on, but a real 138-point season buried in round 7 is a legitimate find regardless.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>3</strong> goals, <strong>4</strong> assists projected for 26/27<br><span style="font-size:11px;">No 25/26 per-90 data available (limited recorded minutes) -- this is a squad-role estimate, not a rate projection.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Marco Palestra (R5, D CHE)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-5 pick on a 21-year-old Chelsea fringe defender with 32 fantasy points, whose role mostly consists of standing near the first team.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Mohammed Kudus</td><td class="dim">M</td><td class="dim">TOT</td><td data-sort="26.0">26</td><td data-sort="80.0">80</td><td data-sort="151.0">151</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="2" style="color:var(--mv-gold);">+2</td></tr>
+              <tr><td>2</td><td>Abdukodir Khusanov</td><td class="dim">D</td><td class="dim">MCI</td><td data-sort="22.0">22</td><td data-sort="77.0">77</td><td data-sort="107.5">107.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-67" style="color:var(--mv-crimson);">-67</td></tr>
+              <tr><td>3</td><td>Malick Thiaw</td><td class="dim">D</td><td class="dim">NEW</td><td data-sort="25.0">25</td><td data-sort="78.0">78</td><td data-sort="136.5">136.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="15" style="color:var(--mv-gold);">+15</td></tr>
+              <tr><td>4</td><td>Jeremy Jacquet</td><td class="dim">D</td><td class="dim">LIV</td><td data-sort="21.0">21</td><td data-sort="75.0">75</td><td data-sort="44.0">44</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-89" style="color:var(--mv-crimson);">-89</td></tr>
+              <tr><td>5</td><td>Marco Palestra</td><td class="dim">D</td><td class="dim">CHE</td><td data-sort="21.0">21</td><td data-sort="65.0">65</td><td data-sort="32.0">32</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-164" style="color:var(--mv-crimson);">-164</td></tr>
+              <tr><td>6</td><td>Senne Lammens</td><td class="dim">GK</td><td class="dim">MUN</td><td data-sort="24.0">24</td><td data-sort="78.0">78</td><td data-sort="115.0">115</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="12" style="color:var(--mv-gold);">+12</td></tr>
+              <tr><td>7</td><td>Hayden Hackney</td><td class="dim">M</td><td class="dim">EVE</td><td data-sort="24.0">24</td><td data-sort="73.0">73</td><td data-sort="138.0">138</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="27" style="color:var(--mv-gold);">+27</td></tr>
+              <tr><td>8</td><td>Emersonn</td><td class="dim">F</td><td class="dim">IPS</td><td data-sort="22.0">22</td><td data-sort="65.0">65</td><td data-sort="88.5">88.5</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-102" style="color:var(--mv-crimson);">-102</td></tr>
+              <tr><td>9</td><td>Jacob Ramsey</td><td class="dim">M</td><td class="dim">NEW</td><td data-sort="25.0">25</td><td data-sort="78.0">78</td><td data-sort="105.0">105</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="20" style="color:var(--mv-gold);">+20</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-violet);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">Wholeassed Junior Mules</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-violet);">C-</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">Boom-or-bust, defined by three picks: Gvardiol and Xhaka were sound, the round-8 pick was a legitimate coup, and a round-5 swing nearly sank the whole board.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Rodri (R8, M MCI)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">The reigning Ballon d'Or midfielder, sitting there in round 8 purely because of an injury-shortened year. If he's right, this is the single best value pick anybody made.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>4</strong> goals, <strong>7</strong> assists projected for 26/27<br><span style="font-size:11px;">No 25/26 per-90 data available (injury-shortened season) -- projected off pre-injury career norms for a fully healthy season, not a rate extrapolation.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Bazoumana Touré (R5, F NEW)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-5 pick on a 20-year-old Newcastle academy forward with 31.5 points on the season and, as far as the model can tell, no realistic path to relevance this year.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Josko Gvardiol</td><td class="dim">D</td><td class="dim">MCI</td><td data-sort="24.0">24</td><td data-sort="84.0">84</td><td data-sort="157.0">157</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="1" style="color:var(--mv-gold);">+1</td></tr>
+              <tr><td>2</td><td>Cristian Romero</td><td class="dim">D</td><td class="dim">TOT</td><td data-sort="28.0">28</td><td data-sort="82.0">82</td><td data-sort="49.0">49</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-86" style="color:var(--mv-crimson);">-86</td></tr>
+              <tr><td>3</td><td>Granit Xhaka</td><td class="dim">M</td><td class="dim">SUN</td><td data-sort="33.0">33</td><td data-sort="85.0">85</td><td data-sort="127.5">127.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="10" style="color:var(--mv-gold);">+10</td></tr>
+              <tr><td>4</td><td>David Raya</td><td class="dim">GK</td><td class="dim">ARS</td><td data-sort="30.0">30</td><td data-sort="87.0">87</td><td data-sort="97.5">97.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="12" style="color:var(--mv-gold);">+12</td></tr>
+              <tr><td>5</td><td>Bazoumana Touré</td><td class="dim">F</td><td class="dim">NEW</td><td data-sort="20.0">20</td><td data-sort="-1">&mdash;</td><td data-sort="31.5">31.5</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-334" style="color:var(--mv-crimson);">-334</td></tr>
+              <tr><td>6</td><td>Jack Rudoni</td><td class="dim">M</td><td class="dim">COV</td><td data-sort="25.0">25</td><td data-sort="74.0">74</td><td data-sort="154.5">154.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-2" style="color:var(--mv-crimson);">-2</td></tr>
+              <tr><td>7</td><td>Joachim Andersen</td><td class="dim">D</td><td class="dim">FUL</td><td data-sort="30.0">30</td><td data-sort="78.0">78</td><td data-sort="123.0">123</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-6" style="color:var(--mv-crimson);">-6</td></tr>
+              <tr><td>8</td><td>Rodri</td><td class="dim">M</td><td class="dim">MCI</td><td data-sort="30.0">30</td><td data-sort="90.0">90</td><td data-sort="125.0">125</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="66" style="color:var(--mv-gold);">+66</td></tr>
+              <tr><td>9</td><td>Loum Tchaouna</td><td class="dim">M</td><td class="dim">COV</td><td data-sort="22.0">22</td><td data-sort="69.0">69</td><td data-sort="79.5">79.5</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-53" style="color:var(--mv-crimson);">-53</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-pink);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">HUFF Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-pink);">D+</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">A draft that peaked at the very last pick. Mac Allister in round 1 was fine value, but Martinelli and Ruben Dias both went earlier than they should have, and it took until the literal final pick to land this draft's single biggest value score.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Sven Botman (R9, D NEW)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">The last pick of the entire draft, and it graded as the best value score of anybody's whole board &mdash; a starting Newcastle centre-back who fell all nine rounds.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>1</strong> goals, <strong>3</strong> assists, <strong>15</strong> clean sheets projected for 26/27<br><span style="font-size:11px;">Projected off a 0.1 G+A/90 rate scaled to a fuller ~30-start season; clean sheets estimated off Newcastle's imposing defensive record.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Brennan Johnson (R8, F CRY)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-8 pick on a Palace forward with 20 points and a season that never got going &mdash; a pick that reads like it was made from muscle memory of his Forest days.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Alexis Mac Allister</td><td class="dim">M</td><td class="dim">LIV</td><td data-sort="27.0">27</td><td data-sort="87.0">87</td><td data-sort="129.5">129.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="0" style="color:var(--mv-gold);">+0</td></tr>
+              <tr><td>2</td><td>Gabriel Martinelli</td><td class="dim">M</td><td class="dim">ARS</td><td data-sort="25.0">25</td><td data-sort="81.0">81</td><td data-sort="20.5">20.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-102" style="color:var(--mv-crimson);">-102</td></tr>
+              <tr><td>3</td><td>James Maddison</td><td class="dim">M</td><td class="dim">TOT</td><td data-sort="29.0">29</td><td data-sort="84.0">84</td><td data-sort="52.5">52.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-20" style="color:var(--mv-crimson);">-20</td></tr>
+              <tr><td>4</td><td>Ruben Dias</td><td class="dim">D</td><td class="dim">MCI</td><td data-sort="29.0">29</td><td data-sort="86.0">86</td><td data-sort="45.5">45.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-43" style="color:var(--mv-crimson);">-43</td></tr>
+              <tr><td>5</td><td>Georginio Rutter</td><td class="dim">F</td><td class="dim">BHA</td><td data-sort="24.0">24</td><td data-sort="77.0">77</td><td data-sort="107.0">107</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="2" style="color:var(--mv-gold);">+2</td></tr>
+              <tr><td>6</td><td>James Hill</td><td class="dim">D</td><td class="dim">BOU</td><td data-sort="24.0">24</td><td data-sort="71.0">71</td><td data-sort="108.0">108</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="9" style="color:var(--mv-gold);">+9</td></tr>
+              <tr><td>7</td><td>Djordje Petrovic</td><td class="dim">GK</td><td class="dim">BOU</td><td data-sort="26.0">26</td><td data-sort="80.0">80</td><td data-sort="112.0">112</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="32" style="color:var(--mv-gold);">+32</td></tr>
+              <tr><td>8</td><td>Brennan Johnson</td><td class="dim">F</td><td class="dim">CRY</td><td data-sort="25.0">25</td><td data-sort="-1">&mdash;</td><td data-sort="20.0">20</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-358" style="color:var(--mv-crimson);">-358</td></tr>
+              <tr><td>9</td><td>Sven Botman</td><td class="dim">D</td><td class="dim">NEW</td><td data-sort="26.0">26</td><td data-sort="82.0">82</td><td data-sort="127.0">127</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="84" style="color:var(--mv-gold);">+84</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-pink);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">CRG Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-pink);">D</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">Reece James in round 2 was sharp and the round-6 pick was a genuine find, but Daizen Maeda in round 1 and Joao Gomes in round 3 were both reaches this draft never built momentum past.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Matty Cash (R6, D AVL)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">An ever-present Villa full-back with 34 starts, still sitting there in round 6.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>3</strong> goals, <strong>3</strong> assists, <strong>13</strong> clean sheets projected for 26/27<br><span style="font-size:11px;">Projected off a 0.1 G/90, 0.2 G+A/90 rate across a similar 34-start workload; clean sheets estimated off Aston Villa's solid European-chasing defensive record.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Caleb Yirenkyi (R9, M COV)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">The literal very last pick of the draft on a Coventry teenager with zero fantasy points on the season &mdash; a pick that exists purely because the clock ran out.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Daizen Maeda</td><td class="dim">F</td><td class="dim">IPS</td><td data-sort="28.0">28</td><td data-sort="79.0">79</td><td data-sort="144.5">144.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-18" style="color:var(--mv-crimson);">-18</td></tr>
+              <tr><td>2</td><td>Reece James</td><td class="dim">D</td><td class="dim">CHE</td><td data-sort="26.0">26</td><td data-sort="81.0">81</td><td data-sort="136.5">136.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="9" style="color:var(--mv-gold);">+9</td></tr>
+              <tr><td>3</td><td>Joao Gomes</td><td class="dim">M</td><td class="dim">AVL</td><td data-sort="25.0">25</td><td data-sort="-1">&mdash;</td><td data-sort="107.0">107</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-218" style="color:var(--mv-crimson);">-218</td></tr>
+              <tr><td>4</td><td>Tijjani Reijnders</td><td class="dim">M</td><td class="dim">MCI</td><td data-sort="28.0">28</td><td data-sort="86.0">86</td><td data-sort="47.5">47.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-10" style="color:var(--mv-crimson);">-10</td></tr>
+              <tr><td>5</td><td>Alisson Becker</td><td class="dim">GK</td><td class="dim">LIV</td><td data-sort="33.0">33</td><td data-sort="89.0">89</td><td data-sort="120.5">120.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="27" style="color:var(--mv-gold);">+27</td></tr>
+              <tr><td>6</td><td>Matty Cash</td><td class="dim">D</td><td class="dim">AVL</td><td data-sort="29.0">29</td><td data-sort="79.0">79</td><td data-sort="128.5">128.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="45" style="color:var(--mv-gold);">+45</td></tr>
+              <tr><td>7</td><td>Tarik Muharemovic</td><td class="dim">D</td><td class="dim">LEE</td><td data-sort="23.0">23</td><td data-sort="70.0">70</td><td data-sort="129.5">129.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-8" style="color:var(--mv-crimson);">-8</td></tr>
+              <tr><td>8</td><td>Lukas Nmecha</td><td class="dim">F</td><td class="dim">LEE</td><td data-sort="27.0">27</td><td data-sort="76.0">76</td><td data-sort="25.0">25</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-49" style="color:var(--mv-crimson);">-49</td></tr>
+              <tr><td>9</td><td>Caleb Yirenkyi</td><td class="dim">M</td><td class="dim">COV</td><td data-sort="20.0">20</td><td data-sort="67.0">67</td><td data-sort="0.0">0</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-244" style="color:var(--mv-crimson);">-244</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-pink);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">BHB Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-pink);">D-</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">Woltemade and the round-5 goalkeeper pick were genuinely good value, but this draft is really defined by three separate deep-bench flameouts that turned a promising start into a bottom-three finish.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Gianluigi Donnarumma (R5, GK MCI)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A Manchester City #1 with 34 starts and elite pedigree, with no business lasting to round 5.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>17</strong> projected clean sheets in 26/27<br><span style="font-size:11px;">Goalkeeper -- clean sheets estimated off Manchester City's typical defensive dominance; goals/assists not applicable.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Andrey Santos (R6, M MUN)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-6 pick on a Manchester United fringe midfielder with 35 fantasy points and, per the model, no FC26 rating to speak of &mdash; a name pick, nothing more.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Nick Woltemade</td><td class="dim">F</td><td class="dim">NEW</td><td data-sort="24.0">24</td><td data-sort="79.0">79</td><td data-sort="149.5">149.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="4" style="color:var(--mv-gold);">+4</td></tr>
+              <tr><td>2</td><td>Gonzalo García</td><td class="dim">F</td><td class="dim">FUL</td><td data-sort="22.0">22</td><td data-sort="-1">&mdash;</td><td data-sort="103.0">103</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-184" style="color:var(--mv-crimson);">-184</td></tr>
+              <tr><td>3</td><td>William Osula</td><td class="dim">F</td><td class="dim">NEW</td><td data-sort="23.0">23</td><td data-sort="68.0">68</td><td data-sort="167.5">167.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="11" style="color:var(--mv-gold);">+11</td></tr>
+              <tr><td>4</td><td>Conor Gallagher</td><td class="dim">M</td><td class="dim">TOT</td><td data-sort="26.0">26</td><td data-sort="81.0">81</td><td data-sort="33.5">33.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-86" style="color:var(--mv-crimson);">-86</td></tr>
+              <tr><td>5</td><td>Gianluigi Donnarumma</td><td class="dim">GK</td><td class="dim">MCI</td><td data-sort="27.0">27</td><td data-sort="89.0">89</td><td data-sort="125.0">125</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="38" style="color:var(--mv-gold);">+38</td></tr>
+              <tr><td>6</td><td>Andrey Santos</td><td class="dim">M</td><td class="dim">MUN</td><td data-sort="22.0">22</td><td data-sort="-1">&mdash;</td><td data-sort="35.0">35</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-330" style="color:var(--mv-crimson);">-330</td></tr>
+              <tr><td>7</td><td>Adam Wharton</td><td class="dim">M</td><td class="dim">CRY</td><td data-sort="22.0">22</td><td data-sort="79.0">79</td><td data-sort="105.0">105</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="31" style="color:var(--mv-gold);">+31</td></tr>
+              <tr><td>8</td><td>Federico Chiesa</td><td class="dim">F</td><td class="dim">LIV</td><td data-sort="28.0">28</td><td data-sort="81.0">81</td><td data-sort="9.0">9</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-98" style="color:var(--mv-crimson);">-98</td></tr>
+              <tr><td>9</td><td>Cristhian Mosquera</td><td class="dim">D</td><td class="dim">ARS</td><td data-sort="22.0">22</td><td data-sort="77.0">77</td><td data-sort="32.5">32.5</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-41" style="color:var(--mv-crimson);">-41</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="card mv-card" style="border-left:4px solid var(--mv-crimson);">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:10px;">
+        <h2 class="mv-chrome-text" style="margin:0;">Real Juniors</h2>
+        <div style="font-size:32px;font-weight:800;color:var(--mv-crimson);">F</div>
+      </div>
+      <p style="color:var(--mv-ink-muted);line-height:1.6;">The worst draft in the league, and it isn't close. One pick graded as clean value &mdash; the rest of this board, especially the back half, produced the two single worst individual picks anybody made all day.</p>
+
+      <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(260px,1fr));margin:18px 0;">
+        <div class="mv-stat" style="border-color:var(--mv-gold);">
+          <div class="label">Best Pick &mdash; Danny Welbeck (R7, F CHE)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A 35-year-old still scoring at an elite per-90 rate whenever he actually plays &mdash; a genuinely savvy veteran grab.</div>
+          <div style="margin-top:8px;font-size:13px;color:var(--mv-ink-muted);"><strong>11</strong> goals, <strong>2</strong> assists projected for 26/27<br><span style="font-size:11px;">Projected off an elite 0.5 G/90 rate, age-managed down to ~24 starts rather than his 26 in 25/26.</span></div>
+        </div>
+        <div class="mv-stat" style="border-color:var(--mv-crimson);">
+          <div class="label">Worst Pick &mdash; Ted Curd (R5, GK CHE)</div>
+          <div class="value" style="font-size:15px;font-weight:400;line-height:1.5;">A round-5 pick on a Chelsea reserve goalkeeper with zero senior minutes to his name, taken a full 448 spots ahead of where the model would ever have gone near him. This wasn't a reach. This was a typo that got submitted.</div>
+        </div>
+      </div>
+
+      <div class="mv-table-scroll">
+        <table class="mv-table mv-sortable">
+          <thead><tr>
+            <th data-sort-type="num">Rd</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
+            <th data-sort-type="text">Club</th><th data-sort-type="num">Age</th><th data-sort-type="num">FC26</th>
+            <th data-sort-type="num">FPts</th><th data-sort-type="text">Tier</th><th data-sort-type="num">Value</th>
+          </tr></thead>
+          <tbody>
+              <tr><td>1</td><td>Pedro Neto</td><td class="dim">F</td><td class="dim">CHE</td><td data-sort="26.0">26</td><td data-sort="80.0">80</td><td data-sort="126.5">126.5</td><td style="color:var(--mv-gold);font-weight:600;">Star</td><td data-sort="-2" style="color:var(--mv-crimson);">-2</td></tr>
+              <tr><td>2</td><td>Haji Wright</td><td class="dim">F</td><td class="dim">COV</td><td data-sort="28.0">28</td><td data-sort="73.0">73</td><td data-sort="125.5">125.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-54" style="color:var(--mv-crimson);">-54</td></tr>
+              <tr><td>3</td><td>Pascal Gross</td><td class="dim">M</td><td class="dim">BHA</td><td data-sort="35.0">35</td><td data-sort="71.0">71</td><td data-sort="116.0">116</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-35" style="color:var(--mv-crimson);">-35</td></tr>
+              <tr><td>4</td><td>Alex Scott</td><td class="dim">M</td><td class="dim">BOU</td><td data-sort="22.0">22</td><td data-sort="74.0">74</td><td data-sort="101.5">101.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-8" style="color:var(--mv-crimson);">-8</td></tr>
+              <tr><td>5</td><td>Ted Curd</td><td class="dim">GK</td><td class="dim">CHE</td><td data-sort="20.0">20</td><td data-sort="-1">&mdash;</td><td data-sort="0.0">0</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-448" style="color:var(--mv-crimson);">-448</td></tr>
+              <tr><td>6</td><td>Thierno Barry</td><td class="dim">F</td><td class="dim">EVE</td><td data-sort="23.0">23</td><td data-sort="77.0">77</td><td data-sort="25.5">25.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="-41" style="color:var(--mv-crimson);">-41</td></tr>
+              <tr><td>7</td><td>Danny Welbeck</td><td class="dim">F</td><td class="dim">CHE</td><td data-sort="35.0">35</td><td data-sort="78.0">78</td><td data-sort="46.5">46.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="25" style="color:var(--mv-gold);">+25</td></tr>
+              <tr><td>8</td><td>Tyler Adams</td><td class="dim">M</td><td class="dim">BOU</td><td data-sort="27.0">27</td><td data-sort="79.0">79</td><td data-sort="115.5">115.5</td><td style="color:var(--mv-blue);font-weight:600;">Starting XI</td><td data-sort="17" style="color:var(--mv-gold);">+17</td></tr>
+              <tr><td>9</td><td>Mykhailo Mudryk</td><td class="dim">M</td><td class="dim">CHE</td><td data-sort="25.0">25</td><td data-sort="-1">&mdash;</td><td data-sort="4.0">4</td><td style="color:var(--mv-ink-muted);font-weight:600;">Rotation</td><td data-sort="-431" style="color:var(--mv-crimson);">-431</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
+  </div>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-12 02:37 UTC</footer>
+  <script>
+    function mvShowTab(btn, panelId) {
+      var tabs = btn.parentElement.querySelectorAll('.mv-tab');
+      var panels = btn.closest('.mv-card').querySelectorAll('.mv-tab-panel');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      panels.forEach(function(p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }
+
+    // Any <table class="mv-sortable"> gets click-to-sort headers for free.
+    // Mark a <th> with data-sort-type="num" or "text" to make it sortable;
+    // give a <td> a data-sort="..." attribute to sort by a value other than
+    // its displayed text. Only <tbody> rows are reordered -- put running
+    // totals in <tfoot> so they stay pinned.
+    function mvMakeSortable(table) {
+      var tbody = table.querySelector('tbody');
+      if (!tbody) return;
+      table.querySelectorAll('th').forEach(function(th, idx) {
+        if (!th.dataset.sortType) return;
+        th.style.cursor = 'pointer';
+        var dir = 1;
+        th.addEventListener('click', function() {
+          var rows = Array.from(tbody.querySelectorAll('tr'));
+          var type = th.dataset.sortType;
+          rows.sort(function(a, b) {
+            var ac = a.children[idx], bc = b.children[idx];
+            if (!ac || !bc) return 0;
+            var av = ac.dataset.sort !== undefined ? ac.dataset.sort : ac.textContent.trim();
+            var bv = bc.dataset.sort !== undefined ? bc.dataset.sort : bc.textContent.trim();
+            if (type === 'num') {
+              av = parseFloat(av); bv = parseFloat(bv);
+              if (isNaN(av)) av = -Infinity;
+              if (isNaN(bv)) bv = -Infinity;
+            }
+            if (av < bv) return -1 * dir;
+            if (av > bv) return 1 * dir;
+            return 0;
+          });
+          dir *= -1;
+          rows.forEach(function(r) { tbody.appendChild(r); });
+        });
+      });
+    }
+    document.querySelectorAll('table.mv-sortable').forEach(mvMakeSortable);
+  </script>
+</body>
+</html>
