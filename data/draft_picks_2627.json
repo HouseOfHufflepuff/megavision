@@ -1,0 +1,974 @@
+[
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Matheus Cunha",
+  "pos": "F",
+  "club": "MUN",
+  "round": 1,
+  "overall_pick": 1
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "Nico O'Reilly",
+  "pos": "D",
+  "club": "MCI",
+  "round": 1,
+  "overall_pick": 2
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Rayan",
+  "pos": "F",
+  "club": "BOU",
+  "round": 1,
+  "overall_pick": 3
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "Josko Gvardiol",
+  "pos": "D",
+  "club": "MCI",
+  "round": 1,
+  "overall_pick": 4
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Pedro Neto",
+  "pos": "F",
+  "club": "CHE",
+  "round": 1,
+  "overall_pick": 5
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "Nick Woltemade",
+  "pos": "F",
+  "club": "NEW",
+  "round": 1,
+  "overall_pick": 6
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "Dominic Calvert-Lewin",
+  "pos": "F",
+  "club": "LEE",
+  "round": 1,
+  "overall_pick": 7
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Mohammed Kudus",
+  "pos": "M",
+  "club": "TOT",
+  "round": 1,
+  "overall_pick": 8
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Maxence Lacroix",
+  "pos": "D",
+  "club": "CHE",
+  "round": 1,
+  "overall_pick": 9
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Johan Manzambi",
+  "pos": "M",
+  "club": "AVL",
+  "round": 1,
+  "overall_pick": 10
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "Alexis Mac Allister",
+  "pos": "M",
+  "club": "LIV",
+  "round": 1,
+  "overall_pick": 11
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Daizen Maeda",
+  "pos": "F",
+  "club": "IPS",
+  "round": 1,
+  "overall_pick": 12
+ },
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Brian Brobbey",
+  "pos": "F",
+  "club": "SUN",
+  "round": 2,
+  "overall_pick": 13
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "Igor Jesus",
+  "pos": "F",
+  "club": "NOT",
+  "round": 2,
+  "overall_pick": 14
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Emiliano Buendia",
+  "pos": "M",
+  "club": "AVL",
+  "round": 2,
+  "overall_pick": 15
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "Cristian Romero",
+  "pos": "D",
+  "club": "TOT",
+  "round": 2,
+  "overall_pick": 16
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Haji Wright",
+  "pos": "F",
+  "club": "COV",
+  "round": 2,
+  "overall_pick": 17
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "Gonzalo Garc\u00eda",
+  "pos": "F",
+  "club": "FUL",
+  "round": 2,
+  "overall_pick": 18
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "James Tarkowski",
+  "pos": "D",
+  "club": "EVE",
+  "round": 2,
+  "overall_pick": 19
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Abdukodir Khusanov",
+  "pos": "D",
+  "club": "MCI",
+  "round": 2,
+  "overall_pick": 20
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Ronald Araujo",
+  "pos": "D",
+  "club": "LIV",
+  "round": 2,
+  "overall_pick": 21
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Harry Wilson",
+  "pos": "M",
+  "club": "LEE",
+  "round": 2,
+  "overall_pick": 22
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "Gabriel Martinelli",
+  "pos": "M",
+  "club": "ARS",
+  "round": 2,
+  "overall_pick": 23
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Reece James",
+  "pos": "D",
+  "club": "CHE",
+  "round": 2,
+  "overall_pick": 24
+ },
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Harvey Barnes",
+  "pos": "M",
+  "club": "NEW",
+  "round": 3,
+  "overall_pick": 25
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "Kevin",
+  "pos": "F",
+  "club": "FUL",
+  "round": 3,
+  "overall_pick": 26
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Oliver McBurnie",
+  "pos": "F",
+  "club": "HUL",
+  "round": 3,
+  "overall_pick": 27
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "Granit Xhaka",
+  "pos": "M",
+  "club": "SUN",
+  "round": 3,
+  "overall_pick": 28
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Pascal Gross",
+  "pos": "M",
+  "club": "BHA",
+  "round": 3,
+  "overall_pick": 29
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "William Osula",
+  "pos": "F",
+  "club": "NEW",
+  "round": 3,
+  "overall_pick": 30
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "Anton Stach",
+  "pos": "M",
+  "club": "LEE",
+  "round": 3,
+  "overall_pick": 31
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Malick Thiaw",
+  "pos": "D",
+  "club": "NEW",
+  "round": 3,
+  "overall_pick": 32
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Kaoru Mitoma",
+  "pos": "M",
+  "club": "BHA",
+  "round": 3,
+  "overall_pick": 33
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Michael Kayode",
+  "pos": "D",
+  "club": "BRF",
+  "round": 3,
+  "overall_pick": 34
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "James Maddison",
+  "pos": "M",
+  "club": "TOT",
+  "round": 3,
+  "overall_pick": 35
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Joao Gomes",
+  "pos": "M",
+  "club": "AVL",
+  "round": 3,
+  "overall_pick": 36
+ },
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Abdul Fatawu",
+  "pos": "F",
+  "club": "IPS",
+  "round": 4,
+  "overall_pick": 37
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "Micky van de Ven",
+  "pos": "D",
+  "club": "TOT",
+  "round": 4,
+  "overall_pick": 38
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Ethan Ampadu",
+  "pos": "M",
+  "club": "LEE",
+  "round": 4,
+  "overall_pick": 39
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "David Raya",
+  "pos": "GK",
+  "club": "ARS",
+  "round": 4,
+  "overall_pick": 40
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Alex Scott",
+  "pos": "M",
+  "club": "BOU",
+  "round": 4,
+  "overall_pick": 41
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "Conor Gallagher",
+  "pos": "M",
+  "club": "TOT",
+  "round": 4,
+  "overall_pick": 42
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "Danny Ballard",
+  "pos": "D",
+  "club": "SUN",
+  "round": 4,
+  "overall_pick": 43
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Jeremy Jacquet",
+  "pos": "D",
+  "club": "LIV",
+  "round": 4,
+  "overall_pick": 44
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Noah Okafor",
+  "pos": "F",
+  "club": "LEE",
+  "round": 4,
+  "overall_pick": 45
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Victor Mu\u00f1oz",
+  "pos": "F",
+  "club": "LIV",
+  "round": 4,
+  "overall_pick": 46
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "Ruben Dias",
+  "pos": "D",
+  "club": "MCI",
+  "round": 4,
+  "overall_pick": 47
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Tijjani Reijnders",
+  "pos": "M",
+  "club": "MCI",
+  "round": 4,
+  "overall_pick": 48
+ },
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Chris Richards",
+  "pos": "D",
+  "club": "CRY",
+  "round": 5,
+  "overall_pick": 49
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "Marcus Rashford",
+  "pos": "F",
+  "club": "MUN",
+  "round": 5,
+  "overall_pick": 50
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Nilson Angulo",
+  "pos": "M",
+  "club": "SUN",
+  "round": 5,
+  "overall_pick": 51
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "Bazoumana Tour\u00e9",
+  "pos": "F",
+  "club": "NEW",
+  "round": 5,
+  "overall_pick": 52
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Ted Curd",
+  "pos": "GK",
+  "club": "CHE",
+  "round": 5,
+  "overall_pick": 53
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "Gianluigi Donnarumma",
+  "pos": "GK",
+  "club": "MCI",
+  "round": 5,
+  "overall_pick": 54
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "Chris Wood",
+  "pos": "F",
+  "club": "NOT",
+  "round": 5,
+  "overall_pick": 55
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Marco Palestra",
+  "pos": "D",
+  "club": "CHE",
+  "round": 5,
+  "overall_pick": 56
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Nathan Collins",
+  "pos": "D",
+  "club": "BRF",
+  "round": 5,
+  "overall_pick": 57
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Jordan Pickford",
+  "pos": "GK",
+  "club": "EVE",
+  "round": 5,
+  "overall_pick": 58
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "Georginio Rutter",
+  "pos": "F",
+  "club": "BHA",
+  "round": 5,
+  "overall_pick": 59
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Alisson Becker",
+  "pos": "GK",
+  "club": "LIV",
+  "round": 5,
+  "overall_pick": 60
+ },
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Dean Henderson",
+  "pos": "GK",
+  "club": "CRY",
+  "round": 6,
+  "overall_pick": 61
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "Adrien Truffert",
+  "pos": "D",
+  "club": "BOU",
+  "round": 6,
+  "overall_pick": 62
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Caoimhin Kelleher",
+  "pos": "GK",
+  "club": "BRF",
+  "round": 6,
+  "overall_pick": 63
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "Jack Rudoni",
+  "pos": "M",
+  "club": "COV",
+  "round": 6,
+  "overall_pick": 64
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Thierno Barry",
+  "pos": "F",
+  "club": "EVE",
+  "round": 6,
+  "overall_pick": 65
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "Andrey Santos",
+  "pos": "M",
+  "club": "MUN",
+  "round": 6,
+  "overall_pick": 66
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "Robin Roefs",
+  "pos": "GK",
+  "club": "SUN",
+  "round": 6,
+  "overall_pick": 67
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Senne Lammens",
+  "pos": "GK",
+  "club": "MUN",
+  "round": 6,
+  "overall_pick": 68
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Oscar Bobb",
+  "pos": "M",
+  "club": "FUL",
+  "round": 6,
+  "overall_pick": 69
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Antonio Silva",
+  "pos": "D",
+  "club": "BOU",
+  "round": 6,
+  "overall_pick": 70
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "James Hill",
+  "pos": "D",
+  "club": "BOU",
+  "round": 6,
+  "overall_pick": 71
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Matty Cash",
+  "pos": "D",
+  "club": "AVL",
+  "round": 6,
+  "overall_pick": 72
+ },
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Djed Spence",
+  "pos": "D",
+  "club": "TOT",
+  "round": 7,
+  "overall_pick": 73
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "Mathias Jensen",
+  "pos": "M",
+  "club": "BRF",
+  "round": 7,
+  "overall_pick": 74
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Nordi Mukiele",
+  "pos": "D",
+  "club": "SUN",
+  "round": 7,
+  "overall_pick": 75
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "Joachim Andersen",
+  "pos": "D",
+  "club": "FUL",
+  "round": 7,
+  "overall_pick": 76
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Danny Welbeck",
+  "pos": "F",
+  "club": "CHE",
+  "round": 7,
+  "overall_pick": 77
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "Adam Wharton",
+  "pos": "M",
+  "club": "CRY",
+  "round": 7,
+  "overall_pick": 78
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "Mohamed Belloumi",
+  "pos": "M",
+  "club": "HUL",
+  "round": 7,
+  "overall_pick": 79
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Hayden Hackney",
+  "pos": "M",
+  "club": "EVE",
+  "round": 7,
+  "overall_pick": 80
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Emiliano Martinez",
+  "pos": "GK",
+  "club": "AVL",
+  "round": 7,
+  "overall_pick": 81
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Mats Wieffer",
+  "pos": "D",
+  "club": "BHA",
+  "round": 7,
+  "overall_pick": 82
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "Djordje Petrovic",
+  "pos": "GK",
+  "club": "BOU",
+  "round": 7,
+  "overall_pick": 83
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Tarik Muharemovic",
+  "pos": "D",
+  "club": "LEE",
+  "round": 7,
+  "overall_pick": 84
+ },
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Omari Hutchinson",
+  "pos": "F",
+  "club": "NOT",
+  "round": 8,
+  "overall_pick": 85
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "James Trafford",
+  "pos": "GK",
+  "club": "LEE",
+  "round": 8,
+  "overall_pick": 86
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Sasa Lukic",
+  "pos": "M",
+  "club": "IPS",
+  "round": 8,
+  "overall_pick": 87
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "Rodri",
+  "pos": "M",
+  "club": "MCI",
+  "round": 8,
+  "overall_pick": 88
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Tyler Adams",
+  "pos": "M",
+  "club": "BOU",
+  "round": 8,
+  "overall_pick": 89
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "Federico Chiesa",
+  "pos": "F",
+  "club": "LIV",
+  "round": 8,
+  "overall_pick": 90
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "Leif Davis",
+  "pos": "D",
+  "club": "IPS",
+  "round": 8,
+  "overall_pick": 91
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Emersonn",
+  "pos": "F",
+  "club": "IPS",
+  "round": 8,
+  "overall_pick": 92
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Boubacar Kamara",
+  "pos": "M",
+  "club": "AVL",
+  "round": 8,
+  "overall_pick": 93
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Xaver Schlager",
+  "pos": "M",
+  "club": "NOT",
+  "round": 8,
+  "overall_pick": 94
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "Brennan Johnson",
+  "pos": "F",
+  "club": "CRY",
+  "round": 8,
+  "overall_pick": 95
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Lukas Nmecha",
+  "pos": "F",
+  "club": "LEE",
+  "round": 8,
+  "overall_pick": 96
+ },
+ {
+  "code": "POW",
+  "junior_team": "Power Juniors",
+  "name": "Trai Hume",
+  "pos": "D",
+  "club": "SUN",
+  "round": 9,
+  "overall_pick": 97
+ },
+ {
+  "code": "TTS",
+  "junior_team": "THOT Juniors",
+  "name": "Simon Adingra",
+  "pos": "F",
+  "club": "SUN",
+  "round": 9,
+  "overall_pick": 98
+ },
+ {
+  "code": "NAC",
+  "junior_team": "NFCA Juniors",
+  "name": "Pascal Struijk",
+  "pos": "D",
+  "club": "BHA",
+  "round": 9,
+  "overall_pick": 99
+ },
+ {
+  "code": "ASS",
+  "junior_team": "Wholeassed Junior Mules",
+  "name": "Loum Tchaouna",
+  "pos": "M",
+  "club": "COV",
+  "round": 9,
+  "overall_pick": 100
+ },
+ {
+  "code": "REN",
+  "junior_team": "Real Juniors",
+  "name": "Mykhailo Mudryk",
+  "pos": "M",
+  "club": "CHE",
+  "round": 9,
+  "overall_pick": 101
+ },
+ {
+  "code": "BHB",
+  "junior_team": "BHB Juniors",
+  "name": "Cristhian Mosquera",
+  "pos": "D",
+  "club": "ARS",
+  "round": 9,
+  "overall_pick": 102
+ },
+ {
+  "code": "WTF",
+  "junior_team": "WTF Juniors",
+  "name": "Mamadou Sangar\u00e9",
+  "pos": "M",
+  "club": "BRF",
+  "round": 9,
+  "overall_pick": 103
+ },
+ {
+  "code": "QFC",
+  "junior_team": "Quidpool Juniors FC",
+  "name": "Jacob Ramsey",
+  "pos": "M",
+  "club": "NEW",
+  "round": 9,
+  "overall_pick": 104
+ },
+ {
+  "code": "DU",
+  "junior_team": "Divided United Juniors",
+  "name": "Calvin Bassey",
+  "pos": "D",
+  "club": "FUL",
+  "round": 9,
+  "overall_pick": 105
+ },
+ {
+  "code": "FAV",
+  "junior_team": "5th Ave Juniors",
+  "name": "Dan Ndoye",
+  "pos": "F",
+  "club": "NOT",
+  "round": 9,
+  "overall_pick": 106
+ },
+ {
+  "code": "HUF",
+  "junior_team": "HUFF Juniors",
+  "name": "Sven Botman",
+  "pos": "D",
+  "club": "NEW",
+  "round": 9,
+  "overall_pick": 107
+ },
+ {
+  "code": "CRG",
+  "junior_team": "CRG Juniors",
+  "name": "Caleb Yirenkyi",
+  "pos": "M",
+  "club": "COV",
+  "round": 9,
+  "overall_pick": 108
+ }
+]

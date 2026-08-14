@@ -44,6 +44,9 @@ def _get_json(url):
 
 def fetch_elements():
     data = _get_json(BOOTSTRAP_URL)
+    team_names = {t["id"]: t["short_name"] for t in data["teams"]}
+    for e in data["elements"]:
+        e["club_short"] = team_names.get(e["team"], "")
     return data["elements"]
 
 
@@ -60,7 +63,7 @@ def build_lookup(elements):
     return lookup
 
 
-def match(lookup, last_name, first_initial=None):
+def match(lookup, last_name, first_initial=None, club_hint=None):
     candidates = lookup.get(_fold(last_name))
     if not candidates:
         return None
@@ -73,6 +76,12 @@ def match(lookup, last_name, first_initial=None):
         return candidates[0]
     if first_initial:
         narrowed = [c for c in candidates if _fold(c["first_name"][:1]) == _fold(first_initial)]
+        if len(narrowed) == 1:
+            return narrowed[0]
+        if narrowed:
+            candidates = narrowed
+    if club_hint:
+        narrowed = [c for c in candidates if _fold(club_hint) in _fold(c.get("club_short", "")) or _fold(c.get("club_short", "")) in _fold(club_hint)]
         if len(narrowed) == 1:
             return narrowed[0]
     return None

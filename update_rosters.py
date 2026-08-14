@@ -14,6 +14,7 @@ regenerated *.html files. No caching, no temp files, no stored copy of the
 spreadsheet, ever.
 """
 import argparse
+import json
 import subprocess
 import sys
 
@@ -25,6 +26,9 @@ from common import (
     fetch_firm_legacy, compute_fan_formula, fetch_stadiums, club_full_name,
 )
 from player_clean import clean_player
+import sync_fpl_stats as fpl
+
+FPL_MIN_PRICE = 4.0  # FPL's own price floor -- used as a fallback for unmatched players
 
 CURRENT_SALARY_SEASON = "25/26"
 
@@ -81,8 +85,8 @@ KEEP_BOX_ROWS = {
     "youth_legend": (31, 31),
     "youth_players": (34, 40),
 }
-CATEGORY_LABEL = {"kept": "Kept", "youth_legend": "Youth Legend", "youth_players": "Youth Player"}
-CATEGORY_BADGE_COLOR = {"kept": "var(--mv-ink-muted)", "youth_legend": "var(--mv-gold)", "youth_players": "var(--mv-blue)"}
+CATEGORY_LABEL = {"kept": "Kept", "youth_legend": "Youth Legend", "youth_players": "Youth Player", "drafted": "Drafted '27"}
+CATEGORY_BADGE_COLOR = {"kept": "var(--mv-ink-muted)", "youth_legend": "var(--mv-gold)", "youth_players": "var(--mv-blue)", "drafted": "var(--mv-violet)"}
 
 
 def find_keeper_block_col(label_row, code):
@@ -220,6 +224,35 @@ except Exception as e:
     print(f"WARN: could not read FC 26/FPL stats from mega.db ({e}); "
           f"ratings will fall back to live Fantrax fantasy points", file=sys.stderr)
 
+# Real-money salary: every player's actual Fantasy Premier League price
+# (now_cost/10, e.g. $4.0-$15.5), fetched live -- this IS the salary now,
+# for every player on every roster, replacing the sheet's negotiated
+# keeper-contract dollar figures.
+print("Fetching live FPL prices for salaries...")
+_fpl_elements = fpl.fetch_elements()
+_fpl_lookup = fpl.build_lookup(_fpl_elements)
+
+
+def fpl_price(player_name, club=None):
+    if not player_name:
+        return FPL_MIN_PRICE
+    tokens = player_name.split()
+    last = tokens[-1]
+    first_initial = tokens[0][0] if tokens else None
+    e = fpl.match(_fpl_lookup, last, first_initial, club)
+    return e["now_cost"] / 10 if e else FPL_MIN_PRICE
+
+
+# the actual 26/27 draft results (one-time historical fact, see
+# data/draft_picks_2627.json's header note for how it was generated) --
+# only the 12 junior teams drafted, since senior rosters were already full
+# from keepers and their turns were passed every round.
+_drafted_by_code = {}
+with open("data/draft_picks_2627.json") as _f:
+    for _d in json.load(_f):
+        _drafted_by_code.setdefault(_d["code"], []).append(_d)
+print(f"Loaded {sum(len(v) for v in _drafted_by_code.values())} drafted picks from data/draft_picks_2627.json.")
+
 updated = []
 financial_rows = []
 
@@ -229,24 +262,22 @@ for code, name, owners in TEAMS:
         print(f"WARN: no CUT EM IF YA GOT EM block for {code}, skipping", file=sys.stderr)
         continue
 
-    roster_size = len(roster)
-    # only Kept Contracts + Youth Legend + Youth Players count toward payroll --
-    # this IS the roster now, so every player on it counts; nothing else to filter
-    total_payroll = sum(p["current_salary"] for p in roster)
-    pos_counts = {}
-    for p in roster:
-        pos_counts[p["pos"]] = pos_counts.get(p["pos"], 0) + 1
-    season_net = -total_payroll  # no games/revenue yet this season
+    # add this year's actual draft picks (junior team, real Fantrax results)
+    # onto the parent senior team's roster -- these are real players with a
+    # real salary now, not the historical/informational Youth Draft History
+    for _d in _drafted_by_code.get(code, []):
+        pos = (_d["pos"] or "").strip().upper()
+        if pos == "G":
+            pos = "GK"
+        roster.append({
+            "player": _d["name"], "pos": pos, "category": "drafted",
+            "y1": None, "y2": None, "current_salary": 0,
+            "clean_name": _d["name"], "club_full": club_full_name(_d["club"]),
+            "_drafted_club": _d["club"],
+        })
 
-    # CUT EM IF YA GOT EM only tracks 2 salary years (26/27, 27/28) -- no
-    # buyout/3rd-year column, unlike each team's own roster tab (which this
-    # script deliberately no longer reads from for the active roster, since
-    # that tab still lists players who were actually cut)
-    year_totals = [
-        sum(p[key] for p in roster if isinstance(p[key], (int, float)))
-        for key in ("y1", "y2")
-    ]
-    y1_label, y2_label = "26/27", "27/28"
+    roster_size = len(roster)
+    y1_label = "26/27"
 
     stadium_info = stadiums.get(code, {})
     stadium_name = stadium_info.get("stadium") or ""
@@ -269,11 +300,23 @@ for code, name, owners in TEAMS:
     # matched by cleaned last name ----
     team_fpts = fpts_lookup(code)
     for p in roster:
-        cleaned = clean_player(p["player"], p["pos"])
-        p["clean_name"] = cleaned["player_name"]
-        p["club_full"] = club_full_name(cleaned["real_club"])
-        last = (cleaned["player_name"] or "").split()[-1].lower() if cleaned["player_name"] else ""
+        if p["category"] == "drafted":
+            # already-clean name/club straight from Fantrax draft results,
+            # not the sheet's messy "Name - Pos Club" format -- clean_player()
+            # would mis-parse it
+            club_for_price = p.pop("_drafted_club", None)
+        else:
+            cleaned = clean_player(p["player"], p["pos"])
+            p["clean_name"] = cleaned["player_name"]
+            p["club_full"] = club_full_name(cleaned["real_club"])
+            club_for_price = cleaned["real_club"]
+        last = (p["clean_name"] or "").split()[-1].lower() if p["clean_name"] else ""
         p["fpts"] = team_fpts.get(last)
+        # real salary = actual FPL price, for every player regardless of category
+        salary = fpl_price(p["clean_name"], club_for_price)
+        p["current_salary"] = salary
+        p["y1"] = salary
+        p["y2"] = salary
         p["fc26"] = global_fc26_lookup.get(last)
         stats = global_stats_lookup.get(last) or {}
         p["fc26_pot"] = stats.get("fc26_pot")
@@ -292,6 +335,15 @@ for code, name, owners in TEAMS:
             p["xg_per90"] = (p["fpl_xg"] or 0) * 90 / mins
         else:
             p["g_per90"] = p["ga_per90"] = p["xg_per90"] = None
+
+    # payroll: every player on the roster counts, salary is now each
+    # player's real FPL price (set above), computed only after that's done
+    total_payroll = sum(p["current_salary"] for p in roster)
+    pos_counts = {}
+    for p in roster:
+        pos_counts[p["pos"]] = pos_counts.get(p["pos"], 0) + 1
+    season_net = -total_payroll  # no games/revenue yet this season
+
     _matched_fpts = [p["fpts"] for p in roster if isinstance(p["fpts"], (int, float))]
     avg_fpts = (sum(_matched_fpts) / len(_matched_fpts)) if _matched_fpts else None
     _matched_fc26 = [p["fc26"] for p in roster if isinstance(p["fc26"], (int, float))]
@@ -325,19 +377,18 @@ for code, name, owners in TEAMS:
     counts_line = "  &middot;  ".join(f"{pos_counts[p]} {p}" for p in ordered_pos)
     roster_total_row = f'<tr><td colspan="7">{roster_size} total &middot; {counts_line}</td></tr>'
 
-    # ---- finances: the same roster, salary detail by contract year (26/27 + 27/28,
-    # the only two years CUT EM IF YA GOT EM tracks) ----
+    # ---- finances: the same roster, one salary column -- every player's
+    # salary is now their real FPL price (a single flat figure, not a
+    # multi-year negotiated contract, so there's no separate future-year
+    # number to show) ----
     finance_rows = []
     for p in grouped:
-        cells = [money(p["y1"]), money(p["y2"])]
-        cells[0] = f'<strong style="color:var(--mv-gold)">{cells[0]}</strong>'
         finance_rows.append(
             f'<tr><td>{player_label(p)}</td><td class="dim">{p["club_full"] or "—"}</td><td>{p["pos"]}</td>'
             f'<td style="color:{CATEGORY_BADGE_COLOR[p["category"]]};">{CATEGORY_LABEL[p["category"]]}</td>'
-            f'<td data-sort="{sort_val(p["y1"])}">{cells[0]}</td>'
-            f'<td data-sort="{sort_val(p["y2"])}">{cells[1]}</td></tr>'
+            f'<td data-sort="{sort_val(p["current_salary"])}"><strong style="color:var(--mv-gold)">{money(p["current_salary"])}</strong></td></tr>'
         )
-    finance_total_row = f'<tr><td colspan="6">{roster_size} total &middot; {counts_line}</td></tr>'
+    finance_total_row = f'<tr><td colspan="5">{roster_size} total &middot; {counts_line}</td></tr>'
 
     # ---- scouting: EA FC 26 ratings + 2025/26 Premier League performance
     # (from mega.db -- see sync_fc26_ratings.py / sync_fpl_stats.py) ----
@@ -493,14 +544,17 @@ for code, name, owners in TEAMS:
         <button class="mv-tab" onclick="mvShowTab(this,'scouting-{code}')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
-        Roster is Kept Contracts + Youth Legend + Youth Players, straight from the league's keeper sheet &mdash;
-        <span style="color:{CATEGORY_BADGE_COLOR["youth_legend"]};">Youth Legend</span> and
-        <span style="color:{CATEGORY_BADGE_COLOR["youth_players"]};">Youth Player</span> tags mark this year's kept youth.
+        Roster is Kept Contracts + Youth Legend + Youth Players from the league's keeper sheet, plus this
+        year's actual draft picks &mdash;
+        <span style="color:{CATEGORY_BADGE_COLOR["youth_legend"]};">Youth Legend</span>,
+        <span style="color:{CATEGORY_BADGE_COLOR["youth_players"]};">Youth Player</span>, and
+        <span style="color:{CATEGORY_BADGE_COLOR["drafted"]};">Drafted '27</span> tags mark each.
+        Salary for every player is their real Fantasy Premier League price, not a negotiated contract value.
         Depth Chart is ranked by EA FC 26 overall rating (Fantrax fantasy points as fallback/tiebreak).
       </div>
 
       <div id="roster-{code}" class="mv-tab-panel active">
-        <div class="sub">{roster_size} players kept for 26/27 &middot; FC 26 rating, live Fantrax points, current-season salary &middot; click a column to sort</div>
+        <div class="sub">{roster_size} players for 26/27 &middot; FC 26 rating, live Fantrax points, real FPL salary &middot; click a column to sort</div>
         <div class="mv-table-scroll">
           <table class="mv-table mv-sortable" id="roster-table-{code}">
             <thead><tr>
@@ -528,12 +582,9 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="finances-{code}" class="mv-tab-panel">
-        <div class="sub">Payroll by contract year, team totals then player-by-player &middot; click a column to sort</div>
+        <div class="sub">Payroll by real FPL salary, team total then player-by-player &middot; click a column to sort</div>
         <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
-          {"".join(
-              f'<div class="mv-stat"><div class="label">{lbl} Payroll</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
-              for lbl, tot in zip((y1_label, y2_label), year_totals) if lbl
-          )}
+          <div class="mv-stat"><div class="label">{y1_label} Payroll</div><div class="value" style="font-size:18px;">{money(total_payroll)}</div></div>
         </div>
         <div class="mv-table-scroll">
           <table class="mv-table mv-sortable" id="finances-table-{code}">
@@ -542,8 +593,7 @@ for code, name, owners in TEAMS:
               <th data-sort-type="text">Club</th>
               <th data-sort-type="text">Pos</th>
               <th data-sort-type="text">Category</th>
-              <th data-sort-type="num"><span style="color:var(--mv-gold)">{y1_label}</span></th>
-              <th data-sort-type="num">{y2_label}</th>
+              <th data-sort-type="num"><span style="color:var(--mv-gold)">Salary</span></th>
             </tr></thead>
             <tbody>
               {"".join(finance_rows)}
@@ -702,7 +752,7 @@ financials_rows_html = "\n            ".join(
 financials_html = head("Financials", "financials.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Financials</h1>
-      <div class="sub">26/27 salary cost per team &mdash; sum of Kept Contracts + Youth Legend + Youth Players salaries, straight off the keeper sheet</div>
+      <div class="sub">26/27 salary cost per team &mdash; sum of every player's real Fantasy Premier League price (Kept + Youth + this year's draft picks)</div>
     </div>
 
     <section class="card mv-card">
