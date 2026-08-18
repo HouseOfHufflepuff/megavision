@@ -371,6 +371,7 @@ def position_sort_key(pos):
 NAV_LINKS = [
     ("index.html", "Home"),
     ("teams.html", "Teams"),
+    ("rulez.html", "Rulez"),
     ("financials.html", "Financials"),
     ("draft.html", "Draft Board"),
     ("draft-grades.html", "Draft Grades"),
