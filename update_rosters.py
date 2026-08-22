@@ -192,12 +192,10 @@ for _roster in fantrax_rosters.values():
     for _p in _roster:
         global_fpts_lookup[_p["name"].split()[-1].lower()] = _p["fpts"]
 
-team_wins = {}
-for _code, _s in fantrax_standings.items():
-    try:
-        team_wins[_code] = int(_s["record"].split("-")[0])
-    except (ValueError, IndexError, AttributeError):
-        team_wins[_code] = None
+# 26/27 hasn't kicked off yet -- every team starts 0, same as the 0-0-0
+# record already shown on each team page; Fantrax's live standings still
+# reflect the prior season, not a real record for the new one.
+team_wins = {code: 0 for code, _, _ in TEAMS}
 
 # EA FC 26 ratings + 2025/26 FPL performance stats, read from mega.db
 # (populated by the separate sync_fc26_ratings.py / sync_fpl_stats.py
@@ -774,6 +772,9 @@ teams_table_rows = "\n            ".join(
     f'<td data-sort="{r["trophies"]}">{r["trophies"]}</td>'
     f'<td data-sort="{r["avg_fc26"] if isinstance(r["avg_fc26"], (int, float)) else -1}">{fmt_num(r["avg_fc26"], 1)}</td>'
     f'<td data-sort="{r["avg_youth_fc26"] if isinstance(r["avg_youth_fc26"], (int, float)) else -1}">{fmt_num(r["avg_youth_fc26"], 1)}</td>'
+    f'<td data-sort="{r["season_costs"]["26/27"]}">{money(r["season_costs"]["26/27"])}</td>'
+    f'<td data-sort="{r["season_costs"]["27/28"]}">{money(r["season_costs"]["27/28"])}</td>'
+    f'<td data-sort="{r["season_costs"]["28/29"]}">{money(r["season_costs"]["28/29"])}</td>'
     f'</tr>'
     for r in financial_rows
 )
@@ -797,6 +798,9 @@ teams_html = head("Teams", "teams.html") + hero_logo() + f"""
               <th data-sort-type="num"># Trophies &#9650;&#9660;</th>
               <th data-sort-type="num">Avg FC 26 Rating &#9650;&#9660;</th>
               <th data-sort-type="num">Avg Youth Rating &#9650;&#9660;</th>
+              <th data-sort-type="num">26/27 Cost &#9650;&#9660;</th>
+              <th data-sort-type="num">27/28 Cost &#9650;&#9660;</th>
+              <th data-sort-type="num">28/29 Cost &#9650;&#9660;</th>
             </tr>
           </thead>
           <tbody>
@@ -810,6 +814,9 @@ teams_html = head("Teams", "teams.html") + hero_logo() + f"""
         (source: a community CSV mirror of the FC 26 database on GitHub, since EA's own site, sofifa.com,
         and futwiz.com all explicitly disallow ClaudeBot in robots.txt). Run
         <code>sync_fc26_ratings.py</code> to refresh the ratings in the local database this reads from.
+        Cost columns are each team's real contract wages plus net transfer fees for that season, same
+        figures as <a href="financials.html" style="color:inherit;">Financials</a>. Wins reset to 0 --
+        26/27 hasn't kicked off yet.
       </p>
     </section>
 """ + foot()
