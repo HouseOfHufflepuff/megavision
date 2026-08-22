@@ -72,6 +72,18 @@ CREATE TABLE IF NOT EXISTS fbref_players (
     UNIQUE(player_name, club)
 );
 
+CREATE TABLE IF NOT EXISTS team_player_wages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,
+    category TEXT NOT NULL,   -- kept, youth_legend, youth_players, drafted
+    season TEXT NOT NULL,     -- '25/26', '26/27', '27/28'
+    wage REAL,
+    source TEXT NOT NULL,     -- team_tab (real 3yr contract), cut_em_sheet (2yr fallback), fpl_price (drafted, single year)
+    updated_at TEXT NOT NULL,
+    UNIQUE(team_code, player_name, season)
+);
+
 CREATE TABLE IF NOT EXISTS team_week_financials (
     team_code TEXT NOT NULL REFERENCES teams(code),
     week INTEGER NOT NULL,

@@ -57,6 +57,16 @@ NAME_OVERRIDES = {
     "r dias": "Ruben Dias",
 }
 
+# Raw strings that are already a correct full name but have an internal
+# hyphen the dash-splitting parser below would otherwise mistake for a
+# "name - CLUB" separator (there's no whitespace around the hyphen either
+# way, so a shape-only heuristic can't tell "Gibbs-White" the surname apart
+# from "M-BHA" the real pos-club separator). Checked against the raw string
+# as-is, before any parsing, so it can never misfire on other names.
+RAW_STRING_OVERRIDES = {
+    "morgan gibbs-white": "Morgan Gibbs-White",
+}
+
 
 def _strip_note(raw):
     m = re.search(r"\(([^)]*)\)", raw)
@@ -77,6 +87,11 @@ def clean_player(raw, sheet_pos):
     if not s:
         return {"player_name": original, "real_club": None, "note": note,
                 "needs_review": True, "is_placeholder_gk": False, "resolved_via_override": False}
+
+    raw_override = RAW_STRING_OVERRIDES.get(s.lower())
+    if raw_override:
+        return {"player_name": raw_override, "real_club": None, "note": note,
+                "needs_review": False, "is_placeholder_gk": False, "resolved_via_override": True}
 
     # club-name-only "auto GK" placeholder row
     if (sheet_pos or "").upper() in ("GK", "G") and s.lower() in KNOWN_CLUBS:
