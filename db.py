@@ -84,6 +84,17 @@ CREATE TABLE IF NOT EXISTS team_player_wages (
     UNIQUE(team_code, player_name, season)
 );
 
+CREATE TABLE IF NOT EXISTS transfers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_name TEXT NOT NULL,
+    from_team TEXT NOT NULL,   -- selling team, receives the fee
+    to_team TEXT NOT NULL,     -- buying team, pays the fee
+    amount REAL NOT NULL,
+    season TEXT NOT NULL,      -- season the fee counts against, e.g. '26/27'
+    transfer_date TEXT,
+    created_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS team_week_financials (
     team_code TEXT NOT NULL REFERENCES teams(code),
     week INTEGER NOT NULL,

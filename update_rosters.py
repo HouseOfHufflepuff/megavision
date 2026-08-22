@@ -28,6 +28,7 @@ from common import (
 from player_clean import clean_player
 import db
 import sync_fpl_stats as fpl
+import transfer as trx
 
 FPL_MIN_PRICE = 4.0  # FPL's own price floor -- used as a fallback for unmatched players
 
@@ -266,6 +267,9 @@ for _team_code, _pname, _season, _wage in _wages_conn.execute(
 _wages_conn.close()
 print(f"Loaded real contract wages for {sum(len(v) for v in _wages_by_team.values())} players from team_player_wages.")
 
+_all_transfers = trx.all_transfers()
+print(f"Loaded {len(_all_transfers)} transfer{'s' if len(_all_transfers) != 1 else ''} from transfers.")
+
 ALL_SEASONS = ["25/26", "26/27", "27/28", "28/29"]
 CURRENT_SEASON = "26/27"
 
@@ -420,7 +424,9 @@ for code, name, owners in TEAMS:
     # ---- finances: the same roster, one column per forward season that
     # anyone on this roster actually has a real contract year for (25/26
     # never shown -- it's already sunk) ----
-    finance_seasons = [s for s in ("26/27", "27/28", "28/29") if any(s in p["wages"] for p in roster)]
+    team_transfers = [t for t in _all_transfers if t["from_team"] == code or t["to_team"] == code]
+    finance_seasons = [s for s in ("26/27", "27/28", "28/29")
+                        if any(s in p["wages"] for p in roster) or any(t["season"] == s for t in team_transfers)]
     finance_rows = []
     for p in grouped:
         cells = "".join(
@@ -434,8 +440,29 @@ for code, name, owners in TEAMS:
             f'<td style="color:{CATEGORY_BADGE_COLOR[p["category"]]};">{CATEGORY_LABEL[p["category"]]}</td>'
             f'{cells}</tr>'
         )
+    # transfer fees as their own line items -- a cost (red-tinted) for the
+    # buyer, a credit (green-tinted, shown negative) for the seller -- so the
+    # season total is transparently explained, not just baked silently in
+    for t in team_transfers:
+        is_buyer = t["to_team"] == code
+        counterparty = t["from_team"] if is_buyer else t["to_team"]
+        verb = "Signed" if is_buyer else "Sold"
+        prep = "from" if is_buyer else "to"
+        amt = t["amount"] if is_buyer else -t["amount"]
+        color = "var(--mv-crimson)" if is_buyer else "var(--mv-blue)"
+        cells = "".join(
+            f'<td data-sort="{amt if season == t["season"] else 0}">'
+            + (f'<strong style="color:{color}">{money(amt)}</strong>' if season == t["season"] else "—")
+            + "</td>"
+            for season in finance_seasons
+        )
+        finance_rows.append(
+            f'<tr><td colspan="4" class="dim">Transfer Fee &mdash; {verb} {t["player_name"]} {prep} {counterparty}</td>{cells}</tr>'
+        )
     finance_season_totals = [
-        sum(p["wages"].get(season, 0) for p in roster) for season in finance_seasons
+        sum(p["wages"].get(season, 0) for p in roster)
+        + trx.team_transfer_net(code, season, _all_transfers)
+        for season in finance_seasons
     ]
     finance_total_row = (
         f'<tr><td colspan="4">{roster_size} total &middot; {counts_line}</td>'
@@ -636,10 +663,10 @@ for code, name, owners in TEAMS:
       </div>
 
       <div id="finances-{code}" class="mv-tab-panel">
-        <div class="sub">Real contract wages by year, team totals then player-by-player &middot; click a column to sort</div>
+        <div class="sub">Real contract wages by year plus any transfer fees, team totals then player-by-player &middot; click a column to sort</div>
         <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
           {"".join(
-              f'<div class="mv-stat"><div class="label">{season} Payroll</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
+              f'<div class="mv-stat"><div class="label">{season} Cost</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
               for season, tot in zip(finance_seasons, finance_season_totals)
           )}
         </div>
@@ -722,6 +749,10 @@ for code, name, owners in TEAMS:
         "wins": team_wins.get(code),
         "capacity": stadiums.get(code, {}).get("capacity"),
         "stadium": stadiums.get(code, {}).get("stadium"),
+        "season_costs": {
+            s: sum(p["wages"].get(s, 0) for p in roster) + trx.team_transfer_net(code, s, _all_transfers)
+            for s in ("26/27", "27/28", "28/29")
+        },
     })
 
 print(f"Updated {len(updated)} team pages:")
@@ -787,38 +818,51 @@ with open("teams.html", "w") as f:
     f.write(teams_html)
 print("Updated teams.html")
 
-# ---------------- financials.html: 26/27 salary cost only ----------------
-# Cost is exactly each team's 26/27 payroll as already computed in the main
-# per-team loop above (financial_rows[i]["cost"] == total_payroll == the sum
-# of current_salary across that team's Kept Contracts + Youth Legend + Youth
-# Players -- the same figure shown on the team page). No games/revenue here:
-# 26/27 hasn't started (the draft hasn't even happened yet), so there's
-# nothing real to show beyond salary cost.
-financial_rows_sorted = sorted(financial_rows, key=lambda r: -(r["cost"] or 0))
+# ---------------- financials.html: all 3 forward seasons ----------------
+# Cost per season is the sum of each roster player's real contract wage in
+# that season (financial_rows[i]["season_costs"] -- same per-player wages
+# dict used to build each team's own Finances tab). 25/26 is never shown --
+# it's already sunk. Sorted by 26/27 cost, the current season, same as before.
+financial_rows_sorted = sorted(financial_rows, key=lambda r: -(r["season_costs"]["26/27"] or 0))
 
 financials_rows_html = "\n            ".join(
     f'<tr>'
     f'<td><a href="team-{r["code"].lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{r["name"]}</a></td>'
     f'<td class="dim">{r["owner"]}</td>'
-    f'<td>{money(r["cost"])}</td>'
+    f'<td><strong style="color:var(--mv-gold)">{money(r["season_costs"]["26/27"])}</strong></td>'
+    f'<td>{money(r["season_costs"]["27/28"])}</td>'
+    f'<td>{money(r["season_costs"]["28/29"])}</td>'
     f'<td>{r["trophies"]}</td>'
     f'</tr>'
     for r in financial_rows_sorted
 )
 
+financials_totals = {
+    s: sum(r["season_costs"][s] for r in financial_rows_sorted) for s in ("26/27", "27/28", "28/29")
+}
+
 financials_html = head("Financials", "financials.html") + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Financials</h1>
-      <div class="sub">26/27 salary cost per team &mdash; sum of each player's real contract wage (Kept + Youth + this year's draft picks)</div>
+      <div class="sub">Cost per team, all 3 forward seasons &mdash; sum of each player's real contract wage (Kept + Youth + this year's draft picks) plus net transfer fees paid/received that season</div>
     </div>
 
     <section class="card mv-card">
       <div class="mv-table-scroll">
         <table class="mv-table">
-          <thead><tr><th>Team</th><th>Owner</th><th>26/27 Salary Cost</th><th># Trophies</th></tr></thead>
+          <thead><tr><th>Team</th><th>Owner</th><th>26/27</th><th>27/28</th><th>28/29</th><th># Trophies</th></tr></thead>
           <tbody>
             {financials_rows_html}
           </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">League Total</td>
+              <td><strong style="color:var(--mv-gold)">{money(financials_totals["26/27"])}</strong></td>
+              <td>{money(financials_totals["27/28"])}</td>
+              <td>{money(financials_totals["28/29"])}</td>
+              <td></td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </section>

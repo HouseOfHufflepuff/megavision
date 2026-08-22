@@ -95,10 +95,14 @@ def season_next(label):
 
 
 def name_match(a, b):
-    """True if a and b are plausibly the same player. Handles both the
+    """True if a and b are plausibly the same player. Handles the
     clean_player() hyphenated-surname truncation bug (one last name a
-    prefix of the other) and abbreviated-first-name sheet entries like
-    "P. Porro" vs. "Pedro Porro" (compare first initial, not full token)."""
+    prefix of the other), abbreviated-first-name sheet entries like
+    "P. Porro" vs. "Pedro Porro" (compare first initial, not full token),
+    and bare-surname keeper-sheet entries like "Rice" vs. "Declan Rice"
+    (a single-token side has no first initial to check at all -- e.g.
+    CRG's Youth Legend "Rice" only matches the youth tab's "Declan Rice"
+    once the initial check is skipped for single-token names)."""
     if not a or not b:
         return False
     ta, tb = _fold(a).split(), _fold(b).split()
@@ -106,10 +110,12 @@ def name_match(a, b):
         return False
     if ta == tb:
         return True
-    if ta[0][0] != tb[0][0]:  # first initial must match
-        return False
     la, lb = ta[-1], tb[-1]
-    return la == lb or la.startswith(lb) or lb.startswith(la)
+    if not (la == lb or la.startswith(lb) or lb.startswith(la)):
+        return False
+    if len(ta) == 1 or len(tb) == 1:  # bare surname -- nothing to check initials against
+        return True
+    return ta[0][0] == tb[0][0]
 
 
 def main():
@@ -173,9 +179,24 @@ def main():
                 if len(present) != len(set(present)):
                     base = l1 or "25/26"
                     labels = [base, season_next(base), season_next(season_next(base))]
+                written_seasons = set()
                 for label, wage in zip(labels, wages):
                     if wage is not None:
                         rows_for_team.append((code, player, cat, label, wage, "team_tab"))
+                        written_seasons.add(label)
+                # team_tab can be sparse on the CURRENT season specifically
+                # (e.g. a bare-surname sheet row like "Gomez" that never got
+                # a 26/27 figure filled in at all) -- backfill just 26/27
+                # from the live roster's own y1 column in that case. Do NOT
+                # backfill 27/28 from y2 when team_tab already has real data:
+                # a missing 3rd column there means a genuinely shorter deal
+                # (e.g. Gakpo's real contract is 2 years, not 3), and the
+                # roster sheet's y2 duplicates y1 rather than giving a
+                # distinct 3rd-year figure -- backfilling it would fabricate
+                # a fake 27/28 and, worse, make an already-short contract
+                # look "already extended" and silently skip a real extension.
+                if "26/27" not in written_seasons and p.get("y1") is not None:
+                    rows_for_team.append((code, player, cat, "26/27", p["y1"], "cut_em_sheet"))
             else:
                 for label, wage in (("26/27", p.get("y1")), ("27/28", p.get("y2"))):
                     if wage is not None:

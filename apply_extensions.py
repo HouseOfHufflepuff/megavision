@@ -167,6 +167,33 @@ def main():
     extend_drafted(cur, "CRG", "Matty Cash", 2)
     for p in ["Enzo", "Guimaraes", "Szoboszloi", "Van Hecke", "Mbeumo", "Evanilson"]:
         extend_kept(cur, "CRG", p, "kept", 3)
+    extend_kept(cur, "CRG", "Declan Rice", "youth_legend", 3)
+
+    # --- post-hoc patches: names the initial pass couldn't resolve ---
+    print("=== patches ===")
+    # NAC: Le Fee / Mitchell had only a sunk 24/25 wage on record (no 26/27
+    # base to extend from) -- backfill their real 26/27 from the keeper
+    # sheet's own y1 column before extending to the requested 2 years.
+    insert(cur, "NAC", "Tyrick Mitchell", "kept", "26/27", 6.655, "cut_em_sheet")
+    insert(cur, "NAC", "Enzo Le Fee", "kept", "26/27", 4.4, "cut_em_sheet")
+    extend_kept(cur, "NAC", "Tyrick Mitchell", "kept", 2)
+    extend_kept(cur, "NAC", "Enzo Le Fee", "kept", 2)
+
+    # QFC: stored name carried a stray trailing position-code token
+    # ("Jeremy Doku M") that the fuzzy matcher can't see past -- rename in
+    # place, then extend normally.
+    cur.execute("UPDATE team_player_wages SET player_name='Jeremy Doku' WHERE team_code='QFC' AND player_name='Jeremy Doku M'")
+    extend_kept(cur, "QFC", "Jeremy Doku", "kept", 3)
+
+    # REN: email's "F-Wright" is Haji Wright (drafted, fpl_price baseline).
+    extend_drafted(cur, "REN", "Haji Wright", 3)
+
+    print("=== POW (last plan Sam sent -- never got a final confirm, applying as-is per instruction) ===")
+    for p in ["Chris Richards", "Harvey Barnes", "Matheus Cunha", "Brian Brobbey", "Omari Hutchinson"]:
+        extend_drafted(cur, "POW", p, 3)
+    for p in ["Rayan Ait Nouri", "Maxim DeCuyper", "Youri Tilemans", "Jaidon Anthony"]:
+        extend_kept(cur, "POW", p, "kept", 3)
+    cut_player(cur, "POW", "Djed Spence")  # "Djed Spence is gone as well" -- left the team
 
     conn.commit()
     conn.close()
