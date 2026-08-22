@@ -89,6 +89,11 @@ def _fold(s):
     return unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode("ascii").lower()
 
 
+def season_next(label):
+    a, b = label.split("/")
+    return f"{int(a) + 1:02d}/{int(b) + 1:02d}"
+
+
 def name_match(a, b):
     """True if a and b are plausibly the same player. Handles both the
     clean_player() hyphenated-surname truncation bug (one last name a
@@ -122,16 +127,12 @@ def main():
 
     conn = connect()
     cur = conn.cursor()
-    # HUF already has its real negotiated extensions applied (extend_contracts_huf.py)
-    # -- never wipe that, only rebuild everyone else's baseline merge
-    cur.execute("DELETE FROM team_player_wages WHERE team_code != 'HUF'")
+    cur.execute("DELETE FROM team_player_wages")  # full rebuild -- extensions get re-applied after
 
     now = datetime.now(timezone.utc).isoformat()
     report = {}  # code -> list of row dicts, for the HUF display / QA
 
     for code, name, owners in TEAMS:
-        if code == "HUF":
-            continue  # already has its real extensions applied, don't touch
         roster = parse_keeper_roster(wb, code)
         if roster is None:
             continue
@@ -158,12 +159,21 @@ def main():
 
             match = next((r for r in team_tab_rows if name_match(r[0], player)), None)
             if match:
-                # positional season labels, not the stored label text -- at
-                # least REN's rows have salary_year3_label wrongly copied as
-                # "26/27" instead of "27/28" (a pre-existing bug from the old
-                # sync script), so the stored label can't be trusted
+                # trust the stored labels -- teams' own tabs don't all use
+                # the same season window (BHB/CRG start at 26/27, NAC at
+                # 24/25, most others at 25/26), so hardcoding a fixed
+                # sequence mislabels anyone off the majority pattern. Only
+                # regenerate sequentially (from year1's own label) when the
+                # stored labels are actually broken -- e.g. REN has
+                # salary_year2_label == salary_year3_label, both "26/27",
+                # a real bug in the old sync script.
                 _, l1, s1, l2, s2, l3, s3 = match
-                for label, wage in (("25/26", s1), ("26/27", s2), ("27/28", s3)):
+                labels, wages = [l1, l2, l3], [s1, s2, s3]
+                present = [l for l, w in zip(labels, wages) if w is not None and l]
+                if len(present) != len(set(present)):
+                    base = l1 or "25/26"
+                    labels = [base, season_next(base), season_next(season_next(base))]
+                for label, wage in zip(labels, wages):
                     if wage is not None:
                         rows_for_team.append((code, player, cat, label, wage, "team_tab"))
             else:

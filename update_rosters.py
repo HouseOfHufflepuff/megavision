@@ -355,7 +355,7 @@ for code, name, owners in TEAMS:
         # which is historical/sunk -- a player with no forward salary, e.g.
         # dropped down to $0 this year, should show $0, not their old
         # historical value)
-        _forward = {s: w for s, w in wages.items() if s != "25/26"}
+        _forward = {s: w for s, w in wages.items() if s >= CURRENT_SEASON}
         p["current_salary"] = wages.get(CURRENT_SEASON) if CURRENT_SEASON in wages else (min(_forward.items())[1] if _forward else 0)
         p["fc26"] = global_fc26_lookup.get(last)
         stats = global_stats_lookup.get(last) or {}
