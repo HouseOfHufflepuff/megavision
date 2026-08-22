@@ -122,12 +122,16 @@ def main():
 
     conn = connect()
     cur = conn.cursor()
-    cur.execute("DELETE FROM team_player_wages")  # one-time full rebuild
+    # HUF already has its real negotiated extensions applied (extend_contracts_huf.py)
+    # -- never wipe that, only rebuild everyone else's baseline merge
+    cur.execute("DELETE FROM team_player_wages WHERE team_code != 'HUF'")
 
     now = datetime.now(timezone.utc).isoformat()
     report = {}  # code -> list of row dicts, for the HUF display / QA
 
     for code, name, owners in TEAMS:
+        if code == "HUF":
+            continue  # already has its real extensions applied, don't touch
         roster = parse_keeper_roster(wb, code)
         if roster is None:
             continue
@@ -185,23 +189,17 @@ def main():
     conn.commit()
 
     total_rows = sum(len(v) for v in report.values())
-    print(f"\nWrote {total_rows} wage rows across {len(report)} teams to team_player_wages.\n")
+    print(f"\nWrote {total_rows} wage rows across {len(report)} teams to team_player_wages (HUF untouched).\n")
 
     print("=" * 100)
-    print("HUF (House of Hufflepuff, senior + junior combined) -- QA view")
+    print("Per-team summary (non-HUF)")
     print("=" * 100)
-    huf_rows = report.get("HUF", [])
-    by_player = {}
-    for code, player, cat, season, wage, source in huf_rows:
-        by_player.setdefault((player, cat), {})[season] = (wage, source)
-    for (player, cat), seasons in sorted(by_player.items(), key=lambda kv: kv[0][0]):
-        parts = []
-        for season in ("25/26", "26/27", "27/28"):
-            if season in seasons:
-                wage, source = seasons[season]
-                flag = "" if source == "team_tab" else f"[{source}]"
-                parts.append(f"{season}=${wage:.2f}{flag}")
-        print(f"  {player:28} {cat:14} {'  '.join(parts)}")
+    for code in sorted(report):
+        rows = report[code]
+        players = {r[1] for r in rows}
+        weak = sorted({r[1] for r in rows if r[5] == "cut_em_sheet"})
+        print(f"  {code:5} {len(players):>2} players, {len(rows):>3} wage rows"
+              + (f"  -- weak/fallback: {weak}" if weak else ""))
 
     conn.close()
 

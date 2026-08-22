@@ -119,6 +119,13 @@ def clean_player(raw, sheet_pos):
         elif len(right_tokens) == 2 and right_tokens[0].strip(",").upper() in POS_CODES \
                 and re.match(r"^[A-Za-z]{2,15}$", right_tokens[1]):
             name_part, club = left, right_tokens[1].upper()
+    else:
+        # no dash at all: "Name POS CLUB" with plain spaces (e.g. "Curtis
+        # Jones M LIV") -- only strip when the last two tokens are exactly
+        # [valid POS_CODE, alpha club token], so a normal name is never touched
+        parts = s.split()
+        if len(parts) >= 3 and parts[-2].upper() in POS_CODES and re.match(r"^[A-Za-z]{2,15}$", parts[-1]):
+            name_part, club = " ".join(parts[:-2]), parts[-1].upper()
 
     # strip a trailing embedded position code token (e.g. "... D", "... M")
     tokens = name_part.split(" ")
