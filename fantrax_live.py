@@ -72,6 +72,34 @@ def fetch_standings(sess):
     return out
 
 
+REGULAR_SEASON_WEEKS = range(1, 37)  # getLeagueInfo's playoffs.lastRegularSeasonPeriod == 36; 37-38 are playoffs
+
+
+def fetch_schedule(sess, weeks=REGULAR_SEASON_WEEKS):
+    """Real regular-season matchups straight from Fantrax's own scoring-
+    period schedule (getLeagueInfo's "matchups"), NOT the Google Sheet's
+    "League Schedule" tab -- that tab's home/away is wrong for at least 3 of
+    6 week-1 fixtures (confirmed against this same endpoint), so it must
+    never be used as the schedule source again. Public endpoint, no auth
+    needed. Each entry: week, home code, away code. No fan interest /
+    ticket revenue here -- Fantrax doesn't track that, only our own
+    (currently untrustworthy) sheet did."""
+    resp = sess.get("https://www.fantrax.com/fxea/general/getLeagueInfo", params={"leagueId": LEAGUE_ID}, timeout=20)
+    resp.raise_for_status()
+    id_to_code = {v: k for k, v in FANTRAX_TEAM_ID.items()}
+    games = []
+    for period in resp.json()["matchups"]:
+        week = period["period"]
+        if week not in weeks:
+            continue
+        for m in period["matchupList"]:
+            home_code = id_to_code.get(m["home"]["id"])
+            away_code = id_to_code.get(m["away"]["id"])
+            if home_code and away_code:
+                games.append({"week": week, "home": home_code, "away": away_code})
+    return games
+
+
 def fetch_roster(sess, team_id):
     """List of {name, pos, fpts} for every rostered player (active + reserve)."""
     data = _post(sess, "getTeamRosterInfo", teamId=team_id, view="STATS")

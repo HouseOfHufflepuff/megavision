@@ -22,7 +22,7 @@ from common import (
     TEAMS, head, foot, hero_logo, fetch_live_workbook, EXPORT_URL, fetch_trophy_room,
     tally_trophies, COMP_ABBR, fetch_fans, owner_short, POSITION_ORDER,
     position_sort_key, fetch_youth, fetch_all_season_labels,
-    fetch_season_salary_totals, fetch_league_schedule_games, fetch_standings_reference,
+    fetch_season_salary_totals, fetch_standings_reference,
     fetch_firm_legacy, compute_fan_formula, fetch_stadiums, club_full_name,
 )
 from player_clean import clean_player
@@ -156,20 +156,6 @@ stadiums = fetch_stadiums(wb)
 rank_bonus, points_bonus_table = fetch_standings_reference(wb)
 firm_legacy = fetch_firm_legacy(wb)
 
-# full 22-week regular-season schedule (home/away, fan interest, attendance,
-# ticket price, gate receipts, home/away revenue split) straight off the
-# sheet's own "League Schedule" tab -- real matchups, not guessed
-schedule_games = fetch_league_schedule_games(wb, weeks=range(1, 23))
-games_by_team = {code: [] for code, _, _ in TEAMS}
-for g in schedule_games:
-    if g["home"] in games_by_team:
-        games_by_team[g["home"]].append(g)
-    if g["away"] in games_by_team:
-        games_by_team[g["away"]].append(g)
-for _code in games_by_team:
-    games_by_team[_code].sort(key=lambda g: g["week"])
-print(f"Loaded {len(schedule_games)} scheduled games across {len(games_by_team)} teams from League Schedule.")
-
 # Live Fantrax fantasy points, used to rank the depth chart within each
 # position and as the "rating" column on teams.html. (EA FC 26 ratings were
 # the original plan, but EA's own site, sofifa.com, and futwiz.com all
@@ -184,10 +170,28 @@ try:
     fantrax_rosters = fantrax_live.fetch_all_rosters(_fx_sess)
     top_xi, mbp = fantrax_live.compute_top_xi(fantrax_rosters)
     fan_formula = compute_fan_formula(rank_bonus, points_bonus_table, firm_legacy, fantrax_standings, top_xi, mbp)
+    # the REAL regular-season schedule (periods 1-36; 37-38 are playoffs),
+    # straight off Fantrax's own getLeagueInfo -- NOT the Google Sheet's
+    # "League Schedule" tab, whose home/away is simply wrong (confirmed
+    # against this same endpoint: 3 of 6 week-1 fixtures had home/away
+    # flipped). Never source the schedule from the sheet again.
+    schedule_games = fantrax_live.fetch_schedule(_fx_sess)
 except Exception as e:
     print(f"WARN: live Fantrax fetch failed ({e}); depth charts fall back to salary order, "
           f"Fan Formula/teams-table ratings will be omitted", file=sys.stderr)
     fantrax_standings, fantrax_rosters, top_xi, mbp, fan_formula = {}, {}, [], None, {}
+    schedule_games = []
+
+REGULAR_SEASON_WEEKS = 36
+games_by_team = {code: [] for code, _, _ in TEAMS}
+for g in schedule_games:
+    if g["home"] in games_by_team:
+        games_by_team[g["home"]].append(g)
+    if g["away"] in games_by_team:
+        games_by_team[g["away"]].append(g)
+for _code in games_by_team:
+    games_by_team[_code].sort(key=lambda g: g["week"])
+print(f"Loaded {len(schedule_games)} real regular-season games across {len(games_by_team)} teams from Fantrax.")
 
 
 def fpts_lookup(code):
@@ -478,41 +482,39 @@ for code, name, owners in TEAMS:
         + "</tr>"
     )
 
-    # ---- GW: this team's full 22-game 26/27 schedule (real matchups off
-    # the sheet's own League Schedule tab), weekly salary (season payroll /
-    # 22 -- contracts are season totals, there's no real per-week figure),
-    # this team's own fan interest + ticket revenue cut for that game, and
-    # P&L. Transfer fees are season-level, not weekly, so they get their own
-    # row at the bottom that feeds the season total without touching any
-    # single week's P&L. ----
-    weekly_salary = total_payroll / 22 if total_payroll else 0
+    # ---- GW: this team's real regular-season matchups straight off
+    # Fantrax's own schedule (36 scoring periods; 37-38 are playoffs -- see
+    # fantrax_live.fetch_schedule). The Google Sheet's "League Schedule" tab
+    # is NOT used for this -- its home/away is simply wrong (confirmed
+    # against Fantrax itself: 3 of 6 week-1 fixtures were flipped). Weekly
+    # salary is season payroll spread evenly across the 36 real regular-
+    # season weeks. Fans/Ticket Revenue/P&L are left blank -- there's no
+    # real revenue model wired up yet, so showing a number there would be
+    # fabricated. Transfer fees are season-level, not weekly, so they get
+    # their own row at the bottom that feeds the season cost total. ----
+    weekly_salary = total_payroll / REGULAR_SEASON_WEEKS if total_payroll else 0
     gw_rows = []
-    gw_pl_total = 0.0
     for g in games_by_team.get(code, []):
         is_home = g["home"] == code
-        fans = g["home_int"] if is_home else g["away_int"]
-        revenue = g["home_rev"] if is_home else g["away_rev"]
-        pl = revenue - weekly_salary
-        gw_pl_total += pl
-        pl_color = "var(--mv-gold)" if pl >= 0 else "var(--mv-crimson)"
         home_label = f'<strong style="color:var(--mv-gold)">{g["home"]}</strong>' if is_home else g["home"]
         away_label = f'<strong style="color:var(--mv-gold)">{g["away"]}</strong>' if not is_home else g["away"]
         gw_rows.append(
             f'<tr><td data-sort="{g["week"]}">{g["week"]}</td>'
             f'<td data-sort="{weekly_salary}">{money(weekly_salary)}</td>'
             f'<td>{home_label}</td><td>{away_label}</td>'
-            f'<td data-sort="{fans}">{numi(fans)}</td>'
-            f'<td data-sort="{revenue}">{money(revenue)}</td>'
-            f'<td data-sort="{pl}"><strong style="color:{pl_color}">{money(pl)}</strong></td></tr>'
+            f'<td class="dim" data-sort="0">&mdash;</td>'
+            f'<td class="dim" data-sort="0">&mdash;</td>'
+            f'<td class="dim" data-sort="0">&mdash;</td></tr>'
         )
+    gw_salary_total = weekly_salary * len(gw_rows)
     gw_transfer_cost = trx.team_transfer_net(code, "26/27", _all_transfers)
-    gw_season_total = gw_pl_total - gw_transfer_cost
+    gw_season_cost = gw_salary_total + gw_transfer_cost
     gw_total_row = (
-        f'<tr><td colspan="6">{len(gw_rows)}-week total</td>'
-        f'<td><strong style="color:{"var(--mv-gold)" if gw_pl_total >= 0 else "var(--mv-crimson)"}">{money(gw_pl_total)}</strong></td></tr>'
+        f'<tr><td colspan="6">{len(gw_rows)}-game salary total</td>'
+        f'<td><strong style="color:var(--mv-crimson)">{money(-gw_salary_total)}</strong></td></tr>'
         f'<tr><td colspan="6" class="dim">Transfers (in/out)</td><td>{money(-gw_transfer_cost)}</td></tr>'
-        f'<tr><td colspan="6"><strong>26/27 Season Total</strong></td>'
-        f'<td><strong style="color:{"var(--mv-gold)" if gw_season_total >= 0 else "var(--mv-crimson)"}">{money(gw_season_total)}</strong></td></tr>'
+        f'<tr><td colspan="6"><strong>26/27 Season Cost</strong></td>'
+        f'<td><strong style="color:var(--mv-crimson)">{money(-gw_season_cost)}</strong></td></tr>'
     )
 
     # ---- scouting: EA FC 26 ratings + 2025/26 Premier League performance
@@ -715,8 +717,8 @@ for code, name, owners in TEAMS:
           </div>
 
           <div id="gw-{code}" class="mv-tab-panel active">
-            <div class="sub">Full 26/27 schedule, real matchups off the league schedule &middot; Salary is season payroll spread evenly across
-              22 weeks &middot; Fans/Ticket Revenue are this team's own cut of that game &middot; click a column to sort</div>
+            <div class="sub">Real regular-season matchups straight off Fantrax (36 scoring periods) &middot; Salary is season payroll
+              spread evenly across those 36 weeks &middot; Fans/Ticket Revenue/P&amp;L left blank until a real revenue model exists &middot; click a column to sort</div>
             <div class="mv-table-scroll">
               <table class="mv-table mv-sortable" id="gw-table-{code}">
                 <thead><tr>
@@ -905,12 +907,13 @@ print("Updated teams.html")
 
 # ---------------- financials.html / index.html (site default is now
 # Financials -- see head()'s NAV_LINKS): two tabs, GW (default) and Season.
-# GW is every team's real 22-week regular-season schedule -- one row per
-# team per game they actually play (weeks 1-22 off the sheet's own League
-# Schedule tab) -- with weekly salary (season payroll / 22, same math as
-# each team's own GW tab). Revenue/P&L are left blank for now: there's no
-# real ticket/fan revenue model wired up site-wide yet. Season is the
-# existing 3-forward-season cost table (real contract wages + transfer
+# GW is every team's real regular-season schedule straight off Fantrax (36
+# scoring periods; NOT the Google Sheet's League Schedule tab, whose
+# home/away is wrong -- see fantrax_live.fetch_schedule) -- one row per team
+# per game they actually play, with weekly salary (season payroll / 36,
+# same math as each team's own GW tab). Revenue/P&L are left blank for now:
+# there's no real ticket/fan revenue model wired up site-wide yet. Season is
+# the existing 3-forward-season cost table (real contract wages + transfer
 # fees), unchanged. ----------------
 financial_rows_sorted = sorted(financial_rows, key=lambda r: -(r["season_costs"]["26/27"] or 0))
 
@@ -930,7 +933,7 @@ financials_totals = {
     s: sum(r["season_costs"][s] for r in financial_rows_sorted) for s in ("26/27", "27/28", "28/29")
 }
 
-weekly_salary_by_code = {r["code"]: (r["cost"] / 22 if r["cost"] else 0) for r in financial_rows}
+weekly_salary_by_code = {r["code"]: (r["cost"] / REGULAR_SEASON_WEEKS if r["cost"] else 0) for r in financial_rows}
 team_name_by_code = {r["code"]: r["name"] for r in financial_rows}
 
 gw_all_rows = []
@@ -971,8 +974,8 @@ financials_body = f"""
         </div>
 
         <div id="gw-league" class="mv-tab-panel active">
-          <div class="sub">All 22 regular-season weeks, every team &middot; Salary is season payroll spread evenly across
-            22 weeks &middot; Revenue/P&amp;L left blank until the revenue model is built &middot; click a column to sort</div>
+          <div class="sub">Real regular-season schedule straight off Fantrax (36 scoring periods), every team &middot; Salary is
+            season payroll spread evenly across those 36 weeks &middot; Revenue/P&amp;L left blank until the revenue model is built &middot; click a column to sort</div>
           <div class="mv-table-scroll">
             <table class="mv-table mv-sortable" id="gw-table-league">
               <thead><tr>
