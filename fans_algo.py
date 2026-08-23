@@ -24,17 +24,21 @@ the two extra signals (momentum, upset buzz) are this script's own call,
 clearly labeled as such wherever they're displayed).
 """
 
-# ---- rivalries: HUF-CRG, POW-TTS, BHB-FAV were specified directly; the
-# other 6 teams are paired up here as a first guess (thematic, not
-# geographic/historical -- there's no real-world basis to draw on) ----
+# ---- rivalries: all 6 pairs specified directly by the user ----
 RIVALRIES = [
     frozenset({"HUF", "CRG"}),
-    frozenset({"POW", "TTS"}),
-    frozenset({"BHB", "FAV"}),
-    frozenset({"REN", "WTF"}),   # "Real News" vs "What The FC" -- newsroom rivalry
-    frozenset({"QFC", "ASS"}),   # Quidpool vs Wholeassed -- the crude-name derby
-    frozenset({"DU", "NAC"}),    # the remaining pair
+    frozenset({"BHB", "DU"}),
+    frozenset({"QFC", "FAV"}),
+    frozenset({"TTS", "REN"}),
+    frozenset({"WTF", "NAC"}),
+    frozenset({"POW", "ASS"}),
 ]
+
+RIVAL_OF = {}
+for _pair in RIVALRIES:
+    _a, _b = tuple(_pair)
+    RIVAL_OF[_a] = _b
+    RIVAL_OF[_b] = _a
 
 # ---- base score weights (season-level, out of 100 max) ----
 STANDINGS_WEIGHT = 45   # HIGH, per instruction

@@ -85,8 +85,11 @@ def sync_week(week):
             cur.execute(
                 "INSERT INTO gw_fans (week, team_code, opponent, is_home, base_score, fanbase, interest, "
                 "attendance, ticket_revenue, bonuses, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                # attendance is the shared game total (capped at the host's
+                # capacity), not exclusive to the home row -- "how many fans
+                # are going" is a property of the game, either side asks it
                 (week, code, opp, int(is_home), base_scores.get(code), fanbase.get(code), interest,
-                 game["attendance"] if is_home else None, rev, ", ".join(game["bonuses"]), now),
+                 game["attendance"], rev, ", ".join(game["bonuses"]), now),
             )
         results.append({"home": home, "away": away, **game, "gate": gate, "home_rev": home_rev, "away_rev": away_rev})
 
