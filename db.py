@@ -106,6 +106,22 @@ CREATE TABLE IF NOT EXISTS titles (
     UNIQUE(season, competition)
 );
 
+CREATE TABLE IF NOT EXISTS gw_fans (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    week INTEGER NOT NULL,
+    team_code TEXT NOT NULL,
+    opponent TEXT NOT NULL,
+    is_home INTEGER NOT NULL,
+    base_score REAL,          -- this team's season-level fan-algo base score that week
+    fanbase REAL,              -- this team's share of the total league fan pool that week
+    interest REAL,             -- fanbase after this game's matchup bonuses
+    attendance REAL,           -- interest, capped at host stadium capacity (home row only)
+    ticket_revenue REAL,       -- this team's cut of the gate (80% home / 20% away)
+    bonuses TEXT,              -- comma-joined reasons, e.g. "Derby Day (+35%)"
+    updated_at TEXT NOT NULL,
+    UNIQUE(week, team_code)
+);
+
 CREATE TABLE IF NOT EXISTS best11 (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     week INTEGER NOT NULL,       -- displayed GW number

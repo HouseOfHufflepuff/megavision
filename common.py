@@ -33,14 +33,22 @@ def find_team_sheet(wb, code):
 
 
 def fetch_stadiums(wb):
-    """code -> {stadium, capacity}, from row 1 of each team tab."""
+    """code -> {stadium, capacity}, from row 1 of each team tab. Capacity is
+    usually in column 6 (index 6), but WTF's row has an extra blank cell
+    between the "Capacity:" label and its value, shifting it to column 7 --
+    so find it by the label instead of a fixed index."""
     stadiums = {}
     for code, _, _ in TEAMS:
         sheet_name = find_team_sheet(wb, code)
         if sheet_name is None:
             continue
         row0 = next(wb[sheet_name].iter_rows(min_row=1, max_row=1, values_only=True))
-        stadiums[code] = {"stadium": row0[1] or "", "capacity": row0[6]}
+        capacity = row0[6]
+        if not isinstance(capacity, (int, float)):
+            label_idx = next((i for i, v in enumerate(row0) if isinstance(v, str) and "capacity" in v.lower()), None)
+            if label_idx is not None:
+                capacity = next((v for v in row0[label_idx + 1:] if isinstance(v, (int, float))), None)
+        stadiums[code] = {"stadium": row0[1] or "", "capacity": capacity}
     return stadiums
 
 

@@ -140,6 +140,32 @@ def fetch_standings(sess):
     return out
 
 
+def fetch_all_standings(sess):
+    """The full 24-row standings (all 12 Sr teams + all 12 Jr teams),
+    unfiltered, straight off getStandings. Right now the Sr teams haven't
+    played a real scored matchup yet (still 0-0-0/rank 13, tied) -- only
+    the Jr bracket's period-1 games have real results -- so the meaningful
+    "top 12" on the standings page today is the Jr teams. Each row is
+    tagged with our resolved code (Jr folds into its Sr code, same as
+    fetch_position_leaders) so callers can use whichever has real signal."""
+    resp = sess.get("https://www.fantrax.com/fxea/general/getStandings", params={"leagueId": LEAGUE_ID}, timeout=20)
+    resp.raise_for_status()
+    out = []
+    for row in resp.json():
+        out.append({
+            "team_name": row["teamName"],
+            "team_id": row["teamId"],
+            "code": ALL_TEAM_ID_TO_CODE.get(row["teamId"]),
+            "is_junior": row["teamId"] in JUNIOR_TEAM_ID.values(),
+            "rank": row["rank"],
+            "record": row["points"],
+            "fpts_for": row["totalPointsFor"],
+            "win_pct": row["winPercentage"],
+        })
+    out.sort(key=lambda r: r["rank"])
+    return out
+
+
 # getLeagueInfo's playoffs.lastRegularSeasonPeriod == 36; periods 37-38 are
 # playoffs (TBD matchups until the regular season finishes, excluded).
 # Fantrax scoring period 1 is entirely Juniors-vs-Juniors games (0 of our 12

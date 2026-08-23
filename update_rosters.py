@@ -29,6 +29,7 @@ from player_clean import clean_player
 import db
 import sync_fpl_stats as fpl
 import transfer as trx
+import fans_algo as fa
 
 FPL_MIN_PRICE = 4.0  # FPL's own price floor -- used as a fallback for unmatched players
 
@@ -208,18 +209,13 @@ REGULAR_SEASON_WEEKS = 35  # Fantrax periods 2-36 displayed as GW 1-35 (period 1
 
 # GW1 is Community Shield/Super Cup/FA Cup play, not a real regular-season
 # game -- cup matches don't draw player salary, and Rulez only prices
-# regular season ($0.05) and CL/Euro rounds, so GW1 is $0 both ways. Any
-# other non-regular-season week (more cup rounds, etc.) belongs in this set
-# too as they're identified. Salary is spread across the weeks that
-# actually draw it (35 minus these), not all 35, so the season total still
-# adds up exactly.
-NON_REGULAR_SEASON_WEEKS = {1}
+# regular season ($0.05) and CL/Euro rounds, so GW1 is $0 both ways. Shared
+# with fans_algo.py/sync_fans.py so there's one source of truth. Salary is
+# spread across the weeks that actually draw it (35 minus these), not all
+# 35, so the season total still adds up exactly.
+NON_REGULAR_SEASON_WEEKS = fa.NON_REGULAR_SEASON_WEEKS
 REGULAR_SEASON_SALARY_WEEKS = REGULAR_SEASON_WEEKS - len(NON_REGULAR_SEASON_WEEKS)
 
-# Fans is a placeholder assumption (80% of each team's own stadium
-# capacity) until the real Fan Interest formula is wired up.
-FAN_PCT_ASSUMPTION = 0.80
-GW1_TICKET_PRICE = 0.0
 games_by_team = {code: [] for code, _, _ in TEAMS}
 for g in schedule_games:
     if g["home"] in games_by_team:
@@ -322,6 +318,20 @@ print(f"Loaded real contract wages for {sum(len(v) for v in _wages_by_team.value
 
 _all_transfers = trx.all_transfers()
 print(f"Loaded {len(_all_transfers)} transfer{'s' if len(_all_transfers) != 1 else ''} from transfers.")
+
+# real fan interest/attendance/ticket revenue per (week, team), computed by
+# fans_algo.py + sync_fans.py -- (week, code) -> row. Weeks with no synced
+# data yet (run sync_fans.py WEEK to add one) fall back to blank dashes.
+_fans_conn = db.connect()
+_gw_fans = {
+    (week, code): {"opponent": opp, "is_home": bool(is_home), "interest": interest,
+                    "attendance": attendance, "ticket_revenue": rev, "bonuses": bonuses}
+    for week, code, opp, is_home, interest, attendance, rev, bonuses in _fans_conn.execute(
+        "SELECT week, team_code, opponent, is_home, interest, attendance, ticket_revenue, bonuses FROM gw_fans"
+    )
+}
+_fans_conn.close()
+print(f"Loaded synced fan data for {len({w for w, _ in _gw_fans})} week(s) from gw_fans.")
 
 ALL_SEASONS = ["25/26", "26/27", "27/28", "28/29"]
 CURRENT_SEASON = "26/27"
@@ -538,14 +548,14 @@ for code, name, owners in TEAMS:
     # Fantrax's own schedule (35 scoring periods; see fantrax_live.
     # fetch_schedule). The Google Sheet's "League Schedule" tab is NOT used
     # for this -- its home/away is simply wrong (confirmed against Fantrax
-    # itself). Weekly salary is season payroll spread evenly across the 35
-    # real regular-season weeks. GW1 is Community Shield/Super Cup/FA Cup
-    # play, not a priced regular-season game, so ticket price is $0 there;
-    # Fans uses the 80%-of-capacity assumption until the real Fan Interest
-    # formula exists. Every other week stays blank -- no real per-week
-    # completion data yet. Transfer fees are one-time (pot-level, not
-    # weekly), so they get their own row at the bottom feeding the season
-    # cost total, net of the seller's 90% revenue share (Rulez row 121). ----
+    # itself). Weekly salary is season payroll spread evenly across the
+    # weeks that actually draw it (cup weeks like GW1 draw none). Fans/
+    # Revenue/P&L come from gw_fans (fans_algo.py's real algorithm, run per
+    # week via sync_fans.py) -- weeks not yet synced show blank dashes
+    # rather than a guess. Transfer fees and title payouts are one-time
+    # (pot-level, not weekly), so they get their own rows at the bottom
+    # feeding the season cost total, net of the seller's 90% revenue share
+    # (Rulez row 121). ----
     weekly_salary = total_payroll / REGULAR_SEASON_SALARY_WEEKS if total_payroll else 0
     gw_rows = []
     for g in games_by_team.get(code, []):
@@ -553,9 +563,9 @@ for code, name, owners in TEAMS:
         home_label = f'<strong style="color:var(--mv-gold)">{g["home"]}</strong>' if is_home else g["home"]
         away_label = f'<strong style="color:var(--mv-gold)">{g["away"]}</strong>' if not is_home else g["away"]
         week_salary = 0.0 if g["week"] in NON_REGULAR_SEASON_WEEKS else weekly_salary
-        if g["week"] == 1:
-            fans = FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0)
-            revenue = fans * GW1_TICKET_PRICE
+        gw_fan_row = _gw_fans.get((g["week"], code))
+        if gw_fan_row is not None:
+            fans, revenue = gw_fan_row["interest"], gw_fan_row["ticket_revenue"]
             pl = revenue - week_salary
             fans_cell, revenue_cell, pl_cell = (
                 f'<td data-sort="{fans}">{numi(fans)}</td>',
@@ -1023,9 +1033,10 @@ for _code in sorted(games_by_team):
             "salary": week_salary,
             "fans": None, "revenue": None, "pl": None,
         }
-        if g["week"] == 1:
-            row["fans"] = FAN_PCT_ASSUMPTION * (stadiums.get(_code, {}).get("capacity") or 0)
-            row["revenue"] = row["fans"] * GW1_TICKET_PRICE
+        gw_fan_row = _gw_fans.get((g["week"], _code))
+        if gw_fan_row is not None:
+            row["fans"] = gw_fan_row["interest"]
+            row["revenue"] = gw_fan_row["ticket_revenue"]
             row["pl"] = row["revenue"] - row["salary"]
         gw_all_rows.append(row)
 gw_all_rows.sort(key=lambda r: (r["week"], r["code"]))
@@ -1058,12 +1069,16 @@ STADIUM_EXPANSION_FEES_TOTAL = 0.0  # no expansions recorded yet this season
 CITADEL_CUP_SPONSOR = 25.0  # flat sponsor pot, per instruction -- free money, not team-funded
 transfer_levy_total = trx.league_pot_transfer_levy(_all_transfers, season="26/27")
 title_payouts_total = sum(_t["payout"] for _t in CURRENT_SEASON_TITLES)
-gw1_salary_collected = 0.0  # GW1 is a cup week -- no salary drawn, per "cup matches don't take in salary"
-gw1_tickets_paid = sum(r["revenue"] or 0 for r in gw_all_rows if r["week"] == 1)  # $0 -- GW1 not priced yet
+synced_weeks = sorted({w for w, _ in _gw_fans})
+salary_collected_total = sum(
+    weekly_salary_by_code.get(code, 0) for (w, code) in _gw_fans if w not in NON_REGULAR_SEASON_WEEKS
+)
+tickets_paid_total = sum(r["revenue"] or 0 for r in gw_all_rows if r["week"] in synced_weeks)
 pot_balance = (
     STADIUM_EXPANSION_FEES_TOTAL + transfer_levy_total + CITADEL_CUP_SPONSOR
-    + gw1_salary_collected - gw1_tickets_paid - title_payouts_total
+    + salary_collected_total - tickets_paid_total - title_payouts_total
 )
+_weeks_label = f"GW{synced_weeks[0]}" if len(synced_weeks) == 1 else f"GW{synced_weeks[0]}-{synced_weeks[-1]}" if synced_weeks else "no weeks yet"
 
 pot_rows_html = "".join(
     f'<tr><td>{label}</td><td class="dim">{note}</td><td>{money(amt)}</td></tr>'
@@ -1071,8 +1086,8 @@ pot_rows_html = "".join(
         ("Stadium Expansion Fees", "one-time, $50 per +50 capacity -- none yet this season", STADIUM_EXPANSION_FEES_TOTAL),
         ("Transfer Levy", "one-time, 10% league cut of every transfer fee", transfer_levy_total),
         ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
-        ("Salaries Collected (GW1)", "weekly -- but GW1 is a cup week, so $0 drawn", gw1_salary_collected),
-        ("Tickets Paid Out (GW1)", "weekly -- GW1 is Shield/Cup play, not priced yet, so $0", -gw1_tickets_paid),
+        (f"Salaries Collected ({_weeks_label})", "weekly -- cup weeks like GW1 draw $0", salary_collected_total),
+        (f"Tickets Paid Out ({_weeks_label})", "weekly -- real Fan Interest algorithm, run per week via sync_fans.py", -tickets_paid_total),
         ("Title Payouts", "one-time -- Community Shield (BHB, $10) + Super Cup (QFC, $5)", -title_payouts_total),
     ]
 )
@@ -1086,14 +1101,53 @@ ticket_rules_rows = "".join(
         ("Europa League Final", "$0.10 / fan", "League Schedule tab"),
         ("Champions League (rounds)", "$0.20 / fan", "League Schedule tab"),
         ("Champions League Final", "$0.45 / fan", "League Schedule tab; host stadium keeps 20% of gate (Rulez row 157)"),
-        ("Community Shield / Super Cup / FA Cup", "TBD -- $0 for GW1", "not yet priced"),
+        ("Community Shield / Super Cup / FA Cup", "$0 for now", "cup weeks (e.g. GW1) don't draw a ticket price yet"),
     ]
 )
-fans_assumption_rows = "".join(
-    f'<tr><td>{team_name_by_code.get(code, code)}</td><td class="dim">{stadiums.get(code, {}).get("stadium", "—")}</td>'
-    f'<td data-sort="{stadiums.get(code, {}).get("capacity") or 0}">{numi(stadiums.get(code, {}).get("capacity"))}</td>'
-    f'<td data-sort="{FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0)}">{numi(FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0))}</td></tr>'
-    for code in sorted(team_name_by_code)
+
+# ---- live standings (all 24 teams, Sr + Jr) -- the Sr teams haven't
+# played a real scored matchup yet (still tied at rank 13, 0-0-0), so the
+# real top-12 signal right now is the Jr bracket's period-1 results. That's
+# expected, not a bug -- shown as-is, folded onto each Sr team's own page. ----
+try:
+    _standings_sess = fantrax_live._session()
+    _all_standings = fantrax_live.fetch_all_standings(_standings_sess)
+except Exception as _e:
+    print(f"WARN: standings fetch for Fans tab failed ({_e})", file=sys.stderr)
+    _all_standings = []
+standings_rank_by_code = fa.rank_by_code_from_standings(_all_standings)
+standings_rows_html = "".join(
+    f'<tr><td data-sort="{row["rank"]}">{row["rank"]}</td><td>{row["team_name"]}</td>'
+    f'<td class="dim">{"Jr" if row["is_junior"] else "Sr"}</td>'
+    f'<td data-sort="{row["fpts_for"]}">{row["fpts_for"]:.1f}</td>'
+    f'<td class="dim">{row["record"]}</td></tr>'
+    for row in _all_standings[:12]
+)
+
+# ---- team fan base: the latest synced week's base score + fanbase per
+# team (see fans_algo.py + sync_fans.py) -- the real algorithm's output,
+# not a placeholder ----
+_fans2_conn = db.connect()
+_latest_fans_week = _fans2_conn.execute("SELECT MAX(week) FROM gw_fans").fetchone()[0]
+base_score_rows = []
+if _latest_fans_week is not None:
+    base_score_rows = _fans2_conn.execute(
+        "SELECT team_code, base_score, fanbase FROM gw_fans WHERE week=? ORDER BY base_score DESC",
+        (_latest_fans_week,),
+    ).fetchall()
+_fans2_conn.close()
+fanbase_rows_html = "".join(
+    f'<tr><td>{team_name_by_code.get(code, code)}</td>'
+    f'<td class="dim">{standings_rank_by_code.get(code, "—")}</td>'
+    f'<td data-sort="{score}">{score:.1f}</td>'
+    f'<td data-sort="{fanbase}">{numi(fanbase)}</td></tr>'
+    for code, score, fanbase in base_score_rows
+)
+
+rivalries_rows_html = "".join(
+    f'<tr><td>{team_name_by_code.get(a, a)}</td><td>{team_name_by_code.get(b, b)}</td>'
+    f'<td class="dim">{"specified" if frozenset({a, b}) in fa.RIVALRIES[:3] else "our pick -- adjust anytime"}</td></tr>'
+    for a, b in (tuple(r) for r in fa.RIVALRIES)
 )
 
 # ---- Best 11: top-owned fantasy scorers league-wide by position (see
@@ -1168,7 +1222,7 @@ financials_body = f"""
                 {pot_rows_html}
               </tbody>
               <tfoot>
-                <tr><td colspan="2">Pot Balance (through GW1)</td>
+                <tr><td colspan="2">Pot Balance (through {_weeks_label})</td>
                   <td><strong style="color:{"var(--mv-gold)" if pot_balance >= 0 else "var(--mv-crimson)"}">{money(pot_balance)}</strong></td></tr>
               </tfoot>
             </table>
@@ -1198,10 +1252,38 @@ financials_body = f"""
         </div>
 
         <div id="fans-league" class="mv-tab-panel">
-          <div class="sub">Ticket-revenue rules, straight off the sheet's own Rulez / League Schedule tabs &mdash; we'll build the real
-            Fan Interest formula out further later; for now every team's fan count is assumed at 80% of stadium capacity</div>
+          <div class="sub">The real Fan Interest algorithm (fans_algo.py) -- how attendance and ticket revenue actually get computed,
+            not a placeholder. Run <code>sync_fans.py WEEK</code> after <code>sync_best11.py WEEK</code> each week to refresh.</div>
 
-          <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">Ticket Prices</h3>
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">How It Works</h3>
+          <div class="sub" style="margin-bottom:6px;">
+            Two layers. First, every team gets a <strong>Base Score</strong> (season-level, recomputed each GW) blending:
+            Standings <span class="dim">(HIGH weight -- {fa.STANDINGS_WEIGHT} of 100 max)</span>,
+            Top 11 ownership <span class="dim">(MEDIUM -- {fa.TOPXI_WEIGHT})</span>,
+            Trophy count <span class="dim">(LOW -- {fa.TROPHY_WEIGHT})</span>,
+            MBP <span class="dim">(VERY LOW -- {fa.MBP_WEIGHT})</span>, and
+            Momentum/streak <span class="dim">(our own addition, {fa.MOMENTUM_WEIGHT} pts, 0 until real win/loss results exist)</span>.
+            That score becomes each team's share of a total league fan pool (stadium capacity &times; {fa.FANBASE_MULTIPLIER}, a static
+            anchor -- see fans_algo.py for the full reasoning on why the total stays fixed while shares move).
+          </div>
+          <div class="sub" style="margin-bottom:6px;">
+            Second, for a specific matchup: home + away fan interest combine, then get boosted for a big occasion --
+            Derby Day <span class="dim">(our pick, HIGH, +{fa.RIVALRY_BONUS:.0%})</span>,
+            #1 vs #2 clash <span class="dim">(VERY LOW, +{fa.TOP1V2_BONUS:.0%})</span>,
+            bottom-of-the-table drama <span class="dim">(VERY LOW, +{fa.BOTTOM_TEAM_BONUS:.0%})</span>, and
+            upset buzz <span class="dim">(our own addition, +{fa.UPSET_BUZZ_BONUS:.0%}, 0 until real results exist)</span> --
+            then get capped at the home stadium's capacity. Overflow (interest beyond capacity) is simply lost demand for that game, not
+            redistributed to other games -- the simple choice; we considered spillover but it adds real complexity for a benefit we can't
+            calibrate yet.
+          </div>
+          <div class="sub" style="margin-bottom:18px;">
+            <strong>Other ideas considered but not built yet:</strong> new-signing hype (a fan bump the week after a notable transfer --
+            we only have one transfer on record so far, not enough to calibrate), stadium-expansion opening-week bump, and tying fan
+            interest to how a team's real-life EPL players are performing that week (deferred: needs another live data source and is
+            fragile to build well right now).
+          </div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:22px 0 8px;">Ticket Prices</h3>
           <div class="mv-table-scroll" style="margin-bottom:22px;">
             <table class="mv-table">
               <thead><tr><th>Competition</th><th>Price</th><th>Note</th></tr></thead>
@@ -1210,20 +1292,49 @@ financials_body = f"""
               </tbody>
             </table>
           </div>
-          <div class="sub" style="margin-bottom:10px;">Gate split: 80% to the home team, 20% to the away team. Fans = min(home fans + away
-            fans, host stadium capacity) &times; ticket price.</div>
+          <div class="sub" style="margin-bottom:10px;">Gate split: 80% to the home team, 20% to the away team. Attendance = min(home
+            interest + away interest, host stadium capacity).</div>
 
-          <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">Assumed Fans (80% of capacity)</h3>
-          <div class="mv-table-scroll">
-            <table class="mv-table mv-sortable" id="fans-table-league">
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:22px 0 8px;">Standings (Top 12)</h3>
+          <div class="sub" style="margin-bottom:10px;">Straight off <a href="https://www.fantrax.com/fantasy/league/9rv5verjmrz6rjuo/standings"
+            target="_blank" rel="noopener" style="color:inherit;">Fantrax's own standings page</a> -- the Sr teams haven't played a real
+            scored matchup yet (still tied, 0-0-0), so today's real top-12 signal is the Jr bracket's results. That's expected, not a bug --
+            shown as-is, folded onto each Sr team's own page for the algorithm.</div>
+          <div class="mv-table-scroll" style="margin-bottom:22px;">
+            <table class="mv-table mv-sortable" id="standings-table-league">
               <thead><tr>
-                <th data-sort-type="text">Team</th>
-                <th data-sort-type="text">Stadium</th>
-                <th data-sort-type="num">Capacity</th>
-                <th data-sort-type="num">Assumed Fans (80%)</th>
+                <th data-sort-type="num">Rank</th><th data-sort-type="text">Team</th><th data-sort-type="text">Sr/Jr</th>
+                <th data-sort-type="num">FPts</th><th data-sort-type="text">Record</th>
               </tr></thead>
               <tbody>
-                {fans_assumption_rows}
+                {standings_rows_html}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:22px 0 8px;">Team Fan Base (GW{_latest_fans_week if _latest_fans_week is not None else "—"})</h3>
+          <div class="sub" style="margin-bottom:10px;">Each team's Base Score and resulting share of the total league fan pool, most
+            recent synced week.</div>
+          <div class="mv-table-scroll" style="margin-bottom:22px;">
+            <table class="mv-table mv-sortable" id="fanbase-table-league">
+              <thead><tr>
+                <th data-sort-type="text">Team</th><th data-sort-type="num">Standings Rank</th>
+                <th data-sort-type="num">Base Score</th><th data-sort-type="num">Fan Base</th>
+              </tr></thead>
+              <tbody>
+                {fanbase_rows_html}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:22px 0 8px;">Rivalries (Derby Day)</h3>
+          <div class="sub" style="margin-bottom:10px;">HUF-CRG, POW-TTS, and BHB-FAV were specified directly; the other 6 teams are
+            paired up as a first guess (thematic, no real geography/history to draw on) -- adjust anytime.</div>
+          <div class="mv-table-scroll" style="margin-bottom:22px;">
+            <table class="mv-table">
+              <thead><tr><th>Team</th><th>Team</th><th>Source</th></tr></thead>
+              <tbody>
+                {rivalries_rows_html}
               </tbody>
             </table>
           </div>
