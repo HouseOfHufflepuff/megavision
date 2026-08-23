@@ -150,6 +150,25 @@ print("Fetched. Parsing team tabs...")
 comps, seasons = fetch_trophy_room(wb)
 trophy_tally = tally_trophies(comps, seasons)
 trophy_color = {c: TROPHY_ACCENTS[i % len(TROPHY_ACCENTS)] for i, c in enumerate(comps)}
+
+# 26/27 titles awarded so far this season, tracked locally (mega.db) since
+# the sheet's own Trophy Room tab only gets a season row added at year-end
+# by hand -- overlay onto trophy_tally so team pages/teams.html/
+# financials.html count them now, not next August.
+_titles_conn = db.connect()
+CURRENT_SEASON_TITLES = [
+    {"competition": r[0], "team_code": r[1], "payout": r[2]}
+    for r in _titles_conn.execute(
+        "SELECT competition, team_code, payout FROM titles WHERE season='26/27'"
+    ).fetchall()
+]
+_titles_conn.close()
+for _t in CURRENT_SEASON_TITLES:
+    if _t["competition"] in trophy_tally.get(_t["team_code"], {}):
+        trophy_tally[_t["team_code"]][_t["competition"]] += 1
+title_payout_by_code = {}
+for _t in CURRENT_SEASON_TITLES:
+    title_payout_by_code[_t["team_code"]] = title_payout_by_code.get(_t["team_code"], 0) + _t["payout"]
 fans_by_code = fetch_fans(wb)
 youth_by_code = fetch_youth(wb)
 stadiums = fetch_stadiums(wb)
@@ -187,11 +206,18 @@ except Exception as e:
 
 REGULAR_SEASON_WEEKS = 35  # Fantrax periods 2-36 displayed as GW 1-35 (period 1 is Juniors-only)
 
-# GW1 is Community Shield/Super Cup/FA Cup play, not a priced regular-season
-# game -- Rulez only prices regular season ($0.05) and CL/Euro rounds, so
-# ticket price is $0 for GW1 specifically. Fans is a placeholder assumption
-# (80% of each team's own stadium capacity) until the real Fan Interest
-# formula is wired up.
+# GW1 is Community Shield/Super Cup/FA Cup play, not a real regular-season
+# game -- cup matches don't draw player salary, and Rulez only prices
+# regular season ($0.05) and CL/Euro rounds, so GW1 is $0 both ways. Any
+# other non-regular-season week (more cup rounds, etc.) belongs in this set
+# too as they're identified. Salary is spread across the weeks that
+# actually draw it (35 minus these), not all 35, so the season total still
+# adds up exactly.
+NON_REGULAR_SEASON_WEEKS = {1}
+REGULAR_SEASON_SALARY_WEEKS = REGULAR_SEASON_WEEKS - len(NON_REGULAR_SEASON_WEEKS)
+
+# Fans is a placeholder assumption (80% of each team's own stadium
+# capacity) until the real Fan Interest formula is wired up.
 FAN_PCT_ASSUMPTION = 0.80
 GW1_TICKET_PRICE = 0.0
 games_by_team = {code: [] for code, _, _ in TEAMS}
@@ -483,10 +509,23 @@ for code, name, owners in TEAMS:
             for season in finance_seasons
         )
         finance_rows.append(f'<tr><td colspan="4" class="dim">Transfer Fee &mdash; {label}</td>{cells}</tr>')
+    # title payouts -- static fees paid from the league pot to this season's
+    # cup/shield winners, one-time revenue
+    for _t in CURRENT_SEASON_TITLES:
+        if _t["team_code"] != code:
+            continue
+        cells = "".join(
+            f'<td data-sort="{-_t["payout"] if season == "26/27" else 0}">'
+            + (f'<strong style="color:var(--mv-blue)">{money(-_t["payout"])}</strong>' if season == "26/27" else "—")
+            + "</td>"
+            for season in finance_seasons
+        )
+        finance_rows.append(f'<tr><td colspan="4" class="dim">Title Payout &mdash; {_t["competition"]}</td>{cells}</tr>')
     finance_season_totals = [
         sum(p["wages"].get(season, 0) for p in roster)
         + trx.team_transfer_net(code, season, _all_transfers)
         - trx.team_transfer_revenue(code, season, _all_transfers)
+        - (title_payout_by_code.get(code, 0) if season == "26/27" else 0)
         for season in finance_seasons
     ]
     finance_total_row = (
@@ -507,16 +546,17 @@ for code, name, owners in TEAMS:
     # completion data yet. Transfer fees are one-time (pot-level, not
     # weekly), so they get their own row at the bottom feeding the season
     # cost total, net of the seller's 90% revenue share (Rulez row 121). ----
-    weekly_salary = total_payroll / REGULAR_SEASON_WEEKS if total_payroll else 0
+    weekly_salary = total_payroll / REGULAR_SEASON_SALARY_WEEKS if total_payroll else 0
     gw_rows = []
     for g in games_by_team.get(code, []):
         is_home = g["home"] == code
         home_label = f'<strong style="color:var(--mv-gold)">{g["home"]}</strong>' if is_home else g["home"]
         away_label = f'<strong style="color:var(--mv-gold)">{g["away"]}</strong>' if not is_home else g["away"]
+        week_salary = 0.0 if g["week"] in NON_REGULAR_SEASON_WEEKS else weekly_salary
         if g["week"] == 1:
             fans = FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0)
             revenue = fans * GW1_TICKET_PRICE
-            pl = revenue - weekly_salary
+            pl = revenue - week_salary
             fans_cell, revenue_cell, pl_cell = (
                 f'<td data-sort="{fans}">{numi(fans)}</td>',
                 f'<td data-sort="{revenue}">{money(revenue)}</td>',
@@ -526,23 +566,26 @@ for code, name, owners in TEAMS:
             fans_cell = revenue_cell = pl_cell = '<td class="dim" data-sort="0">&mdash;</td>'
         gw_rows.append(
             f'<tr><td data-sort="{g["week"]}">{g["week"]}</td>'
-            f'<td data-sort="{weekly_salary}">{money(weekly_salary)}</td>'
+            f'<td data-sort="{week_salary}">{money(week_salary)}</td>'
             f'<td>{home_label}</td><td>{away_label}</td>'
             f'{fans_cell}{revenue_cell}{pl_cell}</tr>'
         )
-    # salary accrues every regular-season week (35), not just weeks with an
-    # actual matchup -- a bye week still costs payroll, per the "salaries...
-    # go into the pot" weekly-flow model
-    gw_salary_total = weekly_salary * REGULAR_SEASON_WEEKS
+    # salary accrues only across the weeks that actually draw it (35 minus
+    # cup/shield weeks like GW1) -- a bye week still costs payroll, but a
+    # cup week doesn't, per the "cup matches don't take in salary" rule
+    gw_salary_total = weekly_salary * REGULAR_SEASON_SALARY_WEEKS
     gw_transfer_cost = (
         trx.team_transfer_net(code, "26/27", _all_transfers)
         - trx.team_transfer_revenue(code, "26/27", _all_transfers)
     )
-    gw_season_cost = gw_salary_total + gw_transfer_cost
+    gw_title_payout = title_payout_by_code.get(code, 0)
+    gw_season_cost = gw_salary_total + gw_transfer_cost - gw_title_payout
     gw_total_row = (
-        f'<tr><td colspan="6">{REGULAR_SEASON_WEEKS}-week salary total ({len(gw_rows)} games)</td>'
+        f'<tr><td colspan="6">{REGULAR_SEASON_SALARY_WEEKS}-week salary total ({len(gw_rows)} games, '
+        f'{len(NON_REGULAR_SEASON_WEEKS)} cup week{"s" if len(NON_REGULAR_SEASON_WEEKS) != 1 else ""} free)</td>'
         f'<td><strong style="color:var(--mv-crimson)">{money(-gw_salary_total)}</strong></td></tr>'
         f'<tr><td colspan="6" class="dim">Transfers (in/out, net of seller\'s 90%)</td><td>{money(-gw_transfer_cost)}</td></tr>'
+        f'<tr><td colspan="6" class="dim">Title Payouts</td><td>{money(gw_title_payout)}</td></tr>'
         f'<tr><td colspan="6"><strong>26/27 Season Cost</strong></td>'
         f'<td><strong style="color:{"var(--mv-gold)" if gw_season_cost <= 0 else "var(--mv-crimson)"}">{money(-gw_season_cost)}</strong></td></tr>'
     )
@@ -861,6 +904,7 @@ for code, name, owners in TEAMS:
             s: sum(p["wages"].get(s, 0) for p in roster)
             + trx.team_transfer_net(code, s, _all_transfers)
             - trx.team_transfer_revenue(code, s, _all_transfers)
+            - (title_payout_by_code.get(code, 0) if s == "26/27" else 0)
             for s in ("26/27", "27/28", "28/29")
         },
     })
@@ -965,17 +1009,18 @@ financials_totals = {
     s: sum(r["season_costs"][s] for r in financial_rows_sorted) for s in ("26/27", "27/28", "28/29")
 }
 
-weekly_salary_by_code = {r["code"]: (r["cost"] / REGULAR_SEASON_WEEKS if r["cost"] else 0) for r in financial_rows}
+weekly_salary_by_code = {r["code"]: (r["cost"] / REGULAR_SEASON_SALARY_WEEKS if r["cost"] else 0) for r in financial_rows}
 team_name_by_code = {r["code"]: r["name"] for r in financial_rows}
 
 gw_all_rows = []
 for _code in sorted(games_by_team):
     for g in games_by_team[_code]:
         is_home = g["home"] == _code
+        week_salary = 0.0 if g["week"] in NON_REGULAR_SEASON_WEEKS else weekly_salary_by_code.get(_code, 0)
         row = {
             "week": g["week"], "code": _code, "is_home": is_home,
             "opp": g["away"] if is_home else g["home"],
-            "salary": weekly_salary_by_code.get(_code, 0),
+            "salary": week_salary,
             "fans": None, "revenue": None, "pl": None,
         }
         if g["week"] == 1:
@@ -1012,12 +1057,12 @@ gw_all_rows_html = "\n            ".join(
 STADIUM_EXPANSION_FEES_TOTAL = 0.0  # no expansions recorded yet this season
 CITADEL_CUP_SPONSOR = 25.0  # flat sponsor pot, per instruction -- free money, not team-funded
 transfer_levy_total = trx.league_pot_transfer_levy(_all_transfers, season="26/27")
-league_weekly_salary_total = sum(weekly_salary_by_code.values())
-gw1_salary_collected = league_weekly_salary_total  # GW1 only, so far
+title_payouts_total = sum(_t["payout"] for _t in CURRENT_SEASON_TITLES)
+gw1_salary_collected = 0.0  # GW1 is a cup week -- no salary drawn, per "cup matches don't take in salary"
 gw1_tickets_paid = sum(r["revenue"] or 0 for r in gw_all_rows if r["week"] == 1)  # $0 -- GW1 not priced yet
 pot_balance = (
     STADIUM_EXPANSION_FEES_TOTAL + transfer_levy_total + CITADEL_CUP_SPONSOR
-    + gw1_salary_collected - gw1_tickets_paid
+    + gw1_salary_collected - gw1_tickets_paid - title_payouts_total
 )
 
 pot_rows_html = "".join(
@@ -1026,8 +1071,9 @@ pot_rows_html = "".join(
         ("Stadium Expansion Fees", "one-time, $50 per +50 capacity -- none yet this season", STADIUM_EXPANSION_FEES_TOTAL),
         ("Transfer Levy", "one-time, 10% league cut of every transfer fee", transfer_levy_total),
         ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
-        ("Salaries Collected (GW1)", "weekly -- every team's payroll draws into the pot each GW", gw1_salary_collected),
+        ("Salaries Collected (GW1)", "weekly -- but GW1 is a cup week, so $0 drawn", gw1_salary_collected),
         ("Tickets Paid Out (GW1)", "weekly -- GW1 is Shield/Cup play, not priced yet, so $0", -gw1_tickets_paid),
+        ("Title Payouts", "one-time -- Community Shield (BHB, $10) + Super Cup (QFC, $5)", -title_payouts_total),
     ]
 )
 
@@ -1048,6 +1094,30 @@ fans_assumption_rows = "".join(
     f'<td data-sort="{stadiums.get(code, {}).get("capacity") or 0}">{numi(stadiums.get(code, {}).get("capacity"))}</td>'
     f'<td data-sort="{FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0)}">{numi(FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0))}</td></tr>'
     for code in sorted(team_name_by_code)
+)
+
+# ---- Best 11: top-owned fantasy scorers league-wide by position (see
+# sync_best11.py), most recent week on record. Part of the Fan Interest
+# formula's "Top XI" component (Rulez row 164) -- this is that same
+# formation shown directly, worth $20/player toward a team's live fan
+# total (see common.compute_fan_formula). ----
+_best11_conn = db.connect()
+_best11_week = _best11_conn.execute("SELECT MAX(week) FROM best11").fetchone()[0]
+best11_rows_by_pos = {"GK": [], "D": [], "M": [], "F": []}
+if _best11_week is not None:
+    for _pos, _rank, _name, _club, _code, _fpts in _best11_conn.execute(
+        "SELECT pos, slot_rank, player_name, real_club, team_code, fpts FROM best11 WHERE week=? ORDER BY pos, slot_rank",
+        (_best11_week,),
+    ):
+        best11_rows_by_pos.setdefault(_pos, []).append((_name, _club, _code, _fpts))
+_best11_conn.close()
+
+best11_rows_html = "".join(
+    f'<tr><td>{pos}</td><td>{name}</td><td class="dim">{club}</td>'
+    f'<td><a href="team-{(code or "").lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{team_name_by_code.get(code, code or "—")}</a></td>'
+    f'<td data-sort="{fpts}">{fpts:.1f}</td></tr>'
+    for pos in ("GK", "D", "M", "F")
+    for name, club, code, fpts in best11_rows_by_pos.get(pos, [])
 )
 
 financials_body = f"""
@@ -1154,6 +1224,25 @@ financials_body = f"""
               </tr></thead>
               <tbody>
                 {fans_assumption_rows}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:22px 0 8px;">Best 11 (GW{_best11_week if _best11_week is not None else "—"})</h3>
+          <div class="sub" style="margin-bottom:10px;">Top-owned fantasy scorers league-wide by position, straight off Fantrax
+            (1 GK, 3 D, 4 M, 3 F) &mdash; the same formation as the Fan Interest formula's Top XI component, worth $20/player
+            toward a team's live fan total. Run <code>sync_best11.py WEEK</code> to refresh.</div>
+          <div class="mv-table-scroll">
+            <table class="mv-table mv-sortable" id="best11-table-league">
+              <thead><tr>
+                <th data-sort-type="text">Pos</th>
+                <th data-sort-type="text">Player</th>
+                <th data-sort-type="text">Club</th>
+                <th data-sort-type="text">Team</th>
+                <th data-sort-type="num">FPts</th>
+              </tr></thead>
+              <tbody>
+                {best11_rows_html}
               </tbody>
             </table>
           </div>

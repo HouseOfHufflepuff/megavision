@@ -95,6 +95,30 @@ CREATE TABLE IF NOT EXISTS transfers (
     created_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS titles (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    season TEXT NOT NULL,        -- e.g. '26/27'
+    competition TEXT NOT NULL,   -- 'Community Shield', 'Super Cup', ...
+    team_code TEXT NOT NULL,
+    payout REAL NOT NULL,        -- static fee paid out to the winner from the league pot
+    awarded_date TEXT,
+    created_at TEXT NOT NULL,
+    UNIQUE(season, competition)
+);
+
+CREATE TABLE IF NOT EXISTS best11 (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    week INTEGER NOT NULL,       -- displayed GW number
+    pos TEXT NOT NULL,           -- GK, D, M, F
+    slot_rank INTEGER NOT NULL,  -- 1st, 2nd, ... within that position for this week
+    player_name TEXT NOT NULL,
+    real_club TEXT,
+    team_code TEXT,              -- owning Mega team (Jr rosters folded into Sr code)
+    fpts REAL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(week, pos, slot_rank)
+);
+
 CREATE TABLE IF NOT EXISTS team_week_financials (
     team_code TEXT NOT NULL REFERENCES teams(code),
     week INTEGER NOT NULL,

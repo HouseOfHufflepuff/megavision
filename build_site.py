@@ -1,17 +1,41 @@
+import db
 from common import TEAMS, head, foot, fetch_live_workbook, fetch_trophy_room, resolve_team_code
 
 CURRENT_CODES = {code for code, _, _ in TEAMS}
+TEAM_NAME_BY_CODE = {code: name for code, name, _ in TEAMS}
 
 print("Fetching live spreadsheet...")
 wb = fetch_live_workbook()
 comps, seasons = fetch_trophy_room(wb)
 print(f"Fetched. {len(seasons)} seasons of trophy history.")
 
-total_titles = sum(1 for s in seasons for v in s[1:8] if v)
+# reigning champion is the last COMPLETED season's league title -- computed
+# before the in-progress 26/27 row (below) gets prepended, since that row's
+# "Premium Title" column is still empty (the league title isn't decided yet)
 reigning = seasons[0][1] or "—"
 reigning_code = resolve_team_code(reigning)
 if reigning_code not in CURRENT_CODES:
     reigning_code = None
+
+# 26/27 titles awarded so far, tracked locally (mega.db) since the sheet's
+# own Trophy Room tab only gets a season row added at year-end by hand --
+# show the season in progress now, not next August.
+_titles_conn = db.connect()
+_current_titles = {
+    r[0]: r[1] for r in _titles_conn.execute(
+        "SELECT competition, team_code FROM titles WHERE season='26/27'"
+    ).fetchall()
+}
+_titles_conn.close()
+if _current_titles:
+    current_season_row = ["2026/27"] + [
+        TEAM_NAME_BY_CODE.get(_current_titles[c], _current_titles[c]) if c in _current_titles else None
+        for c in comps
+    ]
+    seasons = [current_season_row] + seasons
+    print(f"Added in-progress 2026/27 row: {dict(zip(comps, current_season_row[1:]))}")
+
+total_titles = sum(1 for s in seasons for v in s[1:8] if v)
 
 # poppy per-competition accents, cycling the guide's 5 named accents
 ACCENTS = ["var(--mv-gold)", "var(--mv-blue)", "var(--mv-violet)", "var(--mv-pink)", "var(--mv-crimson)"]

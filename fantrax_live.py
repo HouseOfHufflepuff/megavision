@@ -43,10 +43,68 @@ FANTRAX_TEAM_ID = {
     "ASS": "kc8p9g8gmrz6rjx5",
 }
 
-POSITION_MAP = {"701": "F", "702": "M", "703": "D", "704": "GK"}
+# this league's 12 "Juniors" reserve-squad teams, one per real team, each
+# its own separate Fantrax roster -- NOT a naming pattern off FANTRAX_TEAM_ID
+# (e.g. "5th Ave Juniors" vs "5th Ave Argyle", "THOT Juniors" vs
+# "Thottenham Thotspur"), so hardcoded by hand from getLeagueInfo's
+# teamInfo, same as FANTRAX_TEAM_ID. For Best 11 purposes a Jr-owned player
+# counts as owned by the Sr team -- see ALL_TEAM_ID_TO_CODE.
+JUNIOR_TEAM_ID = {
+    "FAV": "ejw2j4f3mrz6rjx5",
+    "POW": "84c87qbdmrz6rjx5",
+    "CRG": "rfot8g91mrz6rjx5",
+    "DU": "7lc80yhamrz6rjx5",
+    "HUF": "797y7t21mrz6rjx5",
+    "NAC": "iv6z1sxgmrz6rjx4",
+    "QFC": "9oyrf4i2mrz6rjx5",
+    "REN": "7zzbwoaamrz6rjx5",
+    "BHB": "lbngvz1imrz6rjx5",
+    "TTS": "tp4p1lgamrz6rjx5",
+    "WTF": "by2nv4otmrz6rjx5",
+    "ASS": "yetxuljxmrz6rjx5",
+}
 
-# league formation for "Top XI": 1 GK, 3 D, 4 M, 3 F (per the Rulez tab)
+# every Fantrax team id (Sr + Jr) -> our 12 codes, Jr treated as owned by Sr
+ALL_TEAM_ID_TO_CODE = {v: k for k, v in FANTRAX_TEAM_ID.items()}
+ALL_TEAM_ID_TO_CODE.update({v: k for k, v in JUNIOR_TEAM_ID.items()})
+
+POSITION_MAP = {"701": "F", "702": "M", "703": "D", "704": "GK"}
+POS_GROUP = {"F": "POS_701", "M": "POS_702", "D": "POS_703", "GK": "POS_704"}
+
+# league formation for "Top XI"/"Best 11": 1 GK, 3 D, 4 M, 3 F (per the
+# Rulez tab: "Starting formation is GK + top 10 outfield scorers")
 FORMATION_SLOTS = {"GK": 1, "D": 3, "M": 4, "F": 3}
+
+
+def fetch_position_leaders(sess, pos, limit=10):
+    """Top-scoring owned (ALL_TAKEN) players at `pos` ("GK"/"D"/"M"/"F"),
+    ranked by fantasy points, straight off Fantrax's own player-stats page
+    (the same data as
+    fantasy/league/<id>/players;statusOrTeamFilter=ALL_TAKEN;positionOrGroup=POS_xxx)
+    -- NOT reconstructed from roster pulls, so it matches exactly what's on
+    that page. Each entry: name, real_club, team_code (Jr rosters folded
+    into their Sr code), fpts."""
+    body = {"msgs": [{"method": "getPlayerStats", "data": {
+        "leagueId": LEAGUE_ID, "view": "STATS", "statusOrTeamFilter": "ALL_TAKEN",
+        "positionOrGroup": POS_GROUP[pos], "maxResultsPerPage": limit, "pageNumber": 1,
+    }}]}
+    resp = sess.post("https://www.fantrax.com/fxpa/req", params={"leagueId": LEAGUE_ID}, json=body, timeout=30)
+    resp.raise_for_status()
+    data = resp.json()["responses"][0]["data"]
+    out = []
+    for row in data["statsTable"][:limit]:
+        scorer = row["scorer"]
+        team_cell = row["cells"][1]
+        code = ALL_TEAM_ID_TO_CODE.get(team_cell.get("teamId"))
+        try:
+            fpts = float(row["cells"][6]["content"])
+        except (KeyError, IndexError, TypeError, ValueError):
+            fpts = 0.0
+        out.append({
+            "name": scorer["name"], "real_club": scorer.get("teamShortName", ""),
+            "team_code": code, "team_owner_raw": team_cell.get("toolTip"), "fpts": fpts,
+        })
+    return out
 
 
 def _session():
