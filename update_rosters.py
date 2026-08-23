@@ -903,11 +903,15 @@ with open("teams.html", "w") as f:
     f.write(teams_html)
 print("Updated teams.html")
 
-# ---------------- financials.html: all 3 forward seasons ----------------
-# Cost per season is the sum of each roster player's real contract wage in
-# that season (financial_rows[i]["season_costs"] -- same per-player wages
-# dict used to build each team's own Finances tab). 25/26 is never shown --
-# it's already sunk. Sorted by 26/27 cost, the current season, same as before.
+# ---------------- financials.html / index.html (site default is now
+# Financials -- see head()'s NAV_LINKS): two tabs, GW (default) and Season.
+# GW is every team's real 22-week regular-season schedule -- one row per
+# team per game they actually play (weeks 1-22 off the sheet's own League
+# Schedule tab) -- with weekly salary (season payroll / 22, same math as
+# each team's own GW tab). Revenue/P&L are left blank for now: there's no
+# real ticket/fan revenue model wired up site-wide yet. Season is the
+# existing 3-forward-season cost table (real contract wages + transfer
+# fees), unchanged. ----------------
 financial_rows_sorted = sorted(financial_rows, key=lambda r: -(r["season_costs"]["26/27"] or 0))
 
 financials_rows_html = "\n            ".join(
@@ -926,36 +930,95 @@ financials_totals = {
     s: sum(r["season_costs"][s] for r in financial_rows_sorted) for s in ("26/27", "27/28", "28/29")
 }
 
-financials_html = head("Financials", "financials.html") + hero_logo() + f"""
+weekly_salary_by_code = {r["code"]: (r["cost"] / 22 if r["cost"] else 0) for r in financial_rows}
+team_name_by_code = {r["code"]: r["name"] for r in financial_rows}
+
+gw_all_rows = []
+for _code in sorted(games_by_team):
+    for g in games_by_team[_code]:
+        is_home = g["home"] == _code
+        gw_all_rows.append({
+            "week": g["week"], "code": _code, "is_home": is_home,
+            "opp": g["away"] if is_home else g["home"],
+            "salary": weekly_salary_by_code.get(_code, 0),
+        })
+gw_all_rows.sort(key=lambda r: (r["week"], r["code"]))
+
+gw_all_rows_html = "\n            ".join(
+    f'<tr>'
+    f'<td data-sort="{r["week"]}">{r["week"]}</td>'
+    f'<td><a href="team-{r["code"].lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{team_name_by_code.get(r["code"], r["code"])}</a></td>'
+    f'<td>{"Home" if r["is_home"] else "Away"}</td>'
+    f'<td class="dim">{team_name_by_code.get(r["opp"], r["opp"])}</td>'
+    f'<td data-sort="{r["salary"]}">{money(r["salary"])}</td>'
+    f'<td class="dim" data-sort="0">&mdash;</td>'
+    f'<td class="dim" data-sort="0">&mdash;</td>'
+    f'</tr>'
+    for r in gw_all_rows
+)
+
+financials_body = f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Financials</h1>
-      <div class="sub">Cost per team, all 3 forward seasons &mdash; sum of each player's real contract wage (Kept + Youth + this year's draft picks) plus net transfer fees paid/received that season</div>
+      <div class="sub">Every team's regular-season schedule and costs &mdash; 26/27 forward</div>
     </div>
 
     <section class="card mv-card">
-      <div class="mv-table-scroll">
-        <table class="mv-table">
-          <thead><tr><th>Team</th><th>Owner</th><th>26/27</th><th>27/28</th><th>28/29</th><th># Trophies</th></tr></thead>
-          <tbody>
-            {financials_rows_html}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="2">League Total</td>
-              <td><strong style="color:var(--mv-gold)">{money(financials_totals["26/27"])}</strong></td>
-              <td>{money(financials_totals["27/28"])}</td>
-              <td>{money(financials_totals["28/29"])}</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
+      <div class="mv-subtabs">
+        <div class="mv-tabs" style="margin-bottom:12px;">
+          <button class="mv-tab active" onclick="mvShowSubTab(this,'gw-league')">GW</button>
+          <button class="mv-tab" onclick="mvShowSubTab(this,'season-league')">Season</button>
+        </div>
+
+        <div id="gw-league" class="mv-tab-panel active">
+          <div class="sub">All 22 regular-season weeks, every team &middot; Salary is season payroll spread evenly across
+            22 weeks &middot; Revenue/P&amp;L left blank until the revenue model is built &middot; click a column to sort</div>
+          <div class="mv-table-scroll">
+            <table class="mv-table mv-sortable" id="gw-table-league">
+              <thead><tr>
+                <th data-sort-type="num">GW</th>
+                <th data-sort-type="text">Team</th>
+                <th data-sort-type="text">Home/Away</th>
+                <th data-sort-type="text">Opponent</th>
+                <th data-sort-type="num">Salary</th>
+                <th data-sort-type="num">Revenue</th>
+                <th data-sort-type="num">P&amp;L</th>
+              </tr></thead>
+              <tbody>
+                {gw_all_rows_html}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="season-league" class="mv-tab-panel">
+          <div class="sub">Cost per team, all 3 forward seasons &mdash; sum of each player's real contract wage (Kept + Youth + this year's draft picks) plus net transfer fees paid that season</div>
+          <div class="mv-table-scroll">
+            <table class="mv-table">
+              <thead><tr><th>Team</th><th>Owner</th><th>26/27</th><th>27/28</th><th>28/29</th><th># Trophies</th></tr></thead>
+              <tbody>
+                {financials_rows_html}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="2">League Total</td>
+                  <td><strong style="color:var(--mv-gold)">{money(financials_totals["26/27"])}</strong></td>
+                  <td>{money(financials_totals["27/28"])}</td>
+                  <td>{money(financials_totals["28/29"])}</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
-""" + foot()
+"""
 
-with open("financials.html", "w") as f:
-    f.write(financials_html)
-print("Updated financials.html")
+for _fname, _title in (("index.html", "Home"), ("financials.html", "Financials")):
+    with open(_fname, "w") as f:
+        f.write(head(_title, "index.html") + hero_logo() + financials_body + foot())
+    print(f"Updated {_fname}")
 
 if args.push:
     files = [f"team-{c.lower()}.html" for c, _, _ in updated] + ["financials.html"]

@@ -42,7 +42,7 @@ reigning_html = (
     if reigning_code else reigning
 )
 
-index_html = head("Home", "index.html") + f"""
+index_html = head("Trophy Room", "trophy-room.html") + f"""
     <header style="text-align:center;margin-bottom:36px;">
       <img src="logo-trim.png" alt="MEGAVISION" class="mv-glow" style="width:100%;max-width:640px;height:auto;">
       <p style="color:var(--mv-ink-muted);font-size:14px;letter-spacing:0.04em;margin-top:10px;">MEGA FANTASY SOCCER LEAGUE &nbsp;·&nbsp; EST. 2014</p>
@@ -72,11 +72,10 @@ index_html = head("Home", "index.html") + f"""
     </p>
 """ + foot()
 
-with open("index.html", "w") as f:
+with open("trophy-room.html", "w") as f:
     f.write(index_html)
 
-# teams.html is owned by update_rosters.py now (needs per-team payroll, fan,
-# win, trophy, and live-rating data that only that script computes) -- run
-# that after this.
+# teams.html and index.html (now the Financials page) are owned by
+# update_rosters.py -- run that after this.
 
-print("done: index.html (run update_rosters.py for teams.html + financials.html + team pages)")
+print("done: trophy-room.html (run update_rosters.py for index.html/financials.html + teams.html + team pages)")

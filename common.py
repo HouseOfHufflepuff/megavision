@@ -370,9 +370,9 @@ def position_sort_key(pos):
 
 NAV_LINKS = [
     ("index.html", "Home"),
+    ("trophy-room.html", "Trophy Room"),
     ("teams.html", "Teams"),
     ("rulez.html", "Rulez"),
-    ("financials.html", "Financials"),
     ("draft.html", "Draft Board"),
     ("draft-grades.html", "Draft Grades"),
     ("snowmobile-lifestlye.html", "Snow"),
@@ -394,15 +394,12 @@ def head(title, active):
         attrs = ' target="_blank" rel="noopener"' if external else ""
         nav_items.append(f'<a href="{href}"{cls}{attrs}>{label}</a>')
     nav_links = "\n      ".join(nav_items)
-    # site default is Financials, not the old Home page -- redirect the
-    # instant index.html loads so the root URL always lands there
-    redirect = '<meta http-equiv="refresh" content="0; url=financials.html">\n' if active == "index.html" else ""
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-{redirect}<title>{title} — MEGAVISION</title>
+<title>{title} — MEGAVISION</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
