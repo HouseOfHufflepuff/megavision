@@ -394,12 +394,15 @@ def head(title, active):
         attrs = ' target="_blank" rel="noopener"' if external else ""
         nav_items.append(f'<a href="{href}"{cls}{attrs}>{label}</a>')
     nav_links = "\n      ".join(nav_items)
+    # site default is Financials, not the old Home page -- redirect the
+    # instant index.html loads so the root URL always lands there
+    redirect = '<meta http-equiv="refresh" content="0; url=financials.html">\n' if active == "index.html" else ""
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{title} — MEGAVISION</title>
+{redirect}<title>{title} — MEGAVISION</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -432,6 +435,20 @@ def foot():
     function mvShowTab(btn, panelId) {{
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');
       var panels = btn.closest('.mv-card').querySelectorAll('.mv-tab-panel');
+      tabs.forEach(function(t) {{ t.classList.remove('active'); }});
+      panels.forEach(function(p) {{ p.classList.remove('active'); }});
+      btn.classList.add('active');
+      document.getElementById(panelId).classList.add('active');
+    }}
+
+    // Same as mvShowTab but scoped to the nearest .mv-subtabs wrapper
+    // instead of the whole .mv-card, so a nested tab set (e.g. GW /
+    // Contracts inside the Finances tab) doesn't clobber the outer tabs'
+    // active state when it shares the .mv-tab / .mv-tab-panel classes.
+    function mvShowSubTab(btn, panelId) {{
+      var wrap = btn.closest('.mv-subtabs');
+      var tabs = wrap.querySelectorAll('.mv-tab');
+      var panels = wrap.querySelectorAll('.mv-tab-panel');
       tabs.forEach(function(t) {{ t.classList.remove('active'); }});
       panels.forEach(function(p) {{ p.classList.remove('active'); }});
       btn.classList.add('active');

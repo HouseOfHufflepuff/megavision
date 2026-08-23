@@ -156,6 +156,20 @@ stadiums = fetch_stadiums(wb)
 rank_bonus, points_bonus_table = fetch_standings_reference(wb)
 firm_legacy = fetch_firm_legacy(wb)
 
+# full 22-week regular-season schedule (home/away, fan interest, attendance,
+# ticket price, gate receipts, home/away revenue split) straight off the
+# sheet's own "League Schedule" tab -- real matchups, not guessed
+schedule_games = fetch_league_schedule_games(wb, weeks=range(1, 23))
+games_by_team = {code: [] for code, _, _ in TEAMS}
+for g in schedule_games:
+    if g["home"] in games_by_team:
+        games_by_team[g["home"]].append(g)
+    if g["away"] in games_by_team:
+        games_by_team[g["away"]].append(g)
+for _code in games_by_team:
+    games_by_team[_code].sort(key=lambda g: g["week"])
+print(f"Loaded {len(schedule_games)} scheduled games across {len(games_by_team)} teams from League Schedule.")
+
 # Live Fantrax fantasy points, used to rank the depth chart within each
 # position and as the "rating" column on teams.html. (EA FC 26 ratings were
 # the original plan, but EA's own site, sofifa.com, and futwiz.com all
@@ -438,24 +452,20 @@ for code, name, owners in TEAMS:
             f'<td style="color:{CATEGORY_BADGE_COLOR[p["category"]]};">{CATEGORY_LABEL[p["category"]]}</td>'
             f'{cells}</tr>'
         )
-    # transfer fees as their own line items -- a cost (red-tinted) for the
-    # buyer, a credit (green-tinted, shown negative) for the seller -- so the
-    # season total is transparently explained, not just baked silently in
+    # transfer fees as their own line item -- a cost for the buyer only.
+    # Selling isn't tracked as revenue yet (that's part of the not-yet-built
+    # revenue system), so the seller shows nothing here.
     for t in team_transfers:
-        is_buyer = t["to_team"] == code
-        counterparty = t["from_team"] if is_buyer else t["to_team"]
-        verb = "Signed" if is_buyer else "Sold"
-        prep = "from" if is_buyer else "to"
-        amt = t["amount"] if is_buyer else -t["amount"]
-        color = "var(--mv-crimson)" if is_buyer else "var(--mv-blue)"
+        if t["to_team"] != code:
+            continue
         cells = "".join(
-            f'<td data-sort="{amt if season == t["season"] else 0}">'
-            + (f'<strong style="color:{color}">{money(amt)}</strong>' if season == t["season"] else "—")
+            f'<td data-sort="{t["amount"] if season == t["season"] else 0}">'
+            + (f'<strong style="color:var(--mv-crimson)">{money(t["amount"])}</strong>' if season == t["season"] else "—")
             + "</td>"
             for season in finance_seasons
         )
         finance_rows.append(
-            f'<tr><td colspan="4" class="dim">Transfer Fee &mdash; {verb} {t["player_name"]} {prep} {counterparty}</td>{cells}</tr>'
+            f'<tr><td colspan="4" class="dim">Transfer Fee &mdash; Signed {t["player_name"]} from {t["from_team"]}</td>{cells}</tr>'
         )
     finance_season_totals = [
         sum(p["wages"].get(season, 0) for p in roster)
@@ -466,6 +476,43 @@ for code, name, owners in TEAMS:
         f'<tr><td colspan="4">{roster_size} total &middot; {counts_line}</td>'
         + "".join(f'<td>{money(t)}</td>' for t in finance_season_totals)
         + "</tr>"
+    )
+
+    # ---- GW: this team's full 22-game 26/27 schedule (real matchups off
+    # the sheet's own League Schedule tab), weekly salary (season payroll /
+    # 22 -- contracts are season totals, there's no real per-week figure),
+    # this team's own fan interest + ticket revenue cut for that game, and
+    # P&L. Transfer fees are season-level, not weekly, so they get their own
+    # row at the bottom that feeds the season total without touching any
+    # single week's P&L. ----
+    weekly_salary = total_payroll / 22 if total_payroll else 0
+    gw_rows = []
+    gw_pl_total = 0.0
+    for g in games_by_team.get(code, []):
+        is_home = g["home"] == code
+        fans = g["home_int"] if is_home else g["away_int"]
+        revenue = g["home_rev"] if is_home else g["away_rev"]
+        pl = revenue - weekly_salary
+        gw_pl_total += pl
+        pl_color = "var(--mv-gold)" if pl >= 0 else "var(--mv-crimson)"
+        home_label = f'<strong style="color:var(--mv-gold)">{g["home"]}</strong>' if is_home else g["home"]
+        away_label = f'<strong style="color:var(--mv-gold)">{g["away"]}</strong>' if not is_home else g["away"]
+        gw_rows.append(
+            f'<tr><td data-sort="{g["week"]}">{g["week"]}</td>'
+            f'<td data-sort="{weekly_salary}">{money(weekly_salary)}</td>'
+            f'<td>{home_label}</td><td>{away_label}</td>'
+            f'<td data-sort="{fans}">{numi(fans)}</td>'
+            f'<td data-sort="{revenue}">{money(revenue)}</td>'
+            f'<td data-sort="{pl}"><strong style="color:{pl_color}">{money(pl)}</strong></td></tr>'
+        )
+    gw_transfer_cost = trx.team_transfer_net(code, "26/27", _all_transfers)
+    gw_season_total = gw_pl_total - gw_transfer_cost
+    gw_total_row = (
+        f'<tr><td colspan="6">{len(gw_rows)}-week total</td>'
+        f'<td><strong style="color:{"var(--mv-gold)" if gw_pl_total >= 0 else "var(--mv-crimson)"}">{money(gw_pl_total)}</strong></td></tr>'
+        f'<tr><td colspan="6" class="dim">Transfers (in/out)</td><td>{money(-gw_transfer_cost)}</td></tr>'
+        f'<tr><td colspan="6"><strong>26/27 Season Total</strong></td>'
+        f'<td><strong style="color:{"var(--mv-gold)" if gw_season_total >= 0 else "var(--mv-crimson)"}">{money(gw_season_total)}</strong></td></tr>'
     )
 
     # ---- scouting: EA FC 26 ratings + 2025/26 Premier League performance
@@ -616,9 +663,9 @@ for code, name, owners in TEAMS:
 
     <section class="card mv-card">
       <div class="mv-tabs">
-        <button class="mv-tab active" onclick="mvShowTab(this,'roster-{code}')">Roster</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'roster-{code}')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
-        <button class="mv-tab" onclick="mvShowTab(this,'finances-{code}')">Finances</button>
+        <button class="mv-tab active" onclick="mvShowTab(this,'finances-{code}')">Finances</button>
         <button class="mv-tab" onclick="mvShowTab(this,'scouting-{code}')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
@@ -632,7 +679,7 @@ for code, name, owners in TEAMS:
         Depth Chart is ranked by EA FC 26 overall rating (Fantrax fantasy points as fallback/tiebreak).
       </div>
 
-      <div id="roster-{code}" class="mv-tab-panel active">
+      <div id="roster-{code}" class="mv-tab-panel">
         <div class="sub">{roster_size} players for 26/27 &middot; FC 26 rating, live Fantrax points, real FPL salary &middot; click a column to sort</div>
         <div class="mv-table-scroll">
           <table class="mv-table mv-sortable" id="roster-table-{code}">
@@ -660,28 +707,59 @@ for code, name, owners in TEAMS:
         </div>
       </div>
 
-      <div id="finances-{code}" class="mv-tab-panel">
-        <div class="sub">Real contract wages by year plus any transfer fees, team totals then player-by-player &middot; click a column to sort</div>
-        <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
-          {"".join(
-              f'<div class="mv-stat"><div class="label">{season} Cost</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
-              for season, tot in zip(finance_seasons, finance_season_totals)
-          )}
-        </div>
-        <div class="mv-table-scroll">
-          <table class="mv-table mv-sortable" id="finances-table-{code}">
-            <thead><tr>
-              <th data-sort-type="text">Player</th>
-              <th data-sort-type="text">Club</th>
-              <th data-sort-type="text">Pos</th>
-              <th data-sort-type="text">Category</th>
-              {"".join(f'<th data-sort-type="num">{finance_season_header(s)}</th>' for s in finance_seasons)}
-            </tr></thead>
-            <tbody>
-              {"".join(finance_rows)}
-            </tbody>
-            <tfoot>{finance_total_row}</tfoot>
-          </table>
+      <div id="finances-{code}" class="mv-tab-panel active">
+        <div class="mv-subtabs">
+          <div class="mv-tabs" style="margin-bottom:12px;">
+            <button class="mv-tab active" onclick="mvShowSubTab(this,'gw-{code}')">GW</button>
+            <button class="mv-tab" onclick="mvShowSubTab(this,'contracts-{code}')">Contracts</button>
+          </div>
+
+          <div id="gw-{code}" class="mv-tab-panel active">
+            <div class="sub">Full 26/27 schedule, real matchups off the league schedule &middot; Salary is season payroll spread evenly across
+              22 weeks &middot; Fans/Ticket Revenue are this team's own cut of that game &middot; click a column to sort</div>
+            <div class="mv-table-scroll">
+              <table class="mv-table mv-sortable" id="gw-table-{code}">
+                <thead><tr>
+                  <th data-sort-type="num">GW</th>
+                  <th data-sort-type="num">Salary</th>
+                  <th data-sort-type="text">Home</th>
+                  <th data-sort-type="text">Away</th>
+                  <th data-sort-type="num">Fans</th>
+                  <th data-sort-type="num">Ticket Revenue</th>
+                  <th data-sort-type="num">P&amp;L</th>
+                </tr></thead>
+                <tbody>
+                  {"".join(gw_rows)}
+                </tbody>
+                <tfoot>{gw_total_row}</tfoot>
+              </table>
+            </div>
+          </div>
+
+          <div id="contracts-{code}" class="mv-tab-panel">
+            <div class="sub">Real contract wages by year plus any transfer fees, team totals then player-by-player &middot; click a column to sort</div>
+            <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
+              {"".join(
+                  f'<div class="mv-stat"><div class="label">{season} Cost</div><div class="value" style="font-size:18px;">{money(tot)}</div></div>'
+                  for season, tot in zip(finance_seasons, finance_season_totals)
+              )}
+            </div>
+            <div class="mv-table-scroll">
+              <table class="mv-table mv-sortable" id="finances-table-{code}">
+                <thead><tr>
+                  <th data-sort-type="text">Player</th>
+                  <th data-sort-type="text">Club</th>
+                  <th data-sort-type="text">Pos</th>
+                  <th data-sort-type="text">Category</th>
+                  {"".join(f'<th data-sort-type="num">{finance_season_header(s)}</th>' for s in finance_seasons)}
+                </tr></thead>
+                <tbody>
+                  {"".join(finance_rows)}
+                </tbody>
+                <tfoot>{finance_total_row}</tfoot>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 

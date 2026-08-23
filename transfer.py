@@ -45,12 +45,12 @@ def all_transfers():
 
 
 def team_transfer_net(code, season, transfers=None):
-    """Net cost of transfers on `code` for `season`: positive = net fees
-    paid (buying), negative = net fees received (selling)."""
+    """Transfer fee cost on `code` for `season`: what they paid buying
+    players. Fees received selling aren't counted as revenue yet -- that's
+    part of the not-yet-built revenue system (fans/tickets/transfers sold),
+    not this cost-only figure."""
     transfers = transfers if transfers is not None else all_transfers()
-    paid = sum(t["amount"] for t in transfers if t["to_team"] == code and t["season"] == season)
-    received = sum(t["amount"] for t in transfers if t["from_team"] == code and t["season"] == season)
-    return paid - received
+    return sum(t["amount"] for t in transfers if t["to_team"] == code and t["season"] == season)
 
 
 if __name__ == "__main__":
