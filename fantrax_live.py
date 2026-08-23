@@ -13,24 +13,34 @@ every team's roster.
 import browser_cookie3
 import requests
 
-LEAGUE_ID = "908prhw8mdor759p"
+# "908prhw8mdor759p" (the old value here) is "Mega 25-26 Fantasy Soccer Lg"
+# -- LAST season, not this one. It was used for this entire site by mistake
+# (schedule AND standings/rosters/Fan Formula all pulled from the wrong
+# league) until caught and corrected. "9rv5verjmrz6rjuo" is the real
+# "Mega 26-27 Fantasy Soccer Lg" (2026-08-21 to 2027-05-30) -- confirmed
+# directly against https://www.fantrax.com/fantasy/league/9rv5verjmrz6rjuo
+LEAGUE_ID = "9rv5verjmrz6rjuo"
 
-# our team code -> Fantrax team ID (cross-referenced from the league's team
-# list against common.TEAMS' full names). MS8 has no active Fantrax roster
-# this season and is intentionally absent from the live standings/rosters.
+# our team code -> Fantrax team ID, cross-referenced by team NAME against
+# this league's own getLeagueInfo (team IDs are a completely different
+# format/value from the old 25-26 league, not reusable). This league also
+# has 12 "Juniors" reserve-squad teams (e.g. "HUFF Juniors") which are
+# intentionally NOT in this map -- they're a separate bracket, not one of
+# our 12 real teams, and Fantrax's own scoring period 1 is entirely
+# Juniors-vs-Juniors games (see fetch_schedule).
 FANTRAX_TEAM_ID = {
-    "FAV": "74on3adpmdor759y",
-    "POW": "qam5ix35mdor759y",
-    "CRG": "gfok7ugjmdor759z",
-    "DU": "vj8nas52mdor759y",
-    "HUF": "we776an2mdor759y",
-    "NAC": "we9keiwymdor759z",
-    "QFC": "8cl8c9hpmdor759z",
-    "REN": "jpso47vbmdor759z",
-    "BHB": "df1rsbsgmdor759z",
-    "TTS": "7m7d48t0mdor759y",
-    "WTF": "3p800smqmdor759y",
-    "ASS": "pcowjo87mdor759z",
+    "FAV": "23hm85gemrz6rjx5",
+    "POW": "d01w4imsmrz6rjx5",
+    "CRG": "4dgc8wkkmrz6rjx5",
+    "DU": "2y4shiaemrz6rjx5",
+    "HUF": "c2qvgb1omrz6rjx5",
+    "NAC": "rb3j7yppmrz6rjx5",
+    "QFC": "npzdfihcmrz6rjx5",
+    "REN": "pf3vvmrcmrz6rjx5",
+    "BHB": "y6h220iwmrz6rjx5",
+    "TTS": "smzr62sgmrz6rjx5",
+    "WTF": "8toaz9ikmrz6rjx5",
+    "ASS": "kc8p9g8gmrz6rjx5",
 }
 
 POSITION_MAP = {"701": "F", "702": "M", "703": "D", "704": "GK"}
@@ -72,29 +82,37 @@ def fetch_standings(sess):
     return out
 
 
-REGULAR_SEASON_WEEKS = range(1, 37)  # getLeagueInfo's playoffs.lastRegularSeasonPeriod == 36; 37-38 are playoffs
+# getLeagueInfo's playoffs.lastRegularSeasonPeriod == 36; periods 37-38 are
+# playoffs (TBD matchups until the regular season finishes, excluded).
+# Fantrax scoring period 1 is entirely Juniors-vs-Juniors games (0 of our 12
+# real teams play in it -- confirmed and QA'd with the user); our 12 teams'
+# real season starts at Fantrax period 2, which we display as "GW 1" -- so
+# every displayed week number is the Fantrax period minus 1.
+REGULAR_SEASON_PERIODS = range(2, 37)
 
 
-def fetch_schedule(sess, weeks=REGULAR_SEASON_WEEKS):
-    """Real regular-season matchups straight from Fantrax's own scoring-
-    period schedule (getLeagueInfo's "matchups"), NOT the Google Sheet's
-    "League Schedule" tab -- that tab's home/away is wrong for at least 3 of
-    6 week-1 fixtures (confirmed against this same endpoint), so it must
-    never be used as the schedule source again. Public endpoint, no auth
-    needed. Each entry: week, home code, away code. No fan interest /
-    ticket revenue here -- Fantrax doesn't track that, only our own
-    (currently untrustworthy) sheet did."""
+def fetch_schedule(sess, periods=REGULAR_SEASON_PERIODS):
+    """Real regular-season matchups for our 12 teams, straight from
+    Fantrax's own scoring-period schedule (getLeagueInfo's "matchups") --
+    NOT the Google Sheet's "League Schedule" tab, which was confirmed wrong
+    (flipped home/away) and must never be used as a schedule source again.
+    Public endpoint, no auth needed. Each entry: week (Fantrax period - 1,
+    i.e. displayed GW number), home code, away code."""
     resp = sess.get("https://www.fantrax.com/fxea/general/getLeagueInfo", params={"leagueId": LEAGUE_ID}, timeout=20)
     resp.raise_for_status()
     id_to_code = {v: k for k, v in FANTRAX_TEAM_ID.items()}
     games = []
     for period in resp.json()["matchups"]:
-        week = period["period"]
-        if week not in weeks:
+        fantrax_period = period["period"]
+        if fantrax_period not in periods:
             continue
+        week = fantrax_period - 1
         for m in period["matchupList"]:
-            home_code = id_to_code.get(m["home"]["id"])
-            away_code = id_to_code.get(m["away"]["id"])
+            home, away = m.get("home", {}), m.get("away", {})
+            if home.get("TBD") or away.get("TBD"):
+                continue
+            home_code = id_to_code.get(home.get("id"))
+            away_code = id_to_code.get(away.get("id"))
             if home_code and away_code:
                 games.append({"week": week, "home": home_code, "away": away_code})
     return games

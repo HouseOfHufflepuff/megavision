@@ -170,11 +170,14 @@ try:
     fantrax_rosters = fantrax_live.fetch_all_rosters(_fx_sess)
     top_xi, mbp = fantrax_live.compute_top_xi(fantrax_rosters)
     fan_formula = compute_fan_formula(rank_bonus, points_bonus_table, firm_legacy, fantrax_standings, top_xi, mbp)
-    # the REAL regular-season schedule (periods 1-36; 37-38 are playoffs),
-    # straight off Fantrax's own getLeagueInfo -- NOT the Google Sheet's
-    # "League Schedule" tab, whose home/away is simply wrong (confirmed
-    # against this same endpoint: 3 of 6 week-1 fixtures had home/away
-    # flipped). Never source the schedule from the sheet again.
+    # the REAL regular-season schedule for our 12 teams, straight off
+    # Fantrax's own getLeagueInfo -- NOT the Google Sheet's "League
+    # Schedule" tab, whose home/away is simply wrong (confirmed against
+    # this same endpoint: 3 of 6 week-1 fixtures had home/away flipped).
+    # Never source the schedule from the sheet again. Fantrax's scoring
+    # period 1 is entirely Juniors-squad games (none of our 12 real teams);
+    # our teams' real season starts at period 2, displayed as "GW 1" (see
+    # fantrax_live.fetch_schedule -- displayed week = Fantrax period - 1).
     schedule_games = fantrax_live.fetch_schedule(_fx_sess)
 except Exception as e:
     print(f"WARN: live Fantrax fetch failed ({e}); depth charts fall back to salary order, "
@@ -182,7 +185,7 @@ except Exception as e:
     fantrax_standings, fantrax_rosters, top_xi, mbp, fan_formula = {}, {}, [], None, {}
     schedule_games = []
 
-REGULAR_SEASON_WEEKS = 36
+REGULAR_SEASON_WEEKS = 35  # Fantrax periods 2-36 displayed as GW 1-35 (period 1 is Juniors-only)
 games_by_team = {code: [] for code, _, _ in TEAMS}
 for g in schedule_games:
     if g["home"] in games_by_team:
