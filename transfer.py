@@ -44,13 +44,32 @@ def all_transfers():
     ]
 
 
+# Rulez tab, row 121: "Transfer fee is paid 90% to seller, and 10% to
+# league pot."
+SELLER_SHARE = 0.90
+LEAGUE_CUT = 0.10
+
+
 def team_transfer_net(code, season, transfers=None):
-    """Transfer fee cost on `code` for `season`: what they paid buying
-    players. Fees received selling aren't counted as revenue yet -- that's
-    part of the not-yet-built revenue system (fans/tickets/transfers sold),
-    not this cost-only figure."""
+    """Transfer fee cost on `code` for `season`: the full fee they paid
+    buying players (the buyer pays 100% regardless of how it's split on
+    the receiving end)."""
     transfers = transfers if transfers is not None else all_transfers()
     return sum(t["amount"] for t in transfers if t["to_team"] == code and t["season"] == season)
+
+
+def team_transfer_revenue(code, season, transfers=None):
+    """Transfer revenue on `code` for `season`: their 90% cut of fees for
+    players they sold."""
+    transfers = transfers if transfers is not None else all_transfers()
+    return sum(t["amount"] * SELLER_SHARE for t in transfers if t["from_team"] == code and t["season"] == season)
+
+
+def league_pot_transfer_levy(transfers=None, season=None):
+    """The league's 10% cut of every transfer fee -- a one-time addition to
+    the league pot when the transfer happens, not a per-week flow."""
+    transfers = transfers if transfers is not None else all_transfers()
+    return sum(t["amount"] * LEAGUE_CUT for t in transfers if season is None or t["season"] == season)
 
 
 if __name__ == "__main__":

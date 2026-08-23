@@ -186,6 +186,14 @@ except Exception as e:
     schedule_games = []
 
 REGULAR_SEASON_WEEKS = 35  # Fantrax periods 2-36 displayed as GW 1-35 (period 1 is Juniors-only)
+
+# GW1 is Community Shield/Super Cup/FA Cup play, not a priced regular-season
+# game -- Rulez only prices regular season ($0.05) and CL/Euro rounds, so
+# ticket price is $0 for GW1 specifically. Fans is a placeholder assumption
+# (80% of each team's own stadium capacity) until the real Fan Interest
+# formula is wired up.
+FAN_PCT_ASSUMPTION = 0.80
+GW1_TICKET_PRICE = 0.0
 games_by_team = {code: [] for code, _, _ in TEAMS}
 for g in schedule_games:
     if g["home"] in games_by_team:
@@ -459,24 +467,26 @@ for code, name, owners in TEAMS:
             f'<td style="color:{CATEGORY_BADGE_COLOR[p["category"]]};">{CATEGORY_LABEL[p["category"]]}</td>'
             f'{cells}</tr>'
         )
-    # transfer fees as their own line item -- a cost for the buyer only.
-    # Selling isn't tracked as revenue yet (that's part of the not-yet-built
-    # revenue system), so the seller shows nothing here.
+    # transfer fees as their own line item -- Rulez row 121: 90% to seller
+    # (revenue, green), 10% to the league pot. The buyer pays the full fee
+    # (cost, red) -- the split only changes where the money lands after.
     for t in team_transfers:
-        if t["to_team"] != code:
-            continue
+        is_buyer = t["to_team"] == code
+        amt = t["amount"] if is_buyer else t["amount"] * trx.SELLER_SHARE
+        color = "var(--mv-crimson)" if is_buyer else "var(--mv-blue)"
+        label = (f'Signed {t["player_name"]} from {t["from_team"]}' if is_buyer
+                  else f'Sold {t["player_name"]} to {t["to_team"]} (90% -- 10% to league pot)')
         cells = "".join(
-            f'<td data-sort="{t["amount"] if season == t["season"] else 0}">'
-            + (f'<strong style="color:var(--mv-crimson)">{money(t["amount"])}</strong>' if season == t["season"] else "—")
+            f'<td data-sort="{amt if season == t["season"] else 0}">'
+            + (f'<strong style="color:{color}">{money(amt if is_buyer else -amt)}</strong>' if season == t["season"] else "—")
             + "</td>"
             for season in finance_seasons
         )
-        finance_rows.append(
-            f'<tr><td colspan="4" class="dim">Transfer Fee &mdash; Signed {t["player_name"]} from {t["from_team"]}</td>{cells}</tr>'
-        )
+        finance_rows.append(f'<tr><td colspan="4" class="dim">Transfer Fee &mdash; {label}</td>{cells}</tr>')
     finance_season_totals = [
         sum(p["wages"].get(season, 0) for p in roster)
         + trx.team_transfer_net(code, season, _all_transfers)
+        - trx.team_transfer_revenue(code, season, _all_transfers)
         for season in finance_seasons
     ]
     finance_total_row = (
@@ -486,38 +496,55 @@ for code, name, owners in TEAMS:
     )
 
     # ---- GW: this team's real regular-season matchups straight off
-    # Fantrax's own schedule (36 scoring periods; 37-38 are playoffs -- see
-    # fantrax_live.fetch_schedule). The Google Sheet's "League Schedule" tab
-    # is NOT used for this -- its home/away is simply wrong (confirmed
-    # against Fantrax itself: 3 of 6 week-1 fixtures were flipped). Weekly
-    # salary is season payroll spread evenly across the 36 real regular-
-    # season weeks. Fans/Ticket Revenue/P&L are left blank -- there's no
-    # real revenue model wired up yet, so showing a number there would be
-    # fabricated. Transfer fees are season-level, not weekly, so they get
-    # their own row at the bottom that feeds the season cost total. ----
+    # Fantrax's own schedule (35 scoring periods; see fantrax_live.
+    # fetch_schedule). The Google Sheet's "League Schedule" tab is NOT used
+    # for this -- its home/away is simply wrong (confirmed against Fantrax
+    # itself). Weekly salary is season payroll spread evenly across the 35
+    # real regular-season weeks. GW1 is Community Shield/Super Cup/FA Cup
+    # play, not a priced regular-season game, so ticket price is $0 there;
+    # Fans uses the 80%-of-capacity assumption until the real Fan Interest
+    # formula exists. Every other week stays blank -- no real per-week
+    # completion data yet. Transfer fees are one-time (pot-level, not
+    # weekly), so they get their own row at the bottom feeding the season
+    # cost total, net of the seller's 90% revenue share (Rulez row 121). ----
     weekly_salary = total_payroll / REGULAR_SEASON_WEEKS if total_payroll else 0
     gw_rows = []
     for g in games_by_team.get(code, []):
         is_home = g["home"] == code
         home_label = f'<strong style="color:var(--mv-gold)">{g["home"]}</strong>' if is_home else g["home"]
         away_label = f'<strong style="color:var(--mv-gold)">{g["away"]}</strong>' if not is_home else g["away"]
+        if g["week"] == 1:
+            fans = FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0)
+            revenue = fans * GW1_TICKET_PRICE
+            pl = revenue - weekly_salary
+            fans_cell, revenue_cell, pl_cell = (
+                f'<td data-sort="{fans}">{numi(fans)}</td>',
+                f'<td data-sort="{revenue}">{money(revenue)}</td>',
+                f'<td data-sort="{pl}"><strong style="color:{"var(--mv-gold)" if pl >= 0 else "var(--mv-crimson)"}">{money(pl)}</strong></td>',
+            )
+        else:
+            fans_cell = revenue_cell = pl_cell = '<td class="dim" data-sort="0">&mdash;</td>'
         gw_rows.append(
             f'<tr><td data-sort="{g["week"]}">{g["week"]}</td>'
             f'<td data-sort="{weekly_salary}">{money(weekly_salary)}</td>'
             f'<td>{home_label}</td><td>{away_label}</td>'
-            f'<td class="dim" data-sort="0">&mdash;</td>'
-            f'<td class="dim" data-sort="0">&mdash;</td>'
-            f'<td class="dim" data-sort="0">&mdash;</td></tr>'
+            f'{fans_cell}{revenue_cell}{pl_cell}</tr>'
         )
-    gw_salary_total = weekly_salary * len(gw_rows)
-    gw_transfer_cost = trx.team_transfer_net(code, "26/27", _all_transfers)
+    # salary accrues every regular-season week (35), not just weeks with an
+    # actual matchup -- a bye week still costs payroll, per the "salaries...
+    # go into the pot" weekly-flow model
+    gw_salary_total = weekly_salary * REGULAR_SEASON_WEEKS
+    gw_transfer_cost = (
+        trx.team_transfer_net(code, "26/27", _all_transfers)
+        - trx.team_transfer_revenue(code, "26/27", _all_transfers)
+    )
     gw_season_cost = gw_salary_total + gw_transfer_cost
     gw_total_row = (
-        f'<tr><td colspan="6">{len(gw_rows)}-game salary total</td>'
+        f'<tr><td colspan="6">{REGULAR_SEASON_WEEKS}-week salary total ({len(gw_rows)} games)</td>'
         f'<td><strong style="color:var(--mv-crimson)">{money(-gw_salary_total)}</strong></td></tr>'
-        f'<tr><td colspan="6" class="dim">Transfers (in/out)</td><td>{money(-gw_transfer_cost)}</td></tr>'
+        f'<tr><td colspan="6" class="dim">Transfers (in/out, net of seller\'s 90%)</td><td>{money(-gw_transfer_cost)}</td></tr>'
         f'<tr><td colspan="6"><strong>26/27 Season Cost</strong></td>'
-        f'<td><strong style="color:var(--mv-crimson)">{money(-gw_season_cost)}</strong></td></tr>'
+        f'<td><strong style="color:{"var(--mv-gold)" if gw_season_cost <= 0 else "var(--mv-crimson)"}">{money(-gw_season_cost)}</strong></td></tr>'
     )
 
     # ---- scouting: EA FC 26 ratings + 2025/26 Premier League performance
@@ -831,7 +858,9 @@ for code, name, owners in TEAMS:
         "capacity": stadiums.get(code, {}).get("capacity"),
         "stadium": stadiums.get(code, {}).get("stadium"),
         "season_costs": {
-            s: sum(p["wages"].get(s, 0) for p in roster) + trx.team_transfer_net(code, s, _all_transfers)
+            s: sum(p["wages"].get(s, 0) for p in roster)
+            + trx.team_transfer_net(code, s, _all_transfers)
+            - trx.team_transfer_revenue(code, s, _all_transfers)
             for s in ("26/27", "27/28", "28/29")
         },
     })
@@ -943,12 +972,23 @@ gw_all_rows = []
 for _code in sorted(games_by_team):
     for g in games_by_team[_code]:
         is_home = g["home"] == _code
-        gw_all_rows.append({
+        row = {
             "week": g["week"], "code": _code, "is_home": is_home,
             "opp": g["away"] if is_home else g["home"],
             "salary": weekly_salary_by_code.get(_code, 0),
-        })
+            "fans": None, "revenue": None, "pl": None,
+        }
+        if g["week"] == 1:
+            row["fans"] = FAN_PCT_ASSUMPTION * (stadiums.get(_code, {}).get("capacity") or 0)
+            row["revenue"] = row["fans"] * GW1_TICKET_PRICE
+            row["pl"] = row["revenue"] - row["salary"]
+        gw_all_rows.append(row)
 gw_all_rows.sort(key=lambda r: (r["week"], r["code"]))
+
+
+def _gw_cell(v, fmt):
+    return f'<td data-sort="{v}">{fmt(v)}</td>' if v is not None else '<td class="dim" data-sort="0">&mdash;</td>'
+
 
 gw_all_rows_html = "\n            ".join(
     f'<tr>'
@@ -957,28 +997,77 @@ gw_all_rows_html = "\n            ".join(
     f'<td>{"Home" if r["is_home"] else "Away"}</td>'
     f'<td class="dim">{team_name_by_code.get(r["opp"], r["opp"])}</td>'
     f'<td data-sort="{r["salary"]}">{money(r["salary"])}</td>'
-    f'<td class="dim" data-sort="0">&mdash;</td>'
-    f'<td class="dim" data-sort="0">&mdash;</td>'
+    f'{_gw_cell(r["fans"], numi)}'
+    f'{_gw_cell(r["revenue"], money)}'
+    f'{_gw_cell(r["pl"], money)}'
     f'</tr>'
     for r in gw_all_rows
+)
+
+# ---- League Pot ledger: per the model worked out with the user --
+# stadium expansion fees and the transfer levy are ONE-TIME additions to
+# the pot when they happen, not a per-week flow. Only salaries (in) and
+# tickets (out) move weekly. Everything else -- Citadel Cup sponsor money,
+# future Federation Fee, TV Bonus, cup title payouts -- is pot-level.
+STADIUM_EXPANSION_FEES_TOTAL = 0.0  # no expansions recorded yet this season
+CITADEL_CUP_SPONSOR = 25.0  # flat sponsor pot, per instruction -- free money, not team-funded
+transfer_levy_total = trx.league_pot_transfer_levy(_all_transfers, season="26/27")
+league_weekly_salary_total = sum(weekly_salary_by_code.values())
+gw1_salary_collected = league_weekly_salary_total  # GW1 only, so far
+gw1_tickets_paid = sum(r["revenue"] or 0 for r in gw_all_rows if r["week"] == 1)  # $0 -- GW1 not priced yet
+pot_balance = (
+    STADIUM_EXPANSION_FEES_TOTAL + transfer_levy_total + CITADEL_CUP_SPONSOR
+    + gw1_salary_collected - gw1_tickets_paid
+)
+
+pot_rows_html = "".join(
+    f'<tr><td>{label}</td><td class="dim">{note}</td><td>{money(amt)}</td></tr>'
+    for label, note, amt in [
+        ("Stadium Expansion Fees", "one-time, $50 per +50 capacity -- none yet this season", STADIUM_EXPANSION_FEES_TOTAL),
+        ("Transfer Levy", "one-time, 10% league cut of every transfer fee", transfer_levy_total),
+        ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
+        ("Salaries Collected (GW1)", "weekly -- every team's payroll draws into the pot each GW", gw1_salary_collected),
+        ("Tickets Paid Out (GW1)", "weekly -- GW1 is Shield/Cup play, not priced yet, so $0", -gw1_tickets_paid),
+    ]
+)
+
+# ---- Fans tab: the ticket-revenue rules found in the sheet's own Rulez /
+# League Schedule tabs, for reference while this gets built out further ----
+ticket_rules_rows = "".join(
+    f'<tr><td>{comp}</td><td>{price}</td><td class="dim">{note}</td></tr>'
+    for comp, price, note in [
+        ("Regular Season", "$0.05 / fan", "League Schedule tab"),
+        ("Europa League Final", "$0.10 / fan", "League Schedule tab"),
+        ("Champions League (rounds)", "$0.20 / fan", "League Schedule tab"),
+        ("Champions League Final", "$0.45 / fan", "League Schedule tab; host stadium keeps 20% of gate (Rulez row 157)"),
+        ("Community Shield / Super Cup / FA Cup", "TBD -- $0 for GW1", "not yet priced"),
+    ]
+)
+fans_assumption_rows = "".join(
+    f'<tr><td>{team_name_by_code.get(code, code)}</td><td class="dim">{stadiums.get(code, {}).get("stadium", "—")}</td>'
+    f'<td data-sort="{stadiums.get(code, {}).get("capacity") or 0}">{numi(stadiums.get(code, {}).get("capacity"))}</td>'
+    f'<td data-sort="{FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0)}">{numi(FAN_PCT_ASSUMPTION * (stadiums.get(code, {}).get("capacity") or 0))}</td></tr>'
+    for code in sorted(team_name_by_code)
 )
 
 financials_body = f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Financials</h1>
-      <div class="sub">Every team's regular-season schedule and costs &mdash; 26/27 forward</div>
+      <div class="sub">League pot ledger, every team's schedule and costs, and the ticket-revenue model &mdash; 26/27 forward</div>
     </div>
 
     <section class="card mv-card">
       <div class="mv-subtabs">
         <div class="mv-tabs" style="margin-bottom:12px;">
-          <button class="mv-tab active" onclick="mvShowSubTab(this,'gw-league')">GW</button>
-          <button class="mv-tab" onclick="mvShowSubTab(this,'season-league')">Season</button>
+          <button class="mv-tab" onclick="mvShowSubTab(this,'gw-league')">GW</button>
+          <button class="mv-tab active" onclick="mvShowSubTab(this,'season-league')">Season</button>
+          <button class="mv-tab" onclick="mvShowSubTab(this,'fans-league')">Fans</button>
         </div>
 
-        <div id="gw-league" class="mv-tab-panel active">
-          <div class="sub">Real regular-season schedule straight off Fantrax (36 scoring periods), every team &middot; Salary is
-            season payroll spread evenly across those 36 weeks &middot; Revenue/P&amp;L left blank until the revenue model is built &middot; click a column to sort</div>
+        <div id="gw-league" class="mv-tab-panel">
+          <div class="sub">Real regular-season schedule straight off Fantrax (35 scoring periods), every team &middot; Salary is
+            season payroll spread evenly across those 35 weeks &middot; GW1 Fans/Revenue/P&amp;L use the 80%-of-capacity
+            assumption at $0 (Shield/Cup week, not priced) &mdash; every other week is still blank &middot; click a column to sort</div>
           <div class="mv-table-scroll">
             <table class="mv-table mv-sortable" id="gw-table-league">
               <thead><tr>
@@ -987,6 +1076,7 @@ financials_body = f"""
                 <th data-sort-type="text">Home/Away</th>
                 <th data-sort-type="text">Opponent</th>
                 <th data-sort-type="num">Salary</th>
+                <th data-sort-type="num">Fans</th>
                 <th data-sort-type="num">Revenue</th>
                 <th data-sort-type="num">P&amp;L</th>
               </tr></thead>
@@ -997,8 +1087,27 @@ financials_body = f"""
           </div>
         </div>
 
-        <div id="season-league" class="mv-tab-panel">
-          <div class="sub">Cost per team, all 3 forward seasons &mdash; sum of each player's real contract wage (Kept + Youth + this year's draft picks) plus net transfer fees paid that season</div>
+        <div id="season-league" class="mv-tab-panel active">
+          <div class="sub">League Pot ledger, then cost per team across all 3 forward seasons</div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">League Pot</h3>
+          <div class="mv-table-scroll" style="margin-bottom:22px;">
+            <table class="mv-table">
+              <thead><tr><th>Item</th><th>Note</th><th>Amount</th></tr></thead>
+              <tbody>
+                {pot_rows_html}
+              </tbody>
+              <tfoot>
+                <tr><td colspan="2">Pot Balance (through GW1)</td>
+                  <td><strong style="color:{"var(--mv-gold)" if pot_balance >= 0 else "var(--mv-crimson)"}">{money(pot_balance)}</strong></td></tr>
+              </tfoot>
+            </table>
+          </div>
+          <div class="sub" style="margin-bottom:18px;">Running ledger, not per-week -- stadium fees and the transfer levy land once, when they
+            happen; salaries and tickets are the only things that move every GW. At season end the remaining pot (the "Mega Fund") splits
+            60% to TV Bonus by final standing, 40% to post-season CL/Euro payouts, per Rulez.</div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">Team Costs</h3>
           <div class="mv-table-scroll">
             <table class="mv-table">
               <thead><tr><th>Team</th><th>Owner</th><th>26/27</th><th>27/28</th><th>28/29</th><th># Trophies</th></tr></thead>
@@ -1014,6 +1123,38 @@ financials_body = f"""
                   <td></td>
                 </tr>
               </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div id="fans-league" class="mv-tab-panel">
+          <div class="sub">Ticket-revenue rules, straight off the sheet's own Rulez / League Schedule tabs &mdash; we'll build the real
+            Fan Interest formula out further later; for now every team's fan count is assumed at 80% of stadium capacity</div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">Ticket Prices</h3>
+          <div class="mv-table-scroll" style="margin-bottom:22px;">
+            <table class="mv-table">
+              <thead><tr><th>Competition</th><th>Price</th><th>Note</th></tr></thead>
+              <tbody>
+                {ticket_rules_rows}
+              </tbody>
+            </table>
+          </div>
+          <div class="sub" style="margin-bottom:10px;">Gate split: 80% to the home team, 20% to the away team. Fans = min(home fans + away
+            fans, host stadium capacity) &times; ticket price.</div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">Assumed Fans (80% of capacity)</h3>
+          <div class="mv-table-scroll">
+            <table class="mv-table mv-sortable" id="fans-table-league">
+              <thead><tr>
+                <th data-sort-type="text">Team</th>
+                <th data-sort-type="text">Stadium</th>
+                <th data-sort-type="num">Capacity</th>
+                <th data-sort-type="num">Assumed Fans (80%)</th>
+              </tr></thead>
+              <tbody>
+                {fans_assumption_rows}
+              </tbody>
             </table>
           </div>
         </div>
