@@ -358,6 +358,170 @@ with open("data/draft_picks_2627.json") as _f:
         _drafted_by_code.setdefault(_d["code"], []).append(_d)
 print(f"Loaded {sum(len(v) for v in _drafted_by_code.values())} drafted picks from data/draft_picks_2627.json.")
 
+# ---- Fan Interest data, computed once and shared by both each team's own
+# new Fans tab and the site-wide Fans tab dashboard (see build_fan_card
+# below). Live standings (all 24 teams, Sr + Jr) -- the Sr teams haven't
+# played a real scored matchup yet (still tied at rank 13, 0-0-0), so the
+# real top-12 signal right now is the Jr bracket's period-1 results. ----
+try:
+    _standings_sess = fantrax_live._session()
+    _all_standings = fantrax_live.fetch_all_standings(_standings_sess)
+except Exception as _e:
+    print(f"WARN: standings fetch for Fans tabs failed ({_e})", file=sys.stderr)
+    _all_standings = []
+standings_rank_by_code = fa.rank_by_code_from_standings(_all_standings)
+
+_best11_conn = db.connect()
+_best11_week = _best11_conn.execute("SELECT MAX(week) FROM best11").fetchone()[0]
+best11_rows_by_pos = {"GK": [], "D": [], "M": [], "F": []}
+if _best11_week is not None:
+    for _pos, _rank, _bname, _club, _bcode, _fpts in _best11_conn.execute(
+        "SELECT pos, slot_rank, player_name, real_club, team_code, fpts FROM best11 WHERE week=? ORDER BY pos, slot_rank",
+        (_best11_week,),
+    ):
+        best11_rows_by_pos.setdefault(_pos, []).append((_bname, _club, _bcode, _fpts))
+_best11_conn.close()
+
+_topxi_counts = {_c: 0 for _c, _, _ in TEAMS}
+_mbp_code, _mbp_fpts, _mbp_name, _mbp_club = None, -1, None, None
+for _pos_k, _plist in best11_rows_by_pos.items():
+    for _bname, _club, _bcode, _fpts in _plist:
+        if _bcode:
+            _topxi_counts[_bcode] += 1
+            if _fpts > _mbp_fpts:
+                _mbp_fpts, _mbp_code, _mbp_name, _mbp_club = _fpts, _bcode, _bname, _club
+_trophy_counts_now = {_c: sum(_v.values()) for _c, _v in trophy_tally.items()}
+_max_trophies_now = max(_trophy_counts_now.values()) if _trophy_counts_now else 0
+
+_fans2_conn = db.connect()
+_latest_fans_week = _fans2_conn.execute("SELECT MAX(week) FROM gw_fans").fetchone()[0]
+base_score_rows = []
+if _latest_fans_week is not None:
+    base_score_rows = _fans2_conn.execute(
+        "SELECT team_code, base_score, fanbase FROM gw_fans WHERE week=? ORDER BY base_score DESC",
+        (_latest_fans_week,),
+    ).fetchall()
+_fans2_conn.close()
+
+BREAKDOWN_COLORS = {
+    "standings": "var(--mv-gold)", "topxi": "var(--mv-blue)", "trophy": "var(--mv-violet)",
+    "momentum": "var(--mv-pink)", "mbp": "var(--mv-crimson)",
+}
+BREAKDOWN_MAX = fa.STANDINGS_WEIGHT + fa.TOPXI_WEIGHT + fa.TROPHY_WEIGHT + fa.MOMENTUM_WEIGHT + fa.MBP_WEIGHT  # == 100
+BREAKDOWN_LABELS = {
+    "standings": f"Standings (max {fa.STANDINGS_WEIGHT}%)", "topxi": f"Top 11 (max {fa.TOPXI_WEIGHT}%)",
+    "trophy": f"Trophies (max {fa.TROPHY_WEIGHT}%)", "momentum": f"Momentum (max {fa.MOMENTUM_WEIGHT}%)",
+    "mbp": f"MBP (max {fa.MBP_WEIGHT}%)",
+}
+BONUS_EXPLANATIONS = [
+    ("Derby Day", fa.RIVALRY_BONUS, "HIGH", "the fixture is against your declared rival"),
+    ("#1 vs #2 clash", fa.TOP1V2_BONUS, "VERY LOW", "both teams in the fixture are ranked #1 and #2"),
+    ("Bottom-of-the-table drama", fa.BOTTOM_TEAM_BONUS, "VERY LOW", "the last-place team is playing"),
+    ("Upset buzz", fa.UPSET_BUZZ_BONUS, "LOW (our addition)", "either team pulled a shock result last week -- 0 until real results exist"),
+]
+
+
+def build_fan_card(code, name, detailed=False):
+    """One team's Fan Base card: breakdown bar + legend + GW-by-GW
+    attendance table. detailed=True (each team's own Fans tab) adds the
+    bonus-explanation panel; detailed=False (site-wide dashboard) is the
+    compact version."""
+    b = fa.base_score(code, standings_rank_by_code.get(code), _topxi_counts.get(code, 0),
+                       _trophy_counts_now.get(code, 0), _max_trophies_now)
+    b["mbp"] = fa.mbp_bonus(code, _mbp_code)
+    b["total"] = round(b["total"] + b["mbp"], 2)
+    fanbase_val = next((fb for c, sc, fb in base_score_rows if c == code), None)
+
+    bar_segments = "".join(
+        f'<div style="width:{(b[k] / BREAKDOWN_MAX * 100):.1f}%;background:{BREAKDOWN_COLORS[k]};" '
+        f'title="{BREAKDOWN_LABELS[k]}: {b[k]:.1f}%"></div>'
+        for k in ("standings", "topxi", "trophy", "momentum", "mbp") if b[k] > 0
+    )
+    legend = "".join(
+        f'<span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;'
+        f'border-radius:2px;background:{BREAKDOWN_COLORS[k]};margin-right:4px;"></span>{BREAKDOWN_LABELS[k]}: {b[k]:.1f}%</span>'
+        for k in ("standings", "topxi", "trophy", "momentum", "mbp")
+    )
+
+    weeks = sorted(w for w, c in _gw_fans if c == code and w not in NON_REGULAR_SEASON_WEEKS)
+    week_rows = ""
+    for w in weeks:
+        row = _gw_fans[(w, code)]
+        host_cap = stadiums.get(code if row["is_home"] else row["opponent"], {}).get("capacity") or 0
+        ha_badge = ('<span style="color:var(--mv-gold);font-weight:600;">HOME</span>' if row["is_home"]
+                     else '<span class="dim">AWAY</span>')
+        bonus_badges = "".join(
+            f'<span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);'
+            f'color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">{bo.strip()}</span>'
+            for bo in row["bonuses"].split(",") if bo.strip()
+        )
+        week_rows += (
+            f'<tr><td>GW{w}</td><td>{ha_badge}</td>'
+            f'<td><a href="team-{row["opponent"].lower()}.html" style="color:inherit;text-decoration:none;">{TEAM_FULL_NAME.get(row["opponent"], row["opponent"])}</a></td>'
+            f'<td data-sort="{host_cap}">{numi(host_cap)}</td>'
+            f'<td data-sort="{row["interest"] or 0}">{numi(row["interest"])}</td>'
+            f'<td data-sort="{row["attendance"] or 0}"><strong style="color:var(--mv-gold)">{numi(row["attendance"])}</strong></td>'
+            f'<td data-sort="{row["ticket_revenue"] or 0}">{money(row["ticket_revenue"])}</td>'
+            f'<td>{bonus_badges or "&mdash;"}</td></tr>'
+        )
+    weeks_table = (
+        f'<div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;">'
+        f'<thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th>'
+        f'<th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th>'
+        f'<th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead>'
+        f'<tbody>{week_rows}</tbody></table></div>'
+        if week_rows else '<div class="dim" style="font-size:12px;">No regular-season weeks synced yet -- run sync_fans.py.</div>'
+    )
+
+    rival = fa.RIVAL_OF.get(code)
+    rank = standings_rank_by_code.get(code)
+    max_rank = max(standings_rank_by_code.values()) if standings_rank_by_code else None
+    bonus_status_html = ""
+    if detailed:
+        bonus_items = ""
+        for label, pct, weight, desc in BONUS_EXPLANATIONS:
+            active = (
+                (label == "Derby Day") or  # applies whenever they face their rival, shown as a general rule
+                (label == "#1 vs #2 clash" and rank in (1, 2)) or
+                (label == "Bottom-of-the-table drama" and rank == max_rank) or
+                False
+            )
+            dot_color = "var(--mv-gold)" if active else "var(--mv-ink-dim)"
+            bonus_items += (
+                f'<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;'
+                f'border-bottom:1px solid rgba(255,255,255,0.06);">'
+                f'<div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:{dot_color};margin-right:8px;"></span>'
+                f'<strong>{label}</strong> <span class="dim" style="font-size:11px;">({weight})</span><br>'
+                f'<span class="dim" style="font-size:11px;margin-left:16px;">Triggers when {desc}</span></div>'
+                f'<div style="color:var(--mv-gold);font-weight:700;">+{pct:.0%}</div></div>'
+            )
+        bonus_status_html = f"""
+          <h4 class="dim" style="font-size:12px;text-transform:uppercase;letter-spacing:0.05em;margin:16px 0 4px;">Bonus Eligibility</h4>
+          <div>{bonus_items}</div>"""
+
+    return f"""
+        <div class="card mv-card" style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+            <div>
+              {f'<a href="team-{code.lower()}.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">{name}</a>' if not detailed else f'<span style="font-weight:700;font-size:15px;">{name}</span>'}
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-{(rival or "").lower()}.html" style="color:var(--mv-crimson);text-decoration:none;">{TEAM_FULL_NAME.get(rival, "—")}</a>
+                &middot; Rank {rank or "—"}</span>
+            </div>
+            <div style="text-align:right;">
+              <div class="dim" style="font-size:11px;">Base Score {b["total"]:.1f}%</div>
+              <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">{numi(fanbase_val)} fan base</div>
+            </div>
+          </div>
+          <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
+            {bar_segments}
+          </div>
+          <div style="margin-bottom:10px;">{legend}</div>
+          {weeks_table}
+          {bonus_status_html}
+        </div>"""
+
+
 updated = []
 financial_rows = []
 
@@ -754,6 +918,7 @@ for code, name, owners in TEAMS:
         <button class="mv-tab" onclick="mvShowTab(this,'roster-{code}')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-{code}')">Depth Chart</button>
         <button class="mv-tab active" onclick="mvShowTab(this,'finances-{code}')">Finances</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'fans-{code}')">Fans</button>
         <button class="mv-tab" onclick="mvShowTab(this,'scouting-{code}')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
@@ -849,6 +1014,12 @@ for code, name, owners in TEAMS:
             </div>
           </div>
         </div>
+      </div>
+
+      <div id="fans-{code}" class="mv-tab-panel">
+        <div class="sub">This team's Fan Interest breakdown &mdash; the same algorithm as the site-wide
+          <a href="index.html" style="color:inherit;">Financials &rarr; Fans</a> tab, detailed for {name} specifically.</div>
+        {build_fan_card(code, name, detailed=True)}
       </div>
 
       <div id="scouting-{code}" class="mv-tab-panel">
@@ -1028,6 +1199,8 @@ team_name_by_code = {r["code"]: r["name"] for r in financial_rows}
 gw_all_rows = []
 for _code in sorted(games_by_team):
     for g in games_by_team[_code]:
+        if g["week"] in NON_REGULAR_SEASON_WEEKS:
+            continue  # cup weeks (e.g. GW1) draw no ticket revenue -- not shown on this page
         is_home = g["home"] == _code
         week_salary = 0.0 if g["week"] in NON_REGULAR_SEASON_WEEKS else weekly_salary_by_code.get(_code, 0)
         row = {
@@ -1108,43 +1281,12 @@ ticket_rules_rows = "".join(
     ]
 )
 
-# ---- live standings (all 24 teams, Sr + Jr) -- the Sr teams haven't
-# played a real scored matchup yet (still tied at rank 13, 0-0-0), so the
-# real top-12 signal right now is the Jr bracket's period-1 results. That's
-# expected, not a bug -- shown as-is, folded onto each Sr team's own page. ----
-try:
-    _standings_sess = fantrax_live._session()
-    _all_standings = fantrax_live.fetch_all_standings(_standings_sess)
-except Exception as _e:
-    print(f"WARN: standings fetch for Fans tab failed ({_e})", file=sys.stderr)
-    _all_standings = []
-standings_rank_by_code = fa.rank_by_code_from_standings(_all_standings)
 standings_rows_html = "".join(
     f'<tr><td data-sort="{row["rank"]}">{row["rank"]}</td><td>{row["team_name"]}</td>'
     f'<td class="dim">{"Jr" if row["is_junior"] else "Sr"}</td>'
     f'<td data-sort="{row["fpts_for"]}">{row["fpts_for"]:.1f}</td>'
     f'<td class="dim">{row["record"]}</td></tr>'
     for row in _all_standings[:12]
-)
-
-# ---- team fan base: the latest synced week's base score + fanbase per
-# team (see fans_algo.py + sync_fans.py) -- the real algorithm's output,
-# not a placeholder ----
-_fans2_conn = db.connect()
-_latest_fans_week = _fans2_conn.execute("SELECT MAX(week) FROM gw_fans").fetchone()[0]
-base_score_rows = []
-if _latest_fans_week is not None:
-    base_score_rows = _fans2_conn.execute(
-        "SELECT team_code, base_score, fanbase FROM gw_fans WHERE week=? ORDER BY base_score DESC",
-        (_latest_fans_week,),
-    ).fetchall()
-_fans2_conn.close()
-fanbase_rows_html = "".join(
-    f'<tr><td>{team_name_by_code.get(code, code)}</td>'
-    f'<td class="dim">{standings_rank_by_code.get(code, "—")}</td>'
-    f'<td data-sort="{score}">{score:.1f}</td>'
-    f'<td data-sort="{fanbase}">{numi(fanbase)}</td></tr>'
-    for code, score, fanbase in base_score_rows
 )
 
 rivalries_rows_html = "".join(
@@ -1157,17 +1299,6 @@ rivalries_rows_html = "".join(
 # formula's "Top XI" component (Rulez row 164) -- this is that same
 # formation shown directly, worth $20/player toward a team's live fan
 # total (see common.compute_fan_formula). ----
-_best11_conn = db.connect()
-_best11_week = _best11_conn.execute("SELECT MAX(week) FROM best11").fetchone()[0]
-best11_rows_by_pos = {"GK": [], "D": [], "M": [], "F": []}
-if _best11_week is not None:
-    for _pos, _rank, _name, _club, _code, _fpts in _best11_conn.execute(
-        "SELECT pos, slot_rank, player_name, real_club, team_code, fpts FROM best11 WHERE week=? ORDER BY pos, slot_rank",
-        (_best11_week,),
-    ):
-        best11_rows_by_pos.setdefault(_pos, []).append((_name, _club, _code, _fpts))
-_best11_conn.close()
-
 best11_rows_html = "".join(
     f'<tr><td>{pos}</td><td>{name}</td><td class="dim">{club}</td>'
     f'<td><a href="team-{(code or "").lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{team_name_by_code.get(code, code or "—")}</a></td>'
@@ -1176,95 +1307,13 @@ best11_rows_html = "".join(
     for name, club, code, fpts in best11_rows_by_pos.get(pos, [])
 )
 
-# ---- Team Fan Base dashboard: the headline of the Fans tab. Live
-# component breakdown (same formulas as fans_algo.base_score, recomputed
-# fresh here) plus every synced week's actual attendance, grouped by team. ----
-_topxi_counts = {code: 0 for code, _, _ in TEAMS}
-_mbp_code, _mbp_fpts = None, -1
-for _pos_k, _plist in best11_rows_by_pos.items():
-    for _name, _club, _code, _fpts in _plist:
-        if _code:
-            _topxi_counts[_code] += 1
-            if _fpts > _mbp_fpts:
-                _mbp_fpts, _mbp_code = _fpts, _code
-_trophy_counts_now = {code: sum(v.values()) for code, v in trophy_tally.items()}
-_max_trophies_now = max(_trophy_counts_now.values()) if _trophy_counts_now else 0
-
-BREAKDOWN_COLORS = {
-    "standings": "var(--mv-gold)", "topxi": "var(--mv-blue)", "trophy": "var(--mv-violet)",
-    "momentum": "var(--mv-pink)", "mbp": "var(--mv-crimson)",
-}
-BREAKDOWN_LABELS = {
-    "standings": f"Standings ({fa.STANDINGS_WEIGHT})", "topxi": f"Top 11 ({fa.TOPXI_WEIGHT})",
-    "trophy": f"Trophies ({fa.TROPHY_WEIGHT})", "momentum": f"Momentum ({fa.MOMENTUM_WEIGHT})",
-    "mbp": f"MBP ({fa.MBP_WEIGHT})",
-}
-BREAKDOWN_MAX = fa.STANDINGS_WEIGHT + fa.TOPXI_WEIGHT + fa.TROPHY_WEIGHT + fa.MOMENTUM_WEIGHT + fa.MBP_WEIGHT
-
-fan_base_cards_html = ""
-for _code, _name, _owners in sorted(TEAMS, key=lambda t: standings_rank_by_code.get(t[0], 99)):
-    _b = fa.base_score(_code, standings_rank_by_code.get(_code), _topxi_counts.get(_code, 0),
-                        _trophy_counts_now.get(_code, 0), _max_trophies_now)
-    _b["mbp"] = fa.mbp_bonus(_code, _mbp_code)
-    _b["total"] = round(_b["total"] + _b["mbp"], 2)
-    _fanbase_val = next((fb for c, sc, fb in base_score_rows if c == _code), None)
-
-    _bar_segments = "".join(
-        f'<div style="width:{(_b[k] / BREAKDOWN_MAX * 100):.1f}%;background:{BREAKDOWN_COLORS[k]};" '
-        f'title="{BREAKDOWN_LABELS[k]}: {_b[k]:.1f}"></div>'
-        for k in ("standings", "topxi", "trophy", "momentum", "mbp") if _b[k] > 0
-    )
-    _legend = "".join(
-        f'<span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;'
-        f'border-radius:2px;background:{BREAKDOWN_COLORS[k]};margin-right:4px;"></span>{BREAKDOWN_LABELS[k]}: {_b[k]:.1f}</span>'
-        for k in ("standings", "topxi", "trophy", "momentum", "mbp")
-    )
-
-    _weeks = sorted(w for w, c in _gw_fans if c == _code)
-    _week_rows = ""
-    for _w in _weeks:
-        _row = _gw_fans[(_w, _code)]
-        _host_cap = stadiums.get(_code if _row["is_home"] else _row["opponent"], {}).get("capacity") or 0
-        _ha_badge = (f'<span style="color:var(--mv-gold);font-weight:600;">HOME</span>' if _row["is_home"]
-                      else '<span class="dim">AWAY</span>')
-        _bonus_badges = "".join(
-            f'<span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);'
-            f'color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">{b.strip()}</span>'
-            for b in _row["bonuses"].split(",") if b.strip()
-        )
-        _week_rows += (
-            f'<tr><td>GW{_w}</td><td>{_ha_badge}</td>'
-            f'<td><a href="team-{_row["opponent"].lower()}.html" style="color:inherit;text-decoration:none;">{team_name_by_code.get(_row["opponent"], _row["opponent"])}</a></td>'
-            f'<td data-sort="{_host_cap}">{numi(_host_cap)}</td>'
-            f'<td data-sort="{_row["attendance"] or 0}"><strong style="color:var(--mv-gold)">{numi(_row["attendance"])}</strong></td>'
-            f'<td>{_bonus_badges or "&mdash;"}</td></tr>'
-        )
-    _weeks_table = (
-        f'<div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;">'
-        f'<thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead>'
-        f'<tbody>{_week_rows}</tbody></table></div>'
-        if _week_rows else '<div class="dim" style="font-size:12px;">No synced weeks yet -- run sync_fans.py.</div>'
-    )
-
-    _rival = fa.RIVAL_OF.get(_code)
-    fan_base_cards_html += f"""
-        <div class="card mv-card" style="margin-bottom:14px;">
-          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-            <div>
-              <a href="team-{_code.lower()}.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">{_name}</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: {team_name_by_code.get(_rival, "—")} &middot; Rank {standings_rank_by_code.get(_code, "—")}</span>
-            </div>
-            <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score {_b["total"]:.1f} / {BREAKDOWN_MAX}</div>
-              <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">{numi(_fanbase_val)} fan base</div>
-            </div>
-          </div>
-          <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            {_bar_segments}
-          </div>
-          <div style="margin-bottom:10px;">{_legend}</div>
-          {_weeks_table}
-        </div>"""
+# ---- Team Fan Base dashboard: the headline of the Fans tab, ranked by
+# current standing (see build_fan_card, defined above the per-team loop --
+# each team's own page uses the same function for its new Fans tab). ----
+fan_base_cards_html = "".join(
+    build_fan_card(_code, _name, detailed=False)
+    for _code, _name, _owners in sorted(TEAMS, key=lambda t: standings_rank_by_code.get(t[0], 99))
+)
 
 financials_body = f"""
     <div class="mv-page-header">
@@ -1276,14 +1325,14 @@ financials_body = f"""
       <div class="mv-subtabs">
         <div class="mv-tabs" style="margin-bottom:12px;">
           <button class="mv-tab" onclick="mvShowSubTab(this,'gw-league')">GW</button>
-          <button class="mv-tab active" onclick="mvShowSubTab(this,'season-league')">Season</button>
-          <button class="mv-tab" onclick="mvShowSubTab(this,'fans-league')">Fans</button>
+          <button class="mv-tab" onclick="mvShowSubTab(this,'season-league')">Season</button>
+          <button class="mv-tab active" onclick="mvShowSubTab(this,'fans-league')">Fans</button>
         </div>
 
         <div id="gw-league" class="mv-tab-panel">
-          <div class="sub">Real regular-season schedule straight off Fantrax (35 scoring periods), every team &middot; Salary is
-            season payroll spread evenly across those 35 weeks &middot; GW1 Fans/Revenue/P&amp;L use the 80%-of-capacity
-            assumption at $0 (Shield/Cup week, not priced) &mdash; every other week is still blank &middot; click a column to sort</div>
+          <div class="sub">Regular-season weeks only (GW1 was Community Shield/Super Cup/FA Cup play -- no ticket revenue, so it's not
+            shown here) &middot; Salary is season payroll spread evenly across the weeks that draw it &middot; Fans/Revenue/P&amp;L come
+            from the real Fan Interest algorithm, synced per week via <code>sync_fans.py</code> &middot; click a column to sort</div>
           <div class="mv-table-scroll">
             <table class="mv-table mv-sortable" id="gw-table-league">
               <thead><tr>
@@ -1303,7 +1352,7 @@ financials_body = f"""
           </div>
         </div>
 
-        <div id="season-league" class="mv-tab-panel active">
+        <div id="season-league" class="mv-tab-panel">
           <div class="sub">League Pot ledger, then cost per team across all 3 forward seasons</div>
 
           <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">League Pot</h3>
@@ -1343,9 +1392,25 @@ financials_body = f"""
           </div>
         </div>
 
-        <div id="fans-league" class="mv-tab-panel">
+        <div id="fans-league" class="mv-tab-panel active">
           <div class="sub">The real Fan Interest algorithm (fans_algo.py) -- how attendance and ticket revenue actually get computed,
             not a placeholder. Run <code>sync_fans.py WEEK</code> after <code>sync_best11.py WEEK</code> each week to refresh.</div>
+
+          <div class="card mv-card" style="margin-bottom:18px;background:rgba(255,209,102,0.06);border-color:var(--mv-gold);">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div>
+                <div class="dim" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Current MVP</div>
+                <div style="font-size:20px;font-weight:700;color:var(--mv-gold);">{_mbp_name or "—"}</div>
+                <div class="dim" style="font-size:12px;">{_mbp_club or "—"} &middot;
+                  <a href="team-{(_mbp_code or "").lower()}.html" style="color:inherit;font-weight:600;">{team_name_by_code.get(_mbp_code, "—")}</a>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:22px;font-weight:700;">{_mbp_fpts:.1f} <span class="dim" style="font-size:12px;font-weight:400;">FPts</span></div>
+                <div class="dim" style="font-size:11px;">worth +{fa.MBP_WEIGHT}% to {team_name_by_code.get(_mbp_code, "their")} Base Score</div>
+              </div>
+            </div>
+          </div>
 
           <h2 class="mv-chrome-text" style="font-size:18px;margin:4px 0 4px;">Team Fan Base</h2>
           <div class="sub" style="margin-bottom:14px;">Ranked by current standing. Each team's Base Score breakdown (hover a bar segment
@@ -1356,11 +1421,11 @@ financials_body = f"""
           <h3 class="mv-chrome-text" style="font-size:16px;margin:28px 0 8px;">How It's Calculated</h3>
           <div class="sub" style="margin-bottom:6px;">
             Two layers. First, every team gets a <strong>Base Score</strong> (season-level, recomputed each GW) blending:
-            Standings <span class="dim">(HIGH weight -- {fa.STANDINGS_WEIGHT} of 100 max)</span>,
-            Top 11 ownership <span class="dim">(MEDIUM -- {fa.TOPXI_WEIGHT})</span>,
-            Trophy count <span class="dim">(LOW -- {fa.TROPHY_WEIGHT})</span>,
-            MBP <span class="dim">(VERY LOW -- {fa.MBP_WEIGHT})</span>, and
-            Momentum/streak <span class="dim">(our own addition, {fa.MOMENTUM_WEIGHT} pts, 0 until real win/loss results exist)</span>.
+            Standings <span class="dim">(HIGH weight -- {fa.STANDINGS_WEIGHT}%)</span>,
+            Top 11 ownership <span class="dim">(MEDIUM -- {fa.TOPXI_WEIGHT}%)</span>,
+            Trophy count <span class="dim">(LOW -- {fa.TROPHY_WEIGHT}%)</span>,
+            MBP <span class="dim">(VERY LOW -- {fa.MBP_WEIGHT}%)</span>, and
+            Momentum/streak <span class="dim">(our own addition, {fa.MOMENTUM_WEIGHT}%, 0 until real win/loss results exist)</span>.
             That score becomes each team's share of a total league fan pool (stadium capacity &times; {fa.FANBASE_MULTIPLIER}, a static
             anchor -- see fans_algo.py for the full reasoning on why the total stays fixed while shares move).
           </div>

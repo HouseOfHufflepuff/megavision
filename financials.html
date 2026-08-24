@@ -41,14 +41,14 @@
       <div class="mv-subtabs">
         <div class="mv-tabs" style="margin-bottom:12px;">
           <button class="mv-tab" onclick="mvShowSubTab(this,'gw-league')">GW</button>
-          <button class="mv-tab active" onclick="mvShowSubTab(this,'season-league')">Season</button>
-          <button class="mv-tab" onclick="mvShowSubTab(this,'fans-league')">Fans</button>
+          <button class="mv-tab" onclick="mvShowSubTab(this,'season-league')">Season</button>
+          <button class="mv-tab active" onclick="mvShowSubTab(this,'fans-league')">Fans</button>
         </div>
 
         <div id="gw-league" class="mv-tab-panel">
-          <div class="sub">Real regular-season schedule straight off Fantrax (35 scoring periods), every team &middot; Salary is
-            season payroll spread evenly across those 35 weeks &middot; GW1 Fans/Revenue/P&amp;L use the 80%-of-capacity
-            assumption at $0 (Shield/Cup week, not priced) &mdash; every other week is still blank &middot; click a column to sort</div>
+          <div class="sub">Regular-season weeks only (GW1 was Community Shield/Super Cup/FA Cup play -- no ticket revenue, so it's not
+            shown here) &middot; Salary is season payroll spread evenly across the weeks that draw it &middot; Fans/Revenue/P&amp;L come
+            from the real Fan Interest algorithm, synced per week via <code>sync_fans.py</code> &middot; click a column to sort</div>
           <div class="mv-table-scroll">
             <table class="mv-table mv-sortable" id="gw-table-league">
               <thead><tr>
@@ -62,19 +62,7 @@
                 <th data-sort-type="num">P&amp;L</th>
               </tr></thead>
               <tbody>
-                <tr><td data-sort="1">1</td><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td>Home</td><td class="dim">5th Ave Argyle</td><td data-sort="0.0">$0.00</td><td data-sort="55.101651842439644">55</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:600;">The Bookhouse Boys</a></td><td>Away</td><td class="dim">Thottenham Thotspur</td><td data-sort="0.0">$0.00</td><td data-sort="299.38564167725536">299</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:600;">CRG McGovern</a></td><td>Away</td><td class="dim">Real News</td><td data-sort="0.0">$0.00</td><td data-sort="127.25857687420584">127</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:600;">Divided United</a></td><td>Away</td><td class="dim">Quidpool FC</td><td data-sort="0.0">$0.00</td><td data-sort="21.253494282083864">21</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-fav.html" style="color:inherit;text-decoration:none;font-weight:600;">5th Ave Argyle</a></td><td>Away</td><td class="dim">Wholeassed United FC</td><td data-sort="0.0">$0.00</td><td data-sort="282.4353240152478">282</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-huf.html" style="color:inherit;text-decoration:none;font-weight:600;">House of Hufflepuff</a></td><td>Away</td><td class="dim">NFC Andover City</td><td data-sort="0.0">$0.00</td><td data-sort="157.433290978399">157</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-nac.html" style="color:inherit;text-decoration:none;font-weight:600;">NFC Andover City</a></td><td>Home</td><td class="dim">House of Hufflepuff</td><td data-sort="0.0">$0.00</td><td data-sort="204.6632782719187">205</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-pow.html" style="color:inherit;text-decoration:none;font-weight:600;">Battersea Power Bottoms</a></td><td>Away</td><td class="dim">What The FC</td><td data-sort="0.0">$0.00</td><td data-sort="115.55603557814486">116</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;font-weight:600;">Quidpool FC</a></td><td>Home</td><td class="dim">Divided United</td><td data-sort="0.0">$0.00</td><td data-sort="231.23801778907244">231</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-ren.html" style="color:inherit;text-decoration:none;font-weight:600;">Real News</a></td><td>Home</td><td class="dim">CRG McGovern</td><td data-sort="0.0">$0.00</td><td data-sort="135.23519695044473">135</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-tts.html" style="color:inherit;text-decoration:none;font-weight:600;">Thottenham Thotspur</a></td><td>Home</td><td class="dim">The Bookhouse Boys</td><td data-sort="0.0">$0.00</td><td data-sort="210.01601016518424">210</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="1">1</td><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;font-weight:600;">What The FC</a></td><td>Home</td><td class="dim">Battersea Power Bottoms</td><td data-sort="0.0">$0.00</td><td data-sort="244.12655654383738">244</td><td data-sort="0.0">$0.00</td><td data-sort="0.0">$0.00</td></tr>
-            <tr><td data-sort="2">2</td><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td>Away</td><td class="dim">Thottenham Thotspur</td><td data-sort="3.116764705882353">$3.12</td><td data-sort="55.101651842439644">55</td><td data-sort="2.6511766200762383">$2.65</td><td data-sort="-0.46558808580611455">$-0.47</td></tr>
+                <tr><td data-sort="2">2</td><td><a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:600;">Wholeassed United FC</a></td><td>Away</td><td class="dim">Thottenham Thotspur</td><td data-sort="3.116764705882353">$3.12</td><td data-sort="55.101651842439644">55</td><td data-sort="2.6511766200762383">$2.65</td><td data-sort="-0.46558808580611455">$-0.47</td></tr>
             <tr><td data-sort="2">2</td><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:600;">The Bookhouse Boys</a></td><td>Away</td><td class="dim">Quidpool FC</td><td data-sort="3.28">$3.28</td><td data-sort="299.38564167725536">299</td><td data-sort="4.499999999999999">$4.50</td><td data-sort="1.2199999999999993">$1.22</td></tr>
             <tr><td data-sort="2">2</td><td><a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:600;">CRG McGovern</a></td><td>Away</td><td class="dim">NFC Andover City</td><td data-sort="4.913235294117648">$4.91</td><td data-sort="127.25857687420584">127</td><td data-sort="3.319218551461245">$3.32</td><td data-sort="-1.594016742656403">$-1.59</td></tr>
             <tr><td data-sort="2">2</td><td><a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:600;">Divided United</a></td><td>Away</td><td class="dim">House of Hufflepuff</td><td data-sort="2.9035294117647057">$2.90</td><td data-sort="21.253494282083864">21</td><td data-sort="1.9128144853875475">$1.91</td><td data-sort="-0.9907149263771582">$-0.99</td></tr>
@@ -331,7 +319,7 @@
           </div>
         </div>
 
-        <div id="season-league" class="mv-tab-panel active">
+        <div id="season-league" class="mv-tab-panel">
           <div class="sub">League Pot ledger, then cost per team across all 3 forward seasons</div>
 
           <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">League Pot</h3>
@@ -382,9 +370,25 @@
           </div>
         </div>
 
-        <div id="fans-league" class="mv-tab-panel">
+        <div id="fans-league" class="mv-tab-panel active">
           <div class="sub">The real Fan Interest algorithm (fans_algo.py) -- how attendance and ticket revenue actually get computed,
             not a placeholder. Run <code>sync_fans.py WEEK</code> after <code>sync_best11.py WEEK</code> each week to refresh.</div>
+
+          <div class="card mv-card" style="margin-bottom:18px;background:rgba(255,209,102,0.06);border-color:var(--mv-gold);">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+              <div>
+                <div class="dim" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Current MVP</div>
+                <div style="font-size:20px;font-weight:700;color:var(--mv-gold);">Jack Hinshelwood</div>
+                <div class="dim" style="font-size:12px;">BHA &middot;
+                  <a href="team-qfc.html" style="color:inherit;font-weight:600;">Quidpool FC</a>
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:22px;font-weight:700;">21.0 <span class="dim" style="font-size:12px;font-weight:400;">FPts</span></div>
+                <div class="dim" style="font-size:11px;">worth +5% to Quidpool FC Base Score</div>
+              </div>
+            </div>
+          </div>
 
           <h2 class="mv-chrome-text" style="font-size:18px;margin:4px 0 4px;">Team Fan Base</h2>
           <div class="sub" style="margin-bottom:14px;">Ranked by current standing. Each team's Base Score breakdown (hover a bar segment
@@ -395,215 +399,251 @@
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-fav.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">5th Ave Argyle</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: Quidpool FC &middot; Rank 1</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-qfc.html" style="color:var(--mv-crimson);text-decoration:none;">Quidpool FC</a>
+                &middot; Rank 1</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 53.8 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 53.8%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">282 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:45.0%;background:var(--mv-gold);" title="Standings (45): 45.0"></div><div style="width:6.8%;background:var(--mv-blue);" title="Top 11 (25): 6.8"></div><div style="width:2.0%;background:var(--mv-violet);" title="Trophies (15): 2.0"></div>
+            <div style="width:45.0%;background:var(--mv-gold);" title="Standings (max 45%): 45.0%"></div><div style="width:6.8%;background:var(--mv-blue);" title="Top 11 (max 25%): 6.8%"></div><div style="width:2.0%;background:var(--mv-violet);" title="Trophies (max 15%): 2.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 45.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 6.8</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 2.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span class="dim">AWAY</span></td><td><a href="team-ass.html" style="color:inherit;text-decoration:none;">Wholeassed United FC</a></td><td data-sort="550.0">550</td><td data-sort="337.5369758576874"><strong style="color:var(--mv-gold)">338</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;">What The FC</a></td><td data-sort="350.0">350</td><td data-sort="350.0"><strong style="color:var(--mv-gold)">350</strong></td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">#1 vs #2 clash (+8%)</span></td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 45.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 6.8%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 2.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;">What The FC</a></td><td data-sort="350.0">350</td><td data-sort="305.03014993646764">305</td><td data-sort="350.0"><strong style="color:var(--mv-gold)">350</strong></td><td data-sort="3.499999999999999">$3.50</td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">#1 vs #2 clash (+8%)</span></td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-wtf.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">What The FC</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: NFC Andover City &middot; Rank 2</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-nac.html" style="color:var(--mv-crimson);text-decoration:none;">NFC Andover City</a>
+                &middot; Rank 2</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 46.5 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 46.5%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">244 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:41.2%;background:var(--mv-gold);" title="Standings (45): 41.2"></div><div style="width:2.3%;background:var(--mv-blue);" title="Top 11 (25): 2.3"></div><div style="width:3.0%;background:var(--mv-violet);" title="Trophies (15): 3.0"></div>
+            <div style="width:41.2%;background:var(--mv-gold);" title="Standings (max 45%): 41.2%"></div><div style="width:2.3%;background:var(--mv-blue);" title="Top 11 (max 25%): 2.3%"></div><div style="width:3.0%;background:var(--mv-violet);" title="Trophies (max 15%): 3.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 41.2</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 2.3</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 3.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-pow.html" style="color:inherit;text-decoration:none;">Battersea Power Bottoms</a></td><td data-sort="350.0">350</td><td data-sort="350.0"><strong style="color:var(--mv-gold)">350</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-fav.html" style="color:inherit;text-decoration:none;">5th Ave Argyle</a></td><td data-sort="350.0">350</td><td data-sort="350.0"><strong style="color:var(--mv-gold)">350</strong></td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">#1 vs #2 clash (+8%)</span></td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 41.2%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 2.3%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 3.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-fav.html" style="color:inherit;text-decoration:none;">5th Ave Argyle</a></td><td data-sort="350.0">350</td><td data-sort="263.6566810673444">264</td><td data-sort="350.0"><strong style="color:var(--mv-gold)">350</strong></td><td data-sort="14.0">$14.00</td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">#1 vs #2 clash (+8%)</span></td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-bhb.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">The Bookhouse Boys</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: Divided United &middot; Rank 3</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-du.html" style="color:var(--mv-crimson);text-decoration:none;">Divided United</a>
+                &middot; Rank 3</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 57.0 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 57.0%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">299 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:37.5%;background:var(--mv-gold);" title="Standings (45): 37.5"></div><div style="width:4.5%;background:var(--mv-blue);" title="Top 11 (25): 4.5"></div><div style="width:15.0%;background:var(--mv-violet);" title="Trophies (15): 15.0"></div>
+            <div style="width:37.5%;background:var(--mv-gold);" title="Standings (max 45%): 37.5%"></div><div style="width:4.5%;background:var(--mv-blue);" title="Top 11 (max 25%): 4.5%"></div><div style="width:15.0%;background:var(--mv-violet);" title="Trophies (max 15%): 15.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 37.5</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 4.5</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 15.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span class="dim">AWAY</span></td><td><a href="team-tts.html" style="color:inherit;text-decoration:none;">Thottenham Thotspur</a></td><td data-sort="450.0">450</td><td data-sort="450.0"><strong style="color:var(--mv-gold)">450</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;">Quidpool FC</a></td><td data-sort="450.0">450</td><td data-sort="450.0"><strong style="color:var(--mv-gold)">450</strong></td><td>&mdash;</td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 37.5%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 4.5%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 15.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;">Quidpool FC</a></td><td data-sort="450.0">450</td><td data-sort="299.38564167725536">299</td><td data-sort="450.0"><strong style="color:var(--mv-gold)">450</strong></td><td data-sort="4.499999999999999">$4.50</td><td>&mdash;</td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-tts.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">Thottenham Thotspur</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: Real News &middot; Rank 4</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-ren.html" style="color:var(--mv-crimson);text-decoration:none;">Real News</a>
+                &middot; Rank 4</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 40.0 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 40.0%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">210 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:33.8%;background:var(--mv-gold);" title="Standings (45): 33.8"></div><div style="width:2.3%;background:var(--mv-blue);" title="Top 11 (25): 2.3"></div><div style="width:4.0%;background:var(--mv-violet);" title="Trophies (15): 4.0"></div>
+            <div style="width:33.8%;background:var(--mv-gold);" title="Standings (max 45%): 33.8%"></div><div style="width:2.3%;background:var(--mv-blue);" title="Top 11 (max 25%): 2.3%"></div><div style="width:4.0%;background:var(--mv-violet);" title="Trophies (max 15%): 4.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 33.8</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 2.3</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 4.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;">The Bookhouse Boys</a></td><td data-sort="450.0">450</td><td data-sort="450.0"><strong style="color:var(--mv-gold)">450</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-ass.html" style="color:inherit;text-decoration:none;">Wholeassed United FC</a></td><td data-sort="450.0">450</td><td data-sort="265.1176620076239"><strong style="color:var(--mv-gold)">265</strong></td><td>&mdash;</td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 33.8%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 2.3%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 4.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-ass.html" style="color:inherit;text-decoration:none;">Wholeassed United FC</a></td><td data-sort="450.0">450</td><td data-sort="210.01601016518424">210</td><td data-sort="265.1176620076239"><strong style="color:var(--mv-gold)">265</strong></td><td data-sort="10.604706480304957">$10.60</td><td>&mdash;</td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-nac.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">NFC Andover City</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: What The FC &middot; Rank 5</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-wtf.html" style="color:var(--mv-crimson);text-decoration:none;">What The FC</a>
+                &middot; Rank 5</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 39.0 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 39.0%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">205 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:30.0%;background:var(--mv-gold);" title="Standings (45): 30.0"></div><div style="width:9.0%;background:var(--mv-violet);" title="Trophies (15): 9.0"></div>
+            <div style="width:30.0%;background:var(--mv-gold);" title="Standings (max 45%): 30.0%"></div><div style="width:9.0%;background:var(--mv-violet);" title="Trophies (max 15%): 9.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 30.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 9.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-huf.html" style="color:inherit;text-decoration:none;">House of Hufflepuff</a></td><td data-sort="500.0">500</td><td data-sort="362.09656925031766"><strong style="color:var(--mv-gold)">362</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-crg.html" style="color:inherit;text-decoration:none;">CRG McGovern</a></td><td data-sort="500.0">500</td><td data-sort="331.9218551461245"><strong style="color:var(--mv-gold)">332</strong></td><td>&mdash;</td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 30.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 9.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-crg.html" style="color:inherit;text-decoration:none;">CRG McGovern</a></td><td data-sort="500.0">500</td><td data-sort="204.6632782719187">205</td><td data-sort="331.9218551461245"><strong style="color:var(--mv-gold)">332</strong></td><td data-sort="13.276874205844983">$13.28</td><td>&mdash;</td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-qfc.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">Quidpool FC</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: 5th Ave Argyle &middot; Rank 6</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-fav.html" style="color:var(--mv-crimson);text-decoration:none;">5th Ave Argyle</a>
+                &middot; Rank 6</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 40.8 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 40.8%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">214 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:26.2%;background:var(--mv-gold);" title="Standings (45): 26.2"></div><div style="width:4.5%;background:var(--mv-blue);" title="Top 11 (25): 4.5"></div><div style="width:5.0%;background:var(--mv-violet);" title="Trophies (15): 5.0"></div><div style="width:5.0%;background:var(--mv-crimson);" title="MBP (5): 5.0"></div>
+            <div style="width:26.2%;background:var(--mv-gold);" title="Standings (max 45%): 26.2%"></div><div style="width:4.5%;background:var(--mv-blue);" title="Top 11 (max 25%): 4.5%"></div><div style="width:5.0%;background:var(--mv-violet);" title="Trophies (max 15%): 5.0%"></div><div style="width:5.0%;background:var(--mv-crimson);" title="MBP (max 5%): 5.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 26.2</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 4.5</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 5.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 5.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-du.html" style="color:inherit;text-decoration:none;">Divided United</a></td><td data-sort="450.0">450</td><td data-sort="252.4915120711563"><strong style="color:var(--mv-gold)">252</strong></td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">Bottom-of-the-table drama (+8%)</span></td></tr><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;">The Bookhouse Boys</a></td><td data-sort="450.0">450</td><td data-sort="450.0"><strong style="color:var(--mv-gold)">450</strong></td><td>&mdash;</td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 26.2%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 4.5%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 5.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 5.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-bhb.html" style="color:inherit;text-decoration:none;">The Bookhouse Boys</a></td><td data-sort="450.0">450</td><td data-sort="214.1092757306226">214</td><td data-sort="450.0"><strong style="color:var(--mv-gold)">450</strong></td><td data-sort="18.0">$18.00</td><td>&mdash;</td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-ren.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">Real News</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: Thottenham Thotspur &middot; Rank 7</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-tts.html" style="color:var(--mv-crimson);text-decoration:none;">Thottenham Thotspur</a>
+                &middot; Rank 7</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 25.8 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 25.8%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">135 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:22.5%;background:var(--mv-gold);" title="Standings (45): 22.5"></div><div style="width:2.3%;background:var(--mv-blue);" title="Top 11 (25): 2.3"></div><div style="width:1.0%;background:var(--mv-violet);" title="Trophies (15): 1.0"></div>
+            <div style="width:22.5%;background:var(--mv-gold);" title="Standings (max 45%): 22.5%"></div><div style="width:2.3%;background:var(--mv-blue);" title="Top 11 (max 25%): 2.3%"></div><div style="width:1.0%;background:var(--mv-violet);" title="Trophies (max 15%): 1.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 22.5</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 2.3</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 1.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-crg.html" style="color:inherit;text-decoration:none;">CRG McGovern</a></td><td data-sort="350.0">350</td><td data-sort="262.4937738246506"><strong style="color:var(--mv-gold)">262</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-pow.html" style="color:inherit;text-decoration:none;">Battersea Power Bottoms</a></td><td data-sort="350.0">350</td><td data-sort="250.7912325285896"><strong style="color:var(--mv-gold)">251</strong></td><td>&mdash;</td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 22.5%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 2.3%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 1.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-pow.html" style="color:inherit;text-decoration:none;">Battersea Power Bottoms</a></td><td data-sort="350.0">350</td><td data-sort="135.23519695044473">135</td><td data-sort="250.7912325285896"><strong style="color:var(--mv-gold)">251</strong></td><td data-sort="10.031649301143586">$10.03</td><td>&mdash;</td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-pow.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">Battersea Power Bottoms</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: Wholeassed United FC &middot; Rank 8</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-ass.html" style="color:var(--mv-crimson);text-decoration:none;">Wholeassed United FC</a>
+                &middot; Rank 8</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 22.0 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 22.0%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">116 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:18.8%;background:var(--mv-gold);" title="Standings (45): 18.8"></div><div style="width:2.3%;background:var(--mv-blue);" title="Top 11 (25): 2.3"></div><div style="width:1.0%;background:var(--mv-violet);" title="Trophies (15): 1.0"></div>
+            <div style="width:18.8%;background:var(--mv-gold);" title="Standings (max 45%): 18.8%"></div><div style="width:2.3%;background:var(--mv-blue);" title="Top 11 (max 25%): 2.3%"></div><div style="width:1.0%;background:var(--mv-violet);" title="Trophies (max 15%): 1.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 18.8</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 2.3</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 1.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span class="dim">AWAY</span></td><td><a href="team-wtf.html" style="color:inherit;text-decoration:none;">What The FC</a></td><td data-sort="350.0">350</td><td data-sort="350.0"><strong style="color:var(--mv-gold)">350</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-ren.html" style="color:inherit;text-decoration:none;">Real News</a></td><td data-sort="350.0">350</td><td data-sort="250.7912325285896"><strong style="color:var(--mv-gold)">251</strong></td><td>&mdash;</td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 18.8%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 2.3%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 1.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-ren.html" style="color:inherit;text-decoration:none;">Real News</a></td><td data-sort="350.0">350</td><td data-sort="115.55603557814486">116</td><td data-sort="250.7912325285896"><strong style="color:var(--mv-gold)">251</strong></td><td data-sort="2.5079123252858957">$2.51</td><td>&mdash;</td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-huf.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">House of Hufflepuff</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: CRG McGovern &middot; Rank 9</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-crg.html" style="color:var(--mv-crimson);text-decoration:none;">CRG McGovern</a>
+                &middot; Rank 9</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 30.0 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 30.0%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">157 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:15.0%;background:var(--mv-gold);" title="Standings (45): 15.0"></div><div style="width:15.0%;background:var(--mv-violet);" title="Trophies (15): 15.0"></div>
+            <div style="width:15.0%;background:var(--mv-gold);" title="Standings (max 45%): 15.0%"></div><div style="width:15.0%;background:var(--mv-violet);" title="Trophies (max 15%): 15.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 15.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 15.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span class="dim">AWAY</span></td><td><a href="team-nac.html" style="color:inherit;text-decoration:none;">NFC Andover City</a></td><td data-sort="500.0">500</td><td data-sort="362.09656925031766"><strong style="color:var(--mv-gold)">362</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-du.html" style="color:inherit;text-decoration:none;">Divided United</a></td><td data-sort="650.0">650</td><td data-sort="191.28144853875477"><strong style="color:var(--mv-gold)">191</strong></td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">Bottom-of-the-table drama (+8%)</span></td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 15.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 15.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-du.html" style="color:inherit;text-decoration:none;">Divided United</a></td><td data-sort="650.0">650</td><td data-sort="170.0279542566709">170</td><td data-sort="191.28144853875477"><strong style="color:var(--mv-gold)">191</strong></td><td data-sort="7.651257941550192">$7.65</td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">Bottom-of-the-table drama (+8%)</span></td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-crg.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">CRG McGovern</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: House of Hufflepuff &middot; Rank 10</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-huf.html" style="color:var(--mv-crimson);text-decoration:none;">House of Hufflepuff</a>
+                &middot; Rank 10</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 24.2 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 24.2%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">127 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:11.2%;background:var(--mv-gold);" title="Standings (45): 11.2"></div><div style="width:13.0%;background:var(--mv-violet);" title="Trophies (15): 13.0"></div>
+            <div style="width:11.2%;background:var(--mv-gold);" title="Standings (max 45%): 11.2%"></div><div style="width:13.0%;background:var(--mv-violet);" title="Trophies (max 15%): 13.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 11.2</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 13.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span class="dim">AWAY</span></td><td><a href="team-ren.html" style="color:inherit;text-decoration:none;">Real News</a></td><td data-sort="350.0">350</td><td data-sort="262.4937738246506"><strong style="color:var(--mv-gold)">262</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-nac.html" style="color:inherit;text-decoration:none;">NFC Andover City</a></td><td data-sort="500.0">500</td><td data-sort="331.9218551461245"><strong style="color:var(--mv-gold)">332</strong></td><td>&mdash;</td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 11.2%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 13.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-nac.html" style="color:inherit;text-decoration:none;">NFC Andover City</a></td><td data-sort="500.0">500</td><td data-sort="127.25857687420584">127</td><td data-sort="331.9218551461245"><strong style="color:var(--mv-gold)">332</strong></td><td data-sort="3.319218551461245">$3.32</td><td>&mdash;</td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-ass.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">Wholeassed United FC</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: Battersea Power Bottoms &middot; Rank 11</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-pow.html" style="color:var(--mv-crimson);text-decoration:none;">Battersea Power Bottoms</a>
+                &middot; Rank 11</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 10.5 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 10.5%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">55 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:7.5%;background:var(--mv-gold);" title="Standings (45): 7.5"></div><div style="width:3.0%;background:var(--mv-violet);" title="Trophies (15): 3.0"></div>
+            <div style="width:7.5%;background:var(--mv-gold);" title="Standings (max 45%): 7.5%"></div><div style="width:3.0%;background:var(--mv-violet);" title="Trophies (max 15%): 3.0%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 7.5</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 3.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span style="color:var(--mv-gold);font-weight:600;">HOME</span></td><td><a href="team-fav.html" style="color:inherit;text-decoration:none;">5th Ave Argyle</a></td><td data-sort="550.0">550</td><td data-sort="337.5369758576874"><strong style="color:var(--mv-gold)">338</strong></td><td>&mdash;</td></tr><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-tts.html" style="color:inherit;text-decoration:none;">Thottenham Thotspur</a></td><td data-sort="450.0">450</td><td data-sort="265.1176620076239"><strong style="color:var(--mv-gold)">265</strong></td><td>&mdash;</td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 7.5%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 3.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-tts.html" style="color:inherit;text-decoration:none;">Thottenham Thotspur</a></td><td data-sort="450.0">450</td><td data-sort="55.101651842439644">55</td><td data-sort="265.1176620076239"><strong style="color:var(--mv-gold)">265</strong></td><td data-sort="2.6511766200762383">$2.65</td><td>&mdash;</td></tr></tbody></table></div>
+          
         </div>
         <div class="card mv-card" style="margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
             <div>
               <a href="team-du.html" style="color:inherit;text-decoration:none;font-weight:700;font-size:15px;">Divided United</a>
-              <span class="dim" style="font-size:12px;margin-left:6px;">Rival: The Bookhouse Boys &middot; Rank 12</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-bhb.html" style="color:var(--mv-crimson);text-decoration:none;">The Bookhouse Boys</a>
+                &middot; Rank 12</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score 3.8 / 100</div>
+              <div class="dim" style="font-size:11px;">Base Score 3.8%</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">20 fan base</div>
             </div>
           </div>
           <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
-            <div style="width:3.8%;background:var(--mv-gold);" title="Standings (45): 3.8"></div>
+            <div style="width:3.8%;background:var(--mv-gold);" title="Standings (max 45%): 3.8%"></div>
           </div>
-          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (45): 3.8</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (25): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (15): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (10): 0.0</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (5): 0.0</span></div>
-          <div class="mv-table-scroll"><table class="mv-table" style="font-size:12px;"><thead><tr><th>GW</th><th>H/A</th><th>Opponent</th><th>Capacity</th><th>Fans Going</th><th>Bonuses</th></tr></thead><tbody><tr><td>GW1</td><td><span class="dim">AWAY</span></td><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;">Quidpool FC</a></td><td data-sort="450.0">450</td><td data-sort="252.4915120711563"><strong style="color:var(--mv-gold)">252</strong></td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">Bottom-of-the-table drama (+8%)</span></td></tr><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-huf.html" style="color:inherit;text-decoration:none;">House of Hufflepuff</a></td><td data-sort="650.0">650</td><td data-sort="191.28144853875477"><strong style="color:var(--mv-gold)">191</strong></td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">Bottom-of-the-table drama (+8%)</span></td></tr></tbody></table></div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 3.8%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-huf.html" style="color:inherit;text-decoration:none;">House of Hufflepuff</a></td><td data-sort="650.0">650</td><td data-sort="21.253494282083864">21</td><td data-sort="191.28144853875477"><strong style="color:var(--mv-gold)">191</strong></td><td data-sort="1.9128144853875475">$1.91</td><td><span class="mv-badge" style="background:transparent;border:1px solid var(--mv-pink);color:var(--mv-pink);font-size:9px;padding:1px 6px;margin-left:4px;">Bottom-of-the-table drama (+8%)</span></td></tr></tbody></table></div>
+          
         </div>
 
           <h3 class="mv-chrome-text" style="font-size:16px;margin:28px 0 8px;">How It's Calculated</h3>
           <div class="sub" style="margin-bottom:6px;">
             Two layers. First, every team gets a <strong>Base Score</strong> (season-level, recomputed each GW) blending:
-            Standings <span class="dim">(HIGH weight -- 45 of 100 max)</span>,
-            Top 11 ownership <span class="dim">(MEDIUM -- 25)</span>,
-            Trophy count <span class="dim">(LOW -- 15)</span>,
-            MBP <span class="dim">(VERY LOW -- 5)</span>, and
-            Momentum/streak <span class="dim">(our own addition, 10 pts, 0 until real win/loss results exist)</span>.
+            Standings <span class="dim">(HIGH weight -- 45%)</span>,
+            Top 11 ownership <span class="dim">(MEDIUM -- 25%)</span>,
+            Trophy count <span class="dim">(LOW -- 15%)</span>,
+            MBP <span class="dim">(VERY LOW -- 5%)</span>, and
+            Momentum/streak <span class="dim">(our own addition, 10%, 0 until real win/loss results exist)</span>.
             That score becomes each team's share of a total league fan pool (stadium capacity &times; 0.35, a static
             anchor -- see fans_algo.py for the full reasoning on why the total stays fixed while shares move).
           </div>
@@ -659,7 +699,7 @@
             <table class="mv-table">
               <thead><tr><th>Team</th><th>Team</th></tr></thead>
               <tbody>
-                <tr><td>House of Hufflepuff</td><td>CRG McGovern</td></tr><tr><td>The Bookhouse Boys</td><td>Divided United</td></tr><tr><td>5th Ave Argyle</td><td>Quidpool FC</td></tr><tr><td>Real News</td><td>Thottenham Thotspur</td></tr><tr><td>What The FC</td><td>NFC Andover City</td></tr><tr><td>Battersea Power Bottoms</td><td>Wholeassed United FC</td></tr>
+                <tr><td>House of Hufflepuff</td><td>CRG McGovern</td></tr><tr><td>The Bookhouse Boys</td><td>Divided United</td></tr><tr><td>Quidpool FC</td><td>5th Ave Argyle</td></tr><tr><td>Thottenham Thotspur</td><td>Real News</td></tr><tr><td>NFC Andover City</td><td>What The FC</td></tr><tr><td>Battersea Power Bottoms</td><td>Wholeassed United FC</td></tr>
               </tbody>
             </table>
           </div>
@@ -686,7 +726,7 @@
       </div>
     </section>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-23 21:54 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-24 01:09 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

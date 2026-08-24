@@ -66,6 +66,7 @@
         <button class="mv-tab" onclick="mvShowTab(this,'roster-BHB')">Roster</button>
         <button class="mv-tab" onclick="mvShowTab(this,'depth-BHB')">Depth Chart</button>
         <button class="mv-tab active" onclick="mvShowTab(this,'finances-BHB')">Finances</button>
+        <button class="mv-tab" onclick="mvShowTab(this,'fans-BHB')">Fans</button>
         <button class="mv-tab" onclick="mvShowTab(this,'scouting-BHB')">Scouting</button>
       </div>
       <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:14px;">
@@ -160,6 +161,34 @@
         </div>
       </div>
 
+      <div id="fans-BHB" class="mv-tab-panel">
+        <div class="sub">This team's Fan Interest breakdown &mdash; the same algorithm as the site-wide
+          <a href="index.html" style="color:inherit;">Financials &rarr; Fans</a> tab, detailed for The Bookhouse Boys specifically.</div>
+        
+        <div class="card mv-card" style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+            <div>
+              <span style="font-weight:700;font-size:15px;">The Bookhouse Boys</span>
+              <span class="dim" style="font-size:12px;margin-left:6px;">Rival:
+                <a href="team-du.html" style="color:var(--mv-crimson);text-decoration:none;">Divided United</a>
+                &middot; Rank 3</span>
+            </div>
+            <div style="text-align:right;">
+              <div class="dim" style="font-size:11px;">Base Score 57.0%</div>
+              <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">299 fan base</div>
+            </div>
+          </div>
+          <div style="display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(255,255,255,0.06);margin-bottom:6px;">
+            <div style="width:37.5%;background:var(--mv-gold);" title="Standings (max 45%): 37.5%"></div><div style="width:4.5%;background:var(--mv-blue);" title="Top 11 (max 25%): 4.5%"></div><div style="width:15.0%;background:var(--mv-violet);" title="Trophies (max 15%): 15.0%"></div>
+          </div>
+          <div style="margin-bottom:10px;"><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-gold);margin-right:4px;"></span>Standings (max 45%): 37.5%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-blue);margin-right:4px;"></span>Top 11 (max 25%): 4.5%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-violet);margin-right:4px;"></span>Trophies (max 15%): 15.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-pink);margin-right:4px;"></span>Momentum (max 10%): 0.0%</span><span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--mv-crimson);margin-right:4px;"></span>MBP (max 5%): 0.0%</span></div>
+          <div class="mv-table-scroll"><table class="mv-table mv-sortable" style="font-size:12px;"><thead><tr><th data-sort-type="text">GW</th><th data-sort-type="text">H/A</th><th data-sort-type="text">Opponent</th><th data-sort-type="num">Capacity</th><th data-sort-type="num">Interest</th><th data-sort-type="num">Fans Going</th><th data-sort-type="num">Revenue</th><th data-sort-type="text">Bonuses</th></tr></thead><tbody><tr><td>GW2</td><td><span class="dim">AWAY</span></td><td><a href="team-qfc.html" style="color:inherit;text-decoration:none;">Quidpool FC</a></td><td data-sort="450.0">450</td><td data-sort="299.38564167725536">299</td><td data-sort="450.0"><strong style="color:var(--mv-gold)">450</strong></td><td data-sort="4.499999999999999">$4.50</td><td>&mdash;</td></tr></tbody></table></div>
+          
+          <h4 class="dim" style="font-size:12px;text-transform:uppercase;letter-spacing:0.05em;margin:16px 0 4px;">Bonus Eligibility</h4>
+          <div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);"><div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-gold);margin-right:8px;"></span><strong>Derby Day</strong> <span class="dim" style="font-size:11px;">(HIGH)</span><br><span class="dim" style="font-size:11px;margin-left:16px;">Triggers when the fixture is against your declared rival</span></div><div style="color:var(--mv-gold);font-weight:700;">+35%</div></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);"><div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-ink-dim);margin-right:8px;"></span><strong>#1 vs #2 clash</strong> <span class="dim" style="font-size:11px;">(VERY LOW)</span><br><span class="dim" style="font-size:11px;margin-left:16px;">Triggers when both teams in the fixture are ranked #1 and #2</span></div><div style="color:var(--mv-gold);font-weight:700;">+8%</div></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);"><div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-ink-dim);margin-right:8px;"></span><strong>Bottom-of-the-table drama</strong> <span class="dim" style="font-size:11px;">(VERY LOW)</span><br><span class="dim" style="font-size:11px;margin-left:16px;">Triggers when the last-place team is playing</span></div><div style="color:var(--mv-gold);font-weight:700;">+8%</div></div><div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.06);"><div><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--mv-ink-dim);margin-right:8px;"></span><strong>Upset buzz</strong> <span class="dim" style="font-size:11px;">(LOW (our addition))</span><br><span class="dim" style="font-size:11px;margin-left:16px;">Triggers when either team pulled a shock result last week -- 0 until real results exist</span></div><div style="color:var(--mv-gold);font-weight:700;">+12%</div></div></div>
+        </div>
+      </div>
+
       <div id="scouting-BHB" class="mv-tab-panel">
         <div class="sub">EA Sports FC 26 ratings (all leagues) + 2025/26 Premier League season totals &middot; click a column to sort</div>
         <div style="font-size:11px;color:var(--mv-ink-muted);margin-bottom:10px;">
@@ -213,7 +242,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-23 21:54 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-24 01:09 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');
