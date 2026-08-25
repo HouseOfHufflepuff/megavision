@@ -111,11 +111,11 @@
       <div id="finances-DU" class="mv-tab-panel active">
         <div class="mv-subtabs">
           <div class="mv-tabs" style="margin-bottom:12px;">
-            <button class="mv-tab active" onclick="mvShowSubTab(this,'gw-DU')">GW</button>
-            <button class="mv-tab" onclick="mvShowSubTab(this,'contracts-DU')">Contracts</button>
+            <button class="mv-tab" onclick="mvShowSubTab(this,'gw-DU')">GW</button>
+            <button class="mv-tab active" onclick="mvShowSubTab(this,'contracts-DU')">Contracts</button>
           </div>
 
-          <div id="gw-DU" class="mv-tab-panel active">
+          <div id="gw-DU" class="mv-tab-panel">
             <div class="sub">Real regular-season matchups straight off Fantrax (36 scoring periods) &middot; Salary is season payroll
               spread evenly across those 36 weeks &middot; Fans/Ticket Revenue/P&amp;L left blank until a real revenue model exists &middot; click a column to sort</div>
             <div class="mv-table-scroll">
@@ -137,7 +137,7 @@
             </div>
           </div>
 
-          <div id="contracts-DU" class="mv-tab-panel">
+          <div id="contracts-DU" class="mv-tab-panel active">
             <div class="sub">Real contract wages by year plus any transfer fees, team totals then player-by-player &middot; click a column to sort</div>
             <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
               <div class="mv-stat"><div class="label">26/27 Cost</div><div class="value" style="font-size:18px;">$98.72</div></div><div class="mv-stat"><div class="label">27/28 Cost</div><div class="value" style="font-size:18px;">$86.75</div></div><div class="mv-stat"><div class="label">28/29 Cost</div><div class="value" style="font-size:18px;">$86.91</div></div>
@@ -242,7 +242,7 @@
 
     <p style="margin-top:24px;"><a href="teams.html" style="color:var(--mv-ink-muted);font-size:13px;">&larr; Back to all teams</a></p>
   </div>
-  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-25 02:01 UTC</footer>
+  <footer class="mv-footer">MEGAVISION &middot; Mega League Archive &middot; <a href="style-guide.html">Style Guide</a> &middot; Updated 2026-08-25 02:11 UTC</footer>
   <script>
     function mvShowTab(btn, panelId) {
       var tabs = btn.parentElement.querySelectorAll('.mv-tab');

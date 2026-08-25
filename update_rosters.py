@@ -963,11 +963,11 @@ for code, name, owners in TEAMS:
       <div id="finances-{code}" class="mv-tab-panel active">
         <div class="mv-subtabs">
           <div class="mv-tabs" style="margin-bottom:12px;">
-            <button class="mv-tab active" onclick="mvShowSubTab(this,'gw-{code}')">GW</button>
-            <button class="mv-tab" onclick="mvShowSubTab(this,'contracts-{code}')">Contracts</button>
+            <button class="mv-tab" onclick="mvShowSubTab(this,'gw-{code}')">GW</button>
+            <button class="mv-tab active" onclick="mvShowSubTab(this,'contracts-{code}')">Contracts</button>
           </div>
 
-          <div id="gw-{code}" class="mv-tab-panel active">
+          <div id="gw-{code}" class="mv-tab-panel">
             <div class="sub">Real regular-season matchups straight off Fantrax (36 scoring periods) &middot; Salary is season payroll
               spread evenly across those 36 weeks &middot; Fans/Ticket Revenue/P&amp;L left blank until a real revenue model exists &middot; click a column to sort</div>
             <div class="mv-table-scroll">
@@ -989,7 +989,7 @@ for code, name, owners in TEAMS:
             </div>
           </div>
 
-          <div id="contracts-{code}" class="mv-tab-panel">
+          <div id="contracts-{code}" class="mv-tab-panel active">
             <div class="sub">Real contract wages by year plus any transfer fees, team totals then player-by-player &middot; click a column to sort</div>
             <div class="mv-stat-grid" style="grid-template-columns:repeat(auto-fit, minmax(120px,1fr));margin-bottom:18px;">
               {"".join(
