@@ -927,8 +927,8 @@ for code, name, owners in TEAMS:
         <span style="color:{CATEGORY_BADGE_COLOR["youth_legend"]};">Youth Legend</span>,
         <span style="color:{CATEGORY_BADGE_COLOR["youth_players"]};">Youth Player</span>, and
         <span style="color:{CATEGORY_BADGE_COLOR["drafted"]};">Drafted '27</span> tags mark each.
-        Salary is each player's real contract wage (multi-year where extended, per the Rulez contract
-        rules) where we've verified it, live FPL price as a fallback otherwise.
+        Salary is each player's real contract wage (multi-year where extended, per the
+        <a href="rulez.html" style="color:inherit;">Rulez</a> contract rules) where we've verified it, live FPL price as a fallback otherwise.
         Depth Chart is ranked by EA FC 26 overall rating (Fantrax fantasy points as fallback/tiebreak).
       </div>
 
@@ -1395,6 +1395,9 @@ financials_body = f"""
         <div id="fans-league" class="mv-tab-panel active">
           <div class="sub">The real Fan Interest algorithm (fans_algo.py) -- how attendance and ticket revenue actually get computed,
             not a placeholder. Run <code>sync_fans.py WEEK</code> after <code>sync_best11.py WEEK</code> each week to refresh.</div>
+          <div class="sub" style="margin-bottom:14px;">The official <a href="rulez.html" style="color:inherit;font-weight:600;">Rulez</a> page (section 2.2) now has the
+            commissioner's exact fan/ticket formula -- $0.04/ticket and precise standings-based fan counts, more specific than the weighted
+            model below. This page hasn't been rebuilt to match it yet.</div>
 
           <div class="card mv-card" style="margin-bottom:18px;background:rgba(255,209,102,0.06);border-color:var(--mv-gold);">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
