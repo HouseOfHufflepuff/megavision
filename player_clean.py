@@ -65,6 +65,7 @@ NAME_OVERRIDES = {
 # as-is, before any parsing, so it can never misfire on other names.
 RAW_STRING_OVERRIDES = {
     "morgan gibbs-white": "Morgan Gibbs-White",
+    "doku m, jeremy - mci": "Jeremy Doku",
 }
 
 

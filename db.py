@@ -143,6 +143,23 @@ CREATE TABLE IF NOT EXISTS team_week_financials (
     updated_at TEXT NOT NULL,
     PRIMARY KEY (team_code, week)
 );
+
+-- Roster edits since the last keeper-sheet/draft-json snapshot (owner
+-- add/cut requests, category reassignments) -- applied on top of
+-- parse_keeper_roster() + draft_picks_2627.json in update_rosters.py.
+-- The DB is the source of truth for anything that changes mid-season;
+-- the sheet/json stay frozen as historical inputs.
+CREATE TABLE IF NOT EXISTS roster_overrides (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,   -- match key, substring-matched against the sheet/json's raw name
+    action TEXT NOT NULL,        -- add, remove, recategorize
+    position TEXT,               -- add only
+    real_club TEXT,               -- add only
+    category TEXT,                -- add/recategorize: kept, youth_legend, youth_players, drafted
+    updated_at TEXT NOT NULL,
+    UNIQUE(team_code, player_name, action)
+);
 """
 
 

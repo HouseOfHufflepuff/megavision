@@ -358,6 +358,38 @@ with open("data/draft_picks_2627.json") as _f:
         _drafted_by_code.setdefault(_d["code"], []).append(_d)
 print(f"Loaded {sum(len(v) for v in _drafted_by_code.values())} drafted picks from data/draft_picks_2627.json.")
 
+# mid-season roster edits (owner add/cut/recategorize requests) -- the DB
+# is the source of truth for these, applied on top of the sheet/json snapshot
+_overrides_by_team = {}
+_overrides_conn = db.connect()
+for _o_code, _o_name, _o_action, _o_pos, _o_club, _o_cat in _overrides_conn.execute(
+    "SELECT team_code, player_name, action, position, real_club, category FROM roster_overrides"
+):
+    _overrides_by_team.setdefault(_o_code, []).append(
+        {"player_name": _o_name, "action": _o_action, "pos": _o_pos, "club": _o_club, "category": _o_cat}
+    )
+_overrides_conn.close()
+print(f"Loaded {sum(len(v) for v in _overrides_by_team.values())} roster override(s) from roster_overrides.")
+
+
+def apply_roster_overrides(code, roster):
+    for o in _overrides_by_team.get(code, []):
+        if o["action"] == "remove":
+            roster = [p for p in roster if o["player_name"].lower() not in (p["player"] or "").lower()]
+        elif o["action"] == "recategorize":
+            for p in roster:
+                if o["player_name"].lower() in (p["player"] or "").lower():
+                    p["category"] = o["category"]
+        elif o["action"] == "add":
+            roster.append({
+                "player": o["player_name"], "pos": o["pos"], "category": o["category"],
+                "y1": None, "y2": None, "current_salary": 0,
+                "clean_name": o["player_name"], "club_full": club_full_name(o["club"]),
+                "_drafted_club": o["club"],
+            })
+    return roster
+
+
 # ---- Fan Interest data, computed once and shared by both each team's own
 # new Fans tab and the site-wide Fans tab dashboard (see build_fan_card
 # below). Live standings (all 24 teams, Sr + Jr) -- the Sr teams haven't
@@ -545,6 +577,7 @@ for code, name, owners in TEAMS:
             "_drafted_club": _d["club"],
         })
 
+    roster = apply_roster_overrides(code, roster)
     roster_size = len(roster)
 
     stadium_info = stadiums.get(code, {})
