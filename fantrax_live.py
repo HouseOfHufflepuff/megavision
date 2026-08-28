@@ -107,6 +107,20 @@ def fetch_position_leaders(sess, pos, limit=10):
     return out
 
 
+def fetch_all_player_points(sess, limit=250):
+    """{player_name: fpts} for every owned player league-wide, off the same
+    player-stats endpoint as fetch_position_leaders. Season-to-date points
+    earned by the PLAYER, independent of which of a team's two rosters
+    (Sr/Jr) currently holds them -- unlike getTeamRosterInfo's per-roster
+    "Fantasy Points" column, which only counts points scored while on that
+    specific roster and reads 0 right after a Sr/Jr swap."""
+    out = {}
+    for pos in POS_GROUP:
+        for p in fetch_position_leaders(sess, pos, limit=limit):
+            out[p["name"]] = p["fpts"]
+    return out
+
+
 def _session():
     cj = browser_cookie3.chrome(domain_name="fantrax.com")
     sess = requests.Session()
@@ -228,6 +242,47 @@ def fetch_roster(sess, team_id):
 def fetch_all_rosters(sess):
     """code -> list of {name, pos, fpts}."""
     return {code: fetch_roster(sess, team_id) for code, team_id in FANTRAX_TEAM_ID.items()}
+
+
+# icon typeIds seen on a player's "scorer.icons" that indicate a real
+# injury/availability concern, not just a news blurb (typeId "9" is a plain
+# news note, e.g. "registered one shot" -- not an injury by itself)
+INJURY_ICON_TYPE_IDS = {"1", "30", "7"}  # game-time decision / out / inactive
+
+
+def fetch_full_roster(sess, team_id):
+    """[{scorerId, name, pos, club, fpts, injuries: [tooltip,...]}] -- every
+    player currently on this roster. Used for real add/drop/claim
+    transactions (need scorerId), injury flagging (needs the raw status
+    icons), and fpts-based "hot player" ranking."""
+    data = _post(sess, "getTeamRosterInfo", teamId=team_id, view="STATS")
+    out = []
+    for table in data.get("tables", []):
+        header = table.get("header", {}).get("cells", [])
+        score_idx = next((i for i, h in enumerate(header) if h.get("sortKey") == "SCORE"), None)
+        for row in table.get("rows", []):
+            scorer = row.get("scorer") or {}
+            sid = scorer.get("scorerId")
+            pos_id = row.get("posId")
+            if not sid or pos_id not in POSITION_MAP:
+                continue
+            cells = row.get("cells", [])
+            fpts = 0.0
+            if score_idx is not None and score_idx < len(cells):
+                try:
+                    fpts = float(cells[score_idx]["content"])
+                except (TypeError, ValueError, KeyError):
+                    fpts = 0.0
+            injuries = [
+                icon["tooltip"] for icon in (scorer.get("icons") or [])
+                if icon.get("typeId") in INJURY_ICON_TYPE_IDS
+            ]
+            out.append({
+                "scorerId": sid, "name": scorer.get("name", "?"),
+                "pos": POSITION_MAP[pos_id], "club": scorer.get("teamShortName", ""),
+                "fpts": fpts, "injuries": injuries,
+            })
+    return out
 
 
 def compute_top_xi(rosters_by_code):
