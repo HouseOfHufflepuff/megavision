@@ -84,6 +84,57 @@ def start_gate(ffs_start, ffs_doubt, is_out):
     return GATE_CLEAN_START
 
 
+def matchup_factor(club_avg_fc26, league_avg_fc26, opponent_avg_fc26, is_home):
+    """The same matchup term used inside raw_composite, exposed standalone
+    so a team's "how favorable is this fixture" number can be shown on its
+    own (Matchups tab) without recomputing a whole player's composite."""
+    bonus = (league_avg_fc26 - opponent_avg_fc26) * MATCHUP_OPPONENT_WEIGHT if opponent_avg_fc26 is not None else 0.0
+    if is_home is True:
+        bonus += HOME_BONUS
+    elif is_home is False:
+        bonus -= AWAY_PENALTY
+    return round(bonus, 1)
+
+
+LIKELIHOOD_START_MULT = 5.0
+LIKELIHOOD_DOUBT_MULT = 2.5
+LIKELIHOOD_BENCH_MULT = 1.0
+LIKELIHOOD_OUT_MULT = 0.1
+LIKELIHOOD_SHARPNESS = 8.0  # divisor on fc26_overall before exponentiating; lower = sharper separation by talent
+
+
+def start_likelihoods(group):
+    """group: [{fc26_overall, ffs_start, ffs_doubt, is_out}, ...] -- every
+    player at one position on one real club's squad. Returns a parallel
+    list of 0-100 floats that sums to exactly 100: a softmax over FC 26
+    overall, scaled hard for a confirmed FFS starter and down hard for a
+    doubt/out. This estimates XI-selection odds, not minutes or points --
+    a nailed-on starter should land near 100 within their own position
+    group even if a rival squad's backup at the same slot rates higher on
+    raw talent alone."""
+    if not group:
+        return []
+    weights = []
+    for p in group:
+        if p["is_out"]:
+            mult = LIKELIHOOD_OUT_MULT
+        elif p["ffs_start"] and not p["ffs_doubt"]:
+            mult = LIKELIHOOD_START_MULT
+        elif p["ffs_start"] and p["ffs_doubt"]:
+            mult = LIKELIHOOD_DOUBT_MULT
+        else:
+            mult = LIKELIHOOD_BENCH_MULT
+        weights.append(pow(2.718281828, (p["fc26_overall"] or 50) / LIKELIHOOD_SHARPNESS) * mult)
+    total = sum(weights)
+    if total == 0:
+        return [round(100.0 / len(group), 1)] * len(group)
+    pcts = [round(w / total * 100, 1) for w in weights]
+    drift = round(100.0 - sum(pcts), 1)
+    if pcts:
+        pcts[pcts.index(max(pcts))] += drift  # force an exact 100.0 sum through rounding
+    return pcts
+
+
 def compute_ranks(players):
     """players: list of dicts, each with raw_composite inputs already
     resolved to keys: fc26_overall, club_avg_fc26, league_avg_fc26,

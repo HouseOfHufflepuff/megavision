@@ -301,8 +301,9 @@ def tally_trophies(comps, seasons):
 CLUB_NAMES = {
     "ARS": "Arsenal", "AVL": "Aston Villa", "BHA": "Brighton", "BOU": "Bournemouth",
     "BRE": "Brentford", "BRF": "Brentford", "BRI": "Brighton", "BUR": "Burnley",
-    "CHE": "Chelsea", "CPY": "Crystal Palace", "CRY": "Crystal Palace",
-    "EVE": "Everton", "FUL": "Fulham", "LEE": "Leeds United", "LEEDS": "Leeds United",
+    "CHE": "Chelsea", "COV": "Coventry City", "CPY": "Crystal Palace", "CRY": "Crystal Palace",
+    "EVE": "Everton", "FUL": "Fulham", "HUL": "Hull City", "IPS": "Ipswich Town",
+    "LEE": "Leeds United", "LEEDS": "Leeds United",
     "LIV": "Liverpool", "MCI": "Manchester City", "MUN": "Manchester United",
     "NEW": "Newcastle United", "NOT": "Nottingham Forest", "SUN": "Sunderland",
     "TOT": "Tottenham Hotspur", "WHU": "West Ham United", "WOL": "Wolverhampton Wanderers",

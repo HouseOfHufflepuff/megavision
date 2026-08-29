@@ -195,8 +195,25 @@ CREATE TABLE IF NOT EXISTS player_gameweek (
     ffs_negative_mention INTEGER,  -- 0/1, unfavorable keyword hit (also set for Out/Doubt)
     ffs_doubt INTEGER,             -- 0/1, in FFS's fitness-doubt list
     megavision_rank REAL,          -- 0-100 projection score, see sync_megavision_rank.py
+    start_likelihood REAL,         -- 0-100, sums to 100 within (real_club, fantrax_position), see rank_algo.start_likelihoods
     updated_at TEXT NOT NULL,
     UNIQUE(player_name, real_club, gameweek)
+);
+
+-- One row per real EPL club per gameweek: real-world record, this
+-- gameweek's opponent/home-away, and the club-level matchup factor (the
+-- same term folded into each of that club's players' megavision_rank).
+CREATE TABLE IF NOT EXISTS epl_club_gameweek (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    real_club TEXT NOT NULL,
+    gameweek INTEGER NOT NULL,
+    opponent TEXT,
+    is_home INTEGER,               -- 0/1/NULL
+    played INTEGER, win INTEGER, draw INTEGER, loss INTEGER, league_position INTEGER,
+    club_avg_fc26 REAL,
+    matchup_factor REAL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(real_club, gameweek)
 );
 """
 
@@ -219,6 +236,8 @@ def connect():
     existing_pgw = {r[1] for r in conn.execute("PRAGMA table_info(player_gameweek)")}
     if "megavision_rank" not in existing_pgw:
         conn.execute("ALTER TABLE player_gameweek ADD COLUMN megavision_rank REAL")
+    if "start_likelihood" not in existing_pgw:
+        conn.execute("ALTER TABLE player_gameweek ADD COLUMN start_likelihood REAL")
     conn.commit()
     return conn
 
