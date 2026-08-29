@@ -394,9 +394,12 @@ NAV_LINKS = [
 ]
 
 
-def head(title, active):
+def head(title, active, wide=False):
     """No logo in the nav anywhere -- it's a big hero image at the top of
-    every page's content instead (see hero_logo())."""
+    every page's content instead (see hero_logo()). wide=True widens the
+    page's max content width (see .wrap.wrap-wide in dashboard.css) for
+    pages with genuinely dense side-by-side content -- opt-in per page,
+    default width is unchanged everywhere else."""
     nav_items = []
     for href, label in NAV_LINKS:
         cls = ' class="active"' if href == active else ""
@@ -422,7 +425,7 @@ def head(title, active):
       {nav_links}
     </div>
   </nav>
-  <div class="wrap">
+  <div class="wrap{' wrap-wide' if wide else ''}">
 """
 
 

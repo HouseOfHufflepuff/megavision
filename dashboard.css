@@ -18,6 +18,7 @@ body {
   margin: 0 auto;
   padding: 0 20px 80px;
 }
+.wrap.wrap-wide { max-width: 1520px; }
 
 /* ---- nav (no logo -- that's a big hero image in the page content instead) ---- */
 .mv-nav {
@@ -271,6 +272,112 @@ table.mv-sortable thead th[data-sort-type]:hover { color: var(--mv-ink); }
 section.card { margin-bottom: 28px; }
 section.card h2 { margin: 0 0 4px; font-size: 20px; }
 section.card .sub { color: var(--mv-ink-muted); font-size: 13px; margin-bottom: 20px; }
+
+/* ---- matchup comparison grid (Rank: Matchups tab, uses wrap-wide) ---- */
+.mv-matchup-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(560px, 1fr));
+  gap: 16px;
+}
+.mv-matchup-card {
+  position: relative;
+  background: var(--mv-black-2);
+  border: 1px solid var(--mv-border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  overflow: hidden;
+}
+.mv-matchup-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mv-violet), var(--mv-blue));
+}
+.mv-matchup-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--mv-border);
+}
+.mv-matchup-team { flex: 1 1 0; min-width: 0; }
+.mv-matchup-team.away { text-align: right; }
+.mv-matchup-team .name { font-weight: 800; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mv-matchup-team.away .name { color: var(--mv-violet); }
+.mv-matchup-team.home .name { color: var(--mv-blue); }
+.mv-matchup-team .meta { font-size: 11px; color: var(--mv-ink-muted); margin-top: 1px; }
+.mv-matchup-team .mf { font-weight: 700; font-variant-numeric: tabular-nums; }
+.mv-matchup-vs {
+  flex: 0 0 auto;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--mv-ink-dim);
+  padding: 0 6px;
+}
+
+.mv-matchup-pos-row {
+  display: grid;
+  grid-template-columns: 1fr 46px 1fr;
+  align-items: start;
+  gap: 6px;
+  padding: 7px 6px;
+  border-bottom: 1px solid var(--mv-border);
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(124,58,237,0.07), transparent 46%, transparent 54%, rgba(46,107,255,0.07));
+}
+.mv-matchup-pos-row:last-child { border-bottom: none; }
+.mv-pos-pill {
+  justify-self: center;
+  margin-top: 2px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-align: center;
+  border-radius: 999px;
+  padding: 3px 0;
+  width: 38px;
+  color: var(--mv-black);
+}
+.mv-pos-pill.pos-F { background: var(--mv-crimson); }
+.mv-pos-pill.pos-M { background: var(--mv-blue); }
+.mv-pos-pill.pos-D { background: var(--mv-violet); color: var(--mv-ink); }
+.mv-pos-pill.pos-GK { background: var(--mv-gold); }
+
+.mv-matchup-side { display: flex; flex-direction: column; gap: 1px; }
+.mv-matchup-side.away { align-items: stretch; }
+.mv-matchup-player {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  padding: 2px 4px;
+  border-radius: 5px;
+  line-height: 1.5;
+}
+.mv-matchup-player:nth-child(odd) { background: var(--mv-black-3); }
+.mv-matchup-side.away .mv-matchup-player { flex-direction: row-reverse; text-align: right; }
+.mv-matchup-player .name { flex: 1 1 auto; min-width: 0; color: var(--mv-ink); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mv-matchup-player .pct { flex: 0 0 auto; color: var(--mv-ink-muted); font-variant-numeric: tabular-nums; font-size: 10.5px; width: 30px; }
+.mv-matchup-side.home .mv-matchup-player .pct { text-align: left; }
+.mv-matchup-side.away .mv-matchup-player .pct { text-align: right; }
+.mv-rank-chip {
+  flex: 0 0 auto;
+  min-width: 30px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  border-radius: 5px;
+  padding: 1px 5px;
+  color: var(--mv-black);
+}
+.mv-rank-chip.tier-elite { background: var(--mv-gold); }
+.mv-rank-chip.tier-good { background: var(--mv-blue); color: var(--mv-ink); }
+.mv-rank-chip.tier-mid { background: var(--mv-chrome-600); color: var(--mv-ink); }
+.mv-rank-chip.tier-low { background: transparent; color: var(--mv-ink-dim); font-weight: 600; }
 
 footer.mv-footer {
   text-align: center;

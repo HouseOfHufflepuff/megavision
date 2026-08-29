@@ -140,29 +140,29 @@ def pitch_view(best11_by_pos):
     return f'<div class="mv-pitch">{"".join(rows_html)}</div>'
 
 
-def depth_box_player(r):
+def rank_tier(rank):
+    if rank is None:
+        return "tier-low"
+    if rank >= 80:
+        return "tier-elite"
+    if rank >= 60:
+        return "tier-good"
+    if rank >= 40:
+        return "tier-mid"
+    return "tier-low"
+
+
+def matchup_player(r):
     mv = r["megavision_rank"]
-    mv_str = f'{mv:.1f}' if mv is not None else "—"
+    mv_str = f'{mv:.0f}' if mv is not None else "—"
     start_pct = f'{r["start_likelihood"]:.0f}%' if r["start_likelihood"] is not None else "—"
     return (
-        f'<div class="mv-box-player">'
-        f'<span class="player">{r["player_name"]}{flags(r)}</span>'
-        f'<span class="rating" style="color:var(--mv-blue);">{start_pct}</span>'
-        f'<span class="rating" style="color:{rank_color(mv)};">{mv_str}</span>'
+        f'<div class="mv-matchup-player">'
+        f'<span class="name">{r["player_name"]}{flags(r)}</span>'
+        f'<span class="pct">{start_pct}</span>'
+        f'<span class="mv-rank-chip {rank_tier(mv)}">{mv_str}</span>'
         f'</div>'
     )
-
-
-def team_depth_chart(club_players_by_pos):
-    rows_html = []
-    for pos, _ in FORMATION:
-        players = sorted(club_players_by_pos.get(pos, []), key=lambda r: -(r["start_likelihood"] or 0))
-        stacked = "".join(depth_box_player(r) for r in players)
-        rows_html.append(
-            f'<div class="mv-pitch-row"><div class="mv-slot" style="min-width:220px;text-align:left;">'
-            f'<div class="pos" style="text-align:center;">{pos} &middot; {len(players)}</div>{stacked}</div></div>'
-        )
-    return f'<div class="mv-pitch">{"".join(rows_html)}</div>'
 
 
 def record_str(club_info):
@@ -180,33 +180,37 @@ def matchup_card(home, away, players_by_club, clubs):
             return "—"
         sign = "+" if mf > 0 else ""
         color = "var(--mv-blue)" if mf > 0 else ("var(--mv-crimson)" if mf < 0 else "var(--mv-ink-muted)")
-        return f'<span style="color:{color};font-weight:700;">{sign}{mf:.1f}</span>'
+        return f'<span class="mf" style="color:{color};">{sign}{mf:.1f}</span>'
 
-    home_pos = {}
+    home_pos, away_pos = {}, {}
     for r in players_by_club.get(home, []):
         home_pos.setdefault(r["fantrax_position"], []).append(r)
-    away_pos = {}
     for r in players_by_club.get(away, []):
         away_pos.setdefault(r["fantrax_position"], []).append(r)
 
-    return f"""<div class="card mv-card" style="margin-bottom:16px;">
-      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-bottom:12px;">
-        <div>
-          <div style="font-weight:700;font-size:16px;">{club_full_name(away)} <span class="dim" style="font-weight:400;">at</span> {club_full_name(home)}</div>
-          <div class="sub">{away} ({record_str(away_info)}) &middot; away &middot; matchup factor {mf_str(away_mf)}
-            &nbsp;|&nbsp; {home} ({record_str(home_info)}) &middot; home &middot; matchup factor {mf_str(home_mf)}</div>
+    pos_rows = []
+    for pos, _ in FORMATION:
+        away_players = sorted(away_pos.get(pos, []), key=lambda r: -(r["start_likelihood"] or 0))
+        home_players = sorted(home_pos.get(pos, []), key=lambda r: -(r["start_likelihood"] or 0))
+        pos_rows.append(f"""<div class="mv-matchup-pos-row">
+          <div class="mv-matchup-side away">{''.join(matchup_player(r) for r in away_players)}</div>
+          <div class="mv-pos-pill pos-{pos}">{pos}</div>
+          <div class="mv-matchup-side home">{''.join(matchup_player(r) for r in home_players)}</div>
+        </div>""")
+
+    return f"""<div class="mv-matchup-card">
+      <div class="mv-matchup-head">
+        <div class="mv-matchup-team away">
+          <div class="name">{club_full_name(away)}</div>
+          <div class="meta">{away} &middot; {record_str(away_info)} &middot; away &middot; {mf_str(away_mf)}</div>
+        </div>
+        <div class="mv-matchup-vs">AT</div>
+        <div class="mv-matchup-team home">
+          <div class="name">{club_full_name(home)}</div>
+          <div class="meta">{home} &middot; {record_str(home_info)} &middot; home &middot; {mf_str(home_mf)}</div>
         </div>
       </div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;">
-        <div style="flex:1 1 320px;">
-          <div class="mv-chrome-text" style="font-size:13px;margin-bottom:6px;">{away} (Away)</div>
-          {team_depth_chart(away_pos)}
-        </div>
-        <div style="flex:1 1 320px;">
-          <div class="mv-chrome-text" style="font-size:13px;margin-bottom:6px;">{home} (Home)</div>
-          {team_depth_chart(home_pos)}
-        </div>
-      </div>
+      {''.join(pos_rows)}
     </div>"""
 
 
@@ -235,7 +239,7 @@ def build_matchups_panel(rows, clubs, active=False):
         paired.add(opp_code)
 
     cls = "mv-tab-panel active" if active else "mv-tab-panel"
-    return f'<div id="matchups" class="{cls}">{"".join(cards)}</div>'
+    return f'<div id="matchups" class="{cls}"><div class="mv-matchup-grid">{"".join(cards)}</div></div>'
 
 
 def build(week=None):
@@ -279,7 +283,7 @@ def build(week=None):
 
     published_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
 
-    html = head("Rank", "rank.html") + hero_logo() + f"""
+    html = head("Rank", "rank.html", wide=True) + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Rank</h1>
       <div class="sub">MEGAVISION Rank for GW{week} &middot; {len(rows)} EPL players tracked &middot; Published {published_at}</div>
