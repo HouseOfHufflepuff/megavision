@@ -21,6 +21,20 @@ import urllib.request
 CSV_URL = "https://raw.githubusercontent.com/ismailoksuz/EAFC26-DataHub/main/data/players.csv"
 
 
+def _to_int(v):
+    try:
+        return int(float(v))
+    except (TypeError, ValueError):
+        return None
+
+
+def _to_float(v):
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
 def _fold(s):
     """Strip accents/diacritics for matching: 'Konaté' -> 'konate'."""
     return unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode("ascii").lower()
@@ -66,6 +80,10 @@ def fetch_all_players():
             "value_eur": value_eur,
             "club": row.get("club_name", ""),
             "positions": row.get("player_positions", ""),
+            "age": _to_int(row.get("age")),
+            "height_cm": _to_int(row.get("height_cm")),
+            "weight_kg": _to_int(row.get("weight_kg")),
+            "pace": _to_float(row.get("pace")),
         })
     return players
 

@@ -160,6 +160,43 @@ CREATE TABLE IF NOT EXISTS roster_overrides (
     updated_at TEXT NOT NULL,
     UNIQUE(team_code, player_name, action)
 );
+
+-- MEGAVISION Rank: every EPL player, season-level bio + ratings. FC 26
+-- ratings from fc26_ratings.py (all leagues, filtered to Premier League);
+-- position/ROS% from Fantrax's own player pool.
+CREATE TABLE IF NOT EXISTS epl_players (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_name TEXT NOT NULL,
+    real_club TEXT,
+    age INTEGER,
+    height_cm INTEGER,
+    weight_kg INTEGER,
+    fc26_overall REAL,
+    fc26_speed REAL,
+    fc26_potential REAL,
+    fantrax_position TEXT,     -- GK, D, M, F
+    fantrax_ros_pct REAL,      -- % of Fantrax leagues rostering this player this week
+    updated_at TEXT NOT NULL,
+    UNIQUE(player_name, real_club)
+);
+
+-- One row per player per gameweek: real score, injury/start status, and
+-- fantasyfootballscout.co.uk's team-news read for that week.
+CREATE TABLE IF NOT EXISTS player_gameweek (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    player_name TEXT NOT NULL,
+    real_club TEXT,
+    gameweek INTEGER NOT NULL,
+    score REAL,                    -- Fantrax fantasy points, this gameweek
+    injury_status TEXT,            -- Fantrax injury icon tooltip, blank if healthy
+    started_last_week INTEGER,     -- 0/1, Fantrax Games Started for the prior period
+    ffs_start INTEGER,             -- 0/1, in FFS's predicted XI this gameweek
+    ffs_positive_mention INTEGER,  -- 0/1, favorable keyword hit in FFS's club news blurb
+    ffs_negative_mention INTEGER,  -- 0/1, unfavorable keyword hit (also set for Out/Doubt)
+    ffs_doubt INTEGER,             -- 0/1, in FFS's fitness-doubt list
+    updated_at TEXT NOT NULL,
+    UNIQUE(player_name, real_club, gameweek)
+);
 """
 
 

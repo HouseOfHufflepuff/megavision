@@ -381,6 +381,7 @@ NAV_LINKS = [
     ("trophy-room.html", "Trophy Room"),
     ("teams.html", "Teams"),
     ("rulez.html", "Rulez"),
+    ("rank.html", "Rank"),
     ("draft.html", "Draft Board"),
     ("draft-grades.html", "Draft Grades"),
     ("snowmobile-lifestlye.html", "Snow"),

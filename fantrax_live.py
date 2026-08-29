@@ -107,6 +107,51 @@ def fetch_position_leaders(sess, pos, limit=10):
     return out
 
 
+def fetch_full_player_pool(sess, limit=400):
+    """[{name, pos, club, code, ros_pct, fpts, fpg, games_started, injuries}]
+    for every player Fantrax tracks at all 4 positions -- owned (ALL_TAKEN)
+    and free agents (ALL_AVAILABLE) combined, season-to-date (only period 1
+    has been played so far, so this doubles as "last week"). `code` is the
+    owning Mega team if rostered, else None."""
+    out = []
+    for pos in POS_GROUP:
+        for status in ("ALL_TAKEN", "ALL_AVAILABLE"):
+            body = {"msgs": [{"method": "getPlayerStats", "data": {
+                "leagueId": LEAGUE_ID, "view": "STATS", "statusOrTeamFilter": status,
+                "positionOrGroup": POS_GROUP[pos], "maxResultsPerPage": limit, "pageNumber": 1,
+            }}]}
+            resp = sess.post("https://www.fantrax.com/fxpa/req", params={"leagueId": LEAGUE_ID}, json=body, timeout=30)
+            data = resp.json()["responses"][0]["data"]
+            for row in data["statsTable"]:
+                scorer = row["scorer"]
+                cells = row["cells"]
+                team_cell = cells[1]
+                try:
+                    fpts = float(cells[6]["content"])
+                except (KeyError, IndexError, TypeError, ValueError):
+                    fpts = 0.0
+                try:
+                    fpg = float(cells[7]["content"])
+                except (KeyError, IndexError, TypeError, ValueError):
+                    fpg = 0.0
+                try:
+                    ros_pct = float(str(cells[8]["content"]).rstrip("%"))
+                except (KeyError, IndexError, TypeError, ValueError):
+                    ros_pct = None
+                try:
+                    games_started = int(cells[11]["content"])
+                except (KeyError, IndexError, TypeError, ValueError):
+                    games_started = 0
+                injuries = [ic["tooltip"] for ic in (scorer.get("icons") or []) if ic.get("typeId") in INJURY_ICON_TYPE_IDS]
+                out.append({
+                    "name": scorer["name"], "pos": pos, "club": scorer.get("teamShortName", ""),
+                    "code": ALL_TEAM_ID_TO_CODE.get(team_cell.get("teamId")),
+                    "ros_pct": ros_pct, "fpts": fpts, "fpg": fpg,
+                    "games_started": games_started, "injuries": injuries,
+                })
+    return out
+
+
 def fetch_all_player_points(sess, limit=250):
     """{player_name: fpts} for every owned player league-wide, off the same
     player-stats endpoint as fetch_position_leaders. Season-to-date points
