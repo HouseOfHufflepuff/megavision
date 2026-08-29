@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS player_gameweek (
     ffs_positive_mention INTEGER,  -- 0/1, favorable keyword hit in FFS's club news blurb
     ffs_negative_mention INTEGER,  -- 0/1, unfavorable keyword hit (also set for Out/Doubt)
     ffs_doubt INTEGER,             -- 0/1, in FFS's fitness-doubt list
+    megavision_rank REAL,          -- 0-100 projection score, see sync_megavision_rank.py
     updated_at TEXT NOT NULL,
     UNIQUE(player_name, real_club, gameweek)
 );
@@ -215,6 +216,9 @@ def connect():
     ):
         if col not in existing:
             conn.execute(f"ALTER TABLE team_players ADD COLUMN {col} {decl}")
+    existing_pgw = {r[1] for r in conn.execute("PRAGMA table_info(player_gameweek)")}
+    if "megavision_rank" not in existing_pgw:
+        conn.execute("ALTER TABLE player_gameweek ADD COLUMN megavision_rank REAL")
     conn.commit()
     return conn
 

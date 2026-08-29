@@ -35,7 +35,9 @@ NEGATIVE_WORDS = (
     "withdrawn", "limped", "substituted", "ruled out", "sidelined",
 )
 
-ITEM_RE = re.compile(r'<li class="team-news-item" data-team-code="(\w+)">(.*?)</li>\s*(?=<li class="team-news-item"|$)', re.S)
+NEWS_LIST_RE = re.compile(r'<ol class="news">(.*?)</ol>', re.S)
+ITEM_SPLIT_RE = re.compile(r'<li class="team-news-item" data-team-code="(\w+)">')
+NEXT_MATCH_RE = re.compile(r'<div class="next-match"><strong>Next Match:</strong>\s*([^(<]+?)\s*\(([HA])\)</div>')
 LINEUP_RE = re.compile(r'<div class="scout-picks(.*?)</div>\s*<ul class="story-parts">', re.S)
 PLAYER_NAME_RE = re.compile(r'<span class="player-name[^"]*">([^<]+)</span>')
 OUT_RE = re.compile(r'<strong>Out:</strong>(.*?)</li>\s*<li class="headers">\s*<strong>Doubts', re.S)
@@ -56,13 +58,25 @@ def fetch_team_news_html():
 
 
 def parse_team_news(html):
-    """club_code -> {lineup: [names], out: [names], doubts: [(name, pct)], news: str}"""
+    """club_code -> {lineup: [names], out: [names], doubts: [(name, pct)], news: str,
+    opponent_name: str|None, is_home: bool|None}"""
+    news_list_m = NEWS_LIST_RE.search(html)
+    news_list_html = news_list_m.group(1) if news_list_m else html
+
+    # split on each item's opening tag rather than a lookahead-bounded
+    # regex, which silently drops the last item (no trailing sibling to
+    # anchor the lookahead against before hitting unrelated later HTML)
+    pieces = ITEM_SPLIT_RE.split(news_list_html)[1:]  # [code, block, code, block, ...]
+
     out = {}
-    for m in ITEM_RE.finditer(html):
-        ffs_code, block = m.group(1), m.group(2)
+    for ffs_code, block in zip(pieces[0::2], pieces[1::2]):
         club = FFS_CODE_TO_CLUB.get(ffs_code)
         if not club:
             continue
+
+        nm_m = NEXT_MATCH_RE.search(block)
+        opponent_name = nm_m.group(1).strip() if nm_m else None
+        is_home = (nm_m.group(2) == "H") if nm_m else None
 
         lineup_m = LINEUP_RE.search(block)
         lineup = [n.strip() for n in PLAYER_NAME_RE.findall(lineup_m.group(1))] if lineup_m else []
@@ -82,7 +96,10 @@ def parse_team_news(html):
         news_m = NEWS_RE.search(block)
         news = _clean(news_m.group(1)) if news_m else ""
 
-        out[club] = {"lineup": lineup, "out": out_list, "doubts": doubts, "news": news}
+        out[club] = {
+            "lineup": lineup, "out": out_list, "doubts": doubts, "news": news,
+            "opponent_name": opponent_name, "is_home": is_home,
+        }
     return out
 
 
