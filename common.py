@@ -1,6 +1,7 @@
 # Shared nav/head/foot template + team roster used by build_site.py and update_rosters.py
 
 import io
+import json
 import urllib.request
 from datetime import datetime, timezone
 
@@ -394,12 +395,29 @@ NAV_LINKS = [
 ]
 
 
-def head(title, active, wide=False):
+SITE_URL = "https://houseofhufflepuff.github.io/megavision"
+DEFAULT_DESCRIPTION = (
+    "MEGAVISION -- fantasy football league hub with live rosters, contracts, financials, and player rankings."
+)
+DEFAULT_KEYWORDS = "fantasy football, fantasy soccer, fantasy Premier League, EPL fantasy league"
+
+
+def head(title, active, wide=False, description=None, keywords=None, page_path=None, structured_data=None):
     """No logo in the nav anywhere -- it's a big hero image at the top of
     every page's content instead (see hero_logo()). wide=True widens the
     page's max content width (see .wrap.wrap-wide in dashboard.css) for
     pages with genuinely dense side-by-side content -- opt-in per page,
-    default width is unchanged everywhere else."""
+    default width is unchanged everywhere else.
+
+    description/keywords: per-page SEO/AI-crawler metadata (meta
+    description, Open Graph, Twitter Card, meta keywords). Falls back to
+    a generic site-level description if a page doesn't pass its own --
+    every page gets real tags, not just the ones that bothered to customize.
+    page_path: this page's filename (e.g. "rank.html"), used to build the
+    canonical/og:url -- defaults to active.
+    structured_data: optional dict, emitted as a JSON-LD <script> block
+    (schema.org) for machine readers (search engines and AI crawlers/
+    answer engines alike parse this directly, no HTML scraping needed)."""
     nav_items = []
     for href, label in NAV_LINKS:
         cls = ' class="active"' if href == active else ""
@@ -407,18 +425,38 @@ def head(title, active, wide=False):
         attrs = ' target="_blank" rel="noopener"' if external else ""
         nav_items.append(f'<a href="{href}"{cls}{attrs}>{label}</a>')
     nav_links = "\n      ".join(nav_items)
+
+    desc = description or DEFAULT_DESCRIPTION
+    kw = keywords or DEFAULT_KEYWORDS
+    path = page_path or active
+    url = f"{SITE_URL}/{path}"
+    ld_json = ""
+    if structured_data:
+        ld_json = f'<script type="application/ld+json">{json.dumps(structured_data)}</script>\n'
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title} — MEGAVISION</title>
+<meta name="description" content="{desc}">
+<meta name="keywords" content="{kw}">
+<link rel="canonical" href="{url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MEGAVISION">
+<meta property="og:title" content="{title} — MEGAVISION">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{url}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="{title} — MEGAVISION">
+<meta name="twitter:description" content="{desc}">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="palette.css">
 <link rel="stylesheet" href="dashboard.css">
-</head>
+{ld_json}</head>
 <body>
   <nav class="mv-nav">
     <div class="mv-nav-links">

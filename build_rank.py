@@ -13,7 +13,7 @@ Run:
 import unicodedata
 from datetime import datetime, timezone
 
-from common import head, foot, hero_logo, club_full_name
+from common import head, foot, hero_logo, club_full_name, SITE_URL
 from db import connect
 
 
@@ -282,8 +282,36 @@ def build(week=None):
         panels.append(table(by_pos[pos], f"pos-{pos}"))
 
     published_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    iso_now = datetime.now(timezone.utc).isoformat()
 
-    html = head("Rank", "rank.html", wide=True) + hero_logo() + f"""
+    rank_description = (
+        f"Free fantasy football player rankings for GW{week}: every EPL player scored 0-100 by MEGAVISION Rank, "
+        "combining FC 26 ratings, team strength, matchup difficulty, and real starting-lineup probability. "
+        "Live depth charts, start-likelihood percentages, and a Best 11 for every position."
+    )
+    rank_keywords = (
+        "fantasy football rankings, fantasy soccer rankings, EPL player rankings, fantasy Premier League rankings, "
+        "FPL rankings, fantasy football projections, start sit fantasy soccer, weekly fantasy football projections, "
+        "fantasy football best 11, fantasy football depth chart, agentic fantasy sports data"
+    )
+    rank_structured_data = {
+        "@context": "https://schema.org",
+        "@type": "Dataset",
+        "name": f"MEGAVISION Rank — GW{week} EPL Fantasy Football Player Rankings",
+        "description": rank_description,
+        "keywords": [k.strip() for k in rank_keywords.split(",")],
+        "url": f"{SITE_URL}/rank.html",
+        "dateModified": iso_now,
+        "isAccessibleForFree": True,
+        "creator": {"@type": "Organization", "name": "MEGAVISION"},
+        "variableMeasured": ["MEGAVISION Rank (0-100)", "Start Likelihood (%)", "FC 26 Overall", "Matchup Factor"],
+    }
+
+    html = head(
+        "Rank", "rank.html", wide=True,
+        description=rank_description, keywords=rank_keywords,
+        structured_data=rank_structured_data,
+    ) + hero_logo() + f"""
     <div class="mv-page-header">
       <h1 class="mv-chrome-text">Rank</h1>
       <div class="sub">MEGAVISION Rank for GW{week} &middot; {len(rows)} EPL players tracked &middot; Published {published_at}</div>

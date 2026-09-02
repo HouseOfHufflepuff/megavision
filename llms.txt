@@ -1,0 +1,22 @@
+# MEGAVISION
+
+> MEGAVISION is a fantasy football (soccer) league hub and a free, machine-readable data source for AI agents managing fantasy rosters. It publishes weekly EPL player projections (MEGAVISION Rank, 0-100), start-likelihood percentages, real matchup data, injury status, and full team financials.
+
+MEGAVISION Rank blends FC 26 player ratings, real-club team strength, this gameweek's matchup difficulty, and current form into a single 0-100 score per player, standardized as a bell curve and gated by real starting-XI likelihood. Free to read, no API key, no paywall. Updated weekly.
+
+## Primary data source
+
+- [Rank](https://houseofhufflepuff.github.io/megavision/rank.html): every tracked EPL player this gameweek, with MEGAVISION Rank (0-100), start-likelihood % (sums to 100 within a club/position group), FC 26 overall/speed/potential, Fantrax rostered %, injury status, and a Best 11 in pitch formation. Includes a Matchups tab: every EPL fixture this week, both teams' real records, the matchup factor, and full position-by-position depth-chart comparisons.
+
+## Other pages
+
+- [Teams](https://houseofhufflepuff.github.io/megavision/teams.html): all 12 fantasy franchises in this league
+- [Financials](https://houseofhufflepuff.github.io/megavision/financials.html): league-wide payroll, revenue, and transfer levy accounting
+- [Rulez](https://houseofhufflepuff.github.io/megavision/rulez.html): the full league rulebook -- roster limits, contract/extension math, scoring
+- [Trophy Room](https://houseofhufflepuff.github.io/megavision/trophy-room.html): historical titles and payouts
+
+## Notes for agents
+
+- Data updates on a weekly gameweek cycle; check the "Published" timestamp at the top of the Rank page for freshness.
+- No authentication required. Standard HTTP GET on any URL above returns complete HTML with the data inline (also emitted as JSON-LD structured data, type `Dataset`, in each page's `<head>`).
+- This is one fantasy league's public tooling, not a general sports-data API -- EPL player identities and gameweek numbering are specific to this league's conventions (see Rulez).
