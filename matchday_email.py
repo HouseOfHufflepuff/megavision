@@ -93,43 +93,40 @@ def build(week=None):
     wb = fetch_live_workbook()
     stadiums = fetch_stadiums(wb)
 
-    print("Computing Fan Formula (base score, fanbase, per-game attendance/revenue)...", file=sys.stderr)
-    comps, seasons = fetch_trophy_room(wb)
-    trophy_tally = tally_trophies(comps, seasons)
+    print("Computing real fan counts (League Record + Scoring standing + Top XI + Legacy)...", file=sys.stderr)
     conn = connect()
     cur = conn.cursor()
-    current_titles = cur.execute("SELECT competition, team_code FROM titles WHERE season='26/27'").fetchall()
-    for comp, code in current_titles:
-        if comp in trophy_tally.get(code, {}):
-            trophy_tally[code][comp] += 1
-    trophy_counts = {code: sum(v.values()) for code, v in trophy_tally.items()}
-    max_trophies = max(trophy_counts.values()) if trophy_counts else 0
+    title_rows = cur.execute("SELECT competition, team_code FROM titles WHERE season='26/27'").fetchall()
+    legacy_fans = {code: fa.legacy_fan_value(code, title_rows) for code, _, _ in TEAMS}
+    scoring_rank = fa.scoring_rank_by_code(standings)
 
     best11_week = cur.execute("SELECT MAX(week) FROM best11 WHERE week<=?", (week,)).fetchone()[0]
-    topxi_counts = {code: 0 for code, _, _ in TEAMS}
+    topxi_fans = {code: 0.0 for code, _, _ in TEAMS}
     mbp_code, mbp_fpts = None, -1
     if best11_week is not None:
-        for pos, rank, name, club, code, fpts in cur.execute(
-            "SELECT pos, slot_rank, player_name, real_club, team_code, fpts FROM best11 WHERE week=?", (best11_week,)
+        rows_by_pos = {}
+        for pos, slot_rank, name, club, code, fpts in cur.execute(
+            "SELECT pos, slot_rank, player_name, real_club, team_code, fpts FROM best11 WHERE week=? ORDER BY pos, slot_rank", (best11_week,)
         ):
-            if code:
-                topxi_counts[code] += 1
-                if fpts > mbp_fpts:
-                    mbp_fpts, mbp_code = fpts, code
+            rows_by_pos.setdefault(pos, []).append((code, fpts))
+            if fpts > mbp_fpts:
+                mbp_fpts, mbp_code = fpts, code
+        for pos, rows in rows_by_pos.items():
+            for i, (code, fpts) in enumerate(rows):
+                if not code:
+                    continue
+                is_top = pos in ("F", "M", "D") and i == 0
+                topxi_fans[code] = topxi_fans.get(code, 0.0) + (fa.TOPXI_TOP_FANS if is_top else fa.TOPXI_REST_FANS)
     conn.close()
 
-    base_scores, breakdowns = {}, {}
+    breakdowns = {}
+    fanbase = {}
     for code, _, _ in TEAMS:
-        b = fa.base_score(code, rank_by_code.get(code), topxi_counts.get(code, 0), trophy_counts.get(code, 0), max_trophies)
-        mbp_v = fa.mbp_bonus(code, mbp_code)
-        b["mbp"] = mbp_v
-        b["total"] = round(b["total"] + mbp_v, 2)
+        b = fa.team_fan_count(rank_by_code.get(code), scoring_rank.get(code), topxi_fans.get(code, 0.0), legacy_fans.get(code, 0))
         breakdowns[code] = b
-        base_scores[code] = b["total"]
+        fanbase[code] = b["total"]
 
     capacities = {code: v["capacity"] or 0 for code, v in stadiums.items()}
-    total_capacity = sum(capacities.values())
-    fanbase = fa.team_fanbase(base_scores, total_capacity)
     ticket_price = 0.0 if week in fa.NON_REGULAR_SEASON_WEEKS else fa.REGULAR_SEASON_TICKET_PRICE
 
     print("Building matchup previews...", file=sys.stderr)

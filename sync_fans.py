@@ -1,23 +1,21 @@
 """
 Computes and stores one GW's worth of fan interest, attendance, and ticket
-revenue for every real (12-team) matchup that week, using the algorithm in
-fans_algo.py. Stored week over week in mega.db's gw_fans table, same
-pattern as sync_best11.py.
+revenue for every real (12-team) matchup that week, using the real
+formula in fans_algo.py (Rulez 2.2). Stored week over week in mega.db's
+gw_fans table, same pattern as sync_best11.py.
 
 Run:
     python3 sync_fans.py 2
 
 Depends on sync_best11.py already having been run for a week at or before
-the target week (uses the latest available Best 11 as the Top XI input).
+the target week (uses the latest available Best 11 for Top XI fans).
 """
 import sys
 from datetime import datetime, timezone
 
 import fans_algo as fa
 import fantrax_live as fl
-from common import (
-    TEAMS, fetch_live_workbook, fetch_stadiums, fetch_trophy_room, tally_trophies,
-)
+from common import TEAMS, fetch_live_workbook, fetch_stadiums
 from db import connect
 
 
@@ -29,44 +27,32 @@ def sync_week(week):
     wb = fetch_live_workbook()
     capacities = {code: v["capacity"] or 0 for code, v in fetch_stadiums(wb).items()}
 
-    comps, seasons = fetch_trophy_room(wb)
-    trophy_tally = tally_trophies(comps, seasons)
-    current_titles = cur.execute("SELECT competition, team_code FROM titles WHERE season='26/27'").fetchall()
-    for comp, code in current_titles:
-        if comp in trophy_tally.get(code, {}):
-            trophy_tally[code][comp] += 1
-    trophy_counts = {code: sum(v.values()) for code, v in trophy_tally.items()}
-    max_trophies = max(trophy_counts.values()) if trophy_counts else 0
+    title_rows = cur.execute("SELECT competition, team_code FROM titles WHERE season='26/27'").fetchall()
+    legacy_fans = {code: fa.legacy_fan_value(code, title_rows) for code, _, _ in TEAMS}
 
     sess = fl._session()
     standings = fl.fetch_all_standings(sess)
-    rank_by_code = fa.rank_by_code_from_standings(standings)
+    league_record_rank = fa.league_record_rank_by_code(standings)
+    scoring_rank = fa.scoring_rank_by_code(standings)
 
     best11_week = cur.execute("SELECT MAX(week) FROM best11 WHERE week<=?", (week,)).fetchone()[0]
-    topxi_counts = {code: 0 for code, _, _ in TEAMS}
-    mbp_code, mbp_fpts = None, -1
+    topxi_fans = {code: 0.0 for code, _, _ in TEAMS}
     if best11_week is not None:
-        for pos, rank, name, club, code, fpts in cur.execute(
+        for pos, slot_rank, name, club, code, fpts in cur.execute(
             "SELECT pos, slot_rank, player_name, real_club, team_code, fpts FROM best11 WHERE week=?", (best11_week,)
         ):
-            if code:
-                topxi_counts[code] += 1
-                if fpts > mbp_fpts:
-                    mbp_fpts, mbp_code = fpts, code
+            if not code:
+                continue
+            is_top = pos in ("F", "M", "D") and slot_rank == 1
+            topxi_fans[code] = topxi_fans.get(code, 0.0) + (fa.TOPXI_TOP_FANS if is_top else fa.TOPXI_REST_FANS)
 
-    base_scores = {}
     breakdowns = {}
+    fanbase = {}
     for code, _, _ in TEAMS:
-        b = fa.base_score(code, rank_by_code.get(code), topxi_counts.get(code, 0),
-                           trophy_counts.get(code, 0), max_trophies)
-        mbp_v = fa.mbp_bonus(code, mbp_code)
-        b["mbp"] = mbp_v
-        b["total"] = round(b["total"] + mbp_v, 2)
+        b = fa.team_fan_count(league_record_rank.get(code), scoring_rank.get(code),
+                               topxi_fans.get(code, 0.0), legacy_fans.get(code, 0))
         breakdowns[code] = b
-        base_scores[code] = b["total"]
-
-    total_capacity = sum(capacities.values())
-    fanbase = fa.team_fanbase(base_scores, total_capacity)
+        fanbase[code] = b["total"]
 
     games = [g for g in fl.fetch_schedule(sess) if g["week"] == week]
     ticket_price = 0.0 if week in fa.NON_REGULAR_SEASON_WEEKS else fa.REGULAR_SEASON_TICKET_PRICE
@@ -75,7 +61,7 @@ def sync_week(week):
     results = []
     for g in games:
         home, away = g["home"], g["away"]
-        game = fa.compute_game_fans(home, away, fanbase, capacities, rank_by_code)
+        game = fa.compute_game_fans(home, away, fanbase, capacities, league_record_rank)
         gate = game["attendance"] * ticket_price
         home_rev, away_rev = gate * fa.HOME_GATE_SHARE, gate * (1 - fa.HOME_GATE_SHARE)
         for code, opp, is_home, interest, rev in (
@@ -85,17 +71,14 @@ def sync_week(week):
             cur.execute(
                 "INSERT INTO gw_fans (week, team_code, opponent, is_home, base_score, fanbase, interest, "
                 "attendance, ticket_revenue, bonuses, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                # attendance is the shared game total (capped at the host's
-                # capacity), not exclusive to the home row -- "how many fans
-                # are going" is a property of the game, either side asks it
-                (week, code, opp, int(is_home), base_scores.get(code), fanbase.get(code), interest,
+                (week, code, opp, int(is_home), fanbase.get(code), fanbase.get(code), interest,
                  game["attendance"], rev, ", ".join(game["bonuses"]), now),
             )
         results.append({"home": home, "away": away, **game, "gate": gate, "home_rev": home_rev, "away_rev": away_rev})
 
     conn.commit()
     conn.close()
-    return results, breakdowns, rank_by_code, fanbase
+    return results, breakdowns, league_record_rank, fanbase
 
 
 if __name__ == "__main__":
@@ -103,7 +86,7 @@ if __name__ == "__main__":
         print("Usage: python3 sync_fans.py WEEK")
         sys.exit(1)
     week = int(sys.argv[1])
-    results, breakdowns, rank_by_code, fanbase = sync_week(week)
+    results, breakdowns, league_record_rank, fanbase = sync_week(week)
     print(f"GW{week} fans (ticket price ${0.0 if week in fa.NON_REGULAR_SEASON_WEEKS else fa.REGULAR_SEASON_TICKET_PRICE:.2f}):\n")
     for g in sorted(results, key=lambda r: -r["attendance"]):
         tag = " *** SOLD OUT ***" if g["sold_out"] else ""
@@ -111,9 +94,8 @@ if __name__ == "__main__":
         print(f"  {g['home']:4} vs {g['away']:4}  interest={g['combined_interest']:.0f}  "
               f"cap={g['capacity']:.0f}  attendance={g['attendance']:.0f}{tag}  "
               f"gate=${g['gate']:.2f} (H ${g['home_rev']:.2f} / A ${g['away_rev']:.2f}){bonuses}")
-    print("\nBase score breakdown (standings/topxi/trophy/momentum/mbp -> total, fanbase):")
-    for code in sorted(breakdowns, key=lambda c: rank_by_code.get(c, 99)):
+    print("\nReal fan count breakdown (league record + scoring standing + top XI + legacy -> total):")
+    for code in sorted(breakdowns, key=lambda c: -breakdowns[c]["total"]):
         b = breakdowns[code]
-        print(f"  {code:4} rank={rank_by_code.get(code, '—'):>2}  "
-              f"{b['standings']:5.1f} + {b['topxi']:5.1f} + {b['trophy']:5.1f} + {b['momentum']:5.1f} + {b['mbp']:4.1f} "
-              f"= {b['total']:6.1f}  fanbase={fanbase.get(code, 0):.0f}")
+        print(f"  {code:4} {b['league_record']:5.0f} + {b['scoring_standing']:5.0f} + {b['topxi']:5.1f} + {b['legacy']:4.0f} "
+              f"= {b['total']:6.1f} fans")

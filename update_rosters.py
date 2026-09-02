@@ -207,7 +207,7 @@ except Exception as e:
     fantrax_standings, fantrax_rosters, top_xi, mbp, fan_formula = {}, {}, [], None, {}
     schedule_games = []
 
-REGULAR_SEASON_WEEKS = 35  # Fantrax periods 2-36, displayed as EPL GW2-36 (period 1/EPL GW1 is Juniors-only, never displayed)
+REGULAR_SEASON_WEEKS = 22  # Rulez 2.1: "salaries... across the 22 league weeks" -- was 35 (every tracked Fantrax period), wrong
 
 # Mega's Community Shield/Super Cup (EPL GW1, Juniors-vs-Juniors) is the
 # only non-regular-season week -- but it never gets a displayed GW number
@@ -393,16 +393,15 @@ def apply_roster_overrides(code, roster):
 
 # ---- Fan Interest data, computed once and shared by both each team's own
 # new Fans tab and the site-wide Fans tab dashboard (see build_fan_card
-# below). Live standings (all 24 teams, Sr + Jr) -- the Sr teams haven't
-# played a real scored matchup yet (still tied at rank 13, 0-0-0), so the
-# real top-12 signal right now is the Jr bracket's period-1 results. ----
+# below). Live standings (all 24 teams, Sr + Jr). ----
 try:
     _standings_sess = fantrax_live._session()
     _all_standings = fantrax_live.fetch_all_standings(_standings_sess)
 except Exception as _e:
     print(f"WARN: standings fetch for Fans tabs failed ({_e})", file=sys.stderr)
     _all_standings = []
-standings_rank_by_code = fa.rank_by_code_from_standings(_all_standings)
+standings_rank_by_code = fa.league_record_rank_by_code(_all_standings)
+_scoring_rank_by_code = fa.scoring_rank_by_code(_all_standings)
 
 _best11_conn = db.connect()
 _best11_week = _best11_conn.execute("SELECT MAX(week) FROM best11").fetchone()[0]
@@ -415,16 +414,18 @@ if _best11_week is not None:
         best11_rows_by_pos.setdefault(_pos, []).append((_bname, _club, _bcode, _fpts))
 _best11_conn.close()
 
-_topxi_counts = {_c: 0 for _c, _, _ in TEAMS}
+_topxi_fans_now = {_c: 0.0 for _c, _, _ in TEAMS}
 _mbp_code, _mbp_fpts, _mbp_name, _mbp_club = None, -1, None, None
 for _pos_k, _plist in best11_rows_by_pos.items():
-    for _bname, _club, _bcode, _fpts in _plist:
+    for _slot_i, (_bname, _club, _bcode, _fpts) in enumerate(_plist):
         if _bcode:
-            _topxi_counts[_bcode] += 1
-            if _fpts > _mbp_fpts:
-                _mbp_fpts, _mbp_code, _mbp_name, _mbp_club = _fpts, _bcode, _bname, _club
-_trophy_counts_now = {_c: sum(_v.values()) for _c, _v in trophy_tally.items()}
-_max_trophies_now = max(_trophy_counts_now.values()) if _trophy_counts_now else 0
+            _is_top = _pos_k in ("F", "M", "D") and _slot_i == 0
+            _topxi_fans_now[_bcode] = _topxi_fans_now.get(_bcode, 0.0) + (fa.TOPXI_TOP_FANS if _is_top else fa.TOPXI_REST_FANS)
+        if _fpts > _mbp_fpts:
+            _mbp_fpts, _mbp_code, _mbp_name, _mbp_club = _fpts, _bcode, _bname, _club
+
+_title_rows_now = db.connect().execute("SELECT competition, team_code FROM titles WHERE season='26/27'").fetchall()
+_legacy_fans_now = {_c: fa.legacy_fan_value(_c, _title_rows_now) for _c, _, _ in TEAMS}
 
 _fans2_conn = db.connect()
 _latest_fans_week = _fans2_conn.execute("SELECT MAX(week) FROM gw_fans").fetchone()[0]
@@ -437,14 +438,13 @@ if _latest_fans_week is not None:
 _fans2_conn.close()
 
 BREAKDOWN_COLORS = {
-    "standings": "var(--mv-gold)", "topxi": "var(--mv-blue)", "trophy": "var(--mv-violet)",
-    "momentum": "var(--mv-pink)", "mbp": "var(--mv-crimson)",
+    "league_record": "var(--mv-gold)", "scoring_standing": "var(--mv-blue)",
+    "topxi": "var(--mv-violet)", "legacy": "var(--mv-pink)",
 }
-BREAKDOWN_MAX = fa.STANDINGS_WEIGHT + fa.TOPXI_WEIGHT + fa.TROPHY_WEIGHT + fa.MOMENTUM_WEIGHT + fa.MBP_WEIGHT  # == 100
+BREAKDOWN_MAX = 200 + 100 + (fa.TOPXI_TOP_FANS * 3 + fa.TOPXI_REST_FANS * 8) + 20  # worst-case single-team fan count, for bar scaling
 BREAKDOWN_LABELS = {
-    "standings": f"Standings (max {fa.STANDINGS_WEIGHT}%)", "topxi": f"Top 11 (max {fa.TOPXI_WEIGHT}%)",
-    "trophy": f"Trophies (max {fa.TROPHY_WEIGHT}%)", "momentum": f"Momentum (max {fa.MOMENTUM_WEIGHT}%)",
-    "mbp": f"MBP (max {fa.MBP_WEIGHT}%)",
+    "league_record": "League Record (1st = 200 fans)", "scoring_standing": "Scoring Standing (1st = 100 fans, top 8 only)",
+    "topxi": "Top XI (30/top, 10/rest)", "legacy": "Legacy titles",
 }
 BONUS_EXPLANATIONS = [
     ("Derby Day", fa.RIVALRY_BONUS, "HIGH", "the fixture is against your declared rival"),
@@ -459,21 +459,19 @@ def build_fan_card(code, name, detailed=False):
     attendance table. detailed=True (each team's own Fans tab) adds the
     bonus-explanation panel; detailed=False (site-wide dashboard) is the
     compact version."""
-    b = fa.base_score(code, standings_rank_by_code.get(code), _topxi_counts.get(code, 0),
-                       _trophy_counts_now.get(code, 0), _max_trophies_now)
-    b["mbp"] = fa.mbp_bonus(code, _mbp_code)
-    b["total"] = round(b["total"] + b["mbp"], 2)
+    b = fa.team_fan_count(standings_rank_by_code.get(code), _scoring_rank_by_code.get(code),
+                           _topxi_fans_now.get(code, 0.0), _legacy_fans_now.get(code, 0))
     fanbase_val = next((fb for c, sc, fb in base_score_rows if c == code), None)
 
     bar_segments = "".join(
         f'<div style="width:{(b[k] / BREAKDOWN_MAX * 100):.1f}%;background:{BREAKDOWN_COLORS[k]};" '
-        f'title="{BREAKDOWN_LABELS[k]}: {b[k]:.1f}%"></div>'
-        for k in ("standings", "topxi", "trophy", "momentum", "mbp") if b[k] > 0
+        f'title="{BREAKDOWN_LABELS[k]}: {b[k]:.1f} fans"></div>'
+        for k in ("league_record", "scoring_standing", "topxi", "legacy") if b[k] > 0
     )
     legend = "".join(
         f'<span class="dim" style="margin-right:10px;"><span style="display:inline-block;width:8px;height:8px;'
-        f'border-radius:2px;background:{BREAKDOWN_COLORS[k]};margin-right:4px;"></span>{BREAKDOWN_LABELS[k]}: {b[k]:.1f}%</span>'
-        for k in ("standings", "topxi", "trophy", "momentum", "mbp")
+        f'border-radius:2px;background:{BREAKDOWN_COLORS[k]};margin-right:4px;"></span>{BREAKDOWN_LABELS[k]}: {b[k]:.1f} fans</span>'
+        for k in ("league_record", "scoring_standing", "topxi", "legacy")
     )
 
     weeks = sorted(w for w, c in _gw_fans if c == code and w not in NON_REGULAR_SEASON_WEEKS)
@@ -542,7 +540,7 @@ def build_fan_card(code, name, detailed=False):
                 &middot; Rank {rank or "—"}</span>
             </div>
             <div style="text-align:right;">
-              <div class="dim" style="font-size:11px;">Base Score {b["total"]:.1f}%</div>
+              <div class="dim" style="font-size:11px;">Real fan count {b["total"]:.0f}</div>
               <div style="color:var(--mv-gold);font-weight:700;font-size:16px;">{numi(fanbase_val)} fan base</div>
             </div>
           </div>
@@ -1298,8 +1296,28 @@ pot_rows_html = "".join(
         ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
         (f"Salaries Collected ({_weeks_label})", "weekly -- cup weeks like GW1 draw $0", salary_collected_total),
         (f"Tickets Paid Out ({_weeks_label})", "weekly -- real Fan Interest algorithm, run per week via sync_fans.py", -tickets_paid_total),
-        ("Title Payouts", "one-time -- Community Shield (BHB, $10) + Super Cup (QFC, $5)", -title_payouts_total),
+        ("Title Payouts", "one-time -- " + ", ".join(f"{t['competition']} ({t['team_code']}, {money(t['payout'])})" for t in CURRENT_SEASON_TITLES), -title_payouts_total),
     ]
+)
+
+# ---- Mega Fund / TV Bonus: whatever's left in the pot (floored at $0 --
+# TV Bonus is a payout, never a charge; a negative pot means the league is
+# running short on non-salary funding sources and needs more pool inflow,
+# not a bill sent to teams) is 60% TV Bonus by CURRENT standing, 40%
+# postseason (not previewable mid-season -- CL/Europa results don't exist
+# yet). This is a live "if the season ended today" preview, recomputed
+# every rebuild -- not a final payout until the season actually ends.
+TV_BONUS_PCT_BY_STANDING = [0.40, 0.20, 0.10, 0.08, 0.07, 0.05, 0.04, 0.03, 0.01, 0.01, 0.01, 0.00]
+mega_fund_now = max(0.0, pot_balance)
+tv_bonus_pool_now = mega_fund_now * 0.60
+postseason_pool_now = mega_fund_now * 0.40
+_standing_order = sorted(TEAMS, key=lambda t: standings_rank_by_code.get(t[0], 99))
+tv_bonus_rows_html = "".join(
+    f'<tr><td data-sort="{i+1}">{i+1}</td>'
+    f'<td><a href="team-{_code.lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{_name}</a></td>'
+    f'<td data-sort="{TV_BONUS_PCT_BY_STANDING[i]}">{TV_BONUS_PCT_BY_STANDING[i]:.0%}</td>'
+    f'<td data-sort="{tv_bonus_pool_now * TV_BONUS_PCT_BY_STANDING[i]}"><strong style="color:var(--mv-gold)">{money(tv_bonus_pool_now * TV_BONUS_PCT_BY_STANDING[i])}</strong></td></tr>'
+    for i, (_code, _name, _owners) in enumerate(_standing_order)
 )
 
 # ---- Fans tab: the ticket-revenue rules found in the sheet's own Rulez /
@@ -1307,7 +1325,7 @@ pot_rows_html = "".join(
 ticket_rules_rows = "".join(
     f'<tr><td>{comp}</td><td>{price}</td><td class="dim">{note}</td></tr>'
     for comp, price, note in [
-        ("Regular Season", "$0.05 / fan", "League Schedule tab"),
+        ("Regular Season", "$0.04 / fan", "Rulez 2.2"),
         ("Europa League Final", "$0.10 / fan", "League Schedule tab"),
         ("Champions League (rounds)", "$0.20 / fan", "League Schedule tab"),
         ("Champions League Final", "$0.45 / fan", "League Schedule tab; host stadium keeps 20% of gate (Rulez row 157)"),
@@ -1403,8 +1421,25 @@ financials_body = f"""
             </table>
           </div>
           <div class="sub" style="margin-bottom:18px;">Running ledger, not per-week -- stadium fees and the transfer levy land once, when they
-            happen; salaries and tickets are the only things that move every GW. At season end the remaining pot (the "Mega Fund") splits
-            60% to TV Bonus by final standing, 40% to post-season CL/Euro payouts, per Rulez.</div>
+            happen; salaries and tickets are the only things that move every GW. Floored at $0 if tickets+payouts ever outrun what's come
+            in -- a negative pot means the league needs more funding sources, not a charge back to teams.</div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">Mega Fund &amp; TV Bonus</h3>
+          <div class="sub">Whatever's left in the pot (above) is fully redistributed: 60% TV Bonus by standing, 40% postseason
+            (Champions League/Europa -- not shown here, no result to pay out yet). This is a live preview using today's standings and
+            pot balance, not a final payout -- it moves every time the pot or the standings do.</div>
+          <div class="mv-stat-grid" style="margin-top:10px;margin-bottom:14px;">
+            <div class="mv-stat"><div class="label">Mega Fund (today)</div><div class="value">{money(mega_fund_now)}</div></div>
+            <div class="mv-stat"><div class="label">TV Bonus Pool (60%)</div><div class="value">{money(tv_bonus_pool_now)}</div></div>
+            <div class="mv-stat"><div class="label">Postseason Pool (40%)</div><div class="value">{money(postseason_pool_now)}</div></div>
+          </div>
+          <div class="mv-table-scroll" style="margin-bottom:22px;">
+            <table class="mv-table mv-sortable">
+              <thead><tr><th data-sort-type="num">Standing</th><th data-sort-type="text">Team</th>
+                <th data-sort-type="num">TV Bonus %</th><th data-sort-type="num">TV Bonus (if season ended today)</th></tr></thead>
+              <tbody>{tv_bonus_rows_html}</tbody>
+            </table>
+          </div>
 
           <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">Team Costs</h3>
           <div class="mv-table-scroll">
@@ -1427,16 +1462,15 @@ financials_body = f"""
         </div>
 
         <div id="fans-league" class="mv-tab-panel active">
-          <div class="sub">The real Fan Interest algorithm (fans_algo.py) -- how attendance and ticket revenue actually get computed,
-            not a placeholder. Run <code>sync_fans.py WEEK</code> after <code>sync_best11.py WEEK</code> each week to refresh.</div>
-          <div class="sub" style="margin-bottom:14px;">The official <a href="rulez.html" style="color:inherit;font-weight:600;">Rulez</a> page (section 2.2) now has the
-            commissioner's exact fan/ticket formula -- $0.04/ticket and precise standings-based fan counts, more specific than the weighted
-            model below. This page hasn't been rebuilt to match it yet.</div>
+          <div class="sub">The real Fan Interest algorithm (fans_algo.py), matching the official
+            <a href="rulez.html" style="color:inherit;font-weight:600;">Rulez</a> page (section 2.2) formula directly -- $0.04/ticket,
+            exact standings-based fan counts, no weighted approximation. Run <code>sync_fans.py WEEK</code> after
+            <code>sync_best11.py WEEK</code> each week to refresh. Fixed 2026-09-03 -- was previously a placeholder weighted-score model.</div>
 
           <div class="card mv-card" style="margin-bottom:18px;background:rgba(255,209,102,0.06);border-color:var(--mv-gold);">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
               <div>
-                <div class="dim" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Current MVP</div>
+                <div class="dim" style="font-size:11px;text-transform:uppercase;letter-spacing:0.05em;">Top XI Top Scorer</div>
                 <div style="font-size:20px;font-weight:700;color:var(--mv-gold);">{_mbp_name or "—"}</div>
                 <div class="dim" style="font-size:12px;">{_mbp_club or "—"} &middot;
                   <a href="team-{(_mbp_code or "").lower()}.html" style="color:inherit;font-weight:600;">{team_name_by_code.get(_mbp_code, "—")}</a>
@@ -1444,43 +1478,40 @@ financials_body = f"""
               </div>
               <div style="text-align:right;">
                 <div style="font-size:22px;font-weight:700;">{_mbp_fpts:.1f} <span class="dim" style="font-size:12px;font-weight:400;">FPts</span></div>
-                <div class="dim" style="font-size:11px;">worth +{fa.MBP_WEIGHT}% to {team_name_by_code.get(_mbp_code, "their")} Base Score</div>
+                <div class="dim" style="font-size:11px;">informational only -- no longer a separate fan bonus in the real formula</div>
               </div>
             </div>
           </div>
 
           <h2 class="mv-chrome-text" style="font-size:18px;margin:4px 0 4px;">Team Fan Base</h2>
-          <div class="sub" style="margin-bottom:14px;">Ranked by current standing. Each team's Base Score breakdown (hover a bar segment
+          <div class="sub" style="margin-bottom:14px;">Ranked by current fan count. Each team's real breakdown (hover a bar segment
             for the exact number), resulting Fan Base, and every synced week's actual attendance -- home/away, opponent, host stadium
-            capacity, fans going, and any bonuses that applied.</div>
+            capacity, fans going, and any matchup-day bonuses that applied.</div>
           {fan_base_cards_html}
 
           <h3 class="mv-chrome-text" style="font-size:16px;margin:28px 0 8px;">How It's Calculated</h3>
           <div class="sub" style="margin-bottom:6px;">
-            Two layers. First, every team gets a <strong>Base Score</strong> (season-level, recomputed each GW) blending:
-            Standings <span class="dim">(HIGH weight -- {fa.STANDINGS_WEIGHT}%)</span>,
-            Top 11 ownership <span class="dim">(MEDIUM -- {fa.TOPXI_WEIGHT}%)</span>,
-            Trophy count <span class="dim">(LOW -- {fa.TROPHY_WEIGHT}%)</span>,
-            MBP <span class="dim">(VERY LOW -- {fa.MBP_WEIGHT}%)</span>, and
-            Momentum/streak <span class="dim">(our own addition, {fa.MOMENTUM_WEIGHT}%, 0 until real win/loss results exist)</span>.
-            That score becomes each team's share of a total league fan pool (stadium capacity &times; {fa.FANBASE_MULTIPLIER}, a static
-            anchor -- see fans_algo.py for the full reasoning on why the total stays fixed while shares move).
+            Two layers. First, every team's real fan count is a literal sum, not a weighted score:
+            League Record standing <span class="dim">(200 fans for 1st, down to 20 for 12th, by real win/loss/draw record)</span>,
+            Overall Scoring standing <span class="dim">(100 fans for 1st, down to 35 for 8th by cumulative season points -- a different
+            ranking than League Record; 9th-12th get 0)</span>,
+            Top XI <span class="dim">(30 fans each for the single top-scoring F/M/D that week, 10 fans each for the other 8 Best-11 slots)</span>,
+            and Legacy <span class="dim">(title history -- 10 fans per League/CL title in the last 3 years, 5 per Europa/FA Cup/Citadel Cup,
+            1 per Super Cup/Community Shield)</span>. That sum is the team's actual fan count -- not a share of a pool, the real number.
           </div>
           <div class="sub" style="margin-bottom:6px;">
-            Second, for a specific matchup: home + away fan interest combine, then get boosted for a big occasion --
-            Derby Day <span class="dim">(our pick, HIGH, +{fa.RIVALRY_BONUS:.0%})</span>,
-            #1 vs #2 clash <span class="dim">(VERY LOW, +{fa.TOP1V2_BONUS:.0%})</span>,
-            bottom-of-the-table drama <span class="dim">(VERY LOW, +{fa.BOTTOM_TEAM_BONUS:.0%})</span>, and
-            upset buzz <span class="dim">(our own addition, +{fa.UPSET_BUZZ_BONUS:.0%}, 0 until real results exist)</span> --
+            Second, for a specific matchup: home + away real fan counts combine, then get boosted for a big occasion --
+            Derby Day <span class="dim">(+{fa.RIVALRY_BONUS:.0%})</span>,
+            #1 vs #2 clash <span class="dim">(+{fa.TOP1V2_BONUS:.0%})</span>,
+            bottom-of-the-table drama <span class="dim">(+{fa.BOTTOM_TEAM_BONUS:.0%})</span>, and
+            upset buzz <span class="dim">(+{fa.UPSET_BUZZ_BONUS:.0%}, 0 until real results exist)</span> --
             then get capped at the home stadium's capacity. Overflow (interest beyond capacity) is simply lost demand for that game, not
-            redistributed to other games -- the simple choice; we considered spillover but it adds real complexity for a benefit we can't
-            calibrate yet.
+            redistributed to other games. <strong>This matchup-day bonus layer is our own flavor addition, not in the documented rules</strong> --
+            open question to the commissioner: keep it, or strip attendance down to the literal ruleset with no game-day multipliers?
           </div>
           <div class="sub" style="margin-bottom:18px;">
-            <strong>Other ideas considered but not built yet:</strong> new-signing hype (a fan bump the week after a notable transfer --
-            we only have one transfer on record so far, not enough to calibrate), stadium-expansion opening-week bump, and tying fan
-            interest to how a team's real-life EPL players are performing that week (deferred: needs another live data source and is
-            fragile to build well right now).
+            <strong>Known simplification:</strong> Legacy title fans only cover the current season (26/27) -- no multi-season title history
+            is tracked yet, so the "last 3 years" vs "all-time" distinction in the rule can't produce a different number yet.
           </div>
 
           <h3 class="mv-chrome-text" style="font-size:16px;margin:22px 0 8px;">Ticket Prices</h3>
