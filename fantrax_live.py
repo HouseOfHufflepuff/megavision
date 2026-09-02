@@ -227,10 +227,16 @@ def fetch_all_standings(sess):
 
 # getLeagueInfo's playoffs.lastRegularSeasonPeriod == 36; periods 37-38 are
 # playoffs (TBD matchups until the regular season finishes, excluded).
-# Fantrax scoring period 1 is entirely Juniors-vs-Juniors games (0 of our 12
-# real teams play in it -- confirmed and QA'd with the user); our 12 teams'
-# real season starts at Fantrax period 2, which we display as "GW 1" -- so
-# every displayed week number is the Fantrax period minus 1.
+# Fantrax scoring period 1 is entirely Juniors-vs-Juniors games -- Mega's
+# own Community Shield/Super Cup event, played the same week as real-world
+# EPL GW1 (0 of our 12 real teams play in it; confirmed and QA'd with the
+# user). It's excluded from this schedule entirely (never gets a displayed
+# GW number) since there are no real Sr-team matchups to show for it.
+# Terms, fixed 2026-09-02 after a mislabeling mess: GW numbering now
+# matches the real-world EPL gameweek exactly (not Fantrax's own period
+# numbering) -- Fantrax period 2 is EPL GW2 (Mega's real first scored
+# week, right after the Cup), so displayed week == Fantrax period, no
+# offset. Do not reintroduce a "period - 1" shift here.
 REGULAR_SEASON_PERIODS = range(2, 37)
 
 
@@ -239,8 +245,8 @@ def fetch_schedule(sess, periods=REGULAR_SEASON_PERIODS):
     Fantrax's own scoring-period schedule (getLeagueInfo's "matchups") --
     NOT the Google Sheet's "League Schedule" tab, which was confirmed wrong
     (flipped home/away) and must never be used as a schedule source again.
-    Public endpoint, no auth needed. Each entry: week (Fantrax period - 1,
-    i.e. displayed GW number), home code, away code."""
+    Public endpoint, no auth needed. Each entry: week (== the real EPL
+    gameweek number, == the Fantrax period), home code, away code."""
     resp = sess.get("https://www.fantrax.com/fxea/general/getLeagueInfo", params={"leagueId": LEAGUE_ID}, timeout=20)
     resp.raise_for_status()
     id_to_code = {v: k for k, v in FANTRAX_TEAM_ID.items()}
@@ -249,7 +255,7 @@ def fetch_schedule(sess, periods=REGULAR_SEASON_PERIODS):
         fantrax_period = period["period"]
         if fantrax_period not in periods:
             continue
-        week = fantrax_period - 1
+        week = fantrax_period
         for m in period["matchupList"]:
             home, away = m.get("home", {}), m.get("away", {})
             if home.get("TBD") or away.get("TBD"):

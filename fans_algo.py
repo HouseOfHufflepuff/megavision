@@ -57,10 +57,16 @@ BOTTOM_TEAM_BONUS = 0.08  # VERY LOW, per instruction ("...& bottom team")
 UPSET_BUZZ_BONUS = 0.12   # LOW -- our own addition: residual buzz the week
                            # after a big upset. 0 until real results exist.
 
-# GW1 is Community Shield/Super Cup/FA Cup play, not a regular-season game
-# -- no salary draw, no regular ticket price. Shared with update_rosters.py
+# GW1 (Mega's Community Shield/Super Cup, played Juniors-vs-Juniors during
+# real-world EPL GW1) is the only non-regular-season week -- no salary
+# draw, no regular ticket price. It never gets a displayed GW number at
+# all (see fantrax_live.REGULAR_SEASON_PERIODS), so nothing in the actual
+# displayed schedule is exempt anymore -- fixed 2026-09-02 after this was
+# still catching GW2 (the real first scored week) and zeroing it out by
+# mistake. Kept as a real set, not hardcoded away, in case a future
+# ceremonial week needs the same treatment. Shared with update_rosters.py
 # and sync_fans.py so there's one source of truth.
-NON_REGULAR_SEASON_WEEKS = {1}
+NON_REGULAR_SEASON_WEEKS = set()
 REGULAR_SEASON_TICKET_PRICE = 0.05
 HOME_GATE_SHARE = 0.80  # League Schedule tab's own param cell (80/20 home/away)
 

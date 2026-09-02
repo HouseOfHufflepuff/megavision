@@ -207,11 +207,12 @@ except Exception as e:
     fantrax_standings, fantrax_rosters, top_xi, mbp, fan_formula = {}, {}, [], None, {}
     schedule_games = []
 
-REGULAR_SEASON_WEEKS = 35  # Fantrax periods 2-36 displayed as GW 1-35 (period 1 is Juniors-only)
+REGULAR_SEASON_WEEKS = 35  # Fantrax periods 2-36, displayed as EPL GW2-36 (period 1/EPL GW1 is Juniors-only, never displayed)
 
-# GW1 is Community Shield/Super Cup/FA Cup play, not a real regular-season
-# game -- cup matches don't draw player salary, and Rulez only prices
-# regular season ($0.05) and CL/Euro rounds, so GW1 is $0 both ways. Shared
+# Mega's Community Shield/Super Cup (EPL GW1, Juniors-vs-Juniors) is the
+# only non-regular-season week -- but it never gets a displayed GW number
+# at all (see fantrax_live.REGULAR_SEASON_PERIODS), so nothing in the
+# actual schedule is exempt from salary/ticket pricing anymore. Shared
 # with fans_algo.py/sync_fans.py so there's one source of truth. Salary is
 # spread across the weeks that actually draw it (35 minus these), not all
 # 35, so the season total still adds up exactly.
