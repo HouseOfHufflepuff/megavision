@@ -25,7 +25,7 @@ import sys
 
 import fans_algo as fa
 import fantrax_live as fl
-from common import TEAMS, fetch_live_workbook, fetch_stadiums
+from common import TEAMS, fetch_stadiums
 
 LEAGUE_WEEKS = 22  # Rulez 2.1 -- flag to the commissioner: confirmed the salary math should
                     # divide by 22, but unclear if the real schedule itself should also be
@@ -70,8 +70,7 @@ def simulate(seed=None):
     for c in codes:
         strength.setdefault(c, 60.0)
 
-    wb = fetch_live_workbook()
-    stadiums = fetch_stadiums(wb)
+    stadiums = fetch_stadiums()
     capacity = {c: stadiums.get(c, {}).get("capacity") or 400 for c in codes}
 
     schedule = round_robin_schedule(codes, rounds=2)

@@ -33,11 +33,12 @@ def find_team_sheet(wb, code):
     return None
 
 
-def fetch_stadiums(wb):
+def fetch_stadiums_from_sheet(wb):
     """code -> {stadium, capacity}, from row 1 of each team tab. Capacity is
     usually in column 6 (index 6), but WTF's row has an extra blank cell
     between the "Capacity:" label and its value, shifting it to column 7 --
-    so find it by the label instead of a fixed index."""
+    so find it by the label instead of a fixed index. Only used once now,
+    to seed team_stadium -- see fetch_stadiums() for the real live source."""
     stadiums = {}
     for code, _, _ in TEAMS:
         sheet_name = find_team_sheet(wb, code)
@@ -51,6 +52,23 @@ def fetch_stadiums(wb):
                 capacity = next((v for v in row0[label_idx + 1:] if isinstance(v, (int, float))), None)
         stadiums[code] = {"stadium": row0[1] or "", "capacity": capacity}
     return stadiums
+
+
+def fetch_stadiums():
+    """code -> {stadium, capacity} -- from mega.db's team_stadium table, the
+    real source of truth (was previously read live off the sheet every
+    build; stopped depending on the sheet for this per commissioner
+    instruction 2026-09-03). Real capacity changes (stadium expansions)
+    only ever happen via a real confirmed request, tracked in team_stadium
+    directly -- there is no live external source for this anymore."""
+    import db
+    conn = db.connect()
+    out = {
+        row[0]: {"stadium": row[1], "capacity": row[2]}
+        for row in conn.execute("SELECT team_code, stadium_name, capacity FROM team_stadium")
+    }
+    conn.close()
+    return out
 
 
 def fetch_season_salary_totals(wb, label):

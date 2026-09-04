@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 
 import fantrax_live as fl
 import fans_algo as fa
-from common import TEAMS, fetch_live_workbook, fetch_stadiums, fetch_trophy_room, tally_trophies
+from common import TEAMS, fetch_stadiums
 from db import connect
 
 TEAM_FULL_NAME = {code: name for code, name, _ in TEAMS}
@@ -89,9 +89,8 @@ def build(week=None):
         for p in roster:
             p["fpts"] = player_points.get(p["name"], p["fpts"])
 
-    print("Fetching stadiums from the live sheet...", file=sys.stderr)
-    wb = fetch_live_workbook()
-    stadiums = fetch_stadiums(wb)
+    print("Fetching stadiums...", file=sys.stderr)
+    stadiums = fetch_stadiums()
 
     print("Computing real fan counts (League Record + Scoring standing + Top XI + Legacy)...", file=sys.stderr)
     conn = connect()

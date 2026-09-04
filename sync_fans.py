@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 
 import fans_algo as fa
 import fantrax_live as fl
-from common import TEAMS, fetch_live_workbook, fetch_stadiums
+from common import TEAMS, fetch_stadiums
 from db import connect
 
 
@@ -24,8 +24,7 @@ def sync_week(week):
     cur = conn.cursor()
     now = datetime.now(timezone.utc).isoformat()
 
-    wb = fetch_live_workbook()
-    capacities = {code: v["capacity"] or 0 for code, v in fetch_stadiums(wb).items()}
+    capacities = {code: v["capacity"] or 0 for code, v in fetch_stadiums().items()}
 
     title_rows = cur.execute("SELECT competition, team_code FROM titles WHERE season='26/27'").fetchall()
     legacy_fans = {code: fa.legacy_fan_value(code, title_rows) for code, _, _ in TEAMS}

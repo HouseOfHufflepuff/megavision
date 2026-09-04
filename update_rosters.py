@@ -174,7 +174,7 @@ for _t in CURRENT_SEASON_TITLES:
     title_payout_by_code[_t["team_code"]] = title_payout_by_code.get(_t["team_code"], 0) + _t["payout"]
 fans_by_code = fetch_fans(wb)
 youth_by_code = fetch_youth(wb)
-stadiums = fetch_stadiums(wb)
+stadiums = fetch_stadiums()
 rank_bonus, points_bonus_table = fetch_standings_reference(wb)
 firm_legacy = fetch_firm_legacy(wb)
 
@@ -1273,17 +1273,21 @@ gw_all_rows_html = "\n            ".join(
 # the pot when they happen, not a per-week flow. Only salaries (in) and
 # tickets (out) move weekly. Everything else -- Citadel Cup sponsor money,
 # future Federation Fee, TV Bonus, cup title payouts -- is pot-level.
-STADIUM_EXPANSION_FEES_TOTAL = 0.0  # no expansions recorded yet this season
+STADIUM_EXPANSION_FEES_TOTAL = 500.0  # $50 x 10 confirmed expansions, MEGAVISION STADIUM EXPANSION THREAD, 2026-08-28
 CITADEL_CUP_SPONSOR = 25.0  # flat sponsor pot, per instruction -- free money, not team-funded
 transfer_levy_total = trx.league_pot_transfer_levy(_all_transfers, season="26/27")
 title_payouts_total = sum(_t["payout"] for _t in CURRENT_SEASON_TITLES)
+_irp_conn = db.connect()
+irp_fees_total = _irp_conn.execute("SELECT COALESCE(SUM(fee),0) FROM irp_fees WHERE season='26/27'").fetchone()[0]
+irp_fees_by_code = dict(_irp_conn.execute("SELECT team_code, SUM(fee) FROM irp_fees WHERE season='26/27' GROUP BY team_code").fetchall())
+_irp_conn.close()
 synced_weeks = sorted({w for w, _ in _gw_fans})
 salary_collected_total = sum(
     weekly_salary_by_code.get(code, 0) for (w, code) in _gw_fans if w not in NON_REGULAR_SEASON_WEEKS
 )
 tickets_paid_total = sum(r["revenue"] or 0 for r in gw_all_rows if r["week"] in synced_weeks)
 pot_balance = (
-    STADIUM_EXPANSION_FEES_TOTAL + transfer_levy_total + CITADEL_CUP_SPONSOR
+    STADIUM_EXPANSION_FEES_TOTAL + transfer_levy_total + CITADEL_CUP_SPONSOR + irp_fees_total
     + salary_collected_total - tickets_paid_total - title_payouts_total
 )
 _weeks_label = f"GW{synced_weeks[0]}" if len(synced_weeks) == 1 else f"GW{synced_weeks[0]}-{synced_weeks[-1]}" if synced_weeks else "no weeks yet"
@@ -1291,9 +1295,10 @@ _weeks_label = f"GW{synced_weeks[0]}" if len(synced_weeks) == 1 else f"GW{synced
 pot_rows_html = "".join(
     f'<tr><td>{label}</td><td class="dim">{note}</td><td>{money(amt)}</td></tr>'
     for label, note, amt in [
-        ("Stadium Expansion Fees", "one-time, $50 per +50 capacity -- none yet this season", STADIUM_EXPANSION_FEES_TOTAL),
+        ("Stadium Expansion Fees", "one-time, $50 per +50 capacity -- 10 teams expanded 2026-08-28", STADIUM_EXPANSION_FEES_TOTAL),
         ("Transfer Levy", "one-time, 10% league cut of every transfer fee", transfer_levy_total),
         ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
+        ("IRP Fees", "$4/injury-replacement pickup -- " + ", ".join(f"{c} {money(v)}" for c, v in irp_fees_by_code.items()), irp_fees_total),
         (f"Salaries Collected ({_weeks_label})", "weekly -- cup weeks like GW1 draw $0", salary_collected_total),
         (f"Tickets Paid Out ({_weeks_label})", "weekly -- real Fan Interest algorithm, run per week via sync_fans.py", -tickets_paid_total),
         ("Title Payouts", "one-time -- " + ", ".join(f"{t['competition']} ({t['team_code']}, {money(t['payout'])})" for t in CURRENT_SEASON_TITLES), -title_payouts_total),

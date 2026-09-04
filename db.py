@@ -215,6 +215,33 @@ CREATE TABLE IF NOT EXISTS epl_club_gameweek (
     updated_at TEXT NOT NULL,
     UNIQUE(real_club, gameweek)
 );
+
+-- Each Mega team's real stadium capacity -- the DB is now the source of
+-- truth (was previously read live off the Google Sheet every build,
+-- which the commissioner asked us to stop depending on). Seeded once from
+-- the sheet's last-known values, then only ever changed by a real
+-- confirmed expansion (see MEGAVISION STADIUM EXPANSION THREAD, 2026-08-28).
+CREATE TABLE IF NOT EXISTS team_stadium (
+    team_code TEXT PRIMARY KEY,
+    stadium_name TEXT,
+    capacity INTEGER NOT NULL,
+    updated_at TEXT NOT NULL
+);
+
+-- Real-money IRP (injury replacement pickup) fees: $4 per pickup, per
+-- Rulez. One row per pickup so the $4 shows up in that team's costs on
+-- financials.html without having to encode it into the player's own wage
+-- (which is a real contract value, not a one-time fee).
+CREATE TABLE IF NOT EXISTS irp_fees (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,
+    season TEXT NOT NULL,
+    fee REAL NOT NULL DEFAULT 4.0,
+    note TEXT,
+    updated_at TEXT NOT NULL,
+    UNIQUE(team_code, player_name, season)
+);
 """
 
 
