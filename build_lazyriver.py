@@ -1,6 +1,14 @@
 redirect_html = """<!doctype html>
 <html>
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QHQQ6Z45Q5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QHQQ6Z45Q5');
+</script>
 <meta charset="utf-8">
 <meta http-equiv="refresh" content="0; url=lazy-river/index.html">
 <title>Lazy River has moved</title>

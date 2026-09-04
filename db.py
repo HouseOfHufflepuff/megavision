@@ -242,6 +242,24 @@ CREATE TABLE IF NOT EXISTS irp_fees (
     updated_at TEXT NOT NULL,
     UNIQUE(team_code, player_name, season)
 );
+
+-- Real cuts (players released from the active roster). The team keeps
+-- paying for them: dead money, frozen at cut time as the sum of every
+-- wage row on record for that player+team (their "entire salary" per
+-- Jer's 2026-09-04 instruction), so cutting under contract isn't free.
+-- Separate from roster_overrides (which only controls display) -- this
+-- table is the source of truth for the dead-money cost itself.
+CREATE TABLE IF NOT EXISTS player_cuts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,
+    season TEXT NOT NULL,       -- season the cut is recognized in, e.g. '26/27'
+    salary REAL NOT NULL,       -- frozen dead-money amount (entire salary on record)
+    cut_date TEXT,
+    note TEXT,
+    updated_at TEXT NOT NULL,
+    UNIQUE(team_code, player_name, season)
+);
 """
 
 

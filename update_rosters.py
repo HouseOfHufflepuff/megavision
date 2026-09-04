@@ -339,6 +339,20 @@ print(f"Loaded synced fan data for {len({w for w, _ in _gw_fans})} week(s) from 
 ALL_SEASONS = ["25/26", "26/27", "27/28", "28/29"]
 CURRENT_SEASON = "26/27"
 
+# real cuts: players released from the active roster still cost the team --
+# dead money frozen at cut time (see player_cuts table note in db.py).
+_cuts_conn = db.connect()
+_cuts_by_team = {}
+for _c_code, _c_name, _c_season, _c_salary, _c_date, _c_note in _cuts_conn.execute(
+    "SELECT team_code, player_name, season, salary, cut_date, note FROM player_cuts WHERE season=?", (CURRENT_SEASON,)
+):
+    _cuts_by_team.setdefault(_c_code, []).append(
+        {"player_name": _c_name, "salary": _c_salary, "cut_date": _c_date, "note": _c_note}
+    )
+_cuts_conn.close()
+print(f"Loaded {sum(len(v) for v in _cuts_by_team.values())} real cut(s) from player_cuts "
+      f"(${sum(c['salary'] for v in _cuts_by_team.values() for c in v):,.2f} total dead money).")
+
 
 def player_wages(code, player_name, club=None):
     """{season: wage} for this player, real contract data if we have it
@@ -643,7 +657,10 @@ for code, name, owners in TEAMS:
 
     # payroll: every player on the roster counts, salary is now each
     # player's real FPL price (set above), computed only after that's done
-    total_payroll = sum(p["current_salary"] for p in roster)
+    roster_payroll = sum(p["current_salary"] for p in roster)
+    team_cuts = _cuts_by_team.get(code, [])
+    cut_dead_money = sum(c["salary"] for c in team_cuts)
+    total_payroll = roster_payroll + cut_dead_money
     pos_counts = {}
     for p in roster:
         pos_counts[p["pos"]] = pos_counts.get(p["pos"], 0) + 1
@@ -681,6 +698,29 @@ for code, name, owners in TEAMS:
                   [p for p in pos_counts if p not in POSITION_ORDER]
     counts_line = "  &middot;  ".join(f"{pos_counts[p]} {p}" for p in ordered_pos)
     roster_total_row = f'<tr><td colspan="7">{roster_size} total &middot; {counts_line}</td></tr>'
+
+    # ---- cuts: released players still cost the team -- dead money frozen
+    # at cut time, shown separately from the active roster (Rulez: cutting
+    # under contract doesn't erase the salary owed) ----
+    if team_cuts:
+        cuts_rows = "\n            ".join(
+            f'<tr><td>{c["player_name"]}</td><td class="dim">{c["cut_date"] or "—"}</td>'
+            f'<td class="dim">{c["note"] or "—"}</td>'
+            f'<td><strong style="color:var(--mv-crimson)">{money(c["salary"])}</strong></td></tr>'
+            for c in sorted(team_cuts, key=lambda c: -c["salary"])
+        )
+        cuts_section = f"""<div class="mv-table-scroll" style="margin-top:16px;">
+          <div class="sub">{len(team_cuts)} player{"s" if len(team_cuts) != 1 else ""} cut this season &middot; full salary still counts as a cost (dead money)</div>
+          <table class="mv-table" id="cuts-table-{code}">
+            <thead><tr><th>Player</th><th>Cut</th><th>Note</th><th>Dead Money</th></tr></thead>
+            <tbody>
+              {cuts_rows}
+            </tbody>
+            <tfoot><tr><td colspan="3">Total dead money</td><td><strong style="color:var(--mv-crimson)">{money(cut_dead_money)}</strong></td></tr></tfoot>
+          </table>
+        </div>"""
+    else:
+        cuts_section = ""
 
     # ---- finances: the same roster, one column per forward season that
     # anyone on this roster actually has a real contract year for (25/26
@@ -983,6 +1023,7 @@ for code, name, owners in TEAMS:
             <tfoot>{roster_total_row}</tfoot>
           </table>
         </div>
+        {cuts_section}
       </div>
 
       <div id="depth-{code}" class="mv-tab-panel">
@@ -1107,6 +1148,7 @@ for code, name, owners in TEAMS:
         "name": name,
         "owner": owner_short(owners),
         "cost": total_payroll,
+        "cut_dead_money": cut_dead_money,
         "revenue": 0.0,
         "fans": fan_formula.get(code, {}).get("total", fans_by_code.get(code)),
         "trophies": total_trophies,
@@ -1121,6 +1163,7 @@ for code, name, owners in TEAMS:
             + trx.team_transfer_net(code, s, _all_transfers)
             - trx.team_transfer_revenue(code, s, _all_transfers)
             - (title_payout_by_code.get(code, 0) if s == "26/27" else 0)
+            + (cut_dead_money if s == "26/27" else 0)
             for s in ("26/27", "27/28", "28/29")
         },
     })
@@ -1213,7 +1256,10 @@ financials_rows_html = "\n            ".join(
     f'<tr>'
     f'<td><a href="team-{r["code"].lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{r["name"]}</a></td>'
     f'<td class="dim">{r["owner"]}</td>'
-    f'<td><strong style="color:var(--mv-gold)">{money(r["season_costs"]["26/27"])}</strong></td>'
+    f'<td><strong style="color:var(--mv-gold)">{money(r["season_costs"]["26/27"])}</strong>'
+    + (f'<br><span class="dim" style="font-size:11px;color:var(--mv-crimson);">'
+       f'of which {money(r["cut_dead_money"])} cut dead money</span>' if r["cut_dead_money"] else '')
+    + f'</td>'
     f'<td>{money(r["season_costs"]["27/28"])}</td>'
     f'<td>{money(r["season_costs"]["28/29"])}</td>'
     f'<td>{r["trophies"]}</td>'
@@ -1224,6 +1270,7 @@ financials_rows_html = "\n            ".join(
 financials_totals = {
     s: sum(r["season_costs"][s] for r in financial_rows_sorted) for s in ("26/27", "27/28", "28/29")
 }
+financials_total_cut_dead_money = sum(r["cut_dead_money"] for r in financial_rows_sorted)
 
 weekly_salary_by_code = {r["code"]: (r["cost"] / REGULAR_SEASON_SALARY_WEEKS if r["cost"] else 0) for r in financial_rows}
 team_name_by_code = {r["code"]: r["name"] for r in financial_rows}
@@ -1286,9 +1333,10 @@ salary_collected_total = sum(
     weekly_salary_by_code.get(code, 0) for (w, code) in _gw_fans if w not in NON_REGULAR_SEASON_WEEKS
 )
 tickets_paid_total = sum(r["revenue"] or 0 for r in gw_all_rows if r["week"] in synced_weeks)
+cut_dead_money_total = sum(c["salary"] for v in _cuts_by_team.values() for c in v)
 pot_balance = (
     STADIUM_EXPANSION_FEES_TOTAL + transfer_levy_total + CITADEL_CUP_SPONSOR + irp_fees_total
-    + salary_collected_total - tickets_paid_total - title_payouts_total
+    + cut_dead_money_total + salary_collected_total - tickets_paid_total - title_payouts_total
 )
 _weeks_label = f"GW{synced_weeks[0]}" if len(synced_weeks) == 1 else f"GW{synced_weeks[0]}-{synced_weeks[-1]}" if synced_weeks else "no weeks yet"
 
@@ -1299,6 +1347,9 @@ pot_rows_html = "".join(
         ("Transfer Levy", "one-time, 10% league cut of every transfer fee", transfer_levy_total),
         ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
         ("IRP Fees", "$4/injury-replacement pickup -- " + ", ".join(f"{c} {money(v)}" for c, v in irp_fees_by_code.items()), irp_fees_total),
+        ("Cut Dead Money", "Rulez 4.2(2): full remaining salary of any player cut after the 1st EPL game -- "
+         + (", ".join(f"{code} {money(sum(c['salary'] for c in cuts))}" for code, cuts in _cuts_by_team.items()) or "none yet"),
+         cut_dead_money_total),
         (f"Salaries Collected ({_weeks_label})", "weekly -- cup weeks like GW1 draw $0", salary_collected_total),
         (f"Tickets Paid Out ({_weeks_label})", "weekly -- real Fan Interest algorithm, run per week via sync_fans.py", -tickets_paid_total),
         ("Title Payouts", "one-time -- " + ", ".join(f"{t['competition']} ({t['team_code']}, {money(t['payout'])})" for t in CURRENT_SEASON_TITLES), -title_payouts_total),
@@ -1456,7 +1507,9 @@ financials_body = f"""
               <tfoot>
                 <tr>
                   <td colspan="2">League Total</td>
-                  <td><strong style="color:var(--mv-gold)">{money(financials_totals["26/27"])}</strong></td>
+                  <td><strong style="color:var(--mv-gold)">{money(financials_totals["26/27"])}</strong>
+                  {f'<br><span class="dim" style="font-size:11px;color:var(--mv-crimson);">of which {money(financials_total_cut_dead_money)} cut dead money</span>' if financials_total_cut_dead_money else ''}
+                  </td>
                   <td>{money(financials_totals["27/28"])}</td>
                   <td>{money(financials_totals["28/29"])}</td>
                   <td></td>

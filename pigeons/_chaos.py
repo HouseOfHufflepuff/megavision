@@ -578,6 +578,14 @@ def page(filename, title, center_content_html, tile_key="galaxy", page_index=0):
     html = f"""<!doctype html>
 <html>
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QHQQ6Z45Q5"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+  gtag('config', 'G-QHQQ6Z45Q5');
+</script>
 <meta charset="utf-8">
 <title>*~*~* {title} *~*~* Pigeon Pages *~*~*</title>
 <link rel="icon" href="data:,">
