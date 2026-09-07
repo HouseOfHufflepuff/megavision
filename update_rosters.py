@@ -96,8 +96,8 @@ KEEP_BOX_ROWS = {
     "youth_legend": (31, 31),
     "youth_players": (34, 40),
 }
-CATEGORY_LABEL = {"kept": "Kept", "youth_legend": "Youth Legend", "youth_players": "Youth Player", "drafted": "Drafted '27"}
-CATEGORY_BADGE_COLOR = {"kept": "var(--mv-ink-muted)", "youth_legend": "var(--mv-gold)", "youth_players": "var(--mv-blue)", "drafted": "var(--mv-violet)"}
+CATEGORY_LABEL = {"kept": "Kept", "youth_legend": "Youth Legend", "youth_players": "Youth Player", "drafted": "Drafted '27", "irp": "IRP"}
+CATEGORY_BADGE_COLOR = {"kept": "var(--mv-ink-muted)", "youth_legend": "var(--mv-gold)", "youth_players": "var(--mv-blue)", "drafted": "var(--mv-violet)", "irp": "var(--mv-crimson)"}
 
 
 def find_keeper_block_col(label_row, code):

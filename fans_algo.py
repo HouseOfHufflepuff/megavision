@@ -89,14 +89,20 @@ HOME_GATE_SHARE = 0.80
 
 
 def _pick_real_row_per_code(standings):
-    """Which Sr/Jr row represents each code right now -- whichever has the
-    higher fpts_for (real signal can currently sit on either roster)."""
+    """Which Sr/Jr row represents each code -- always the Sr (senior) row,
+    since Sr is the only side that plays real ongoing weekly matchups; Jr's
+    record freezes after its one early-season cup game. (Previously this
+    picked whichever row had the higher cumulative fpts_for, which was only
+    correct in week 1 before Sr teams had played -- once both sides carry a
+    real record, that heuristic silently swaps to Jr's frozen record for any
+    team whose Jr side still out-scores Sr cumulatively. Found 2026-09-06
+    via NAC showing an impossible 1-0-0 -> 0-0-2 "regression" between GW2
+    and GW3 -- it was reading Jr, then Sr, never one consistent team.)"""
     best = {}
     for row in standings:
-        if not row["code"]:
+        if not row["code"] or row.get("is_junior"):
             continue
-        if row["code"] not in best or row["fpts_for"] > best[row["code"]]["fpts_for"]:
-            best[row["code"]] = row
+        best[row["code"]] = row
     return best
 
 
