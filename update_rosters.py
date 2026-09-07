@@ -432,6 +432,9 @@ except Exception as _e:
     _all_standings = []
 standings_rank_by_code = fa.league_record_rank_by_code(_all_standings)
 _scoring_rank_by_code = fa.scoring_rank_by_code(_all_standings)
+# real Sr-side record/fpts per team, for each team page's stat grid (was
+# hardcoded to 0-0-0/0/-- before 2026-09-08 -- nobody had wired it up)
+_real_standings_row_by_code = fa._pick_real_row_per_code(_all_standings)
 
 _best11_conn = db.connect()
 _best11_week = _best11_conn.execute("SELECT MAX(week) FROM best11").fetchone()[0]
@@ -587,6 +590,10 @@ updated = []
 financial_rows = []
 
 for code, name, owners in TEAMS:
+    _team_standings_row = _real_standings_row_by_code.get(code)
+    _record_display = _team_standings_row["record"] if _team_standings_row else "0-0-0"
+    _points_display = f'{_team_standings_row["fpts_for"]:.1f}' if _team_standings_row else "0"
+    _rank_display = f"#{standings_rank_by_code[code]}" if code in standings_rank_by_code else "&mdash;"
     roster = parse_keeper_roster(wb, code)
     if roster is None:
         print(f"WARN: no CUT EM IF YA GOT EM block for {code}, skipping", file=sys.stderr)
@@ -1010,9 +1017,9 @@ for code, name, owners in TEAMS:
     </div>
 
     <div class="mv-stat-grid">
-      <div class="mv-stat"><div class="label">Record</div><div class="value">0-0-0</div></div>
-      <div class="mv-stat"><div class="label">Points</div><div class="value">0</div></div>
-      <div class="mv-stat"><div class="label">League Rank</div><div class="value">&mdash;</div></div>
+      <div class="mv-stat"><div class="label">Record</div><div class="value">{_record_display}</div></div>
+      <div class="mv-stat"><div class="label">Points</div><div class="value">{_points_display}</div></div>
+      <div class="mv-stat"><div class="label">League Rank</div><div class="value">{_rank_display}</div></div>
       <div class="mv-stat"><div class="label">Roster Size</div><div class="value">{roster_size}</div></div>
       <div class="mv-stat"><div class="label">Total Payroll</div><div class="value">{money(total_payroll)}</div></div>
       <div class="mv-stat"><div class="label">Season Net</div><div class="value">{money(season_net)}</div></div>
@@ -1064,8 +1071,6 @@ for code, name, owners in TEAMS:
             <tfoot>{roster_total_row}</tfoot>
           </table>
         </div>
-        {cuts_section}
-        {epl_payouts_section}
       </div>
 
       <div id="depth-{code}" class="mv-tab-panel">
@@ -1127,6 +1132,8 @@ for code, name, owners in TEAMS:
                 <tfoot>{finance_total_row}</tfoot>
               </table>
             </div>
+            {cuts_section}
+            {epl_payouts_section}
           </div>
         </div>
       </div>
@@ -1367,7 +1374,9 @@ gw_all_rows_html = "\n            ".join(
 # the pot when they happen, not a per-week flow. Only salaries (in) and
 # tickets (out) move weekly. Everything else -- Citadel Cup sponsor money,
 # future Federation Fee, TV Bonus, cup title payouts -- is pot-level.
-STADIUM_EXPANSION_FEES_TOTAL = 500.0  # $50 x 10 confirmed expansions, MEGAVISION STADIUM EXPANSION THREAD, 2026-08-28
+STADIUM_EXPANSION_FEES_TOTAL = 550.0  # $50 x 11 confirmed expansions, MEGAVISION STADIUM EXPANSION THREAD, 2026-08-28
+# (was 10x$500 -- missed HUF, who declared "Gringott's Counting House is
+# expanding" in the thread's OPENING message, not a reply, 2026-09-08 fix)
 CITADEL_CUP_SPONSOR = 25.0  # flat sponsor pot, per instruction -- free money, not team-funded
 transfer_levy_total = trx.league_pot_transfer_levy(_all_transfers, season="26/27")
 title_payouts_total = sum(_t["payout"] for _t in CURRENT_SEASON_TITLES)
@@ -1392,7 +1401,7 @@ _weeks_label = f"GW{synced_weeks[0]}" if len(synced_weeks) == 1 else f"GW{synced
 pot_rows_html = "".join(
     f'<tr><td>{label}</td><td class="dim">{note}</td><td>{money(amt)}</td></tr>'
     for label, note, amt in [
-        ("Stadium Expansion Fees", "one-time, $50 per +50 capacity -- 10 teams expanded 2026-08-28", STADIUM_EXPANSION_FEES_TOTAL),
+        ("Stadium Expansion Fees", "one-time, $50 per +50 capacity -- 11 teams expanded 2026-08-28", STADIUM_EXPANSION_FEES_TOTAL),
         ("Transfer Levy", "one-time, 10% league cut of every transfer fee", transfer_levy_total),
         ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
         ("IRP Fees", "$4/injury-replacement pickup -- " + ", ".join(f"{c} {money(v)}" for c, v in irp_fees_by_code.items()), irp_fees_total),
