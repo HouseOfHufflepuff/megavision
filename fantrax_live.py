@@ -225,6 +225,39 @@ def fetch_all_standings(sess):
     return out
 
 
+def fetch_gameweek_scores(sess, week):
+    """[{away_code, away_name, away_score, home_code, home_name,
+    home_score}] -- real final box scores for every matchup already played
+    in this GW, straight from the standings page's own per-week table.
+
+    Found 2026-09-07 after wrongly telling the user Fantrax doesn't expose
+    historical weekly scores and reconstructing (badly -- 2 of 6 games
+    wrong) from live player stats instead. It does expose them: POST
+    getStandings (not the simpler public GET /fxea/general/getStandings,
+    which is cumulative-only) returns a `tableList` with a `"Gameweek N"`
+    entry per past week, rows shaped [away, fpts, home, fpts]. Use this,
+    don't reconstruct scores from player-level data when this exists."""
+    body = {"msgs": [{"method": "getStandings", "data": {"leagueId": LEAGUE_ID}}]}
+    resp = sess.post("https://www.fantrax.com/fxpa/req", params={"leagueId": LEAGUE_ID}, json=body, timeout=20)
+    resp.raise_for_status()
+    data = resp.json()["responses"][0]["data"]
+    table = next((t for t in data.get("tableList", []) if t.get("caption") == f"Gameweek {week}"), None)
+    if not table:
+        return []
+    out = []
+    for row in table.get("rows", []):
+        cells = row["cells"]
+        out.append({
+            "away_code": ALL_TEAM_ID_TO_CODE.get(cells[0].get("teamId")),
+            "away_name": cells[0]["content"],
+            "away_score": float(cells[1]["content"]),
+            "home_code": ALL_TEAM_ID_TO_CODE.get(cells[2].get("teamId")),
+            "home_name": cells[2]["content"],
+            "home_score": float(cells[3]["content"]),
+        })
+    return out
+
+
 # getLeagueInfo's playoffs.lastRegularSeasonPeriod == 36; periods 37-38 are
 # playoffs (TBD matchups until the regular season finishes, excluded).
 # Fantrax scoring period 1 is entirely Juniors-vs-Juniors games -- Mega's
