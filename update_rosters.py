@@ -353,6 +353,22 @@ _cuts_conn.close()
 print(f"Loaded {sum(len(v) for v in _cuts_by_team.values())} real cut(s) from player_cuts "
       f"(${sum(c['salary'] for v in _cuts_by_team.values() for c in v):,.2f} total dead money).")
 
+# EPL-departure compensation: 1/3 of the real transfer fee, paid from the
+# Mega Fund to whichever team held the player's rights when he left the
+# EPL for good (Rulez 4.2(5)). Revenue, not cost -- subtracts from what
+# the team owes.
+_epl_payouts_conn = db.connect()
+_epl_payouts_by_team = {}
+for _e_code, _e_name, _e_fee, _e_payout, _e_dest, _e_note in _epl_payouts_conn.execute(
+    "SELECT team_code, player_name, transfer_fee_gbp, payout, destination, note FROM epl_departure_payouts WHERE season=?", (CURRENT_SEASON,)
+):
+    _epl_payouts_by_team.setdefault(_e_code, []).append(
+        {"player_name": _e_name, "fee_gbp": _e_fee, "payout": _e_payout, "destination": _e_dest, "note": _e_note}
+    )
+_epl_payouts_conn.close()
+print(f"Loaded {sum(len(v) for v in _epl_payouts_by_team.values())} EPL-departure payout(s) "
+      f"(${sum(p['payout'] for v in _epl_payouts_by_team.values() for p in v):,.2f} total).")
+
 
 def player_wages(code, player_name, club=None):
     """{season: wage} for this player, real contract data if we have it
@@ -661,10 +677,12 @@ for code, name, owners in TEAMS:
     team_cuts = _cuts_by_team.get(code, [])
     cut_dead_money = sum(c["salary"] for c in team_cuts)
     total_payroll = roster_payroll + cut_dead_money
+    team_epl_payouts = _epl_payouts_by_team.get(code, [])
+    epl_payout_total = sum(p["payout"] for p in team_epl_payouts)
     pos_counts = {}
     for p in roster:
         pos_counts[p["pos"]] = pos_counts.get(p["pos"], 0) + 1
-    season_net = -total_payroll  # no games/revenue yet this season
+    season_net = -total_payroll + epl_payout_total  # no games/ticket revenue yet this season
 
     _matched_fpts = [p["fpts"] for p in roster if isinstance(p["fpts"], (int, float))]
     avg_fpts = (sum(_matched_fpts) / len(_matched_fpts)) if _matched_fpts else None
@@ -721,6 +739,29 @@ for code, name, owners in TEAMS:
         </div>"""
     else:
         cuts_section = ""
+
+    # ---- EPL departures: real transfers out of the EPL entirely --
+    # salary just disappears (no penalty), team gets 1/3 of the real
+    # transfer fee from the Mega Fund (Rulez 4.2(5)) ----
+    if team_epl_payouts:
+        epl_payout_rows = "\n            ".join(
+            f'<tr><td>{p["player_name"]}</td><td class="dim">{p["destination"] or "—"}</td>'
+            f'<td class="dim">&pound;{p["fee_gbp"]:,.0f}M transfer</td>'
+            f'<td><strong style="color:var(--mv-gold)">{money(p["payout"])}</strong></td></tr>'
+            for p in sorted(team_epl_payouts, key=lambda p: -p["payout"])
+        )
+        epl_payouts_section = f"""<div class="mv-table-scroll" style="margin-top:16px;">
+          <div class="sub">{len(team_epl_payouts)} player{"s" if len(team_epl_payouts) != 1 else ""} transferred out of the EPL &middot; salary removed, no penalty &middot; 1/3 of the real fee paid from the Mega Fund</div>
+          <table class="mv-table" id="epl-payouts-table-{code}">
+            <thead><tr><th>Player</th><th>Destination</th><th>Transfer</th><th>Payout</th></tr></thead>
+            <tbody>
+              {epl_payout_rows}
+            </tbody>
+            <tfoot><tr><td colspan="3">Total payout</td><td><strong style="color:var(--mv-gold)">{money(epl_payout_total)}</strong></td></tr></tfoot>
+          </table>
+        </div>"""
+    else:
+        epl_payouts_section = ""
 
     # ---- finances: the same roster, one column per forward season that
     # anyone on this roster actually has a real contract year for (25/26
@@ -1024,6 +1065,7 @@ for code, name, owners in TEAMS:
           </table>
         </div>
         {cuts_section}
+        {epl_payouts_section}
       </div>
 
       <div id="depth-{code}" class="mv-tab-panel">
@@ -1149,6 +1191,7 @@ for code, name, owners in TEAMS:
         "owner": owner_short(owners),
         "cost": total_payroll,
         "cut_dead_money": cut_dead_money,
+        "epl_payout_total": epl_payout_total,
         "revenue": 0.0,
         "fans": fan_formula.get(code, {}).get("total", fans_by_code.get(code)),
         "trophies": total_trophies,
@@ -1164,6 +1207,7 @@ for code, name, owners in TEAMS:
             - trx.team_transfer_revenue(code, s, _all_transfers)
             - (title_payout_by_code.get(code, 0) if s == "26/27" else 0)
             + (cut_dead_money if s == "26/27" else 0)
+            - (epl_payout_total if s == "26/27" else 0)
             for s in ("26/27", "27/28", "28/29")
         },
     })
@@ -1259,6 +1303,8 @@ financials_rows_html = "\n            ".join(
     f'<td><strong style="color:var(--mv-gold)">{money(r["season_costs"]["26/27"])}</strong>'
     + (f'<br><span class="dim" style="font-size:11px;color:var(--mv-crimson);">'
        f'of which {money(r["cut_dead_money"])} cut dead money</span>' if r["cut_dead_money"] else '')
+    + (f'<br><span class="dim" style="font-size:11px;color:var(--mv-gold);">'
+       f'-{money(r["epl_payout_total"])} EPL transfer payout</span>' if r["epl_payout_total"] else '')
     + f'</td>'
     f'<td>{money(r["season_costs"]["27/28"])}</td>'
     f'<td>{money(r["season_costs"]["28/29"])}</td>'
@@ -1271,6 +1317,7 @@ financials_totals = {
     s: sum(r["season_costs"][s] for r in financial_rows_sorted) for s in ("26/27", "27/28", "28/29")
 }
 financials_total_cut_dead_money = sum(r["cut_dead_money"] for r in financial_rows_sorted)
+financials_total_epl_payouts = sum(r["epl_payout_total"] for r in financial_rows_sorted)
 
 weekly_salary_by_code = {r["code"]: (r["cost"] / REGULAR_SEASON_SALARY_WEEKS if r["cost"] else 0) for r in financial_rows}
 team_name_by_code = {r["code"]: r["name"] for r in financial_rows}
@@ -1334,9 +1381,11 @@ salary_collected_total = sum(
 )
 tickets_paid_total = sum(r["revenue"] or 0 for r in gw_all_rows if r["week"] in synced_weeks)
 cut_dead_money_total = sum(c["salary"] for v in _cuts_by_team.values() for c in v)
+epl_payouts_total = sum(p["payout"] for v in _epl_payouts_by_team.values() for p in v)
 pot_balance = (
     STADIUM_EXPANSION_FEES_TOTAL + transfer_levy_total + CITADEL_CUP_SPONSOR + irp_fees_total
     + cut_dead_money_total + salary_collected_total - tickets_paid_total - title_payouts_total
+    - epl_payouts_total
 )
 _weeks_label = f"GW{synced_weeks[0]}" if len(synced_weeks) == 1 else f"GW{synced_weeks[0]}-{synced_weeks[-1]}" if synced_weeks else "no weeks yet"
 
@@ -1350,6 +1399,9 @@ pot_rows_html = "".join(
         ("Cut Dead Money", "Rulez 4.2(2): full remaining salary of any player cut after the 1st EPL game -- "
          + (", ".join(f"{code} {money(sum(c['salary'] for c in cuts))}" for code, cuts in _cuts_by_team.items()) or "none yet"),
          cut_dead_money_total),
+        ("EPL Transfer Payouts", "Rulez 4.2(5): 1/3 of real transfer fee to the team losing a player out of the EPL -- "
+         + (", ".join(f"{code} {money(sum(p['payout'] for p in payouts))}" for code, payouts in _epl_payouts_by_team.items()) or "none yet"),
+         -epl_payouts_total),
         (f"Salaries Collected ({_weeks_label})", "weekly -- cup weeks like GW1 draw $0", salary_collected_total),
         (f"Tickets Paid Out ({_weeks_label})", "weekly -- real Fan Interest algorithm, run per week via sync_fans.py", -tickets_paid_total),
         ("Title Payouts", "one-time -- " + ", ".join(f"{t['competition']} ({t['team_code']}, {money(t['payout'])})" for t in CURRENT_SEASON_TITLES), -title_payouts_total),
@@ -1509,6 +1561,7 @@ financials_body = f"""
                   <td colspan="2">League Total</td>
                   <td><strong style="color:var(--mv-gold)">{money(financials_totals["26/27"])}</strong>
                   {f'<br><span class="dim" style="font-size:11px;color:var(--mv-crimson);">of which {money(financials_total_cut_dead_money)} cut dead money</span>' if financials_total_cut_dead_money else ''}
+                  {f'<br><span class="dim" style="font-size:11px;color:var(--mv-gold);">-{money(financials_total_epl_payouts)} EPL transfer payouts</span>' if financials_total_epl_payouts else ''}
                   </td>
                   <td>{money(financials_totals["27/28"])}</td>
                   <td>{money(financials_totals["28/29"])}</td>

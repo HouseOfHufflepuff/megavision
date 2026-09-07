@@ -260,6 +260,26 @@ CREATE TABLE IF NOT EXISTS player_cuts (
     updated_at TEXT NOT NULL,
     UNIQUE(team_code, player_name, season)
 );
+
+-- Compensation owed to a team when one of its rostered players is
+-- transferred out of the EPL entirely (Rulez 4.2(5)): the player's salary
+-- just disappears (no penalty, unlike a cut), and the team receives 1/3 of
+-- the real transfer fee (GBP millions -> $) from the Mega Fund. Loans
+-- don't pay out here -- they're only revealed for buy-clause payouts when
+-- books close the following summer.
+CREATE TABLE IF NOT EXISTS epl_departure_payouts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,
+    season TEXT NOT NULL,
+    transfer_fee_gbp REAL NOT NULL,   -- real fee, GBP millions
+    payout REAL NOT NULL,             -- 1/3 of transfer_fee_gbp, credited from the Mega Fund
+    destination TEXT,                 -- real club/league the player moved to
+    transfer_date TEXT,
+    note TEXT,
+    updated_at TEXT NOT NULL,
+    UNIQUE(team_code, player_name, season)
+);
 """
 
 
