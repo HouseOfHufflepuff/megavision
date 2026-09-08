@@ -588,6 +588,7 @@ def build_fan_card(code, name, detailed=False):
 
 updated = []
 financial_rows = []
+_team_name_by_code_early = {c: n for c, n, _ in TEAMS}
 
 for code, name, owners in TEAMS:
     _team_standings_row = _real_standings_row_by_code.get(code)
@@ -774,6 +775,42 @@ for code, name, owners in TEAMS:
     # anyone on this roster actually has a real contract year for (25/26
     # never shown -- it's already sunk) ----
     team_transfers = [t for t in _all_transfers if t["from_team"] == code or t["to_team"] == code]
+
+    # ---- transfers: buys and sells shown together, each team seeing only
+    # its own signed side of the deal -- the buyer's full fee (a cost) on
+    # its own page, the seller's 90% net (revenue, 10% to the league pot)
+    # on theirs. Same visual treatment as Cuts/EPL Payouts below. ----
+    if team_transfers:
+        transfer_row_list = []
+        for t in sorted(team_transfers, key=lambda t: t["transfer_date"] or ""):
+            is_buyer = t["to_team"] == code
+            amt = t["amount"] if is_buyer else t["amount"] * trx.SELLER_SHARE
+            signed = -amt if is_buyer else amt
+            color = "var(--mv-crimson)" if is_buyer else "var(--mv-gold)"
+            context = (f'Signed from {_team_name_by_code_early.get(t["from_team"], t["from_team"])}' if is_buyer
+                       else f'Sold to {_team_name_by_code_early.get(t["to_team"], t["to_team"])} (90% share, 10% to league pot)')
+            transfer_row_list.append(
+                f'<tr><td>{t["player_name"]}</td><td class="dim">{context}</td>'
+                f'<td class="dim">{t["transfer_date"] or "—"}</td>'
+                f'<td><strong style="color:{color}">{money(signed)}</strong></td></tr>'
+            )
+        transfer_net_total = sum(
+            (-t["amount"] if t["to_team"] == code else t["amount"] * trx.SELLER_SHARE)
+            for t in team_transfers
+        )
+        transfers_section = f"""<div class="mv-table-scroll" style="margin-top:16px;">
+          <div class="sub">{len(team_transfers)} transfer{"s" if len(team_transfers) != 1 else ""} this season &middot; buys cost the full fee, sales net 90% (10% to the league pot)</div>
+          <table class="mv-table" id="transfers-table-{code}">
+            <thead><tr><th>Player</th><th>Transfer</th><th>Date</th><th>Amount</th></tr></thead>
+            <tbody>
+              {"".join(transfer_row_list)}
+            </tbody>
+            <tfoot><tr><td colspan="3">Net</td><td><strong style="color:{"var(--mv-gold)" if transfer_net_total >= 0 else "var(--mv-crimson)"}">{money(transfer_net_total)}</strong></td></tr></tfoot>
+          </table>
+        </div>"""
+    else:
+        transfers_section = ""
+
     finance_seasons = [s for s in ("26/27", "27/28", "28/29")
                         if any(s in p["wages"] for p in roster) or any(t["season"] == s for t in team_transfers)]
     finance_rows = []
@@ -789,22 +826,8 @@ for code, name, owners in TEAMS:
             f'<td style="color:{CATEGORY_BADGE_COLOR[p["category"]]};">{CATEGORY_LABEL[p["category"]]}</td>'
             f'{cells}</tr>'
         )
-    # transfer fees as their own line item -- Rulez row 121: 90% to seller
-    # (revenue, green), 10% to the league pot. The buyer pays the full fee
-    # (cost, red) -- the split only changes where the money lands after.
-    for t in team_transfers:
-        is_buyer = t["to_team"] == code
-        amt = t["amount"] if is_buyer else t["amount"] * trx.SELLER_SHARE
-        color = "var(--mv-crimson)" if is_buyer else "var(--mv-blue)"
-        label = (f'Signed {t["player_name"]} from {t["from_team"]}' if is_buyer
-                  else f'Sold {t["player_name"]} to {t["to_team"]} (90% -- 10% to league pot)')
-        cells = "".join(
-            f'<td data-sort="{amt if season == t["season"] else 0}">'
-            + (f'<strong style="color:{color}">{money(amt if is_buyer else -amt)}</strong>' if season == t["season"] else "—")
-            + "</td>"
-            for season in finance_seasons
-        )
-        finance_rows.append(f'<tr><td colspan="4" class="dim">Transfer Fee &mdash; {label}</td>{cells}</tr>')
+    # transfer fees now shown in their own dedicated Transfers table
+    # (transfers_section, built above) rather than as rows here.
     # title payouts -- static fees paid from the league pot to this season's
     # cup/shield winners, one-time revenue
     for _t in CURRENT_SEASON_TITLES:
@@ -1132,6 +1155,7 @@ for code, name, owners in TEAMS:
                 <tfoot>{finance_total_row}</tfoot>
               </table>
             </div>
+            {transfers_section}
             {cuts_section}
             {epl_payouts_section}
           </div>
@@ -1398,17 +1422,22 @@ pot_balance = (
 )
 _weeks_label = f"GW{synced_weeks[0]}" if len(synced_weeks) == 1 else f"GW{synced_weeks[0]}-{synced_weeks[-1]}" if synced_weeks else "no weeks yet"
 
+def _pot_row(label, note, amt):
+    sub = f'<br><span class="dim" style="font-size:11px;">{note}</span>' if note else ""
+    color = "var(--mv-crimson)" if amt < 0 else "inherit"
+    return f'<tr><td>{label}{sub}</td><td style="color:{color};">{money(amt)}</td></tr>'
+
 pot_rows_html = "".join(
-    f'<tr><td>{label}</td><td class="dim">{note}</td><td>{money(amt)}</td></tr>'
+    _pot_row(label, note, amt)
     for label, note, amt in [
-        ("Stadium Expansion Fees", "one-time, $50 per +50 capacity -- 11 teams expanded 2026-08-28", STADIUM_EXPANSION_FEES_TOTAL),
-        ("Transfer Levy", "one-time, 10% league cut of every transfer fee", transfer_levy_total),
+        ("Stadium Expansion Fees", "$50 per +50 capacity, one-time -- 11 teams expanded 2026-08-28", STADIUM_EXPANSION_FEES_TOTAL),
+        ("Transfer Levy", "10% league cut of every transfer fee, one-time", transfer_levy_total),
         ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
-        ("IRP Fees", "$4/injury-replacement pickup -- " + ", ".join(f"{c} {money(v)}" for c, v in irp_fees_by_code.items()), irp_fees_total),
-        ("Cut Dead Money", "Rulez 4.2(2): full remaining salary of any player cut after the 1st EPL game -- "
+        ("IRP Fees", "$6/injury-replacement pickup -- " + ", ".join(f"{c} {money(v)}" for c, v in irp_fees_by_code.items()), irp_fees_total),
+        ("Cut Dead Money", "Rulez 4.2(2), full remaining salary of any player cut after the 1st EPL game -- "
          + (", ".join(f"{code} {money(sum(c['salary'] for c in cuts))}" for code, cuts in _cuts_by_team.items()) or "none yet"),
          cut_dead_money_total),
-        ("EPL Transfer Payouts", "Rulez 4.2(5): 1/3 of real transfer fee to the team losing a player out of the EPL -- "
+        ("EPL Transfer Payouts", "Rulez 4.2(5), 1/3 of real transfer fee to the team losing a player out of the EPL -- "
          + (", ".join(f"{code} {money(sum(p['payout'] for p in payouts))}" for code, payouts in _epl_payouts_by_team.items()) or "none yet"),
          -epl_payouts_total),
         (f"Salaries Collected ({_weeks_label})", "weekly -- cup weeks like GW1 draw $0", salary_collected_total),
@@ -1525,26 +1554,22 @@ financials_body = f"""
           <div class="sub">League Pot ledger, then cost per team across all 3 forward seasons</div>
 
           <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">League Pot</h3>
+          <div class="dim" style="font-size:12px;margin-bottom:10px;">Where the pot comes from and where it's gone, itemized &mdash; live through {_weeks_label}</div>
           <div class="mv-table-scroll" style="margin-bottom:22px;">
             <table class="mv-table">
-              <thead><tr><th>Item</th><th>Note</th><th>Amount</th></tr></thead>
+              <thead><tr><th>Item</th><th>Amount</th></tr></thead>
               <tbody>
                 {pot_rows_html}
               </tbody>
               <tfoot>
-                <tr><td colspan="2">Pot Balance (through {_weeks_label})</td>
+                <tr><td>Pot Balance (through {_weeks_label})</td>
                   <td><strong style="color:{"var(--mv-gold)" if pot_balance >= 0 else "var(--mv-crimson)"}">{money(pot_balance)}</strong></td></tr>
               </tfoot>
             </table>
           </div>
-          <div class="sub" style="margin-bottom:18px;">Running ledger, not per-week -- stadium fees and the transfer levy land once, when they
-            happen; salaries and tickets are the only things that move every GW. Floored at $0 if tickets+payouts ever outrun what's come
-            in -- a negative pot means the league needs more funding sources, not a charge back to teams.</div>
 
           <h3 class="mv-chrome-text" style="font-size:16px;margin:4px 0 8px;">Mega Fund &amp; TV Bonus</h3>
-          <div class="sub">Whatever's left in the pot (above) is fully redistributed: 60% TV Bonus by standing, 40% postseason
-            (Champions League/Europa -- not shown here, no result to pay out yet). This is a live preview using today's standings and
-            pot balance, not a final payout -- it moves every time the pot or the standings do.</div>
+          <div class="dim" style="font-size:12px;margin-bottom:10px;">100% of the pot balance above, split 60% TV Bonus / 40% postseason &mdash; live "if the season ended today" figures</div>
           <div class="mv-stat-grid" style="margin-top:10px;margin-bottom:14px;">
             <div class="mv-stat"><div class="label">Mega Fund (today)</div><div class="value">{money(mega_fund_now)}</div></div>
             <div class="mv-stat"><div class="label">TV Bonus Pool (60%)</div><div class="value">{money(tv_bonus_pool_now)}</div></div>
@@ -1578,6 +1603,16 @@ financials_body = f"""
                 </tr>
               </tfoot>
             </table>
+          </div>
+
+          <div class="card mv-card" style="margin-top:8px;background:rgba(255,255,255,0.02);">
+            <h3 class="mv-chrome-text" style="font-size:13px;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.04em;">Notes</h3>
+            <ul style="margin:0;padding-left:18px;line-height:1.7;font-size:13px;color:var(--mv-ink-muted);">
+              <li>The League Pot is a running ledger, not a per-week reset &mdash; stadium fees, the transfer levy, and IRP fees land once, when they happen; salaries and tickets are the only lines that move every gameweek.</li>
+              <li>Pot Balance is floored at $0 for the Mega Fund calc below: TV Bonus is a payout, never a charge back to teams, so a negative running total just means the league needs more inflow before it pays out, not a bill sent to anyone.</li>
+              <li>Mega Fund &amp; TV Bonus is a live "if the season ended today" preview, not a final payout &mdash; it recomputes every rebuild from the current pot balance and current standings, and will keep shifting as more weeks are played. Postseason (Champions League/Europa) isn't shown here yet since there are no results to pay out.</li>
+              <li>Since TV Bonus + Postseason together redistribute 100% of the Mega Fund, and the TV Bonus split is weighted toward the top of the standings (40% to 1st, down to 0% for 12th), most individual teams will net-lose relative to what they paid into the pot across a season &mdash; that's the intended reward mechanism for finishing well, not money leaving the league. Nothing is destroyed: every dollar collected eventually pays back out to somebody.</li>
+            </ul>
           </div>
         </div>
 
