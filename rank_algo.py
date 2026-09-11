@@ -33,6 +33,31 @@ HOME_BONUS = 3.0
 AWAY_PENALTY = 3.0
 FORM_WEIGHT = 0.5
 
+# Capped 2026-09-11 per Jer: team strength and matchup (which includes the
+# home/away term) should never move a player's score by more than 5% of
+# their OWN fc26_overall, no matter how lopsided the underlying club-quality
+# gap is. Previously uncapped -- a huge quality gap between two clubs could
+# swing the raw composite by more than was ever intended as a "nudge."
+TEAM_STRENGTH_CAP_PCT = 0.05
+MATCHUP_CAP_PCT = 0.05
+
+# Real minutes played last real gameweek -- a deliberately heavy weight
+# (comparable to a big chunk of fc26_overall itself) since actual playing
+# time is the single best real-world signal for "will play again." Scales
+# linearly 0 (unused) to MINUTES_WEIGHT (a full 90 minutes). Added
+# 2026-09-11 per Jer.
+MINUTES_WEIGHT = 25.0
+FULL_MATCH_MINUTES = 90.0
+
+# A player who's still injury-flagged THIS week but came off the bench
+# (played some minutes without starting) LAST week is trending toward a
+# start soon -- boosted on top of whatever the raw minutes number alone
+# would give them, since a 15-minute cameo undersells how close they are
+# to a full recall. Caller (sync_megavision_rank.py) decides is_returning_sub
+# from injury_status (this week) + started_last_week/minutes_last_week
+# (last week); this function just applies the bonus.
+RETURNING_SUB_BONUS = 15.0
+
 BELL_CENTER = 50.0
 BELL_SPREAD = 15.0  # points per standard deviation
 
@@ -43,17 +68,33 @@ GATE_OUT = 0.15
 
 
 def raw_composite(fc26_overall, club_avg_fc26, league_avg_fc26,
-                   opponent_avg_fc26, is_home, player_score, position_avg_score):
+                   opponent_avg_fc26, is_home, player_score, position_avg_score,
+                   minutes_last_week=None, is_returning_sub=False):
     """One player's pre-normalization score. All the _avg_ inputs are
-    already computed across the pool by the caller (see sync_megavision_rank.py)."""
+    already computed across the pool by the caller (see sync_megavision_rank.py).
+    minutes_last_week/is_returning_sub are optional so existing callers
+    that don't have that data yet still work (falls back to no bonus)."""
     team_strength_bonus = (club_avg_fc26 - league_avg_fc26) * TEAM_STRENGTH_WEIGHT
+    team_strength_cap = fc26_overall * TEAM_STRENGTH_CAP_PCT
+    team_strength_bonus = max(-team_strength_cap, min(team_strength_cap, team_strength_bonus))
+
     matchup_bonus = (league_avg_fc26 - opponent_avg_fc26) * MATCHUP_OPPONENT_WEIGHT if opponent_avg_fc26 is not None else 0.0
     if is_home is True:
         matchup_bonus += HOME_BONUS
     elif is_home is False:
         matchup_bonus -= AWAY_PENALTY
+    matchup_cap = fc26_overall * MATCHUP_CAP_PCT
+    matchup_bonus = max(-matchup_cap, min(matchup_cap, matchup_bonus))
+
     form_bonus = (player_score - position_avg_score) * FORM_WEIGHT if player_score is not None and position_avg_score is not None else 0.0
-    return fc26_overall + team_strength_bonus + matchup_bonus + form_bonus
+
+    minutes_bonus = 0.0
+    if minutes_last_week is not None:
+        minutes_bonus = min(1.0, max(0.0, minutes_last_week) / FULL_MATCH_MINUTES) * MINUTES_WEIGHT
+    if is_returning_sub:
+        minutes_bonus += RETURNING_SUB_BONUS
+
+    return fc26_overall + team_strength_bonus + matchup_bonus + form_bonus + minutes_bonus
 
 
 def bell_curve(raw_values):
@@ -139,11 +180,13 @@ def compute_ranks(players):
     """players: list of dicts, each with raw_composite inputs already
     resolved to keys: fc26_overall, club_avg_fc26, league_avg_fc26,
     opponent_avg_fc26, is_home, score, position_avg_score, ffs_start,
-    ffs_doubt, is_out. Returns a parallel list of final 0-100 scores."""
+    ffs_doubt, is_out, minutes_last_week, is_returning_sub. Returns a
+    parallel list of final 0-100 scores."""
     raws = [
         raw_composite(
             p["fc26_overall"], p["club_avg_fc26"], p["league_avg_fc26"],
             p["opponent_avg_fc26"], p["is_home"], p["score"], p["position_avg_score"],
+            p.get("minutes_last_week"), p.get("is_returning_sub", False),
         )
         for p in players
     ]

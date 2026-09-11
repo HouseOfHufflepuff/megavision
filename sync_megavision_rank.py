@@ -63,7 +63,8 @@ def sync(week=None):
 
     cur.execute(
         "SELECT p.player_name, p.real_club, p.fantrax_position, p.fc26_overall, "
-        "g.score, g.injury_status, g.ffs_start, g.ffs_doubt, g.ffs_negative_mention "
+        "g.score, g.injury_status, g.ffs_start, g.ffs_doubt, g.ffs_negative_mention, "
+        "g.minutes_last_week, g.started_last_week "
         "FROM epl_players p JOIN player_gameweek g ON g.player_name=p.player_name AND g.real_club=p.real_club "
         "WHERE g.gameweek=? AND p.fc26_overall IS NOT NULL",
         (week,),
@@ -114,6 +115,13 @@ def sync(week=None):
         opp_avg = opponent_avg(club)
         is_out = bool(r["injury_status"]) or bool(r["ffs_negative_mention"] and not r["ffs_doubt"])
         is_out_by_row.append(is_out)
+        # Returning-sub boost: still injury-flagged THIS week, but played
+        # some minutes without starting LAST week -- eased back via a
+        # cameo, trending toward a start rather than a fresh knock.
+        minutes_lw = r["minutes_last_week"]
+        is_returning_sub = bool(
+            r["injury_status"] and minutes_lw is not None and minutes_lw > 0 and not r["started_last_week"]
+        )
         inputs.append({
             "fc26_overall": r["fc26_overall"],
             "club_avg_fc26": club_avg_fc26.get(club, league_avg_fc26),
@@ -125,6 +133,8 @@ def sync(week=None):
             "ffs_start": r["ffs_start"],
             "ffs_doubt": r["ffs_doubt"],
             "is_out": is_out,
+            "minutes_last_week": minutes_lw,
+            "is_returning_sub": is_returning_sub,
         })
 
     ranks = rank_algo.compute_ranks(inputs)

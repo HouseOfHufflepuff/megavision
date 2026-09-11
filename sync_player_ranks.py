@@ -30,14 +30,19 @@ Run:
 `week` is the displayed GW number (defaults to the earliest week in the
 Fantrax schedule -- see matchday_email.py's identical convention).
 """
+import json
 import sys
 import unicodedata
+import urllib.request
 from datetime import datetime, timezone
 
 import fantrax_live as fl
 import fc26_ratings as fc26
 import ffs_scrape
+import sync_fpl_stats as fpl
 from db import connect
+
+LIVE_EVENT_URL = "https://fantasy.premierleague.com/api/event/{event}/live/"
 
 now = datetime.now(timezone.utc).isoformat()
 
@@ -97,6 +102,27 @@ def match_fc26(fantrax_name, fantrax_pos, fc26_idx):
     return max(pool, key=lambda c: c["overall"])
 
 
+def fetch_minutes_last_week(week):
+    """{element_id: {"minutes":.., "starts":..}} from FPL's own live event
+    data for the real gameweek before this one. Mega's own week numbering
+    runs one ahead of FPL's real event numbering -- Mega GW1 was the cup
+    week (Community Shield/Super Cup/FA Cup), not a real PL round -- so
+    "last week" for Mega week W is FPL event W-2. Confirmed by cross-
+    checking FPL's bootstrap-static `events` (event 3 marked finished/
+    is_current while Mega was on GW4, event 4 marked is_next while Mega
+    was on GW5)."""
+    fpl_event = week - 2
+    if fpl_event < 1:
+        return {}
+    req = urllib.request.Request(LIVE_EVENT_URL.format(event=fpl_event), headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+    except Exception:
+        return {}
+    return {e["id"]: {"minutes": e["stats"]["minutes"], "starts": e["stats"]["starts"]} for e in data.get("elements", [])}
+
+
 def build_ffs_index(ffs_data):
     """club code -> {folded_name: 'lineup'|'out'|'doubt'}, plus raw news text."""
     idx = {}
@@ -134,6 +160,12 @@ def sync(week=None):
             games_by_week.setdefault(g["week"], []).append(g)
         week = min(games_by_week)
     print(f"Building for gameweek {week}...", file=sys.stderr)
+
+    print("Fetching FPL live minutes for last week...", file=sys.stderr)
+    minutes_by_id = fetch_minutes_last_week(week)
+    fpl_elements = fpl.fetch_elements()
+    fpl_lookup = fpl.build_lookup(fpl_elements)
+    print(f"  {len(minutes_by_id)} players with minutes data from FPL event {week - 2}.", file=sys.stderr)
 
     conn = connect()
     cur = conn.cursor()
@@ -173,15 +205,21 @@ def sync(week=None):
         ffs_positive = 1 if pos_mention and not ffs_negative else 0
         ffs_negative = 1 if ffs_negative or neg_mention else 0
 
+        name_parts = name.split()
+        fpl_el = fpl.match(fpl_lookup, name_parts[-1], name_parts[0][:1] if name_parts else None, club_code)
+        minutes_last_week = minutes_by_id.get(fpl_el["id"], {}).get("minutes") if fpl_el else None
+
         cur.execute(
             "INSERT INTO player_gameweek (player_name, real_club, gameweek, score, injury_status, "
-            "started_last_week, ffs_start, ffs_positive_mention, ffs_negative_mention, ffs_doubt, updated_at) "
-            "VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(player_name, real_club, gameweek) DO UPDATE SET "
+            "started_last_week, ffs_start, ffs_positive_mention, ffs_negative_mention, ffs_doubt, "
+            "minutes_last_week, updated_at) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(player_name, real_club, gameweek) DO UPDATE SET "
             "score=excluded.score, injury_status=excluded.injury_status, started_last_week=excluded.started_last_week, "
             "ffs_start=excluded.ffs_start, ffs_positive_mention=excluded.ffs_positive_mention, "
-            "ffs_negative_mention=excluded.ffs_negative_mention, ffs_doubt=excluded.ffs_doubt, updated_at=excluded.updated_at",
+            "ffs_negative_mention=excluded.ffs_negative_mention, ffs_doubt=excluded.ffs_doubt, "
+            "minutes_last_week=excluded.minutes_last_week, updated_at=excluded.updated_at",
             (name, club_code, week, score, injuries, started_last_week,
-             ffs_start, ffs_positive, ffs_negative, ffs_doubt, now),
+             ffs_start, ffs_positive, ffs_negative, ffs_doubt, minutes_last_week, now),
         )
         n_gw += 1
 

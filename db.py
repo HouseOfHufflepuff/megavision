@@ -194,6 +194,7 @@ CREATE TABLE IF NOT EXISTS player_gameweek (
     ffs_positive_mention INTEGER,  -- 0/1, favorable keyword hit in FFS's club news blurb
     ffs_negative_mention INTEGER,  -- 0/1, unfavorable keyword hit (also set for Out/Doubt)
     ffs_doubt INTEGER,             -- 0/1, in FFS's fitness-doubt list
+    minutes_last_week INTEGER,     -- real minutes played, FPL live event data for the prior real gameweek
     megavision_rank REAL,          -- 0-100 projection score, see sync_megavision_rank.py
     start_likelihood REAL,         -- 0-100, sums to 100 within (real_club, fantrax_position), see rank_algo.start_likelihoods
     updated_at TEXT NOT NULL,
@@ -320,6 +321,8 @@ def connect():
         conn.execute("ALTER TABLE player_gameweek ADD COLUMN megavision_rank REAL")
     if "start_likelihood" not in existing_pgw:
         conn.execute("ALTER TABLE player_gameweek ADD COLUMN start_likelihood REAL")
+    if "minutes_last_week" not in existing_pgw:
+        conn.execute("ALTER TABLE player_gameweek ADD COLUMN minutes_last_week INTEGER")
     conn.commit()
     return conn
 
