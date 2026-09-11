@@ -127,17 +127,43 @@ def target_week(explicit, sess):
 
 def fetch_rank(conn, name, week):
     row = conn.execute(
-        "SELECT g.megavision_rank FROM epl_players p JOIN player_gameweek g "
+        "SELECT g.megavision_rank, g.start_likelihood, g.ffs_start, g.ffs_doubt, g.injury_status "
+        "FROM epl_players p JOIN player_gameweek g "
         "ON g.player_name=p.player_name AND g.real_club=p.real_club "
         "WHERE p.player_name=? AND g.gameweek=?", (name, week),
     ).fetchone()
-    return row[0] if row else None
+    if not row:
+        return None, None, None
+    rank, likelihood, ffs_start, ffs_doubt, injury = row
+    tag = "OUT" if injury and "out" in injury.lower() else ("DOUBT" if ffs_doubt else ("START" if ffs_start else "BENCH"))
+    return rank, likelihood, tag
 
 
 def fetch_categories(conn, code):
     return dict(conn.execute(
         "SELECT player_name, category FROM team_player_wages WHERE team_code=? AND season='26/27'", (code,)
     ).fetchall())
+
+
+def fetch_age(conn, name):
+    row = conn.execute("SELECT age FROM epl_players WHERE player_name=?", (name,)).fetchone()
+    return row[0] if row and row[0] is not None else None
+
+
+# A player counts as "youth" for the 25%-better gate if they're 23 or
+# younger AND don't already have a real multi-year/committed contract on
+# this team -- age alone isn't enough (Tzolis and Elliott are both 23/22
+# but already promoted with real 3-year deals; that decision's made, this
+# gate is about NOT yet spending a start on someone unproven). Broadened
+# 2026-09-11 per Jer: this was previously only checking the narrow Rulez
+# "held rights, never rostered" case and missed Bergvall/Tel/Kostoulas --
+# all young single-year "drafted" picks already sitting on the Jr roster,
+# which is exactly the kind of unproven player this gate exists for.
+COMMITTED_CATEGORIES = {"kept", "youth_players", "youth_legend", "irp"}
+
+
+def is_youth(age, category):
+    return age is not None and age <= 23 and category not in COMMITTED_CATEGORIES
 
 
 def fetch_start_count(conn, code, name):
@@ -174,11 +200,13 @@ def fetch_youth_candidates(conn, youth_by_code, elements, lookup, code, week, ex
         pos = (r["pos"] or "").strip()
         if pos not in ("GK", "D", "M", "F"):
             continue
-        rank = fetch_rank(conn, f'{el["first_name"]} {el["second_name"]}', week)
+        full_name = f'{el["first_name"]} {el["second_name"]}'
+        rank, likelihood, tag = fetch_rank(conn, full_name, week)
         out.append({
-            "name": f'{el["first_name"]} {el["second_name"]}', "sheet_name": r["player"],
+            "name": full_name, "sheet_name": r["player"],
             "pos": pos, "club": el.get("club_short"), "age": age, "rank": rank,
-            "starts": fetch_start_count(conn, code, f'{el["first_name"]} {el["second_name"]}'),
+            "likelihood": likelihood, "tag": tag,
+            "starts": fetch_start_count(conn, code, full_name),
         })
     return out
 
@@ -197,21 +225,33 @@ def build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr):
 
     pool_by_pos = {"GK": [], "D": [], "M": [], "F": []}
     for p in active_roster + other_roster:
+        rank, likelihood, tag = fetch_rank(conn, p["name"], week)
+        age = fetch_age(conn, p["name"])
+        category = categories.get(p["name"], "?")
         pool_by_pos.setdefault(p["pos"], []).append({
-            "name": p["name"], "pos": p["pos"], "rank": fetch_rank(conn, p["name"], week),
-            "category": categories.get(p["name"], "?"), "scorerId": p["scorerId"],
-            "on_active": p in active_roster, "is_youth_candidate": False,
+            "name": p["name"], "pos": p["pos"], "rank": rank, "likelihood": likelihood, "tag": tag,
+            "category": category, "scorerId": p["scorerId"], "age": age,
+            "on_active": p in active_roster, "source": "active" if p in active_roster else "other",
+            # already on the active roster -> not a NEW start decision, don't re-gate them each week
+            "is_youth_candidate": is_youth(age, category) and p not in active_roster,
+            "starts": fetch_start_count(conn, code, p["name"]) if is_youth(age, category) else 0,
         })
     for c in youth_candidates:
         pool_by_pos.setdefault(c["pos"], []).append({
-            "name": c["name"], "pos": c["pos"], "rank": c["rank"], "category": "unpromoted_youth",
-            "scorerId": None, "on_active": False, "is_youth_candidate": True,
+            "name": c["name"], "pos": c["pos"], "rank": c["rank"], "likelihood": c["likelihood"], "tag": c["tag"],
+            "category": "unpromoted_youth",
+            "scorerId": None, "on_active": False, "source": "held_rights", "is_youth_candidate": True,
             "starts": c["starts"], "club": c["club"], "age": c["age"],
         })
 
-    slots_needed = {}
+    # Both goalkeepers always ride together on whichever team (Sr/Jr) is
+    # active this week -- there's no competitive GK slot in this league,
+    # Rulez auto-uses whichever of the two scored higher. Every other
+    # position keeps the active roster's current slot count.
+    slots_needed = {"GK": 2}
     for p in active_roster:
-        slots_needed[p["pos"]] = slots_needed.get(p["pos"], 0) + 1
+        if p["pos"] != "GK":
+            slots_needed[p["pos"]] = slots_needed.get(p["pos"], 0) + 1
 
     plan = {}
     notes = []
@@ -255,6 +295,7 @@ def build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr):
     return {
         "code": code, "week": week, "sr": sr, "active_id": active_id, "other_id": other_id,
         "active_roster": active_roster, "other_roster": other_roster, "plan": plan, "notes": notes,
+        "pool_by_pos": pool_by_pos,
     }
 
 
@@ -280,11 +321,35 @@ def diff_moves(result):
     return moves
 
 
-def render_report(result, moves):
+def render_report(result, moves, detailed=False):
     code, week, sr = result["code"], result["week"], result["sr"]
     lines = [f'=== {TEAM_FULL_NAME.get(code, code)} ({code}) -- GW{week}, {"Sr" if sr else "Jr"} week ===']
     adds = [m for m in moves if m["action"] == "add"]
     drops = [m for m in moves if m["action"] == "drop"]
+
+    if detailed:
+        picked_names = {p["name"] for players in result["plan"].values() for p in players}
+        for pos in ("GK", "D", "M", "F"):
+            pool = result["pool_by_pos"].get(pos, [])
+            if not pool:
+                continue
+            lines.append(f"  --- {pos} ---")
+            ordered = sorted(pool, key=lambda p: p["rank"] if p["rank"] is not None else -1, reverse=True)
+            for p in ordered:
+                rank_s = f'{p["rank"]:.1f}' if p["rank"] is not None else "  no data"
+                like_s = f'{p["likelihood"]:.1f}%' if p.get("likelihood") is not None else "n/a"
+                tag = p.get("tag") or ""
+                pick_mark = "PICKED" if p["name"] in picked_names else "      "
+                cat = p.get("category", "")
+                age_s = f'age {p["age"]}' if p.get("age") is not None else "age ?"
+                youth_s = " [YOUTH]" if p["is_youth_candidate"] else ""
+                starts_s = f'  ({p["starts"]}/{YOUTH_FREE_STARTS} starts)' if p["is_youth_candidate"] else ""
+                lines.append(
+                    f'    [{pick_mark}] {p["name"]:26s} rank={rank_s:>7s}  likelihood={like_s:>6s}  {tag:5s}  '
+                    f'{p["source"]:11s} {cat:16s} {age_s}{youth_s}{starts_s}'
+                )
+
+    lines.append("  -- moves --")
     if not adds and not drops:
         lines.append("  No changes -- current active roster is already the best legal lineup available.")
     for m in adds:
@@ -330,6 +395,62 @@ def apply_moves(sess, result, moves):
     return log
 
 
+def render_rosters(result, conn):
+    code = result["code"]
+    lines = [f'=== {TEAM_FULL_NAME.get(code, code)} ({code}) -- current live Fantrax rosters ===']
+    for label, roster in (("Sr", result["active_roster"] if result["sr"] else result["other_roster"]),
+                            ("Jr", result["other_roster"] if result["sr"] else result["active_roster"])):
+        lines.append(f'  --- {label} roster ({len(roster)} players) ---')
+        by_pos = {}
+        for p in roster:
+            by_pos.setdefault(p["pos"], []).append(p)
+        for pos in ("GK", "D", "M", "F"):
+            for p in sorted(by_pos.get(pos, []), key=lambda x: x["name"]):
+                rank, likelihood, tag = fetch_rank(conn, p["name"], result["week"])
+                age = fetch_age(conn, p["name"])
+                rank_s = f'{rank:.1f}' if rank is not None else "no data"
+                lines.append(f'    {pos:3s} {p["name"]:26s} age {age if age is not None else "?":<4} rank={rank_s:>7s}  {tag or ""}')
+    return "\n".join(lines)
+
+
+METHODOLOGY = """\
+=== How MEGAVISION Rank is calculated (rank_algo.py) ===
+
+1. RAW COMPOSITE = FC26 overall rating, plus three small context bonuses:
+     + team strength:   (this club's avg FC26 overall - league avg) * 0.4
+     + matchup:         (league avg FC26 - this week's opponent avg FC26) * 0.5
+                         + 3.0 if home, - 3.0 if away
+     + current form:    (this player's score so far - position average) * 0.5
+   Each bonus is small relative to overall (talent stays the dominant signal).
+
+2. BELL CURVE -- the raw composite is standardized (z-score) across every
+   player in the pool that gameweek, then mapped onto 0-100 centered at 50.
+   Most players cluster in the middle; the 90s require being several
+   standard deviations above the field, not just "a good number."
+
+3. START-CERTAINTY GATE -- multiplies the bell-curve score:
+     x1.00 if fantasyfootballscout.co.uk has them a clean, undoubted starter
+     x0.75 if they're starting but FFS has a fitness doubt
+     x0.45 if FFS doesn't have them starting at all
+     x0.15 if they're outright ruled out
+   This is why a nailed-on average player can outrank a star with any
+   doubt attached -- start certainty is a hard gate, not just a nudge.
+
+START LIKELIHOOD is a separate number (not part of Rank): within each real
+club's own position group, an exponential weighting of FC26 overall,
+multiplied x5 for a clean FFS start, x2.5 for a doubtful start, x1 for
+bench, x0.1 for out -- then normalized to sum to 100% across that position
+group at that one real club. It estimates "will they actually play," not
+"how good are they if they do."
+
+YOUTH GATE (roster_manager.py, not rank_algo's own score) -- separate from
+the two above: a player 23-or-younger without a real multi-year contract
+can only be newly added to the active lineup if their Rank clears 25%
+above the weakest player they'd replace, and stops being eligible after 4
+tracked starts until promoted.
+"""
+
+
 def build_email_body(result, moves):
     code = result["code"]
     lines = [f'MegaBot ran roster management for {TEAM_FULL_NAME.get(code, code)} ahead of GW{result["week"]} '
@@ -355,8 +476,18 @@ def main():
     args = sys.argv[1:]
     write = "--write" in args
     send_email = "--email" in args
-    week_args = [a for a in args if not a.startswith("--")]
-    week_arg = int(week_args[0]) if week_args else None
+    detailed = "--detail" in args or "--detailed" in args
+    team_filter = None
+    positional = []
+    for a in args:
+        if a.startswith("--"):
+            continue
+        if a.upper() in SUBSCRIBED:
+            team_filter = a.upper()
+        else:
+            positional.append(a)
+    teams = [team_filter] if team_filter else SUBSCRIBED
+    week_arg = int(positional[0]) if positional else None
 
     sess = fl._session()
     week = target_week(week_arg, sess)
@@ -373,11 +504,17 @@ def main():
     wb = common.fetch_live_workbook()
     youth_by_code = common.fetch_youth(wb)
 
+    if detailed:
+        print(METHODOLOGY)
+
     conn = connect()
-    for code in SUBSCRIBED:
+    for code in teams:
         result = build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr)
         moves = diff_moves(result)
-        print(render_report(result, moves))
+        if detailed:
+            print(render_rosters(result, conn))
+            print()
+        print(render_report(result, moves, detailed=detailed))
         print()
 
         if write:
