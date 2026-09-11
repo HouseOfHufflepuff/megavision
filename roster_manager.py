@@ -51,14 +51,28 @@ from db import connect
 now = datetime.now(timezone.utc).isoformat()
 
 SUBSCRIBED = ["HUF", "TTS", "POW", "NAC"]
-TEAM_FULL_NAME = {"HUF": "House of Hufflepuff", "TTS": "Thottenham Thotspur",
-                   "POW": "Battersea Power Bottoms", "NAC": "NFC Andover City"}
-TEAM_OWNER_EMAILS = {
-    "HUF": ["ahrens@gmail.com"],
-    "TTS": ["kolaughlin@gmail.com"],
-    "POW": ["samrufer@gmail.com", "jeffertz@gmail.com"],
-    "NAC": ["tuffer11@gmail.com"],
+TEAM_FULL_NAME = {
+    "FAV": "5th Ave Argyle", "POW": "Battersea Power Bottoms", "CRG": "CRG McGovern",
+    "DU": "Divided United", "HUF": "House of Hufflepuff", "NAC": "NFC Andover City",
+    "QFC": "Quidpool FC", "REN": "Real News", "BHB": "The Bookhouse Boys",
+    "TTS": "Thottenham Thotspur", "WTF": "What The FC", "ASS": "Wholeassed United FC",
 }
+TEAM_OWNER_EMAILS = {
+    "FAV": ["jweathermanjr@gmail.com"],
+    "POW": ["samrufer@gmail.com", "jeffertz@gmail.com"],
+    "CRG": ["caseymcgovern@gmail.com"],
+    "DU": ["chrisgauron@gmail.com"],
+    "HUF": ["ahrens@gmail.com"],
+    "NAC": ["tuffer11@gmail.com"],
+    "QFC": ["erikjohnsonmn@gmail.com"],
+    "REN": ["reidfoster80@gmail.com"],
+    "BHB": ["molaughlin@gmail.com"],
+    "TTS": ["kolaughlin@gmail.com"],
+    "WTF": ["erikaeolson@gmail.com"],
+    "ASS": ["kirkwalton@gmail.com", "dan.hinrichs@gmail.com"],
+}
+ALL_TEAMS = list(TEAM_FULL_NAME.keys())
+NOT_SUBSCRIBED = [c for c in ALL_TEAMS if c not in SUBSCRIBED]
 
 YOUTH_CUTOFF = date(2026, 8, 1)  # Rulez: 23 or younger at Aug 1 to be a selectable Youth Player
 YOUTH_FREE_STARTS = rank_algo.YOUTH_FREE_STARTS
@@ -137,6 +151,48 @@ def fetch_rank(conn, name, week):
     rank, likelihood, ffs_start, ffs_doubt, injury = row
     tag = "OUT" if injury and "out" in injury.lower() else ("DOUBT" if ffs_doubt else ("START" if ffs_start else "BENCH"))
     return rank, likelihood, tag
+
+
+def fetch_prev_rank(conn, name, week):
+    """Last gameweek's MEGAVISION Rank for this player, or None if it
+    wasn't recorded. Caller subtracts from the current rank to get the
+    +/- (see build_rank.py's identical +/- Last Wk column) -- kept as a
+    separate lookup rather than doing the subtraction here since callers
+    already have the current rank in hand and it avoids a second query."""
+    row = conn.execute(
+        "SELECT g.megavision_rank FROM epl_players p JOIN player_gameweek g "
+        "ON g.player_name=p.player_name AND g.real_club=p.real_club "
+        "WHERE p.player_name=? AND g.gameweek=?", (name, week - 1),
+    ).fetchone()
+    return row[0] if row else None
+
+
+def get_opponent(sess, code, week):
+    """(opponent_code, is_home) for this team's real fixture this week, or
+    (None, None) if no game found (a bye or a cup-bracket week)."""
+    for g in fl.fetch_schedule(sess):
+        if g["week"] != week:
+            continue
+        if g["home"] == code:
+            return g["away"], True
+        if g["away"] == code:
+            return g["home"], False
+    return None, None
+
+
+def predicted_score(roster):
+    """Sum of the best-XI (league's real GK+3D+4M+3F shape) by each
+    player's own real fpts-to-date -- same methodology as
+    matchday_email.py's team_predicted_score, reimplemented here to avoid
+    a cross-import (matchday_email.py isn't built to be imported, it's a
+    standalone report script). Not a betting line -- each team's own top
+    scorers so far, the closest same-shape estimate we have real data for."""
+    formation = {"GK": 1, "D": 3, "M": 4, "F": 3}
+    total = 0.0
+    for pos, slots in formation.items():
+        candidates = sorted((p for p in roster if p["pos"] == pos), key=lambda p: -(p.get("fpts") or 0))
+        total += sum(p.get("fpts") or 0 for p in candidates[:slots])
+    return round(total, 1)
 
 
 def fetch_categories(conn, code):
@@ -363,35 +419,44 @@ def render_report(result, moves, detailed=False):
 
 
 def apply_moves(sess, result, moves):
-    """NOTE: write mode has never been run -- this is unexercised. A
-    brand-new held-youth-rights pickup has no scorerId in our own data
-    (never been on any Mega roster), so that case needs a live free-agent
-    pool lookup (fl.fetch_full_player_pool) before it can be claimed;
-    logged as a clear failure here rather than guessed at."""
+    """Drops ALL players first, then claims ALL replacements -- same
+    ordering as the proven-working swap_sr_jr.py, since claiming a
+    replacement before its counterpart is dropped could transiently push a
+    position over its legal slot count. A brand-new held-youth-rights
+    pickup has no scorerId in our own data (never been on any Mega
+    roster), so that case needs a live free-agent pool lookup
+    (fl.fetch_full_player_pool) before it can be claimed; logged as a
+    clear failure here rather than guessed at."""
     active_id, other_id = result["active_id"], result["other_id"]
     other_by_scorer = {p["name"]: p["scorerId"] for p in result["other_roster"]}
     active_by_scorer = {p["name"]: p["scorerId"] for p in result["active_roster"]}
     log = []
+
     for m in moves:
         if m["action"] == "drop":
             sid = active_by_scorer.get(m["name"])
             ok, err = sfk.do_drop(sess, active_id, sid) if sid else (False, "no scorerId")
             log.append(("drop", result["code"], m["name"], ok, err))
-        elif m["action"] == "add":
-            claim_sid = other_by_scorer.get(m["name"]) if m["from"].startswith("other roster") else None
-            if m["from"].startswith("other roster") and claim_sid:
+        elif m["action"] == "add" and m["from"].startswith("other roster"):
+            claim_sid = other_by_scorer.get(m["name"])
+            if claim_sid:
                 ok, err = sfk.do_drop(sess, other_id, claim_sid)
                 log.append(("drop-from-other", result["code"], m["name"], ok, err))
-            if not claim_sid:
-                log.append(("claim", result["code"], m["name"], False,
-                             "no scorerId -- new held-youth-rights pickup needs a live free-agent pool lookup, not implemented"))
-                continue
-            info, err = sfk.get_claim_defaults(sess, active_id, claim_sid)
-            if err or not info:
-                log.append(("claim", result["code"], m["name"], False, err or "no claim info"))
-                continue
-            ok, cerr = sfk.do_claim(sess, active_id, claim_sid, info)
-            log.append(("claim", result["code"], m["name"], ok, cerr))
+
+    for m in moves:
+        if m["action"] != "add":
+            continue
+        claim_sid = other_by_scorer.get(m["name"]) if m["from"].startswith("other roster") else None
+        if not claim_sid:
+            log.append(("claim", result["code"], m["name"], False,
+                         "no scorerId -- new held-youth-rights pickup needs a live free-agent pool lookup, not implemented"))
+            continue
+        info, err = sfk.get_claim_defaults(sess, active_id, claim_sid)
+        if err or not info:
+            log.append(("claim", result["code"], m["name"], False, err or "no claim info"))
+            continue
+        ok, cerr = sfk.do_claim(sess, active_id, claim_sid, info)
+        log.append(("claim", result["code"], m["name"], ok, cerr))
     return log
 
 
@@ -411,6 +476,52 @@ def render_rosters(result, conn):
                 rank_s = f'{rank:.1f}' if rank is not None else "no data"
                 lines.append(f'    {pos:3s} {p["name"]:26s} age {age if age is not None else "?":<4} rank={rank_s:>7s}  {tag or ""}')
     return "\n".join(lines)
+
+
+def score_sheet(result, conn):
+    """Proposed final Sr lineup and proposed Jr roster (after this week's
+    plan), each row: rank, +/- vs last week, start likelihood. This is
+    the exact table format shown for QA -- also embedded in the team
+    email so owners see the same numbers."""
+    sr_picks = [p for players in result["plan"].values() for p in players]
+    sr_names = {p["name"] for p in sr_picks}
+    combined = result["active_roster"] + result["other_roster"]
+    jr_players = [p for p in combined if p["name"] not in sr_names]
+
+    def rows_for(players_with_rank):
+        out = []
+        for pos in ("GK", "D", "M", "F"):
+            for p in sorted([x for x in players_with_rank if x["pos"] == pos], key=lambda x: -(x["rank"] or -1)):
+                out.append(p)
+        return out
+
+    def render(title, players):
+        lines = [title, f'{"Pos":4s}{"Player":27s}{"Rank":>7s}{"+/-":>8s}{"Start%":>8s}']
+        for p in players:
+            rank_s = f'{p["rank"]:.1f}' if p.get("rank") is not None else "no data"
+            delta = p.get("delta")
+            delta_s = f'{delta:+.1f}' if delta is not None else "n/a"
+            like_s = f'{p["likelihood"]:.1f}%' if p.get("likelihood") is not None else "n/a"
+            lines.append(f'{p["pos"]:4s}{p["name"]:27s}{rank_s:>7s}{delta_s:>8s}{like_s:>8s}')
+        return "\n".join(lines)
+
+    sr_rows = rows_for(sr_picks)  # already carry rank/likelihood from build_plan's pool entries
+    for p in sr_rows:
+        prev = fetch_prev_rank(conn, p["name"], result["week"])
+        p["delta"] = (p["rank"] - prev) if (p["rank"] is not None and prev is not None) else None
+
+    jr_rows = []
+    for p in jr_players:
+        rank, likelihood, _tag = fetch_rank(conn, p["name"], result["week"])
+        prev = fetch_prev_rank(conn, p["name"], result["week"])
+        delta = (rank - prev) if (rank is not None and prev is not None) else None
+        jr_rows.append({"name": p["name"], "pos": p["pos"], "rank": rank, "likelihood": likelihood, "delta": delta})
+    jr_rows = rows_for(jr_rows)
+
+    return (
+        render(f'PROPOSED SR LINEUP ({"Sr" if result["sr"] else "Jr"} week)', sr_rows)
+        + "\n\n" + render("PROPOSED JR (YOUTH) ROSTER", jr_rows)
+    )
 
 
 METHODOLOGY = """\
@@ -451,10 +562,13 @@ tracked starts until promoted.
 """
 
 
-def build_email_body(result, moves):
+def build_email_body(result, moves, conn, sess, executed=True):
     code = result["code"]
-    lines = [f'MegaBot ran roster management for {TEAM_FULL_NAME.get(code, code)} ahead of GW{result["week"]} '
-             f'({"Sr" if result["sr"] else "Jr"} week). Here\'s what changed and why:', ""]
+    week = result["week"]
+    verb = "made" if executed else "would make (opt in to have these run for real -- see footer)"
+    lines = [f'MegaBot ran roster management for {TEAM_FULL_NAME.get(code, code)} ahead of GW{week} '
+             f'({"Sr" if result["sr"] else "Jr"} week). Here\'s what it {verb}, and why:', ""]
+
     adds = [m for m in moves if m["action"] == "add"]
     drops = [m for m in moves if m["action"] == "drop"]
     if not adds and not drops:
@@ -465,8 +579,43 @@ def build_email_body(result, moves):
         lines.append(f'OUT: {m["name"]} ({m["pos"]})')
     if result["notes"]:
         lines.append("")
-        lines.append("Youth-selection detail (Rulez 4.1(6), 25%-better gate):")
+        lines.append(f"Youth-selection detail (Rulez 4.1(6), {YOUTH_MULT:.0%}-better gate):")
         lines.extend(result["notes"])
+
+    # Every youth actually on the proposed Sr roster, with their tracked
+    # start count against the 4-free-starts cap -- not just the ones added
+    # this week, since an owner needs to see the full picture to plan ahead.
+    sr_picks = [p for players in result["plan"].values() for p in players]
+    youth_on_sr = [p for p in sr_picks if p.get("is_youth_candidate") or p.get("category") == "unpromoted_youth"]
+    if youth_on_sr:
+        lines.append("")
+        lines.append("Youth players on this week's Sr roster -- starts used:")
+        for p in youth_on_sr:
+            n = fetch_start_count(conn, code, p["name"])
+            lines.append(f'  {p["name"]}: {n}/{YOUTH_FREE_STARTS} starts (5th start forces promotion)')
+
+    lines.append("")
+    lines.append(score_sheet(result, conn))
+
+    # Predicted score vs this week's real opponent, using each side's own
+    # best-XI by real fpts-to-date (see predicted_score()) -- not a rank
+    # score, a fantasy-points estimate, so the two sides are comparable.
+    opp_code, is_home = get_opponent(sess, code, week)
+    if opp_code:
+        # sr_picks (post-move) don't carry the real fpts field -- look it
+        # up from the pre-move rosters, which is where fpts actually lives.
+        fpts_by_name = {p["name"]: p.get("fpts", 0) for p in result["active_roster"] + result["other_roster"]}
+        my_roster_for_pred = [{"pos": p["pos"], "fpts": fpts_by_name.get(p["name"], 0)} for p in sr_picks]
+        my_pred = predicted_score(my_roster_for_pred)
+        opp_sr_id = fl.FANTRAX_TEAM_ID.get(opp_code) if result["sr"] else fl.JUNIOR_TEAM_ID.get(opp_code)
+        opp_roster = fl.fetch_full_roster(sess, opp_sr_id) if opp_sr_id else []
+        opp_pred = predicted_score(opp_roster)
+        outcome = "WIN" if my_pred > opp_pred else ("LOSS" if my_pred < opp_pred else "DRAW")
+        lines.append("")
+        lines.append(f'Predicted score vs {TEAM_FULL_NAME.get(opp_code, opp_code)} ({"home" if is_home else "away"}): '
+                     f'{my_pred:.1f} - {opp_pred:.1f} -- projected {outcome}')
+        lines.append("(best-XI by each side's own real fpts-to-date, not a betting line)")
+
     lines.append("")
     lines.append("-- MegaBot")
     return "\n".join(lines)
