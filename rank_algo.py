@@ -150,3 +150,37 @@ def compute_ranks(players):
     bells = bell_curve(raws)
     gates = [start_gate(p["ffs_start"], p["ffs_doubt"], p["is_out"]) for p in players]
     return [round(max(1.0, min(100.0, b * g)), 1) for b, g in zip(bells, gates)]
+
+
+# YOUTH START GATE -- an unpromoted "Youth Player" (Rulez 4.1(6): rights
+# already held via the Youth Draft, 23-or-younger, selectable off an EPL
+# roster without a contract) only gets 4 league starts before a 5th one
+# forces promotion -- a real cost (burns a roster decision, a multi-year
+# slot down the line). Benching an established, already-paid-for player to
+# spend one of those 4 starts should require a real edge, not a marginal
+# rank tick. Requiring the youth's MEGAVISION Rank to be at least 25%
+# better than the alternative makes that trade-off explicit instead of
+# silently letting the raw rank ordering decide it. Added 2026-09-11,
+# tuned to 25% on 2026-09-11 per Jer (initial ask was "at least 2x" --
+# revised down once we started building the roster_manager.py tool this
+# gates, "for the time being," i.e. expect this to keep moving).
+YOUTH_START_RANK_MULTIPLIER = 1.25
+
+# A youth player has 4 free league starts before the 5th forces promotion
+# (Rulez 4.1(6)). No counted-start tracker exists yet (Fantrax's own
+# "Games Started" stat is the player's real-world EPL appearances, not a
+# count of Mega top-10-counted weeks) -- this constant is the ceiling to
+# check a real tracker against once one exists, not itself a live count.
+YOUTH_FREE_STARTS = 4
+
+
+def should_start_youth(youth_rank, alternative_rank):
+    """True if an unpromoted youth's MEGAVISION Rank clears the 2x bar
+    over the best established alternative at the same slot. If there's no
+    established alternative to compare against (an empty roster spot),
+    pass alternative_rank=0 -- any youth rank clears that automatically."""
+    if youth_rank is None:
+        return False
+    if not alternative_rank:
+        return True
+    return youth_rank >= alternative_rank * YOUTH_START_RANK_MULTIPLIER

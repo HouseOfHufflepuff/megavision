@@ -2,22 +2,27 @@
 Builds the MEGAVISION Rank dataset: every 2026/27 EPL player, cross-referenced
 across three live sources for one gameweek --
 
+  - Fantrax (fantrax_live.py): the PRIMARY source of who's a current EPL
+    player and at which club/position -- live and roster-accurate.
   - FC 26 ratings (fc26_ratings.py): age, height, weight, overall, pace,
-    potential. Community CSV mirror, all leagues -- filtered here to this
-    season's real 20 EPL clubs (the CSV's own "Premier League" league_name
-    tag is unreliable: it also catches Ukraine's Premier League, and still
-    lists last season's relegated clubs).
-  - Fantrax (fantrax_live.py): position, % rostered across Fantrax
-    leagues, this gameweek's fantasy points, games started, injury status.
+    potential. Community CSV mirror, all leagues. Matched to the Fantrax
+    player by NAME ONLY, ignoring the CSV's own club field entirely -- it
+    lags real transfers (e.g. still listed a player at his OLD club weeks
+    after a real move), so requiring it to match Fantrax's live club was
+    silently dropping anyone the CSV hadn't caught up on yet. Position
+    (via FC26_POS_TO_BUCKET) is used only to disambiguate when a surname
+    matches more than one FC26 player, never to filter by club.
   - fantasyfootballscout.co.uk/team-news (ffs_scrape.py): predicted
     starting XI, Out list, fitness Doubts (with %), and a keyword read of
     the club's news blurb for a positive/negative mention flag.
 
-Player identity across all three is matched by folded last name + real
-club (see _fold/_club_code below) -- good enough at this scale, not
-airtight; a genuine ambiguous case (two same-surname players at the same
-club) would misattribute. No global player-ID space ties these sources
-together, so this is the best available join key.
+Player identity is matched by folded last name (see _fold below) --
+good enough at this scale, not airtight; a genuine ambiguous case (two
+same-surname, same-position players) would misattribute. No global
+player-ID space ties these sources together, so this is the best
+available join key. Fixed 2026-09-11 to drop the FC26-club filter after
+it silently excluded a just-transferred player (Christos Tzolis, still
+tagged to his old club in the CSV) from getting any rank score at all.
 
 Run:
     python3 sync_player_ranks.py [week]
@@ -36,29 +41,17 @@ from db import connect
 
 now = datetime.now(timezone.utc).isoformat()
 
-# This season's real 20 EPL clubs (FFS's own team-news dropdown, confirmed
-# against ffs_scrape.FFS_CODE_TO_CLUB) -> the FC 26 CSV's exact club_name
-# string, since the CSV's own "Premier League" tag over-matches (also
-# tags Ukraine's Premier League, and lags a season on relegation).
-CLUB_NAME_TO_CODE = {
-    "afc bournemouth": "BOU", "arsenal": "ARS", "aston villa": "AVL",
-    "brentford": "BRE", "brighton & hove albion": "BHA", "chelsea": "CHE",
-    "coventry city": "COV", "crystal palace": "CRY", "everton": "EVE",
-    "fulham fc": "FUL", "hull city": "HUL", "ipswich town": "IPS",
-    "leeds united": "LEE", "liverpool": "LIV", "manchester city": "MCI",
-    "manchester united": "MUN", "newcastle united": "NEW",
-    "nottingham forest": "NOT", "sunderland": "SUN", "tottenham hotspur": "TOT",
-}
-
-# EA FC's own position tokens -> our GK/D/M/F buckets, used as a fallback
-# when a player has no Fantrax match (so the Rank page can still place
-# every FC 26 player somewhere).
+# EA FC's own position tokens -> our GK/D/M/F buckets, used only to
+# disambiguate when a surname matches more than one FC 26 player -- never
+# to filter by club (the CSV's club field lags real transfers).
 FC26_POS_TO_BUCKET = {
     "GK": "GK",
     "CB": "D", "LB": "D", "RB": "D", "LWB": "D", "RWB": "D",
     "CDM": "M", "CM": "M", "CAM": "M", "LM": "M", "RM": "M",
     "LW": "F", "RW": "F", "CF": "F", "ST": "F",
 }
+
+FALLBACK_OVERALL = 50.0  # neutral middle-of-the-pack rating for a live Fantrax player with no FC26 match at all
 
 
 def _fold(s):
@@ -73,25 +66,35 @@ def fc26_bucket(positions_str):
     return None
 
 
-def build_fantrax_index(pool):
-    """folded last name -> [pool entries], for matching against FC 26."""
+def build_fc26_index(players):
+    """folded last-name token -> [fc26 rows]. Indexed under every token in
+    last_names (handles mononyms) so a Fantrax player's own last name
+    matches however FC26 recorded them."""
     idx = {}
-    for p in pool:
-        last = _fold(p["name"].split()[-1])
-        idx.setdefault(last, []).append(p)
+    for p in players:
+        for token in p["last_names"]:
+            idx.setdefault(token, []).append(p)
     return idx
 
 
-def match_fantrax(fc26_row, fantrax_idx):
-    last = _fold((fc26_row["short_name"] or fc26_row["full_name"]).split()[-1])
-    candidates = fantrax_idx.get(last, [])
+def match_fc26(fantrax_name, fantrax_pos, fc26_idx):
+    """Fantrax is the live/current source of truth for identity (name,
+    club, position) -- FC26 is matched to it by name only, disambiguated
+    by position when a surname is shared, never by club (see module
+    docstring for why matching on club silently dropped real players)."""
+    last = _fold(fantrax_name.split()[-1])
+    candidates = fc26_idx.get(last, [])
     if not candidates:
         return None
     if len(candidates) == 1:
         return candidates[0]
-    club_code = CLUB_NAME_TO_CODE.get(_fold(fc26_row["club"]))
-    same_club = [c for c in candidates if c["club"] == club_code]
-    return same_club[0] if same_club else candidates[0]
+    same_pos = [c for c in candidates if fc26_bucket(c["positions"]) == fantrax_pos]
+    if len(same_pos) == 1:
+        return same_pos[0]
+    pool = same_pos or candidates
+    # still ambiguous -- best-effort: highest-rated candidate, so a random
+    # lower-league same-surname player doesn't win over the real EPL one.
+    return max(pool, key=lambda c: c["overall"])
 
 
 def build_ffs_index(ffs_data):
@@ -112,14 +115,14 @@ def build_ffs_index(ffs_data):
 def sync(week=None):
     sess = fl._session()
 
-    print("Fetching FC 26 ratings (all leagues, filtering to this season's 20 EPL clubs)...", file=sys.stderr)
-    fc26_players = [p for p in fc26.fetch_all_players() if _fold(p["club"]) in CLUB_NAME_TO_CODE]
-    print(f"  {len(fc26_players)} EPL players in FC 26 data.", file=sys.stderr)
-
-    print("Fetching full Fantrax player pool (owned + free agents, all 4 positions)...", file=sys.stderr)
+    print("Fetching full Fantrax player pool (owned + free agents, all 4 positions) -- primary source of who's a current EPL player...", file=sys.stderr)
     fantrax_pool = fl.fetch_full_player_pool(sess)
-    fantrax_idx = build_fantrax_index(fantrax_pool)
     print(f"  {len(fantrax_pool)} Fantrax player rows.", file=sys.stderr)
+
+    print("Fetching FC 26 ratings (all leagues -- matched to Fantrax by name only, not club)...", file=sys.stderr)
+    fc26_players = fc26.fetch_all_players()
+    fc26_idx = build_fc26_index(fc26_players)
+    print(f"  {len(fc26_players)} FC26 players worldwide, indexed by surname.", file=sys.stderr)
 
     print("Scraping fantasyfootballscout.co.uk/team-news...", file=sys.stderr)
     ffs_data = ffs_scrape.fetch_and_parse()
@@ -134,13 +137,13 @@ def sync(week=None):
 
     conn = connect()
     cur = conn.cursor()
-    n_players, n_gw = 0, 0
+    n_players, n_gw, n_no_fc26 = 0, 0, 0
 
-    for p in fc26_players:
-        club_code = CLUB_NAME_TO_CODE[_fold(p["club"])]
-        fx = match_fantrax(p, fantrax_idx)
-        name = fx["name"] if fx else p["short_name"] or p["full_name"]
-        position = fx["pos"] if fx else fc26_bucket(p["positions"])
+    for fx in fantrax_pool:
+        name, club_code, position = fx["name"], fx["club"], fx["pos"]
+        p = match_fc26(name, position, fc26_idx)
+        if p is None:
+            n_no_fc26 += 1
 
         cur.execute(
             "INSERT INTO epl_players (player_name, real_club, age, height_cm, weight_kg, fc26_overall, "
@@ -149,15 +152,16 @@ def sync(week=None):
             "weight_kg=excluded.weight_kg, fc26_overall=excluded.fc26_overall, fc26_speed=excluded.fc26_speed, "
             "fc26_potential=excluded.fc26_potential, fantrax_position=excluded.fantrax_position, "
             "fantrax_ros_pct=excluded.fantrax_ros_pct, updated_at=excluded.updated_at",
-            (name, club_code, _int(p.get("age")), _int(p.get("height_cm")), _int(p.get("weight_kg")),
-             p["overall"], _float(p.get("pace")), p["potential"],
-             position, fx["ros_pct"] if fx else None, now),
+            (name, club_code,
+             _int(p.get("age")) if p else None, _int(p.get("height_cm")) if p else None, _int(p.get("weight_kg")) if p else None,
+             p["overall"] if p else FALLBACK_OVERALL, _float(p.get("pace")) if p else None, p["potential"] if p else None,
+             position, fx["ros_pct"], now),
         )
         n_players += 1
 
-        injuries = "; ".join(fx["injuries"]) if fx and fx["injuries"] else ""
-        started_last_week = 1 if fx and fx["games_started"] >= 1 else 0
-        score = fx["fpts"] if fx else None
+        injuries = "; ".join(fx["injuries"]) if fx["injuries"] else ""
+        started_last_week = 1 if fx["games_started"] >= 1 else 0
+        score = fx["fpts"]
 
         club_ffs = ffs_idx.get(club_code, {"names": {}, "news": ""})
         last = _fold(name.split()[-1])
@@ -183,7 +187,8 @@ def sync(week=None):
 
     conn.commit()
     conn.close()
-    print(f"Done: {n_players} epl_players rows, {n_gw} player_gameweek rows for GW{week}.")
+    print(f"Done: {n_players} epl_players rows, {n_gw} player_gameweek rows for GW{week} "
+          f"({n_no_fc26} with no FC26 match -- given fallback overall {FALLBACK_OVERALL}).")
     return week
 
 

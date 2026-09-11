@@ -280,6 +280,23 @@ CREATE TABLE IF NOT EXISTS epl_departure_payouts (
     updated_at TEXT NOT NULL,
     UNIQUE(team_code, player_name, season)
 );
+
+-- One row per gameweek an unpromoted "Youth Player" (Rulez 4.1(6)) is
+-- placed on a team's active Sr roster by roster_manager.py -- the running
+-- tally against the 4-free-starts-before-promotion cap. Only write-mode
+-- runs insert here; a read-only QA pass never touches this table. Starts
+-- from zero the week this table was created (2026-09-11) -- there's no
+-- retroactive record of who was already using free starts before this
+-- tool existed, so any youth already mid-count going in will undercount
+-- until that's reconciled by hand.
+CREATE TABLE IF NOT EXISTS youth_starts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,
+    gameweek INTEGER NOT NULL,
+    updated_at TEXT NOT NULL,
+    UNIQUE(team_code, player_name, gameweek)
+);
 """
 
 
