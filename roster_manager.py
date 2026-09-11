@@ -127,16 +127,36 @@ def is_sr_week(week):
     return week not in fa.NON_REGULAR_SEASON_WEEKS
 
 
+def _week_is_played(sess, w):
+    """A week's Gameweek table exists in Fantrax's schedule data before
+    it's actually played -- pre-populated with every score at a flat 0.0
+    placeholder -- so "played" can only mean at least one real, nonzero
+    score shows up in it, never just "the table exists." Real bug caught
+    2026-09-11: checking only "does fetch_gameweek_scores return anything"
+    treated that placeholder table as a finished week, skipping straight
+    to the week after the real current one."""
+    games = fl.fetch_gameweek_scores(sess, w)
+    return bool(games) and any(g["home_score"] or g["away_score"] for g in games)
+
+
 def target_week(explicit, sess):
+    """Next week after the last one with real, confirmed results.
+    Deliberately NOT "the first week with no table at all" -- Fantrax's
+    getStandings only keeps a rolling window of past Gameweek tables, so
+    an old, already-played week can come back completely empty once
+    enough weeks have passed (caught 2026-09-11: GW2 had real scores
+    early this season but returned 0 games once GW3-5 existed, which
+    would have made target_week wrongly report week 2 as still
+    unplayed). Scanning for the highest played week and adding 1 sidesteps
+    that ambiguity -- it only ever reads "has this appeared with a real
+    score," never "is this table present at all.\""""
     if explicit:
         return explicit
     games_by_week = {}
     for g in fl.fetch_schedule(sess):
         games_by_week.setdefault(g["week"], []).append(g)
-    for w in sorted(games_by_week):
-        if not fl.fetch_gameweek_scores(sess, w):
-            return w
-    return min(games_by_week)
+    last_played = max((w for w in games_by_week if _week_is_played(sess, w)), default=min(games_by_week) - 1)
+    return last_played + 1
 
 
 def fetch_rank(conn, name, week):
