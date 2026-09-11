@@ -75,6 +75,21 @@ POS_GROUP = {"F": "POS_701", "M": "POS_702", "D": "POS_703", "GK": "POS_704"}
 # Rulez tab: "Starting formation is GK + top 10 outfield scorers")
 FORMATION_SLOTS = {"GK": 1, "D": 3, "M": 4, "F": 3}
 
+# Fantrax spells Brentford's short code differently from every other
+# source in this codebase (FPL, FFS, our own CLUB_ALIASES tables all use
+# "BRE"). Found 2026-09-11: this silently broke FFS-start matching for
+# every Brentford player (ffs_scrape's club index is keyed "BRE", so a
+# "BRF" lookup always missed, defaulting to "not starting" and getting
+# crushed by rank_algo's start-certainty gate regardless of their real
+# predicted-lineup status). Normalized at the read site so every caller of
+# these fetch_* functions gets the same code everywhere else in the app.
+CLUB_CODE_FIX = {"BRF": "BRE"}
+
+
+def _club_code(scorer):
+    raw = scorer.get("teamShortName", "")
+    return CLUB_CODE_FIX.get(raw, raw)
+
 
 def fetch_position_leaders(sess, pos, limit=10):
     """Top-scoring owned (ALL_TAKEN) players at `pos` ("GK"/"D"/"M"/"F"),
@@ -101,7 +116,7 @@ def fetch_position_leaders(sess, pos, limit=10):
         except (KeyError, IndexError, TypeError, ValueError):
             fpts = 0.0
         out.append({
-            "name": scorer["name"], "real_club": scorer.get("teamShortName", ""),
+            "name": scorer["name"], "real_club": _club_code(scorer),
             "team_code": code, "team_owner_raw": team_cell.get("toolTip"), "fpts": fpts,
         })
     return out
@@ -144,7 +159,7 @@ def fetch_full_player_pool(sess, limit=400):
                     games_started = 0
                 injuries = [ic["tooltip"] for ic in (scorer.get("icons") or []) if ic.get("typeId") in INJURY_ICON_TYPE_IDS]
                 out.append({
-                    "name": scorer["name"], "pos": pos, "club": scorer.get("teamShortName", ""),
+                    "name": scorer["name"], "pos": pos, "club": _club_code(scorer),
                     "code": ALL_TEAM_ID_TO_CODE.get(team_cell.get("teamId")),
                     "ros_pct": ros_pct, "fpts": fpts, "fpg": fpg,
                     "games_started": games_started, "injuries": injuries,
@@ -363,7 +378,7 @@ def fetch_full_roster(sess, team_id):
             ]
             out.append({
                 "scorerId": sid, "name": scorer.get("name", "?"),
-                "pos": POSITION_MAP[pos_id], "club": scorer.get("teamShortName", ""),
+                "pos": POSITION_MAP[pos_id], "club": _club_code(scorer),
                 "fpts": fpts, "injuries": injuries,
             })
     return out

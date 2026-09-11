@@ -38,6 +38,17 @@ def fetch_rows(cur, week):
     return [dict(zip(cols, row)) for row in cur.fetchall()]
 
 
+def fetch_prev_ranks(cur, prev_week):
+    """(player_name, real_club) -> last week's megavision_rank, for the
+    week-over-week +/- shown next to Rank. None if that week was never
+    computed (e.g. the very first week this ever ran)."""
+    cur.execute(
+        "SELECT player_name, real_club, megavision_rank FROM player_gameweek WHERE gameweek=? AND megavision_rank IS NOT NULL",
+        (prev_week,),
+    )
+    return {(name, club): rank for name, club, rank in cur.fetchall()}
+
+
 def fetch_clubs(cur, week):
     cur.execute(
         "SELECT real_club, opponent, is_home, played, win, draw, loss, league_position, "
@@ -77,6 +88,16 @@ def rank_color(rank):
     return "var(--mv-ink-muted)"
 
 
+def delta_html(delta):
+    if delta is None:
+        return '<span class="dim">new</span>'
+    if abs(delta) < 0.05:
+        return '<span class="dim">—</span>'
+    color = "var(--mv-blue)" if delta > 0 else "var(--mv-crimson)"
+    arrow = "▲" if delta > 0 else "▼"
+    return f'<span style="color:{color};">{arrow} {abs(delta):.1f}</span>'
+
+
 def player_row(rank_num, r):
     ovr = f'{r["fc26_overall"]:.0f}' if r["fc26_overall"] is not None else "—"
     speed = f'{r["fc26_speed"]:.0f}' if r["fc26_speed"] is not None else "—"
@@ -86,11 +107,13 @@ def player_row(rank_num, r):
     mv = r["megavision_rank"]
     mv_str = f'{mv:.1f}' if mv is not None else "—"
     start_pct = f'{r["start_likelihood"]:.0f}%' if r["start_likelihood"] is not None else "—"
+    delta = r.get("rank_delta")
     return (
         f'<tr><td data-sort="{rank_num}">{rank_num}</td>'
         f'<td>{r["player_name"]}{flags(r)}</td>'
         f'<td class="dim">{r["real_club"] or "—"}</td>'
         f'<td data-sort="{mv or -1}"><strong style="color:{rank_color(mv)};font-size:14px;">{mv_str}</strong></td>'
+        f'<td data-sort="{delta if delta is not None else 0}">{delta_html(delta)}</td>'
         f'<td data-sort="{r["start_likelihood"] or 0}">{start_pct}</td>'
         f'<td data-sort="{r["fc26_overall"] or -1}">{ovr}</td>'
         f'<td data-sort="{r["fc26_speed"] or -1}">{speed}</td>'
@@ -103,7 +126,7 @@ def player_row(rank_num, r):
 
 TABLE_HEADER = (
     '<tr><th data-sort-type="num">#</th><th data-sort-type="text">Player</th><th>Club</th>'
-    '<th data-sort-type="num">MEGAVISION Rank</th><th data-sort-type="num">Start%</th>'
+    '<th data-sort-type="num">MEGAVISION Rank</th><th data-sort-type="num">+/- Last Wk</th><th data-sort-type="num">Start%</th>'
     '<th data-sort-type="num">FC26 OVR</th><th data-sort-type="num">FC26 Speed</th><th data-sort-type="num">ROS%</th>'
     '<th data-sort-type="num">GW Score</th><th data-sort-type="num">Started Last Wk</th></tr>'
 )
@@ -249,7 +272,12 @@ def build(week=None):
         week = cur.execute("SELECT MAX(gameweek) FROM player_gameweek").fetchone()[0]
     rows = fetch_rows(cur, week)
     clubs = fetch_clubs(cur, week)
+    prev_ranks = fetch_prev_ranks(cur, week - 1)
     conn.close()
+
+    for r in rows:
+        prev = prev_ranks.get((r["player_name"], r["real_club"]))
+        r["rank_delta"] = (r["megavision_rank"] - prev) if (r["megavision_rank"] is not None and prev is not None) else None
 
     by_pos = {pos: sorted(
         (r for r in rows if r["fantrax_position"] == pos),
@@ -319,9 +347,11 @@ def build(week=None):
 
     <section class="card mv-card">
       <h2 class="mv-chrome-text" style="margin-top:0;">MEGAVISION Rank</h2>
-      <div class="sub" style="margin-bottom:14px;">0-100 projection score: FC 26 talent, team strength, this week's matchup, and current form,
-        standardized into a bell curve, then gated by FFS's projected starting XI -- a doubtful or non-starting player can't reach the top
-        regardless of talent. Start% is each player's estimated odds of being in their club's XI (sums to 100% within a position group). v1, weights still being tuned.</div>
+      <div class="sub" style="margin-bottom:14px;">0-100 projection score: FC 26 talent (team strength/matchup capped at +/-5% of a player's own rating),
+        real minutes played last week (heavily weighted -- 90 minutes is the max bonus, with an extra boost for anyone eased back via a bench
+        cameo while still carrying an injury flag), and current form, standardized into a bell curve, then gated by FFS's projected starting XI --
+        a doubtful or non-starting player can't reach the top regardless of talent. Start% is each player's estimated odds of being in their
+        club's XI (sums to 100% within a position group). +/- Last Wk is the change in MEGAVISION Rank since the prior gameweek. v1, weights still being tuned.</div>
       <div class="mv-tabs">{''.join(tabs)}</div>
       {''.join(panels)}
     </section>
