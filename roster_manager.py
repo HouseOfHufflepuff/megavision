@@ -35,6 +35,7 @@ Modes:
 `week` defaults to the next real-world-unplayed gameweek in the Fantrax
 schedule.
 """
+import json
 import re
 import sys
 import unicodedata
@@ -438,45 +439,75 @@ def render_report(result, moves, detailed=False):
     return "\n".join(lines)
 
 
+def commissioner_trade(sess, team_a, team_b, out_scorer_id, in_scorer_id, week):
+    """A commissioner-mode Sr<->Jr swap that takes effect for the CURRENT
+    period immediately -- unlike createClaimDropCommissioner (do_drop/
+    do_claim below), which Fantrax always defers to the NEXT period no
+    matter what params are sent (confirmed 2026-09-11 via repeated direct
+    testing: explicit period overrides, admin mode, fresh untouched
+    players -- all deferred). The real mechanism, reverse-engineered
+    2026-09-11 from Fantrax's own legacy trade.go page source (not the
+    documented /fxpa/req API): POST JSON to /fxa/createTrade with a
+    'transactions' map of "SC,{scorerId},{fromTeamId},{toTeamId},{sortKey}"
+    strings, a txDateTime string ('YYYY-MM-DD HH:MM:SS', any moment inside
+    the current period), and period as a plain string. Verified live:
+    executes immediately against the current, already-started roster
+    period -- not queued for next period like drop/claim."""
+    now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
+    params = {
+        "transactions": {
+            "1": f"SC,{out_scorer_id},{team_a},{team_b},0",
+            "2": f"SC,{in_scorer_id},{team_b},{team_a},1",
+        },
+        "txDateTime": now_str,
+        "period": str(week),
+        "adminMode": True, "future": True, "override": False, "msg": "",
+        "fantasyTeamId": team_a,
+    }
+    resp = sess.post("https://www.fantrax.com/fxa/createTrade", params={"leagueId": fl.LEAGUE_ID},
+                      data=json.dumps(params), headers={"Content-Type": "application/json"}, timeout=20)
+    d = resp.json()
+    code = d.get("code") or d.get("exception", {}).get("code") or "ERROR"
+    msg = d.get("genericMessage") or d.get("exception", {}).get("message")
+    return code == "EXECUTED", msg
+
+
 def apply_moves(sess, result, moves):
-    """Drops ALL players first, then claims ALL replacements -- same
-    ordering as the proven-working swap_sr_jr.py, since claiming a
-    replacement before its counterpart is dropped could transiently push a
-    position over its legal slot count. A brand-new held-youth-rights
-    pickup has no scorerId in our own data (never been on any Mega
-    roster), so that case needs a live free-agent pool lookup
-    (fl.fetch_full_player_pool) before it can be claimed; logged as a
-    clear failure here rather than guessed at."""
+    """Pairs each drop with an "other roster" add as a commissioner_trade
+    (immediate, current-period effect). A brand-new held-youth-rights
+    pickup has no scorerId on either of this team's own rosters (never
+    been on any Mega roster at all), so it can't be paired into a trade --
+    that case still needs a live free-agent claim, which Fantrax DOES
+    defer to next period (no trade counterpart exists to swap against);
+    logged as a clear limitation rather than guessed at."""
     active_id, other_id = result["active_id"], result["other_id"]
     other_by_scorer = {p["name"]: p["scorerId"] for p in result["other_roster"]}
     active_by_scorer = {p["name"]: p["scorerId"] for p in result["active_roster"]}
     log = []
 
-    for m in moves:
-        if m["action"] == "drop":
-            sid = active_by_scorer.get(m["name"])
-            ok, err = sfk.do_drop(sess, active_id, sid) if sid else (False, "no scorerId")
-            log.append(("drop", result["code"], m["name"], ok, err))
-        elif m["action"] == "add" and m["from"].startswith("other roster"):
-            claim_sid = other_by_scorer.get(m["name"])
-            if claim_sid:
-                ok, err = sfk.do_drop(sess, other_id, claim_sid)
-                log.append(("drop-from-other", result["code"], m["name"], ok, err))
+    drops = [m for m in moves if m["action"] == "drop"]
+    adds_from_other = [m for m in moves if m["action"] == "add" and m["from"].startswith("other roster")]
+    adds_new = [m for m in moves if m["action"] == "add" and not m["from"].startswith("other roster")]
 
-    for m in moves:
-        if m["action"] != "add":
+    for drop_m, add_m in zip(drops, adds_from_other):
+        out_sid = active_by_scorer.get(drop_m["name"])
+        in_sid = other_by_scorer.get(add_m["name"])
+        if not out_sid or not in_sid:
+            log.append(("trade", result["code"], f'{drop_m["name"]} <-> {add_m["name"]}', False, "missing scorerId"))
             continue
-        claim_sid = other_by_scorer.get(m["name"]) if m["from"].startswith("other roster") else None
-        if not claim_sid:
-            log.append(("claim", result["code"], m["name"], False,
-                         "no scorerId -- new held-youth-rights pickup needs a live free-agent pool lookup, not implemented"))
-            continue
-        info, err = sfk.get_claim_defaults(sess, active_id, claim_sid)
-        if err or not info:
-            log.append(("claim", result["code"], m["name"], False, err or "no claim info"))
-            continue
-        ok, cerr = sfk.do_claim(sess, active_id, claim_sid, info)
-        log.append(("claim", result["code"], m["name"], ok, cerr))
+        ok, msg = commissioner_trade(sess, active_id, other_id, out_sid, in_sid, result["week"])
+        log.append(("trade", result["code"], f'{drop_m["name"]} <-> {add_m["name"]}', ok, msg))
+
+    leftover_drops = drops[len(adds_from_other):]
+    for drop_m in leftover_drops:
+        sid = active_by_scorer.get(drop_m["name"])
+        ok, err = sfk.do_drop(sess, active_id, sid) if sid else (False, "no scorerId")
+        log.append(("drop", result["code"], drop_m["name"], ok, err))
+
+    for add_m in adds_new:
+        log.append(("claim", result["code"], add_m["name"], False,
+                     "no scorerId -- new held-youth-rights pickup needs a live free-agent claim, "
+                     "which Fantrax defers to next period (no trade path exists for it)"))
     return log
 
 
