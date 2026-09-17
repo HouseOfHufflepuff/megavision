@@ -298,6 +298,16 @@ CREATE TABLE IF NOT EXISTS youth_starts (
     updated_at TEXT NOT NULL,
     UNIQUE(team_code, player_name, gameweek)
 );
+
+-- Teams opted into automated roster management (real Fantrax writes in
+-- run_weekly_roster_management.py's write mode). Previously a hardcoded
+-- SUBSCRIBED list in roster_manager.py -- moved to the DB 2026-09-17 so
+-- opt-in/opt-out doesn't require a code change (e.g. a team replying to
+-- the AI thread to join, per the standing offer made to the other 8).
+CREATE TABLE IF NOT EXISTS managed_teams (
+    team_code TEXT PRIMARY KEY,
+    added_at TEXT NOT NULL
+);
 """
 
 

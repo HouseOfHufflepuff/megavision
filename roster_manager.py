@@ -51,7 +51,7 @@ from db import connect
 
 now = datetime.now(timezone.utc).isoformat()
 
-SUBSCRIBED = ["HUF", "TTS", "POW", "NAC"]
+SUBSCRIBED_DEFAULT = ["HUF", "TTS", "POW", "NAC"]  # fallback only -- fetch_managed_teams() is the real source of truth (managed_teams table)
 TEAM_FULL_NAME = {
     "FAV": "5th Ave Argyle", "POW": "Battersea Power Bottoms", "CRG": "CRG McGovern",
     "DU": "Divided United", "HUF": "House of Hufflepuff", "NAC": "NFC Andover City",
@@ -73,7 +73,22 @@ TEAM_OWNER_EMAILS = {
     "ASS": ["kirkwalton@gmail.com", "dan.hinrichs@gmail.com"],
 }
 ALL_TEAMS = list(TEAM_FULL_NAME.keys())
-NOT_SUBSCRIBED = [c for c in ALL_TEAMS if c not in SUBSCRIBED]
+
+
+def fetch_managed_teams(conn=None):
+    """Team codes opted into automated roster management, from the
+    managed_teams DB table -- the real source of truth (replaced the old
+    hardcoded SUBSCRIBED list 2026-09-17). Falls back to
+    SUBSCRIBED_DEFAULT if the table is empty (shouldn't happen once
+    seeded, but a script relying on this shouldn't silently manage zero
+    teams because of a migration gap)."""
+    own_conn = conn is None
+    if own_conn:
+        conn = connect()
+    rows = [r[0] for r in conn.execute("SELECT team_code FROM managed_teams ORDER BY team_code").fetchall()]
+    if own_conn:
+        conn.close()
+    return rows or list(SUBSCRIBED_DEFAULT)
 
 YOUTH_CUTOFF = date(2026, 8, 1)  # Rulez: 23 or younger at Aug 1 to be a selectable Youth Player
 YOUTH_FREE_STARTS = rank_algo.YOUTH_FREE_STARTS
@@ -682,11 +697,11 @@ def main():
     for a in args:
         if a.startswith("--"):
             continue
-        if a.upper() in SUBSCRIBED:
+        if a.upper() in ALL_TEAMS:
             team_filter = a.upper()
         else:
             positional.append(a)
-    teams = [team_filter] if team_filter else SUBSCRIBED
+    teams = [team_filter] if team_filter else fetch_managed_teams()
     week_arg = int(positional[0]) if positional else None
 
     sess = fl._session()

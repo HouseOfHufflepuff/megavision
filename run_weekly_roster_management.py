@@ -1,8 +1,8 @@
 """
 Weekly roster-management run across all 12 teams: WRITE mode (real Fantrax
-transactions) for the 4 subscribed teams (roster_manager.SUBSCRIBED), READ
-mode (report only, nothing touched) for the other 8 -- then one combined
-email to each group.
+transactions) for the teams opted into management (managed_teams DB table,
+see roster_manager.fetch_managed_teams), READ mode (report only, nothing
+touched) for the rest -- then one combined email to each group.
 
 Run:
     python3 run_weekly_roster_management.py [week]
@@ -30,12 +30,14 @@ def run(week=None):
     wb = common.fetch_live_workbook()
     youth_by_code = common.fetch_youth(wb)
     conn = connect()
+    managed_teams = rm.fetch_managed_teams(conn)
+    print(f"Managed teams (managed_teams table): {managed_teams}")
 
     managed_sections = []
     suggested_sections = []
 
     for code in rm.ALL_TEAMS:
-        write = code in rm.SUBSCRIBED
+        write = code in managed_teams
         print(f"\n=== {code} ({'WRITE' if write else 'read-only'}) ===")
         result = rm.build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr)
         moves = rm.diff_moves(result)
