@@ -51,22 +51,40 @@ def run(week=None):
             if failures:
                 print(f"  ** {len(failures)} failed transaction(s) for {code} -- see log above **")
 
-            sr_picks = [p for players in result["plan"].values() for p in players]
-            picks_by_name = {p["name"]: p for p in sr_picks}
-            for m in moves:
-                if m["action"] != "add":
-                    continue
-                p = picks_by_name.get(m["name"])
-                if p and p.get("is_youth_candidate"):
-                    conn.execute(
-                        "INSERT OR IGNORE INTO youth_starts (team_code, player_name, gameweek, updated_at) VALUES (?,?,?,?)",
-                        (code, m["name"], week, now),
-                    )
-            conn.commit()
+            # Log a start for EVERY youth-eligible player who ends up on the
+            # Sr plan this week, not just ones newly added -- a continuing
+            # youth who stays on Sr week over week must keep accumulating
+            # starts too, or the 4-free-starts cap silently undercounts him
+            # (real bug found 2026-09-17: Tzolis/Tel had real starts in
+            # weeks the old "only log at add time" logic never recorded).
+            if sr:
+                sr_picks = [p for players in result["plan"].values() for p in players]
+                for p in sr_picks:
+                    if p.get("is_youth_eligible"):
+                        conn.execute(
+                            "INSERT OR IGNORE INTO youth_starts (team_code, player_name, gameweek, updated_at) VALUES (?,?,?,?)",
+                            (code, p["name"], week, now),
+                        )
+                conn.commit()
 
             body = rm.build_email_body(result, moves, conn, sess, executed=True)
             managed_sections.append((code, body))
         else:
+            # Non-managed team: nothing was applied, so "plan" is only a
+            # suggestion -- log real starts off the REAL, currently-observed
+            # Sr roster instead (whatever the human owner actually set),
+            # so unmanaged teams' youth-start counts stay accurate too.
+            if sr:
+                for p in result["active_roster"]:
+                    age = rm.fetch_age(conn, p["name"], lookup)
+                    category = rm.fetch_categories(conn, code).get(p["name"], "?")
+                    if rm.is_youth_for(conn, code, p["name"], age, category):
+                        conn.execute(
+                            "INSERT OR IGNORE INTO youth_starts (team_code, player_name, gameweek, updated_at) VALUES (?,?,?,?)",
+                            (code, p["name"], week, now),
+                        )
+                conn.commit()
+
             body = rm.build_email_body(result, moves, conn, sess, executed=False)
             suggested_sections.append((code, body))
 

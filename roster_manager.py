@@ -6,11 +6,12 @@ For a given gameweek, decides whether the league is playing Sr (regular
 season) or Jr (cup) rosters that week, then builds the best legal lineup
 for each subscribed team's ACTIVE sub-team (Sr or Jr, whichever the week
 calls for) using MEGAVISION Rank -- pulling in real held-rights unpromoted
-youth as a candidate too, gated behind rank_algo.YOUTH_START_RANK_MULTIPLIER
-(currently 25% better than the alternative they'd replace) and the Rulez
-4.1(6) 4-free-starts-before-promotion cap (tracked in the youth_starts
-table -- see db.py; that table starts empty, so any youth already mid-count
-before this tool existed will undercount until reconciled by hand).
+youth as a candidate too, gated behind an escalating bar (YOUTH_ESCALATION_PCT,
+currently 20% per real start already used -- 0 starts even, 1 start 20%
+better, 2 starts 40%, etc., no hard cap) and Rulez 4.1(6)'s promotion trigger
+at PROMOTION_TRIGGER_STARTS real starts (tracked in the youth_starts table --
+see db.py; that table starts empty, so any youth already mid-count before
+this tool existed will undercount until reconciled by hand).
 
 Week-type detection: `week not in fans_algo.NON_REGULAR_SEASON_WEEKS` ==
 Sr. That set is currently EMPTY in this codebase (a pre-existing gap this
@@ -91,8 +92,21 @@ def fetch_managed_teams(conn=None):
     return rows or list(SUBSCRIBED_DEFAULT)
 
 YOUTH_CUTOFF = date(2026, 8, 1)  # Rulez: 23 or younger at Aug 1 to be a selectable Youth Player
-YOUTH_FREE_STARTS = rank_algo.YOUTH_FREE_STARTS
-YOUTH_MULT = rank_algo.YOUTH_START_RANK_MULTIPLIER
+
+# Escalating-bar youth rule, replacing the old flat 25%-better gate AND the
+# old hard 4-start cap (per Jer 2026-09-17): a youth must beat the weakest
+# alternative by (their own current start count * 20%) to start again --
+# 0 starts even, 1 start 20% better, 2 starts 40%, 3 starts 60%, 4 starts
+# 80%. No hard stop; the bar just keeps climbing. Applies to EVERY week's
+# decision, continuing starters included, not just brand-new candidates.
+YOUTH_ESCALATION_PCT = 0.20
+
+# A youth who reaches this many real starts is flagged for a mandatory
+# promotion decision -- not a hard block (the escalating bar above already
+# makes a 5th+ start steadily harder on its own), just a loud notice the
+# owner needs to see and act on.
+PROMOTION_TRIGGER_STARTS = 5
+
 
 CLUB_ALIASES = {
     "arsenal": "ARS", "aston villa": "AVL", "bournemouth": "BOU", "brentford": "BRE",
@@ -237,7 +251,22 @@ def fetch_categories(conn, code):
     ).fetchall())
 
 
-def fetch_age(conn, name):
+def fetch_age(conn, name, lookup=None):
+    """Real age on the Rulez Aug-1 youth cutoff -- NOT epl_players.age, which
+    is FC26's own age field (as of FC26's roster-freeze date, a totally
+    different reference point). Found 2026-09-17: this silently misclassified
+    Georginio Rutter (born 2002-04-20, real cutoff age 24) as a 23-or-under
+    youth candidate because FC26 still had him at 23. Computed live from
+    FPL's real birth_date via age_on_cutoff() whenever a confident name match
+    is available; falls back to the stale DB column only when it isn't."""
+    if lookup is not None:
+        clean = clean_name(name)
+        parts = clean.split()
+        if parts:
+            cands = candidates_for(lookup, parts[-1])
+            el = confident_match(cands, parts[0]) if cands else None
+            if el and el.get("birth_date"):
+                return age_on_cutoff(el["birth_date"])
     row = conn.execute("SELECT age FROM epl_players WHERE player_name=?", (name,)).fetchone()
     return row[0] if row and row[0] is not None else None
 
@@ -256,6 +285,23 @@ COMMITTED_CATEGORIES = {"kept", "youth_players", "youth_legend", "irp"}
 
 def is_youth(age, category):
     return age is not None and age <= 23 and category not in COMMITTED_CATEGORIES
+
+
+def fetch_youth_override(conn, code, name):
+    """Explicit owner correction of Youth Player status, checked before the
+    age/category heuristic -- see db.py's youth_status_overrides for why
+    this exists (Christos Tzolis: real age 24, committed 3-year contract
+    per team_player_wages, but the owner says he's a Youth Player anyway).
+    Returns True/False if an override exists, None otherwise."""
+    row = conn.execute(
+        "SELECT is_youth FROM youth_status_overrides WHERE team_code=? AND player_name=?", (code, name)
+    ).fetchone()
+    return bool(row[0]) if row else None
+
+
+def is_youth_for(conn, code, name, age, category):
+    override = fetch_youth_override(conn, code, name)
+    return override if override is not None else is_youth(age, category)
 
 
 def fetch_start_count(conn, code, name):
@@ -303,6 +349,14 @@ def fetch_youth_candidates(conn, youth_by_code, elements, lookup, code, week, ex
     return out
 
 
+def _flag_promotion(notes, pos, yc, new_start_count):
+    if new_start_count >= PROMOTION_TRIGGER_STARTS:
+        notes.append(
+            f'  {pos}: *** {yc["name"]} reaches {new_start_count} real starts this week -- PROMOTED. '
+            f'Owner decision needed: give him a real contract, or drop him. ***'
+        )
+
+
 def build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr):
     sr_id, jr_id = fl.FANTRAX_TEAM_ID[code], fl.JUNIOR_TEAM_ID[code]
     active_id = sr_id if sr else jr_id
@@ -318,21 +372,30 @@ def build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr):
     pool_by_pos = {"GK": [], "D": [], "M": [], "F": []}
     for p in active_roster + other_roster:
         rank, likelihood, tag = fetch_rank(conn, p["name"], week)
-        age = fetch_age(conn, p["name"])
+        age = fetch_age(conn, p["name"], lookup)
         category = categories.get(p["name"], "?")
+        youth_eligible = is_youth_for(conn, code, p["name"], age, category)
+        on_active = p in active_roster
         pool_by_pos.setdefault(p["pos"], []).append({
             "name": p["name"], "pos": p["pos"], "rank": rank, "likelihood": likelihood, "tag": tag,
             "category": category, "scorerId": p["scorerId"], "age": age,
-            "on_active": p in active_roster, "source": "active" if p in active_roster else "other",
-            # already on the active roster -> not a NEW start decision, don't re-gate them each week
-            "is_youth_candidate": is_youth(age, category) and p not in active_roster,
-            "starts": fetch_start_count(conn, code, p["name"]) if is_youth(age, category) else 0,
+            "on_active": on_active, "source": "active" if on_active else "other",
+            # is_youth_candidate: subject to the 25%-better gate -- only
+            # meaningful for a NEW selection decision, so it's False once
+            # already active (that call's already been made). is_youth_eligible
+            # stays True regardless of active status -- used for the 4-start
+            # cap and the full youth-status listing, which both need to see
+            # an already-active youth too, not just new candidates.
+            "is_youth_candidate": youth_eligible and not on_active,
+            "is_youth_eligible": youth_eligible,
+            "starts": fetch_start_count(conn, code, p["name"]) if youth_eligible else 0,
         })
     for c in youth_candidates:
         pool_by_pos.setdefault(c["pos"], []).append({
             "name": c["name"], "pos": c["pos"], "rank": c["rank"], "likelihood": c["likelihood"], "tag": c["tag"],
             "category": "unpromoted_youth",
-            "scorerId": None, "on_active": False, "source": "held_rights", "is_youth_candidate": True,
+            "scorerId": None, "on_active": False, "source": "held_rights",
+            "is_youth_candidate": True, "is_youth_eligible": True,
             "starts": c["starts"], "club": c["club"], "age": c["age"],
         })
 
@@ -349,38 +412,63 @@ def build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr):
     notes = []
     for pos, n in slots_needed.items():
         pool = pool_by_pos.get(pos, [])
+
+        # Escalating-bar rule (per Jer 2026-09-17, replacing the old flat
+        # 25%-better gate AND the hard 4-start cap): a youth-eligible
+        # player -- continuing on the roster or a brand-new candidate,
+        # treated identically -- must beat the weakest alternative by
+        # (their own CURRENT start count * 20%). 0 starts: even. 1: 20%
+        # better. 2: 40%. 3: 60%. 4: 80%. No hard stop at any count -- the
+        # bar just keeps climbing, so it gets steadily harder to keep
+        # starting the more starts they've already used, rather than a
+        # cliff-edge cutoff. Applies every week, so an already-active youth
+        # can be bumped off just as easily as a new candidate is kept off.
         established = sorted(
-            (p for p in pool if not p["is_youth_candidate"]),
+            (p for p in pool if not p["is_youth_eligible"]),
             key=lambda p: p["rank"] if p["rank"] is not None else -1, reverse=True,
         )
         picked = established[:n]
 
-        for yc in [p for p in pool if p["is_youth_candidate"]]:
+        youth_pool = sorted(
+            (p for p in pool if p["is_youth_eligible"]),
+            key=lambda p: p["rank"] if p["rank"] is not None else -1, reverse=True,
+        )
+        for yc in youth_pool:
             if yc["rank"] is None:
                 notes.append(f'  {pos}: skip {yc["name"]} (held youth rights) -- no MEGAVISION Rank data available')
                 continue
-            if yc.get("starts", 0) >= YOUTH_FREE_STARTS:
-                notes.append(f'  {pos}: skip {yc["name"]} -- already at {yc["starts"]}/{YOUTH_FREE_STARTS} free starts, must be promoted first, not just started')
-                continue
-            if not picked:
+            starts = yc.get("starts", 0)
+            required_pct = starts * YOUTH_ESCALATION_PCT
+            # Room for another slot outright (not yet at n) -- fill it
+            # directly, no swap needed. Real bug fixed 2026-09-17: this used
+            # to check "if not picked" (completely empty) instead of "still
+            # has room," so a position with a mix of established and youth
+            # players (e.g. GK's fixed 2-slot rule with one of the two
+            # goalkeepers being youth-eligible) wrongly forced a 1-for-1
+            # swap against the other real goalkeeper instead of just
+            # filling the second open slot -- dropping a mandatory starter
+            # (both GKs always play) down to one.
+            if len(picked) < n:
                 picked.append(yc)
-                notes.append(f'  {pos}: {yc["name"]} added -- empty slot, no alternative to compare against')
+                notes.append(f'  {pos}: {yc["name"]} added -- open slot, no alternative to compare against')
+                _flag_promotion(notes, pos, yc, starts + 1)
                 continue
             weakest = min(picked, key=lambda p: p["rank"] if p["rank"] is not None else -1)
             weakest_rank = weakest["rank"] if weakest["rank"] is not None else 0
-            bar = weakest_rank * YOUTH_MULT
+            bar = weakest_rank * (1.0 + required_pct)
             if yc["rank"] >= bar and yc["rank"] > weakest_rank:
                 picked.remove(weakest)
                 picked.append(yc)
                 notes.append(
-                    f'  {pos}: {yc["name"]} ({yc["rank"]:.1f}) clears the {YOUTH_MULT:.0%} bar over '
-                    f'{weakest["name"]} ({weakest_rank:.1f}, bar was {bar:.1f}) -- start {yc.get("starts",0)+1}/{YOUTH_FREE_STARTS}'
+                    f'  {pos}: {yc["name"]} ({yc["rank"]:.1f}, {starts} prior starts) clears the {required_pct:.0%} bar over '
+                    f'{weakest["name"]} ({weakest_rank:.1f}, bar was {bar:.1f}) -- start {starts + 1}'
                 )
+                _flag_promotion(notes, pos, yc, starts + 1)
             else:
                 yc_rank_display = f'{yc["rank"]:.1f}' if yc["rank"] is not None else "0.0"
                 notes.append(
-                    f'  {pos}: {yc["name"]} ({yc_rank_display}) does NOT clear the '
-                    f'{YOUTH_MULT:.0%} bar over {weakest["name"]} ({weakest_rank:.1f}, needed {bar:.1f}) -- stays off'
+                    f'  {pos}: {yc["name"]} ({yc_rank_display}, {starts} prior starts) does NOT clear the '
+                    f'{required_pct:.0%} bar over {weakest["name"]} ({weakest_rank:.1f}, needed {bar:.1f}) -- stays off'
                 )
         plan[pos] = picked
 
@@ -434,8 +522,8 @@ def render_report(result, moves, detailed=False):
                 pick_mark = "PICKED" if p["name"] in picked_names else "      "
                 cat = p.get("category", "")
                 age_s = f'age {p["age"]}' if p.get("age") is not None else "age ?"
-                youth_s = " [YOUTH]" if p["is_youth_candidate"] else ""
-                starts_s = f'  ({p["starts"]}/{YOUTH_FREE_STARTS} starts)' if p["is_youth_candidate"] else ""
+                youth_s = " [YOUTH]" if p["is_youth_eligible"] else ""
+                starts_s = f'  ({p["starts"]} starts)' if p["is_youth_eligible"] else ""
                 lines.append(
                     f'    [{pick_mark}] {p["name"]:26s} rank={rank_s:>7s}  likelihood={like_s:>6s}  {tag:5s}  '
                     f'{p["source"]:11s} {cat:16s} {age_s}{youth_s}{starts_s}'
@@ -628,37 +716,114 @@ tracked starts until promoted.
 """
 
 
+FUN_OPENERS = {
+    "many": "MegaBot's been in the lab all night. Buckle up, there's a lot happening:",
+    "some": "A couple of moving parts this week -- here's the case for each:",
+    "none": "Quiet week on the transaction front -- sometimes the best move is no move:",
+}
+
+
+def _pool_lookup(result):
+    """name -> pool entry, across every position bucket -- for pulling a
+    rank/likelihood/starts number back up when rendering a move line."""
+    out = {}
+    for players in result["pool_by_pos"].values():
+        for p in players:
+            out[p["name"]] = p
+    return out
+
+
+def move_rationale_line(m, pool_by_name):
+    """One IN/OUT line with the real rank behind it, not just a bare name --
+    the whole point of "why are we making this move" is the number, not
+    the vibes."""
+    p = pool_by_name.get(m["name"], {})
+    rank = p.get("rank")
+    rank_s = f'{rank:.1f}' if rank is not None else "no data"
+    tag = p.get("tag") or ""
+    if m["action"] == "add":
+        arrow = "IN "
+        src = m["from"]
+        return f'  {arrow} {m["name"]:24s} ({m["pos"]})  rank {rank_s:>6s}  {tag:6s}  -- {src}'
+    else:
+        return f'  OUT {m["name"]:24s} ({m["pos"]})  rank {rank_s:>6s}  {tag:6s}'
+
+
+def all_youth_status(result, conn):
+    """Every youth-eligible player (broadened is_youth() rule: 23-or-
+    younger, no committed multi-year contract) currently sitting on EITHER
+    of this team's two Fantrax rosters -- not just the ones involved in
+    this week's decision. An owner planning ahead needs the whole bench,
+    not just what moved."""
+    seen = {}
+    for players in result["pool_by_pos"].values():
+        for p in players:
+            if p.get("is_youth_eligible") and p["source"] in ("active", "other"):
+                seen[p["name"]] = p
+    rows = []
+    for name, p in seen.items():
+        starts = fetch_start_count(conn, result["code"], name)
+        rows.append({
+            "name": name, "pos": p["pos"], "where": "Sr" if (p["on_active"] == result["sr"]) else "Jr",
+            "starts": starts, "capped": starts >= PROMOTION_TRIGGER_STARTS,
+            "next_bar": starts * YOUTH_ESCALATION_PCT,
+        })
+    rows.sort(key=lambda r: (-r["starts"], r["pos"], r["name"]))
+    return rows
+
+
+SPONSOR_URL = "https://houseofhufflepuff.github.io/two-halves/"
+SPONSOR_TAGLINES = [
+    "Official MEGAVISION Sponsor: Two Halves -- a rescue robot built to fit through a standard doorway. See it -> {url}",
+    "This week's chaos is brought to you by Two Halves. Yes, the robot. Especially the robot. -> {url}",
+    "Before you rage-refresh your roster again, go meet Two Halves -- the split-chassis rescue bot MEGAVISION is proud to call a sponsor. -> {url}",
+    "MEGAVISION runs on fan formulas, salary caps, and now: a bipedal rescue robot. Meet our sponsor -> {url}",
+    "Two Halves: split chassis, rescue laser, fits through a standard doorway. Also, our sponsor. -> {url}",
+]
+
+
+def sponsor_cta():
+    import random
+    return random.choice(SPONSOR_TAGLINES).format(url=SPONSOR_URL)
+
+
 def build_email_body(result, moves, conn, sess, executed=True):
     code = result["code"]
     week = result["week"]
     verb = "made" if executed else "would make (opt in to have these run for real -- see footer)"
-    lines = [f'MegaBot ran roster management for {TEAM_FULL_NAME.get(code, code)} ahead of GW{week} '
-             f'({"Sr" if result["sr"] else "Jr"} week). Here\'s what it {verb}, and why:', ""]
+    pool_by_name = _pool_lookup(result)
 
     adds = [m for m in moves if m["action"] == "add"]
     drops = [m for m in moves if m["action"] == "drop"]
+    opener_key = "many" if len(adds) + len(drops) >= 3 else ("some" if adds or drops else "none")
+
+    lines = [FUN_OPENERS[opener_key], "",
+             f'MegaBot ran roster management for {TEAM_FULL_NAME.get(code, code)} ahead of GW{week} '
+             f'({"Sr" if result["sr"] else "Jr"} week). Here\'s what it {verb}, and why:', ""]
+
     if not adds and not drops:
         lines.append("No changes -- your active roster was already the best legal lineup by MEGAVISION Rank.")
     for m in adds:
-        lines.append(f'IN:  {m["name"]} ({m["pos"]}) -- {m["from"]}')
+        lines.append(move_rationale_line(m, pool_by_name))
     for m in drops:
-        lines.append(f'OUT: {m["name"]} ({m["pos"]})')
+        lines.append(move_rationale_line(m, pool_by_name))
+
     if result["notes"]:
         lines.append("")
-        lines.append(f"Youth-selection detail (Rulez 4.1(6), {YOUTH_MULT:.0%}-better gate):")
+        lines.append(f"Youth-selection detail (Rulez 4.1(6), escalating bar: starts x {YOUTH_ESCALATION_PCT:.0%} better needed):")
         lines.extend(result["notes"])
 
-    # Every youth actually on the proposed Sr roster, with their tracked
-    # start count against the 4-free-starts cap -- not just the ones added
-    # this week, since an owner needs to see the full picture to plan ahead.
-    sr_picks = [p for players in result["plan"].values() for p in players]
-    youth_on_sr = [p for p in sr_picks if p.get("is_youth_candidate") or p.get("category") == "unpromoted_youth"]
-    if youth_on_sr:
+    # Every youth on EITHER roster, not just ones touched this week -- the
+    # owner needs the whole picture, and a PROMOTED player needs a decision
+    # whether or not anything moved this week.
+    youth_rows = all_youth_status(result, conn)
+    if youth_rows:
         lines.append("")
-        lines.append("Youth players on this week's Sr roster -- starts used:")
-        for p in youth_on_sr:
-            n = fetch_start_count(conn, code, p["name"])
-            lines.append(f'  {p["name"]}: {n}/{YOUTH_FREE_STARTS} starts (5th start forces promotion)')
+        lines.append(f"Youth on your rosters (Sr + Jr) -- real starts, and the bar to start again ({YOUTH_ESCALATION_PCT:.0%}/start):")
+        for r in youth_rows:
+            flag = f"  *** PROMOTED at {r['starts']} starts -- needs a real contract decision ***" if r["capped"] else ""
+            next_bar_s = "even" if r["starts"] == 0 else f"{r['next_bar']:.0%} better"
+            lines.append(f'  {r["name"]:24s} ({r["pos"]}, {r["where"]})  {r["starts"]} starts, next start needs {next_bar_s}{flag}')
 
     lines.append("")
     lines.append(score_sheet(result, conn))
@@ -666,6 +831,7 @@ def build_email_body(result, moves, conn, sess, executed=True):
     # Predicted score vs this week's real opponent, using each side's own
     # best-XI by real fpts-to-date (see predicted_score()) -- not a rank
     # score, a fantasy-points estimate, so the two sides are comparable.
+    sr_picks = [p for players in result["plan"].values() for p in players]
     opp_code, is_home = get_opponent(sess, code, week)
     if opp_code:
         # sr_picks (post-move) don't carry the real fpts field -- look it
@@ -682,6 +848,8 @@ def build_email_body(result, moves, conn, sess, executed=True):
                      f'{my_pred:.1f} - {opp_pred:.1f} -- projected {outcome}')
         lines.append("(best-XI by each side's own real fpts-to-date, not a betting line)")
 
+    lines.append("")
+    lines.append(sponsor_cta())
     lines.append("")
     lines.append("-- MegaBot")
     return "\n".join(lines)
@@ -736,11 +904,18 @@ def main():
             log = apply_moves(sess, result, moves)
             for entry in log:
                 print("  ", entry)
-            for m in moves:
-                if m["action"] == "add" and m["from"].startswith("held youth rights"):
+            # Log a start for EVERY youth-eligible player who ends up on the
+            # Sr plan this week, not just ones newly added -- a continuing
+            # youth who stays on Sr week over week must keep accumulating
+            # starts too, or the 4-free-starts cap silently undercounts him
+            # (real bug found 2026-09-17: Tzolis/Tel had real starts in
+            # weeks the old "only log at add time" logic never recorded).
+            sr_picks = [p for players in result["plan"].values() for p in players]
+            for p in sr_picks:
+                if p.get("is_youth_eligible"):
                     conn.execute(
                         "INSERT OR IGNORE INTO youth_starts (team_code, player_name, gameweek, updated_at) VALUES (?,?,?,?)",
-                        (code, m["name"], week, now),
+                        (code, p["name"], week, now),
                     )
             conn.commit()
             if send_email:

@@ -63,8 +63,9 @@ def sync(week=None):
 
     cur.execute(
         "SELECT p.player_name, p.real_club, p.fantrax_position, p.fc26_overall, "
-        "g.score, g.injury_status, g.ffs_start, g.ffs_doubt, g.ffs_negative_mention, "
-        "g.minutes_last_week, g.started_last_week "
+        "g.score, g.injury_status, g.ffs_start, g.ffs_doubt, g.ffs_negative_mention, g.ffs_out, "
+        "g.roto_depth_rank, g.roto_inj_tag, "
+        "g.minutes_last_week, g.fpl_points_last_week, g.started_last_week "
         "FROM epl_players p JOIN player_gameweek g ON g.player_name=p.player_name AND g.real_club=p.real_club "
         "WHERE g.gameweek=? AND p.fc26_overall IS NOT NULL",
         (week,),
@@ -78,17 +79,30 @@ def sync(week=None):
 
     print(f"Computing MEGAVISION Rank for {len(rows)} players, GW{week}...", file=sys.stderr)
 
+    # club_avg_fc26/league_avg_fc26 feed ONLY the club-level Matchups display
+    # (matchup_factor, epl_club_gameweek) now -- the player Rank formula
+    # itself uses real EPL standings position for team_strength/
+    # opponent_weakness instead (see rank_algo.py's v2 design).
     club_totals = {}
     for r in rows:
         club_totals.setdefault(r["real_club"], []).append(r["fc26_overall"])
     club_avg_fc26 = {c: sum(v) / len(v) for c, v in club_totals.items()}
     league_avg_fc26 = sum(club_avg_fc26.values()) / len(club_avg_fc26)
 
-    pos_scores = {}
-    for r in rows:
-        if r["score"] is not None:
-            pos_scores.setdefault(r["fantrax_position"], []).append(r["score"])
-    position_avg_score = {p: sum(v) / len(v) for p, v in pos_scores.items()}
+    # Per-Fantrax-position min/max for the two point-based rank factors
+    # (season fantasy points total, last real gameweek's fantasy total) --
+    # normalized WITHIN position since a GK's and a forward's point scales
+    # aren't comparable under Fantrax's own scoring rules.
+    def _minmax_by_pos(field):
+        by_pos = {}
+        for r in rows:
+            v = r[field]
+            if v is not None:
+                by_pos.setdefault(r["fantrax_position"], []).append(v)
+        return {p: (min(v), max(v)) for p, v in by_pos.items()}
+
+    season_fpts_range = _minmax_by_pos("score")
+    last_game_fpts_range = _minmax_by_pos("fpl_points_last_week")
 
     print("Scraping opponent/home-away from fantasyfootballscout.co.uk/team-news...", file=sys.stderr)
     ffs_data = ffs_scrape.fetch_and_parse()
@@ -108,33 +122,52 @@ def sync(week=None):
                 return club_avg_fc26[c2]
         return None
 
+    def opponent_code(club):
+        """Resolve the opponent's real 3-letter club code (for looking up
+        their real EPL standings position) the same way opponent_avg()
+        resolves their FC26 average -- by folded display-name match."""
+        opp_name = opponent_club.get(club)
+        if not opp_name:
+            return None
+        opp_folded = _fold(opp_name)
+        for c2 in club_avg_fc26:
+            if _fold(_club_display_name(c2)) == opp_folded:
+                return c2
+        return None
+
     inputs = []
     is_out_by_row = []
     for r in rows:
         club = r["real_club"]
-        opp_avg = opponent_avg(club)
-        is_out = bool(r["injury_status"]) or bool(r["ffs_negative_mention"] and not r["ffs_doubt"])
+        pos = r["fantrax_position"]
+        # is_out: ONLY FFS's own structured Out list -- a real, curated
+        # "unavailable" call, not a guess (see sync_player_ranks.py's
+        # ffs_out for why this excludes the crude keyword scan and
+        # Fantrax's own vague injury-tooltip text).
+        is_out = bool(r["ffs_out"])
         is_out_by_row.append(is_out)
-        # Returning-sub boost: still injury-flagged THIS week, but played
-        # some minutes without starting LAST week -- eased back via a
-        # cameo, trending toward a start rather than a fresh knock.
-        minutes_lw = r["minutes_last_week"]
-        is_returning_sub = bool(
-            r["injury_status"] and minutes_lw is not None and minutes_lw > 0 and not r["started_last_week"]
-        )
+
+        own_pos_range = season_fpts_range.get(pos, (None, None))
+        lg_pos_range = last_game_fpts_range.get(pos, (None, None))
+        own_position = club_records.get(club, {}).get("position")
+        opp_position = club_records.get(opponent_code(club), {}).get("position")
+
         inputs.append({
             "fc26_overall": r["fc26_overall"],
-            "club_avg_fc26": club_avg_fc26.get(club, league_avg_fc26),
-            "league_avg_fc26": league_avg_fc26,
-            "opponent_avg_fc26": opp_avg,
-            "is_home": is_home_by_club.get(club),
-            "score": r["score"],
-            "position_avg_score": position_avg_score.get(r["fantrax_position"]),
+            "season_fpts": r["score"],
+            "position_fpts_min": own_pos_range[0],
+            "position_fpts_max": own_pos_range[1],
+            "last_game_fpts": r["fpl_points_last_week"],
+            "position_last_game_fpts_min": lg_pos_range[0],
+            "position_last_game_fpts_max": lg_pos_range[1],
+            "last_game_minutes": r["minutes_last_week"],
+            "own_position": own_position,
+            "opponent_position": opp_position,
             "ffs_start": r["ffs_start"],
             "ffs_doubt": r["ffs_doubt"],
             "is_out": is_out,
-            "minutes_last_week": minutes_lw,
-            "is_returning_sub": is_returning_sub,
+            "roto_depth_rank": r["roto_depth_rank"],
+            "roto_inj_tag": r["roto_inj_tag"],
         })
 
     ranks = rank_algo.compute_ranks(inputs)

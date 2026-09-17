@@ -187,14 +187,18 @@ CREATE TABLE IF NOT EXISTS player_gameweek (
     player_name TEXT NOT NULL,
     real_club TEXT,
     gameweek INTEGER NOT NULL,
-    score REAL,                    -- Fantrax fantasy points, this gameweek
+    score REAL,                    -- Fantrax fantasy points -- SEASON-CUMULATIVE, not per-gameweek (Fantrax's own API has no per-gameweek player-scoring endpoint; confirmed by testing that the period param is silently ignored). Used directly as the "season fantasy points total" rank factor.
     injury_status TEXT,            -- Fantrax injury icon tooltip, blank if healthy
     started_last_week INTEGER,     -- 0/1, Fantrax Games Started for the prior period
     ffs_start INTEGER,             -- 0/1, in FFS's predicted XI this gameweek
-    ffs_positive_mention INTEGER,  -- 0/1, favorable keyword hit in FFS's club news blurb
-    ffs_negative_mention INTEGER,  -- 0/1, unfavorable keyword hit (also set for Out/Doubt)
-    ffs_doubt INTEGER,             -- 0/1, in FFS's fitness-doubt list
+    ffs_positive_mention INTEGER,  -- 0/1, favorable keyword hit in FFS's club news blurb (informational only, not a gate input)
+    ffs_negative_mention INTEGER,  -- 0/1, unfavorable keyword hit (informational only, not a gate input -- see ffs_out)
+    ffs_doubt INTEGER,             -- 0/1, in FFS's structured fitness-doubt list
+    ffs_out INTEGER,               -- 0/1, in FFS's structured Out list (the real "unavailable" signal, distinct from the crude keyword scan)
+    roto_depth_rank INTEGER,       -- 1-based position on rotowire.com's depth chart for this club/position (1 = first-choice), NULL if unlisted
+    roto_inj_tag TEXT,             -- rotowire's own inline injury tag (GTD/OUT/SUS/...), blank if none
     minutes_last_week INTEGER,     -- real minutes played, FPL live event data for the prior real gameweek
+    fpl_points_last_week INTEGER,  -- FPL's own real per-gameweek fantasy score for the prior real gameweek (the "last game fantasy total" rank factor -- a different scoring system from Fantrax's own Rulez points, used because Fantrax has no per-gameweek endpoint)
     megavision_rank REAL,          -- 0-100 projection score, see sync_megavision_rank.py
     start_likelihood REAL,         -- 0-100, sums to 100 within (real_club, fantrax_position), see rank_algo.start_likelihoods
     updated_at TEXT NOT NULL,
@@ -308,6 +312,26 @@ CREATE TABLE IF NOT EXISTS managed_teams (
     team_code TEXT PRIMARY KEY,
     added_at TEXT NOT NULL
 );
+
+-- Explicit owner correction of a player's Rulez 4.1(6) Youth Player status,
+-- overriding the age/category heuristic in roster_manager.is_youth() when
+-- the owner says it's wrong. Added 2026-09-17 after Christos Tzolis
+-- (HUF): real birth data puts him at 24 (over the 23-cutoff) and his
+-- team_player_wages category is a committed 3-year promotion contract, so
+-- the heuristic says he's not a Youth Player -- but the owner has stated
+-- three times he should be treated as one, with 3 real starts. Rather than
+-- weaken the age/category heuristic for everyone (it's independently
+-- verified correct elsewhere, e.g. catching Georginio Rutter's real age),
+-- one-off corrections like this are recorded here and checked FIRST,
+-- before the heuristic runs.
+CREATE TABLE IF NOT EXISTS youth_status_overrides (
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,
+    is_youth INTEGER NOT NULL,
+    note TEXT,
+    updated_at TEXT NOT NULL,
+    PRIMARY KEY (team_code, player_name)
+);
 """
 
 
@@ -333,6 +357,14 @@ def connect():
         conn.execute("ALTER TABLE player_gameweek ADD COLUMN start_likelihood REAL")
     if "minutes_last_week" not in existing_pgw:
         conn.execute("ALTER TABLE player_gameweek ADD COLUMN minutes_last_week INTEGER")
+    if "ffs_out" not in existing_pgw:
+        conn.execute("ALTER TABLE player_gameweek ADD COLUMN ffs_out INTEGER")
+    if "roto_depth_rank" not in existing_pgw:
+        conn.execute("ALTER TABLE player_gameweek ADD COLUMN roto_depth_rank INTEGER")
+    if "roto_inj_tag" not in existing_pgw:
+        conn.execute("ALTER TABLE player_gameweek ADD COLUMN roto_inj_tag TEXT")
+    if "fpl_points_last_week" not in existing_pgw:
+        conn.execute("ALTER TABLE player_gameweek ADD COLUMN fpl_points_last_week INTEGER")
     conn.commit()
     return conn
 

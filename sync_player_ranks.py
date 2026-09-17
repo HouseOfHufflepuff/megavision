@@ -39,6 +39,7 @@ from datetime import datetime, timezone
 import fantrax_live as fl
 import fc26_ratings as fc26
 import ffs_scrape
+import roto_scrape
 import sync_fpl_stats as fpl
 from db import connect
 
@@ -103,14 +104,21 @@ def match_fc26(fantrax_name, fantrax_pos, fc26_idx):
 
 
 def fetch_minutes_last_week(week):
-    """{element_id: {"minutes":.., "starts":..}} from FPL's own live event
-    data for the real gameweek before this one. Mega's own week numbering
-    runs one ahead of FPL's real event numbering -- Mega GW1 was the cup
-    week (Community Shield/Super Cup/FA Cup), not a real PL round -- so
-    "last week" for Mega week W is FPL event W-2. Confirmed by cross-
-    checking FPL's bootstrap-static `events` (event 3 marked finished/
+    """{element_id: {"minutes":.., "starts":.., "total_points":..}} from
+    FPL's own live event data for the real gameweek before this one. Mega's
+    own week numbering runs one ahead of FPL's real event numbering -- Mega
+    GW1 was the cup week (Community Shield/Super Cup/FA Cup), not a real PL
+    round -- so "last week" for Mega week W is FPL event W-2. Confirmed by
+    cross-checking FPL's bootstrap-static `events` (event 3 marked finished/
     is_current while Mega was on GW4, event 4 marked is_next while Mega
-    was on GW5)."""
+    was on GW5).
+
+    total_points is FPL's OWN per-gameweek fantasy score -- used as the
+    "last real gameweek's fantasy total" rank factor since Fantrax's own
+    API has no per-gameweek player-scoring endpoint (getPlayerStats always
+    returns season-cumulative regardless of the period param, confirmed by
+    testing; see MEMORY/session notes). A different scoring system from
+    Fantrax's own Rulez points, but the best real per-week signal available."""
     fpl_event = week - 2
     if fpl_event < 1:
         return {}
@@ -120,20 +128,35 @@ def fetch_minutes_last_week(week):
             data = json.loads(resp.read().decode("utf-8"))
     except Exception:
         return {}
-    return {e["id"]: {"minutes": e["stats"]["minutes"], "starts": e["stats"]["starts"]} for e in data.get("elements", [])}
+    return {
+        e["id"]: {"minutes": e["stats"]["minutes"], "starts": e["stats"]["starts"],
+                  "total_points": e["stats"]["total_points"]}
+        for e in data.get("elements", [])
+    }
 
 
 def build_ffs_index(ffs_data):
-    """club code -> {folded_name: 'lineup'|'out'|'doubt'}, plus raw news text."""
+    """club code -> {folded_name: {"lineup": bool, "out": bool, "doubt": bool}},
+    plus raw news text.
+
+    Real bug fixed 2026-09-17: this used to collapse each player down to a
+    SINGLE string flag ('lineup' XOR 'out' XOR 'doubt'), so a player FFS
+    lists in both its predicted XI AND its fitness-doubt %-list (e.g.
+    Sandro Tonali: picked to start, but flagged 75% fitness) lost the
+    "picked to start" fact entirely once "doubt" overwrote it -- collapsing
+    a real 75%-to-play signal down to the same "not starting" bucket as a
+    guy nobody expects to play. Each flag is now independent."""
     idx = {}
     for club, info in ffs_data.items():
         names = {}
+        def flag(n, key):
+            names.setdefault(_fold(n.split()[-1]), {"lineup": False, "out": False, "doubt": False})[key] = True
         for n in info["lineup"]:
-            names[_fold(n.split()[-1])] = "lineup"
+            flag(n, "lineup")
         for n in info["out"]:
-            names[_fold(n.split()[-1])] = "out"
+            flag(n, "out")
         for n, _pct in info["doubts"]:
-            names[_fold(n.split()[-1])] = "doubt"
+            flag(n, "doubt")
         idx[club] = {"names": names, "news": info["news"]}
     return idx
 
@@ -153,6 +176,10 @@ def sync(week=None):
     print("Scraping fantasyfootballscout.co.uk/team-news...", file=sys.stderr)
     ffs_data = ffs_scrape.fetch_and_parse()
     ffs_idx = build_ffs_index(ffs_data)
+
+    print("Scraping rotowire.com depth charts (second start-likelihood source, 20% weight)...", file=sys.stderr)
+    roto_charts = roto_scrape.fetch_and_parse()
+    roto_idx = roto_scrape.build_index(roto_charts)
 
     if week is None:
         games_by_week = {}
@@ -197,29 +224,55 @@ def sync(week=None):
 
         club_ffs = ffs_idx.get(club_code, {"names": {}, "news": ""})
         last = _fold(name.split()[-1])
-        ffs_flag = club_ffs["names"].get(last)
-        ffs_start = 1 if ffs_flag == "lineup" else 0
-        ffs_doubt = 1 if ffs_flag == "doubt" else 0
-        ffs_negative = 1 if ffs_flag in ("out", "doubt") else 0
+        ffs_flags = club_ffs["names"].get(last, {"lineup": False, "out": False, "doubt": False})
+        ffs_start = 1 if ffs_flags["lineup"] else 0
+        ffs_doubt = 1 if ffs_flags["doubt"] else 0
+        # ffs_out: the real structured "unavailable" signal (FFS's own
+        # curated Out: list) -- the ONLY thing that should gate a player to
+        # GATE_OUT downstream. Kept strictly separate from the crude
+        # keyword-scan flags below, which are informational only now.
+        ffs_out = 1 if ffs_flags["out"] else 0
+        # Real bug fixed 2026-09-17: ffs_negative_mention used to ALSO be
+        # set for a plain structured Out/Doubt (blended into the same field
+        # as the crude prose keyword scan below), and sync_megavision_rank
+        # treated that blended flag as grounds to gate a player to
+        # GATE_OUT even when ffs_start=1 (a confirmed FFS predicted
+        # starter). A single ambiguous sentence in the news blurb ("a doubt
+        # last week, but back in training and starts") trips both
+        # POSITIVE_WORDS and NEGATIVE_WORDS at once -- exactly what
+        # happened to Jack Grealish (ffs_start=1, but a "closer to a
+        # start"/injury-history sentence flagged negative too), crushing a
+        # confirmed starter's rank to GATE_OUT (0.15x). ffs_positive/negative
+        # mention are now PURE prose signals, informational only -- they no
+        # longer feed is_out at all (see sync_megavision_rank.py).
         pos_mention, neg_mention = ffs_scrape.classify_mentions(name, club_ffs["news"])
-        ffs_positive = 1 if pos_mention and not ffs_negative else 0
-        ffs_negative = 1 if ffs_negative or neg_mention else 0
+        ffs_positive = 1 if pos_mention else 0
+        ffs_negative = 1 if neg_mention else 0
+
+        roto_flags = roto_idx.get(club_code, {}).get(last)
+        roto_depth_rank = roto_flags["depth_rank"] if roto_flags else None
+        roto_inj_tag = roto_flags["inj_tag"] if roto_flags else None
 
         name_parts = name.split()
         fpl_el = fpl.match(fpl_lookup, name_parts[-1], name_parts[0][:1] if name_parts else None, club_code)
-        minutes_last_week = minutes_by_id.get(fpl_el["id"], {}).get("minutes") if fpl_el else None
+        fpl_stats = minutes_by_id.get(fpl_el["id"], {}) if fpl_el else {}
+        minutes_last_week = fpl_stats.get("minutes")
+        fpl_points_last_week = fpl_stats.get("total_points")
 
         cur.execute(
             "INSERT INTO player_gameweek (player_name, real_club, gameweek, score, injury_status, "
-            "started_last_week, ffs_start, ffs_positive_mention, ffs_negative_mention, ffs_doubt, "
-            "minutes_last_week, updated_at) "
-            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(player_name, real_club, gameweek) DO UPDATE SET "
+            "started_last_week, ffs_start, ffs_positive_mention, ffs_negative_mention, ffs_doubt, ffs_out, "
+            "roto_depth_rank, roto_inj_tag, minutes_last_week, fpl_points_last_week, updated_at) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(player_name, real_club, gameweek) DO UPDATE SET "
             "score=excluded.score, injury_status=excluded.injury_status, started_last_week=excluded.started_last_week, "
             "ffs_start=excluded.ffs_start, ffs_positive_mention=excluded.ffs_positive_mention, "
-            "ffs_negative_mention=excluded.ffs_negative_mention, ffs_doubt=excluded.ffs_doubt, "
-            "minutes_last_week=excluded.minutes_last_week, updated_at=excluded.updated_at",
+            "ffs_negative_mention=excluded.ffs_negative_mention, ffs_doubt=excluded.ffs_doubt, ffs_out=excluded.ffs_out, "
+            "roto_depth_rank=excluded.roto_depth_rank, roto_inj_tag=excluded.roto_inj_tag, "
+            "minutes_last_week=excluded.minutes_last_week, fpl_points_last_week=excluded.fpl_points_last_week, "
+            "updated_at=excluded.updated_at",
             (name, club_code, week, score, injuries, started_last_week,
-             ffs_start, ffs_positive, ffs_negative, ffs_doubt, minutes_last_week, now),
+             ffs_start, ffs_positive, ffs_negative, ffs_doubt, ffs_out,
+             roto_depth_rank, roto_inj_tag, minutes_last_week, fpl_points_last_week, now),
         )
         n_gw += 1
 

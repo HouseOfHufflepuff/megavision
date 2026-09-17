@@ -4,125 +4,188 @@ score. See sync_megavision_rank.py for the pipeline that calls this against
 real data; this module is pure functions, no I/O, so the formula can be
 unit-tested/tuned on its own.
 
-Design (first pass, v1):
+Design v2 (2026-09-17, per Jer -- replaced v1's additive-bonus +
+z-score-bell-curve + multiplicative-gate design): a STRAIGHT weighted
+percentage blend, no layers. Every factor is first converted to its own
+0-100 sub-score, then combined with a fixed weight -- the final number is
+literally readable as "this much talent, this much recent form, this much
+start-certainty," nothing hidden in a bell curve or a multiplicative gate.
 
-  1. RAW COMPOSITE -- FC 26 overall (talent) plus three context bonuses:
-     team strength (players on stacked squads get more service), matchup
-     (a weak upcoming opponent, small home boost), and current-season form
-     (already outproducing the position average). Each bonus is scaled
-     small relative to overall (5-15 pts of overall) so talent stays the
-     dominant signal -- context nudges the order, it doesn't invert it.
+Factors and weights (sum to 100%):
+    10%  FC26 overall rating
+    35%  Season fantasy points total (Fantrax, cumulative)
+    10%  Last real gameweek's fantasy total (FPL total_points -- Fantrax's
+         own API has no per-gameweek player-scoring endpoint, confirmed by
+         testing; see sync_player_ranks.fetch_minutes_last_week)
+    5%   Last real gameweek's minutes played
+    5%   Team strength -- own club's real EPL standings position
+    5%   Opponent weakness -- opponent's real EPL standings position, reversed
+    20%  fantasyfootballscout.co.uk predicted-XI/doubt/out read
+    10%  rotowire.com depth-chart read
 
-  2. BELL CURVE -- the raw composite, standardized (z-score) across every
-     player in the pool that gameweek, then mapped onto a 0-100 scale
-     centered at 50. This is what makes it "a distribution": most players
-     cluster in the middle, and reaching the 90s requires being several
-     standard deviations above the field, not just having a good number.
-
-  3. START-CERTAINTY GATE -- applied AFTER the bell curve, multiplicative.
-     A gate of 1.0 needs a clean, undoubted FFS starting XI slot -- this is
-     the mechanism that makes "guaranteed start" a hard precondition for
-     the top of the board, per the brief: the single highest talent+matchup
-     score in the league still can't crack 100 while there's any doubt
-     about them actually playing.
+See compute_rank() for the exact combination.
 """
 
+RANK_WEIGHTS = {
+    "fc26": 0.10,
+    "season_fpts": 0.35,
+    "last_game_fpts": 0.10,
+    "last_game_minutes": 0.05,
+    "team_strength": 0.05,
+    "opponent_weakness": 0.05,
+    "ffs": 0.20,
+    "roto": 0.10,
+}
+assert abs(sum(RANK_WEIGHTS.values()) - 1.0) < 1e-9, "RANK_WEIGHTS must sum to 100%"
+
+EPL_CLUB_COUNT = 20  # for standings-position normalization: 1 = top of the table, 20 = bottom
+
+# Kept for the club-level Matchups display (build_rank.py), which is a
+# separate FC26-quality-based metric from the standings-based
+# team_strength/opponent_weakness rank factors above -- not part of the
+# player Rank formula itself.
 TEAM_STRENGTH_WEIGHT = 0.4
 MATCHUP_OPPONENT_WEIGHT = 0.5
 HOME_BONUS = 3.0
 AWAY_PENALTY = 3.0
-FORM_WEIGHT = 0.5
-
-# Capped 2026-09-11 per Jer: team strength and matchup (which includes the
-# home/away term) should never move a player's score by more than 5% of
-# their OWN fc26_overall, no matter how lopsided the underlying club-quality
-# gap is. Previously uncapped -- a huge quality gap between two clubs could
-# swing the raw composite by more than was ever intended as a "nudge."
-TEAM_STRENGTH_CAP_PCT = 0.05
-MATCHUP_CAP_PCT = 0.05
-
-# Real minutes played last real gameweek -- a deliberately heavy weight
-# (comparable to a big chunk of fc26_overall itself) since actual playing
-# time is the single best real-world signal for "will play again." Scales
-# linearly 0 (unused) to MINUTES_WEIGHT (a full 90 minutes). Added
-# 2026-09-11 per Jer.
-MINUTES_WEIGHT = 25.0
-FULL_MATCH_MINUTES = 90.0
-
-# A player who's still injury-flagged THIS week but came off the bench
-# (played some minutes without starting) LAST week is trending toward a
-# start soon -- boosted on top of whatever the raw minutes number alone
-# would give them, since a 15-minute cameo undersells how close they are
-# to a full recall. Caller (sync_megavision_rank.py) decides is_returning_sub
-# from injury_status (this week) + started_last_week/minutes_last_week
-# (last week); this function just applies the bonus.
-RETURNING_SUB_BONUS = 15.0
-
-BELL_CENTER = 50.0
-BELL_SPREAD = 15.0  # points per standard deviation
-
-GATE_CLEAN_START = 1.00
-GATE_DOUBTFUL_START = 0.75
-GATE_NOT_STARTING = 0.45
-GATE_OUT = 0.15
 
 
-def raw_composite(fc26_overall, club_avg_fc26, league_avg_fc26,
-                   opponent_avg_fc26, is_home, player_score, position_avg_score,
-                   minutes_last_week=None, is_returning_sub=False):
-    """One player's pre-normalization score. All the _avg_ inputs are
-    already computed across the pool by the caller (see sync_megavision_rank.py).
-    minutes_last_week/is_returning_sub are optional so existing callers
-    that don't have that data yet still work (falls back to no bonus)."""
-    team_strength_bonus = (club_avg_fc26 - league_avg_fc26) * TEAM_STRENGTH_WEIGHT
-    team_strength_cap = fc26_overall * TEAM_STRENGTH_CAP_PCT
-    team_strength_bonus = max(-team_strength_cap, min(team_strength_cap, team_strength_bonus))
-
-    matchup_bonus = (league_avg_fc26 - opponent_avg_fc26) * MATCHUP_OPPONENT_WEIGHT if opponent_avg_fc26 is not None else 0.0
-    if is_home is True:
-        matchup_bonus += HOME_BONUS
-    elif is_home is False:
-        matchup_bonus -= AWAY_PENALTY
-    matchup_cap = fc26_overall * MATCHUP_CAP_PCT
-    matchup_bonus = max(-matchup_cap, min(matchup_cap, matchup_bonus))
-
-    form_bonus = (player_score - position_avg_score) * FORM_WEIGHT if player_score is not None and position_avg_score is not None else 0.0
-
-    minutes_bonus = 0.0
-    if minutes_last_week is not None:
-        minutes_bonus = min(1.0, max(0.0, minutes_last_week) / FULL_MATCH_MINUTES) * MINUTES_WEIGHT
-    if is_returning_sub:
-        minutes_bonus += RETURNING_SUB_BONUS
-
-    return fc26_overall + team_strength_bonus + matchup_bonus + form_bonus + minutes_bonus
+def _minmax(value, lo, hi):
+    """value scaled into [0,100] given the pool's [lo,hi] range. Falls back
+    to a neutral 50 when there's no real range to scale against (missing
+    data, or every player in the group tied)."""
+    if value is None or lo is None or hi is None or hi <= lo:
+        return 50.0
+    return max(0.0, min(100.0, 100.0 * (value - lo) / (hi - lo)))
 
 
-def bell_curve(raw_values):
-    """[raw] -> [0-100 bell-shaped score], mean/stdev computed across the
-    whole list. Population stdev (not sample) -- we have the entire pool,
-    not a sample of it."""
-    n = len(raw_values)
-    if n == 0:
-        return []
-    mean = sum(raw_values) / n
-    variance = sum((v - mean) ** 2 for v in raw_values) / n
-    stdev = variance ** 0.5
-    if stdev == 0:
-        return [BELL_CENTER for _ in raw_values]
-    return [max(1.0, min(100.0, BELL_CENTER + BELL_SPREAD * (v - mean) / stdev)) for v in raw_values]
+def fc26_subscore(fc26_overall):
+    return max(0.0, min(100.0, fc26_overall if fc26_overall is not None else 0.0))
 
 
-def start_gate(ffs_start, ffs_doubt, is_out):
-    """is_out: explicit injury/unavailability (Fantrax injury_status set
-    with an "Out"/"Inactive" tone, or FFS's Out list) -- distinct from
-    ffs_doubt (a live fitness-test %, could still play)."""
+def season_fpts_subscore(season_fpts, position_min, position_max):
+    """Min-max normalized WITHIN the player's own Fantrax position group --
+    a GK's season point total and a forward's aren't on the same scale
+    under Fantrax's own scoring rules, so comparing them league-wide would
+    be apples to oranges."""
+    return _minmax(season_fpts, position_min, position_max)
+
+
+def last_game_fpts_subscore(last_game_fpts, position_min, position_max):
+    return _minmax(last_game_fpts, position_min, position_max)
+
+
+def last_game_minutes_subscore(minutes):
+    if minutes is None:
+        return 0.0
+    return max(0.0, min(100.0, minutes / 90.0 * 100.0))
+
+
+def team_strength_subscore(own_position):
+    """Real EPL standings position (1=top, 20=bottom) -> 0-100, top club
+    of the table scores 100."""
+    if own_position is None:
+        return 50.0
+    return max(0.0, min(100.0, 100.0 * (EPL_CLUB_COUNT - own_position) / (EPL_CLUB_COUNT - 1)))
+
+
+def opponent_weakness_subscore(opponent_position):
+    """The mirror of team_strength_subscore -- a bottom-of-the-table
+    opponent (position 20) scores 100 (a very favorable matchup); a
+    league-leading opponent (position 1) scores 0."""
+    if opponent_position is None:
+        return 50.0
+    return max(0.0, min(100.0, 100.0 * (opponent_position - 1) / (EPL_CLUB_COUNT - 1)))
+
+
+# fantasyfootballscout.co.uk sub-score -- the exact same tiers the old (v1)
+# multiplicative start-certainty gate used, just expressed directly on the
+# 0-100 scale instead of as a 0-1 multiplier:
+#   FFS's own structured Out list              -> 15
+#   Not in FFS's predicted XI                   -> 45
+#   In FFS's predicted XI, but a fitness doubt  -> 75
+#   Clean, undoubted FFS predicted XI slot      -> 100
+FFS_OUT_SCORE = 15.0
+FFS_NOT_STARTING_SCORE = 45.0
+FFS_DOUBTFUL_SCORE = 75.0
+FFS_CLEAN_START_SCORE = 100.0
+
+
+def ffs_subscore(ffs_start, ffs_doubt, is_out):
+    """is_out: FFS's own structured Out list (see sync_player_ranks.py's
+    ffs_out) -- a real curated call, not a guess."""
     if is_out:
-        return GATE_OUT
+        return FFS_OUT_SCORE
     if not ffs_start:
-        return GATE_NOT_STARTING
+        return FFS_NOT_STARTING_SCORE
     if ffs_doubt:
-        return GATE_DOUBTFUL_START
-    return GATE_CLEAN_START
+        return FFS_DOUBTFUL_SCORE
+    return FFS_CLEAN_START_SCORE
+
+
+# rotowire.com sub-score -- derived the same way as the FFS one, off the
+# club's own positional depth chart: rank 1 (first-choice at that slot) is
+# the strongest signal a static depth chart can give, tapering off by rank,
+# with RotoWire's own inline injury/suspension tags overriding the rank
+# entirely when present (an OUT/SUS tag means the depth-chart rank is
+# stale; a GTD tag means "picked, but a fitness call" -- mirrors FFS's own
+# doubt tier exactly):
+#   OUT or SUS tag                        -> 15  (mirrors FFS's Out tier)
+#   GTD tag                                -> 75  (mirrors FFS's doubt tier)
+#   Depth rank 1 (first-choice)            -> 100
+#   Depth rank 2                           -> 60
+#   Depth rank 3                           -> 35
+#   Depth rank 4th-choice or lower         -> 20
+#   Not on the club's depth chart at all   -> 45  (mirrors FFS's not-starting tier)
+ROTO_OUT_TAGS = {"OUT", "SUS"}
+ROTO_DOUBT_TAGS = {"GTD"}
+ROTO_OUT_SCORE = 15.0
+ROTO_DOUBT_SCORE = 75.0
+ROTO_BY_DEPTH_RANK = {1: 100.0, 2: 60.0, 3: 35.0}
+ROTO_DEPTH_RANK_DEFAULT_SCORE = 20.0
+ROTO_UNLISTED_SCORE = 45.0
+
+
+def roto_subscore(depth_rank, inj_tag):
+    if inj_tag in ROTO_OUT_TAGS:
+        return ROTO_OUT_SCORE
+    if inj_tag in ROTO_DOUBT_TAGS:
+        return ROTO_DOUBT_SCORE
+    if depth_rank is None:
+        return ROTO_UNLISTED_SCORE
+    return ROTO_BY_DEPTH_RANK.get(depth_rank, ROTO_DEPTH_RANK_DEFAULT_SCORE)
+
+
+def compute_rank(p):
+    """p: one player's dict of already-resolved inputs -- fc26_overall,
+    season_fpts, position_fpts_min/max, last_game_fpts,
+    position_last_game_fpts_min/max, last_game_minutes, own_position,
+    opponent_position, ffs_start, ffs_doubt, is_out, roto_depth_rank,
+    roto_inj_tag (see compute_ranks/sync_megavision_rank.py for how these
+    get resolved from real data). Returns the final 0-100 MEGAVISION Rank:
+    a straight weighted sum of 8 independently-normalized 0-100 sub-scores.
+    No bell curve, no gate -- every factor contributes exactly its stated
+    percentage of the final number."""
+    subscores = {
+        "fc26": fc26_subscore(p["fc26_overall"]),
+        "season_fpts": season_fpts_subscore(p["season_fpts"], p["position_fpts_min"], p["position_fpts_max"]),
+        "last_game_fpts": last_game_fpts_subscore(
+            p["last_game_fpts"], p["position_last_game_fpts_min"], p["position_last_game_fpts_max"]
+        ),
+        "last_game_minutes": last_game_minutes_subscore(p["last_game_minutes"]),
+        "team_strength": team_strength_subscore(p["own_position"]),
+        "opponent_weakness": opponent_weakness_subscore(p["opponent_position"]),
+        "ffs": ffs_subscore(p["ffs_start"], p["ffs_doubt"], p["is_out"]),
+        "roto": roto_subscore(p["roto_depth_rank"], p["roto_inj_tag"]),
+    }
+    total = sum(subscores[k] * RANK_WEIGHTS[k] for k in RANK_WEIGHTS)
+    return round(max(1.0, min(100.0, total)), 1)
+
+
+def compute_ranks(players):
+    """players: list of dicts, each shaped per compute_rank(). Returns a
+    parallel list of final 0-100 scores."""
+    return [compute_rank(p) for p in players]
 
 
 def matchup_factor(club_avg_fc26, league_avg_fc26, opponent_avg_fc26, is_home):
@@ -176,54 +239,3 @@ def start_likelihoods(group):
     return pcts
 
 
-def compute_ranks(players):
-    """players: list of dicts, each with raw_composite inputs already
-    resolved to keys: fc26_overall, club_avg_fc26, league_avg_fc26,
-    opponent_avg_fc26, is_home, score, position_avg_score, ffs_start,
-    ffs_doubt, is_out, minutes_last_week, is_returning_sub. Returns a
-    parallel list of final 0-100 scores."""
-    raws = [
-        raw_composite(
-            p["fc26_overall"], p["club_avg_fc26"], p["league_avg_fc26"],
-            p["opponent_avg_fc26"], p["is_home"], p["score"], p["position_avg_score"],
-            p.get("minutes_last_week"), p.get("is_returning_sub", False),
-        )
-        for p in players
-    ]
-    bells = bell_curve(raws)
-    gates = [start_gate(p["ffs_start"], p["ffs_doubt"], p["is_out"]) for p in players]
-    return [round(max(1.0, min(100.0, b * g)), 1) for b, g in zip(bells, gates)]
-
-
-# YOUTH START GATE -- an unpromoted "Youth Player" (Rulez 4.1(6): rights
-# already held via the Youth Draft, 23-or-younger, selectable off an EPL
-# roster without a contract) only gets 4 league starts before a 5th one
-# forces promotion -- a real cost (burns a roster decision, a multi-year
-# slot down the line). Benching an established, already-paid-for player to
-# spend one of those 4 starts should require a real edge, not a marginal
-# rank tick. Requiring the youth's MEGAVISION Rank to be at least 25%
-# better than the alternative makes that trade-off explicit instead of
-# silently letting the raw rank ordering decide it. Added 2026-09-11,
-# tuned to 25% on 2026-09-11 per Jer (initial ask was "at least 2x" --
-# revised down once we started building the roster_manager.py tool this
-# gates, "for the time being," i.e. expect this to keep moving).
-YOUTH_START_RANK_MULTIPLIER = 1.25
-
-# A youth player has 4 free league starts before the 5th forces promotion
-# (Rulez 4.1(6)). No counted-start tracker exists yet (Fantrax's own
-# "Games Started" stat is the player's real-world EPL appearances, not a
-# count of Mega top-10-counted weeks) -- this constant is the ceiling to
-# check a real tracker against once one exists, not itself a live count.
-YOUTH_FREE_STARTS = 4
-
-
-def should_start_youth(youth_rank, alternative_rank):
-    """True if an unpromoted youth's MEGAVISION Rank clears the 2x bar
-    over the best established alternative at the same slot. If there's no
-    established alternative to compare against (an empty roster spot),
-    pass alternative_rank=0 -- any youth rank clears that automatically."""
-    if youth_rank is None:
-        return False
-    if not alternative_rank:
-        return True
-    return youth_rank >= alternative_rank * YOUTH_START_RANK_MULTIPLIER
