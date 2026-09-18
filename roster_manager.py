@@ -632,11 +632,14 @@ def render_rosters(result, conn):
     return "\n".join(lines)
 
 
-def score_sheet(result, conn):
-    """Proposed final Sr lineup and proposed Jr roster (after this week's
-    plan), each row: rank, +/- vs last week, start likelihood. This is
-    the exact table format shown for QA -- also embedded in the team
-    email so owners see the same numbers."""
+def score_sheet(result, conn, executed=True):
+    """Final Sr lineup and Jr roster (after this week's plan), each row:
+    rank, +/- vs last week, start likelihood. This is the exact table
+    format shown for QA -- also embedded in the team email so owners see
+    the same numbers. Headers say "PROPOSED ..." for a read-only,
+    not-yet-executed report and just "... LINEUP/ROSTER" once it's
+    actually been run for real (executed=True, the default -- matches
+    build_email_body's own default)."""
     sr_picks = [p for players in result["plan"].values() for p in players]
     sr_names = {p["name"] for p in sr_picks}
     combined = result["active_roster"] + result["other_roster"]
@@ -672,9 +675,10 @@ def score_sheet(result, conn):
         jr_rows.append({"name": p["name"], "pos": p["pos"], "rank": rank, "likelihood": likelihood, "delta": delta})
     jr_rows = rows_for(jr_rows)
 
+    prefix = "" if executed else "PROPOSED "
     return (
-        render(f'PROPOSED SR LINEUP ({"Sr" if result["sr"] else "Jr"} week)', sr_rows)
-        + "\n\n" + render("PROPOSED JR (YOUTH) ROSTER", jr_rows)
+        render(f'{prefix}SR LINEUP ({"Sr" if result["sr"] else "Jr"} week)', sr_rows)
+        + "\n\n" + render(f"{prefix}JR (YOUTH) ROSTER", jr_rows)
     )
 
 
@@ -826,7 +830,7 @@ def build_email_body(result, moves, conn, sess, executed=True):
             lines.append(f'  {r["name"]:24s} ({r["pos"]}, {r["where"]})  {r["starts"]} starts, next start needs {next_bar_s}{flag}')
 
     lines.append("")
-    lines.append(score_sheet(result, conn))
+    lines.append(score_sheet(result, conn, executed=executed))
 
     # Predicted score vs this week's real opponent, using each side's own
     # best-XI by real fpts-to-date (see predicted_score()) -- not a rank
