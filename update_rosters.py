@@ -1487,6 +1487,48 @@ standings_rows_html = "".join(
     for row in _all_standings[:12]
 )
 
+# ---- Playoff Watch: our 12 Sr teams (fantrax_standings, computed near the
+# top of this script) mapped onto EPL-style zones -- Champions League (top
+# 4), Europa League (5-8), mid-table (9-11), and a tongue-in-cheek
+# "Relegation Zone" for 12th. Added 2026-09-20 per Jer: the league doesn't
+# actually relegate anyone -- the bottom zone is flavor/drama, not a real
+# rule, same spirit as the Derby Day / bottom-of-the-table-drama fan bonuses
+# above.
+PLAYOFF_ZONES = [
+    (1, 4, "Champions League", "mv-gold"),
+    (5, 8, "Europa League", "mv-blue"),
+    (9, 11, "Mid-table", None),
+    (12, 12, "Relegation Zone", "mv-crimson"),
+]
+
+
+def _zone_for_rank(rank):
+    for lo, hi, label, color in PLAYOFF_ZONES:
+        if lo <= rank <= hi:
+            return label, color
+    return "—", None
+
+
+_playoff_rows = []
+for _pw_code, _pw_s in sorted(fantrax_standings.items(), key=lambda kv: kv[1]["rank"]):
+    _pw_zone, _pw_color = _zone_for_rank(_pw_s["rank"])
+    _pw_stripe = f'border-left:3px solid var(--{_pw_color});' if _pw_color else ""
+    _pw_badge = (
+        f'<span class="mv-badge" style="background:transparent;border:1px solid var(--{_pw_color});'
+        f'color:var(--{_pw_color});font-size:9px;padding:1px 6px;">{_pw_zone}</span>'
+        if _pw_color else f'<span class="dim">{_pw_zone}</span>'
+    )
+    _playoff_rows.append(
+        f'<tr style="{_pw_stripe}"><td data-sort="{_pw_s["rank"]}">{_pw_s["rank"]}</td>'
+        f'<td><a href="team-{_pw_code.lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">'
+        f'{team_name_by_code.get(_pw_code, _pw_code)}</a></td>'
+        f'<td class="dim">{_pw_s["record"]}</td>'
+        f'<td data-sort="{_pw_s["fpts_for"]}">{_pw_s["fpts_for"]:.1f}</td>'
+        f'<td data-sort="{_pw_s["win_pct"]}">{_pw_s["win_pct"]:.0%}</td>'
+        f'<td>{_pw_badge}</td></tr>'
+    )
+playoff_watch_rows_html = "".join(_playoff_rows)
+
 rivalries_rows_html = "".join(
     f'<tr><td>{team_name_by_code.get(a, a)}</td><td>{team_name_by_code.get(b, b)}</td></tr>'
     for a, b in (tuple(r) for r in fa.RIVALRIES)
@@ -1694,6 +1736,22 @@ financials_body = f"""
               </tr></thead>
               <tbody>
                 {standings_rows_html}
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="mv-chrome-text" style="font-size:16px;margin:22px 0 8px;">Playoff Watch</h3>
+          <div class="sub" style="margin-bottom:10px;">Real Fantrax standings (our 12 Sr teams), EPL-style zones: top 4
+            Champions League, 5th-8th Europa League, 9th-11th mid-table, 12th a tongue-in-cheek "Relegation Zone" --
+            <strong>MEGAVISION does not actually relegate anyone</strong>, this is flavor, not a rule.</div>
+          <div class="mv-table-scroll" style="margin-bottom:22px;">
+            <table class="mv-table mv-sortable" id="playoff-watch-table">
+              <thead><tr>
+                <th data-sort-type="num">Rank</th><th data-sort-type="text">Team</th><th data-sort-type="text">Record</th>
+                <th data-sort-type="num">FPts</th><th data-sort-type="num">Win%</th><th data-sort-type="text">Zone</th>
+              </tr></thead>
+              <tbody>
+                {playoff_watch_rows_html}
               </tbody>
             </table>
           </div>
