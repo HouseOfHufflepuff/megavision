@@ -107,6 +107,13 @@ YOUTH_ESCALATION_PCT = 0.20
 # owner needs to see and act on.
 PROMOTION_TRIGGER_STARTS = 5
 
+# Cross-position comparison floor (per Jer 2026-09-18): a youth-eligible D
+# can now clear the escalating bar against the weakest established player
+# at M or F too, not just fellow D's -- "like for like" was more
+# restrictive than the Rulez require. The only constraint is that D, M,
+# and F each keep at least this many active players after any such swap.
+MIN_ACTIVE_PER_OUTFIELD_POS = 3
+
 
 CLUB_ALIASES = {
     "arsenal": "ARS", "aston villa": "AVL", "bournemouth": "BOU", "brentford": "BRE",
@@ -357,6 +364,85 @@ def _flag_promotion(notes, pos, yc, new_start_count):
         )
 
 
+def _fill_position_group(pool_by_pos, slots_needed, positions, min_per_pos=None):
+    """Fill `positions` (["GK"], or ["D","M","F"] together) applying the
+    escalating youth-start bar. When min_per_pos is set, a youth-eligible
+    player at one position in the group can displace the globally weakest
+    established player at ANY position in the group -- not just their own
+    -- as long as that position keeps at least min_per_pos players
+    afterward. Without min_per_pos (e.g. GK, a group of one), comparison
+    stays strictly within the position, same as before. Returns
+    (picked_by_pos, notes)."""
+    picked_by_pos = {}
+    for pos in positions:
+        pool = pool_by_pos.get(pos, [])
+        established = sorted(
+            (p for p in pool if not p["is_youth_eligible"]),
+            key=lambda p: p["rank"] if p["rank"] is not None else -1, reverse=True,
+        )
+        picked_by_pos[pos] = established[:slots_needed.get(pos, 0)]
+
+    youth_pool = sorted(
+        (p for pos in positions for p in pool_by_pos.get(pos, []) if p["is_youth_eligible"]),
+        key=lambda p: p["rank"] if p["rank"] is not None else -1, reverse=True,
+    )
+
+    notes = []
+    for yc in youth_pool:
+        pos = yc["pos"]
+        if yc["rank"] is None:
+            notes.append(f'  {pos}: skip {yc["name"]} (held youth rights) -- no MEGAVISION Rank data available')
+            continue
+        starts = yc.get("starts", 0)
+        required_pct = starts * YOUTH_ESCALATION_PCT
+
+        # Room for another slot outright at their own position -- fill it
+        # directly, no swap needed (e.g. GK's fixed 2-slot rule with one
+        # of the two goalkeepers being youth-eligible, or a position that
+        # doesn't have enough established players to fill its own count).
+        if len(picked_by_pos[pos]) < slots_needed.get(pos, 0):
+            picked_by_pos[pos].append(yc)
+            notes.append(f'  {pos}: {yc["name"]} added -- open slot, no alternative to compare against')
+            _flag_promotion(notes, pos, yc, starts + 1)
+            continue
+
+        if min_per_pos is not None:
+            # Cross-position pool: every currently-picked player across the
+            # whole group, EXCLUDING anyone whose own position is already
+            # at the floor (displacing them would break the min-per-position
+            # rule for that position).
+            candidates = [p for p2 in positions if len(picked_by_pos[p2]) > min_per_pos for p in picked_by_pos[p2]]
+        else:
+            candidates = picked_by_pos[pos]
+
+        if not candidates:
+            notes.append(
+                f'  {pos}: skip {yc["name"]} -- no eligible alternative to displace without dropping a '
+                f'position below {min_per_pos}'
+            )
+            continue
+
+        weakest = min(candidates, key=lambda p: p["rank"] if p["rank"] is not None else -1)
+        weakest_rank = weakest["rank"] if weakest["rank"] is not None else 0
+        bar = weakest_rank * (1.0 + required_pct)
+        if yc["rank"] >= bar and yc["rank"] > weakest_rank:
+            picked_by_pos[weakest["pos"]].remove(weakest)
+            picked_by_pos[pos].append(yc)
+            cross_note = f' (a {weakest["pos"]})' if weakest["pos"] != pos else ""
+            notes.append(
+                f'  {pos}: {yc["name"]} ({yc["rank"]:.1f}, {starts} prior starts) clears the {required_pct:.0%} bar over '
+                f'{weakest["name"]}{cross_note} ({weakest_rank:.1f}, bar was {bar:.1f}) -- start {starts + 1}'
+            )
+            _flag_promotion(notes, pos, yc, starts + 1)
+        else:
+            yc_rank_display = f'{yc["rank"]:.1f}' if yc["rank"] is not None else "0.0"
+            notes.append(
+                f'  {pos}: {yc["name"]} ({yc_rank_display}, {starts} prior starts) does NOT clear the '
+                f'{required_pct:.0%} bar over {weakest["name"]} ({weakest_rank:.1f}, needed {bar:.1f}) -- stays off'
+            )
+    return picked_by_pos, notes
+
+
 def build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr):
     sr_id, jr_id = fl.FANTRAX_TEAM_ID[code], fl.JUNIOR_TEAM_ID[code]
     active_id = sr_id if sr else jr_id
@@ -410,67 +496,26 @@ def build_plan(conn, sess, youth_by_code, elements, lookup, code, week, sr):
 
     plan = {}
     notes = []
-    for pos, n in slots_needed.items():
-        pool = pool_by_pos.get(pos, [])
+    # GK stays its own isolated group -- no cross-position comparison (per
+    # Jer 2026-09-18: D/M/F can compare across each other, GK wasn't
+    # mentioned and has its own "both always ride together" rule anyway).
+    gk_plan, gk_notes = _fill_position_group(pool_by_pos, slots_needed, ["GK"])
+    plan.update(gk_plan)
+    notes.extend(gk_notes)
 
-        # Escalating-bar rule (per Jer 2026-09-17, replacing the old flat
-        # 25%-better gate AND the hard 4-start cap): a youth-eligible
-        # player -- continuing on the roster or a brand-new candidate,
-        # treated identically -- must beat the weakest alternative by
-        # (their own CURRENT start count * 20%). 0 starts: even. 1: 20%
-        # better. 2: 40%. 3: 60%. 4: 80%. No hard stop at any count -- the
-        # bar just keeps climbing, so it gets steadily harder to keep
-        # starting the more starts they've already used, rather than a
-        # cliff-edge cutoff. Applies every week, so an already-active youth
-        # can be bumped off just as easily as a new candidate is kept off.
-        established = sorted(
-            (p for p in pool if not p["is_youth_eligible"]),
-            key=lambda p: p["rank"] if p["rank"] is not None else -1, reverse=True,
-        )
-        picked = established[:n]
-
-        youth_pool = sorted(
-            (p for p in pool if p["is_youth_eligible"]),
-            key=lambda p: p["rank"] if p["rank"] is not None else -1, reverse=True,
-        )
-        for yc in youth_pool:
-            if yc["rank"] is None:
-                notes.append(f'  {pos}: skip {yc["name"]} (held youth rights) -- no MEGAVISION Rank data available')
-                continue
-            starts = yc.get("starts", 0)
-            required_pct = starts * YOUTH_ESCALATION_PCT
-            # Room for another slot outright (not yet at n) -- fill it
-            # directly, no swap needed. Real bug fixed 2026-09-17: this used
-            # to check "if not picked" (completely empty) instead of "still
-            # has room," so a position with a mix of established and youth
-            # players (e.g. GK's fixed 2-slot rule with one of the two
-            # goalkeepers being youth-eligible) wrongly forced a 1-for-1
-            # swap against the other real goalkeeper instead of just
-            # filling the second open slot -- dropping a mandatory starter
-            # (both GKs always play) down to one.
-            if len(picked) < n:
-                picked.append(yc)
-                notes.append(f'  {pos}: {yc["name"]} added -- open slot, no alternative to compare against')
-                _flag_promotion(notes, pos, yc, starts + 1)
-                continue
-            weakest = min(picked, key=lambda p: p["rank"] if p["rank"] is not None else -1)
-            weakest_rank = weakest["rank"] if weakest["rank"] is not None else 0
-            bar = weakest_rank * (1.0 + required_pct)
-            if yc["rank"] >= bar and yc["rank"] > weakest_rank:
-                picked.remove(weakest)
-                picked.append(yc)
-                notes.append(
-                    f'  {pos}: {yc["name"]} ({yc["rank"]:.1f}, {starts} prior starts) clears the {required_pct:.0%} bar over '
-                    f'{weakest["name"]} ({weakest_rank:.1f}, bar was {bar:.1f}) -- start {starts + 1}'
-                )
-                _flag_promotion(notes, pos, yc, starts + 1)
-            else:
-                yc_rank_display = f'{yc["rank"]:.1f}' if yc["rank"] is not None else "0.0"
-                notes.append(
-                    f'  {pos}: {yc["name"]} ({yc_rank_display}, {starts} prior starts) does NOT clear the '
-                    f'{required_pct:.0%} bar over {weakest["name"]} ({weakest_rank:.1f}, needed {bar:.1f}) -- stays off'
-                )
-        plan[pos] = picked
+    # D/M/F share one combined comparison pool (per Jer 2026-09-18): a
+    # youth-eligible D can now clear the escalating bar against the
+    # weakest established player at ANY of D/M/F, not just fellow
+    # defenders, as long as that position keeps at least
+    # MIN_ACTIVE_PER_OUTFIELD_POS players afterward. Previously every
+    # position was scored strictly "like for like" (a D only ever
+    # competed against other D's), which was more restrictive than the
+    # Rulez actually require.
+    dmf_plan, dmf_notes = _fill_position_group(
+        pool_by_pos, slots_needed, ["D", "M", "F"], min_per_pos=MIN_ACTIVE_PER_OUTFIELD_POS
+    )
+    plan.update(dmf_plan)
+    notes.extend(dmf_notes)
 
     return {
         "code": code, "week": week, "sr": sr, "active_id": active_id, "other_id": other_id,
