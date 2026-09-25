@@ -1,0 +1,26 @@
+rank,name,age,team,league,position,fc_pot,fc_ovr,speed,score,sources
+1,Lamine Yamal Nasraoui Ebana,17,FC Barcelona,La Liga,"RM, RW",95.0,89.0,85.0,93.5,fc26_filter|megabot_search
+2,Endrick Felipe Moreira de Sousa,18,Real Madrid,La Liga,"ST, RW",91.0,77.0,87.0,87.6,fc26_filter
+3,Estêvão Willian Almeida,18,Chelsea,Premier League,"RM, CAM, RW",89.0,78.0,90.0,86.85,fc26_filter
+4,Jorrel Hato,19,Chelsea,Premier League,"LB, CB",89.0,78.0,85.0,85.85,megabot_search
+5,Pau Cubarsí Paredes,18,FC Barcelona,La Liga,CB,88.0,82.0,70.0,85.2,fc26_filter|megabot_search
+6,Geovany Tcherno Quenda,18,Sporting CP,Primeira Liga,"RM, LM, LW, RW",88.0,76.0,85.0,85.2,fantrax_eligible|fc26_filter|nxgn_2026
+7,Rodrigo Mora de Carvalho,18,FC Porto,Primeira Liga,"CAM, LW, CM, ST",89.0,76.0,77.0,85.05,fc26_filter
+8,Franco Mastantuono,17,Real Madrid,La Liga,"CAM, RW, ST",88.0,77.0,74.0,84.85,fc26_filter|megabot_search|nxgn_2026
+9,Rio Bass Ray Ngumoha Adigun,16,Liverpool,Premier League,"LM, LW",88.0,68.0,90.0,84.7,fc26_filter|megabot_search
+10,Ethan Chidiebere Nwaneri,18,Arsenal,Premier League,"RW, CM, RM",87.0,76.0,82.0,84.25,fantrax_eligible|fc26_filter|nxgn_2026
+11,Myles Anthony Lewis-Skelly,18,Arsenal,Premier League,"LB, CM",87.0,78.0,76.0,84.15,fc26_filter|megabot_search
+12,Givairo Read,19,Feyenoord,Eredivisie,"RB, RM",88.0,75.0,81.0,84.05,megabot_search
+13,Jorthy Mokio,17,Ajax,Eredivisie,"CDM, CM, LB, CB",89.0,70.0,70.0,83.35,fc26_filter|megabot_search|nxgn_2026
+14,Ayyoub Bouaddi,17,Lille OSC,Ligue 1,"CM, CDM",86.0,75.0,75.0,83.15,fantrax_eligible|fc26_filter|nxgn_2026
+15,Mikey Steven Danny Moore,17,Rangers FC,Premiership,"LW, LM",86.0,72.0,76.0,82.5,fantrax_eligible|fc26_filter|nxgn_2026
+16,Charalampos Kostoulas,18,Brighton & Hove Albion,Premier League,"ST, CAM, RM",85.0,72.0,86.0,82.35,fantrax_eligible|fc26_filter|nxgn_2026
+17,Leny Yoro,19,Manchester United,Premier League,CB,86.0,78.0,69.0,82.3,megabot_search
+18,Martim Moreira Moutinho Fernandes,19,FC Porto,Primeira Liga,"RB, RM",85.0,75.0,81.0,82.1,megabot_search
+19,Finn Jeltsch,18,VfB Stuttgart,Bundesliga,CB,87.0,72.0,69.0,81.95,fc26_filter|megabot_search
+20,Ray Kendry Páez Andrade,18,RC Strasbourg Alsace,Ligue 1,"CAM, RW, CM",85.0,73.0,79.0,81.9,fc26_filter
+21,Archie Gray,19,Tottenham Hotspur,Premier League,"CDM, CB, RB, RM",86.0,75.0,71.0,81.75,megabot_search
+22,Konstantinos Karetsas,17,KRC Genk,Pro League,"CAM, RW, CM",86.0,70.0,73.0,81.7,fc26_filter|nxgn_2026
+23,Pablo García Fernández,18,Real Betis Balompié,La Liga,"RM, ST, LM, RW",87.0,68.0,75.0,81.55,fc26_filter
+24,Ian Martín Subiabre,18,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",85.0,69.0,85.0,81.5,fc26_filter|nxgn_2026
+25,Tidiam Diadie Stephan Gomis,18,RB Leipzig,Bundesliga,"LM, RM, ST, LW",85.0,68.0,85.0,81.25,fc26_filter
