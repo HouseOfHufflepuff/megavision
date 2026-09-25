@@ -1,0 +1,101 @@
+rank,name,age,team,league,position,fc_pot,fc_ovr,speed,sources
+1,Lamine Yamal Nasraoui Ebana,17,FC Barcelona,La Liga,"RM, RW",95.0,89.0,85.0,fc26_filter
+2,Endrick Felipe Moreira de Sousa,18,Real Madrid,La Liga,"ST, RW",91.0,77.0,87.0,fc26_filter
+3,Estêvão Willian Almeida,18,Chelsea,Premier League,"RM, CAM, RW",89.0,78.0,90.0,fc26_filter
+4,Rodrigo Mora de Carvalho,18,FC Porto,Primeira Liga,"CAM, LW, CM, ST",89.0,76.0,77.0,fc26_filter
+5,Jorthy Mokio,17,Ajax,Eredivisie,"CDM, CM, LB, CB",89.0,70.0,70.0,fc26_filter|nxgn_2026
+6,Pau Cubarsí Paredes,18,FC Barcelona,La Liga,CB,88.0,82.0,70.0,fc26_filter
+7,Givairo Read,19,Feyenoord,Eredivisie,"RB, RM",88.0,75.0,81.0,fc26_filter
+8,Rio Bass Ray Ngumoha Adigun,16,Liverpool,Premier League,"LM, LW",88.0,68.0,90.0,fc26_filter
+9,Warren Zaïre-Emery,19,Paris Saint-Germain,Ligue 1,"CM, CDM, CAM",87.0,80.0,79.0,fc26_filter
+10,Assane Diao Diaoune,19,Como,Serie A,"LM, RM, LW",87.0,76.0,90.0,fc26_filter
+11,Kees Smit,19,AZ Alkmaar,Eredivisie,"CAM, CM, RM",87.0,72.0,61.0,fc26_filter
+12,Luka Vušković,18,Hamburger SV,Bundesliga,CB,87.0,72.0,58.0,fc26_filter
+13,Julien Dienda M. Duranville,19,Borussia Dortmund,Bundesliga,"RM, LM, ST, RW",87.0,72.0,88.0,fc26_filter
+14,Finn Jeltsch,18,VfB Stuttgart,Bundesliga,CB,87.0,72.0,69.0,fc26_filter
+15,Pablo García Fernández,18,Real Betis Balompié,La Liga,"RM, ST, LM, RW",87.0,68.0,75.0,fc26_filter
+16,Francesco Camarda,17,Lecce,Serie A,ST,87.0,65.0,67.0,fc26_filter|nxgn_2026
+17,Leny Yoro,19,Manchester United,Premier League,CB,86.0,78.0,69.0,fc26_filter
+18,Maher Mauricio Carrizo,19,Vélez Sarsfield,Liga Profesional de Fútbol,"RM, CAM, ST, RW",86.0,72.0,87.0,fc26_filter
+19,Paul Wanner,19,PSV,Eredivisie,"CAM, RW, CM",86.0,72.0,75.0,fc26_filter
+20,Leo Sauer,19,Feyenoord,Eredivisie,"LW, CAM, LM",86.0,72.0,88.0,fc26_filter
+21,Christos Mouzakitis,18,Olympiacos FC,Super League,"CM, CAM",86.0,71.0,69.0,fc26_filter
+22,Tygo Land,19,FC Groningen,Eredivisie,"CM, CDM",86.0,68.0,73.0,fc26_filter
+23,Lennart Karl,17,FC Bayern München,Bundesliga,"CAM, RM, CM",86.0,63.0,69.0,fc26_filter|nxgn_2026
+24,Roger Fernandes,19,Al Ittihad,Pro League,"RM, LM, RW",85.0,76.0,89.0,fc26_filter
+25,Senny Mayulu,19,Paris Saint-Germain,Ligue 1,CM,85.0,75.0,75.0,fc26_filter
+26,Jesús Rodriguez Caraballo,19,Como,Serie A,"LM, RM, LW",85.0,74.0,80.0,fc26_filter
+27,Marc Bernal Casas,18,FC Barcelona,La Liga,"CDM, CM",85.0,73.0,61.0,fc26_filter
+28,Ray Kendry Páez Andrade,18,RC Strasbourg Alsace,Ligue 1,"CAM, RW, CM",85.0,73.0,79.0,fc26_filter
+29,Lennon Lee Miller,18,Udinese,Serie A,"CM, CDM, CAM, CB",85.0,71.0,73.0,fc26_filter
+30,Bazoumana Touré,19,TSG 1899 Hoffenheim,Bundesliga,"LM, LW, CAM",85.0,70.0,91.0,fc26_filter
+31,Ian Martín Subiabre,18,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",85.0,69.0,85.0,fc26_filter|nxgn_2026
+32,Forzan Assan Ouédraogo,19,RB Leipzig,Bundesliga,"CAM, CM",85.0,69.0,76.0,fc26_filter
+33,Antonio José Cordero Campillo,18,KVC Westerlo,Pro League,"LW, RW, LM",85.0,69.0,78.0,fc26_filter
+34,Tobías Emanuel Ramírez Cardozo,18,Argentinos Juniors,Liga Profesional de Fútbol,CB,85.0,69.0,78.0,fc26_filter
+35,Tidiam Diadie Stephan Gomis,18,RB Leipzig,Bundesliga,"LM, RM, ST, LW",85.0,68.0,85.0,fc26_filter
+36,Kouakou Henry-Joane Aaron Aimerick Gadou,18,FC Red Bull Salzburg,Bundesliga,CB,85.0,66.0,70.0,fc26_filter
+37,Alejandro Granados Torres,19,Club Brugge KV,Pro League,"CM, CAM",85.0,65.0,68.0,fc26_filter
+38,Justin Armando Lerma Soliz,17,Independiente del Valle,Serie A,"LM, CAM, CM, LW",85.0,64.0,78.0,fc26_filter
+39,Diego Basilio León Blanco,18,Manchester United,Premier League,"LB, LM",85.0,64.0,83.0,fc26_filter
+40,Mamadou Sarr,19,RC Strasbourg Alsace,Ligue 1,CB,84.0,76.0,66.0,fc26_filter
+41,Elias Niklas Baum,19,Eintracht Frankfurt,Bundesliga,"RB, RM",84.0,72.0,75.0,fc26_filter
+42,Ibrahim Maza,19,Bayer 04 Leverkusen,Bundesliga,"CAM, CM",84.0,71.0,75.0,fc26_filter
+43,Tyrique George,19,Chelsea,Premier League,"LM, RM, ST, LW",84.0,71.0,79.0,fc26_filter
+44,Marc Guiu Paz,19,Chelsea,Premier League,ST,84.0,71.0,76.0,fc26_filter
+45,Luis Guilherme Lira dos Santos,19,West Ham United,Premier League,"RM, LM, CAM, RW",84.0,71.0,76.0,fc26_filter
+46,Tóth Alex László,19,Ferencvárosi Torna Club,Nemzeti Bajnokság I,"CDM, CM",84.0,70.0,66.0,fc26_filter
+47,Jerónimo Dómina,19,Club Atlético Unión,Liga Profesional de Fútbol,ST,84.0,70.0,86.0,fc26_filter
+48,Min-hyuk Yang양민혁,19,Portsmouth,Championship,"RM, RW, LM",84.0,70.0,80.0,fc26_filter
+49,Veljko Milosavljević,18,AFC Bournemouth,Premier League,CB,84.0,70.0,53.0,fc26_filter
+50,Ayden Edford Heaven,18,Manchester United,Premier League,"CB, LB",84.0,69.0,69.0,fc26_filter
+51,Simone Pafundi,19,Sampdoria,Serie B,"CAM, CM, ST",84.0,68.0,76.0,fc26_filter
+52,Saïd El Mala,18,1. FC Köln,Bundesliga,"LM, CAM, LW",84.0,68.0,75.0,fc26_filter
+53,Christian Michel Kofane,18,Bayer 04 Leverkusen,Bundesliga,ST,84.0,68.0,63.0,fc26_filter
+54,Jon Martín Vicente,19,Real Sociedad,La Liga,CB,84.0,68.0,65.0,fc26_filter
+55,Jayden Osei Addai,19,Como,Serie A,"RM, RW",84.0,67.0,83.0,fc26_filter
+56,Mattia Liberali,18,Catanzaro,Serie B,"RW, RM, CAM",84.0,65.0,70.0,fc26_filter
+57,Chidozie Obi-Martin,17,Manchester United,Premier League,ST,84.0,65.0,71.0,fc26_filter
+58,Bruno Durdov,17,Hajduk Split,Hrvatska nogometna liga,"RW, RM",84.0,64.0,73.0,fc26_filter
+59,Rayane Bounida,19,Ajax,Eredivisie,"LW, CAM, LM",84.0,64.0,70.0,fc26_filter
+60,Daniel Díaz Gándara,19,Real Sociedad de Fútbol B,La Liga 2,"RM, ST, RW",84.0,63.0,69.0,fc26_filter
+61,Findlay Curtis,18,Rangers FC,Premiership,"LW, RW, LM",84.0,63.0,63.0,fc26_filter
+62,Semm Renders,17,Royal Antwerp FC,Pro League,"RB, RM",84.0,62.0,73.0,fc26_filter
+63,Can Yılmaz Uzun,19,Eintracht Frankfurt,Bundesliga,"CAM, ST, CM",83.0,74.0,62.0,fc26_filter
+64,Valentin Atangana Edoa,19,Al Ahli SFC,Pro League,"CDM, CM",83.0,73.0,66.0,fc26_filter
+65,Kosta Nedeljkovic,19,RB Leipzig,Bundesliga,"RB, RM",83.0,72.0,81.0,fc26_filter
+66,Abdulai Juma Bah,19,OGC Nice,Ligue 1,CB,83.0,72.0,66.0,fc26_filter
+67,Kauã Elias Nogueira,19,Shakhtar Donetsk,Premier League,ST,83.0,71.0,80.0,fc26_filter
+68,Gianluca Prestianni Gross,19,SL Benfica,Primeira Liga,"RM, CAM, RW",83.0,71.0,87.0,fc26_filter
+69,Santiago Javier Lencina,19,River Plate,Liga Profesional de Fútbol,"RW, CAM, RM",83.0,71.0,75.0,fc26_filter
+70,Mohamed Kader Meïté,17,Stade Rennais FC,Ligue 1,ST,83.0,70.0,65.0,fc26_filter
+71,Idrissa Guèye,18,Udinese,Serie A,ST,83.0,70.0,67.0,fc26_filter
+72,Mohamed Kader Meïté,17,Stade Rennais FC,Ligue 1,ST,83.0,70.0,65.0,nxgn_2026
+73,João Pedro Arnauth Barrocas Simões,18,Sporting CP,Primeira Liga,"CM, CAM, CDM",83.0,69.0,71.0,fc26_filter
+74,Maurice Krattenmacher,19,Hertha BSC,2. Bundesliga,"CAM, ST, CM",83.0,69.0,75.0,fc26_filter
+75,Yasin Özcan,19,RSC Anderlecht,Pro League,"CB, LB, LM",83.0,69.0,74.0,fc26_filter
+76,Lewis Koumas,19,Birmingham City,Championship,"RM, LM, RW",83.0,69.0,78.0,fc26_filter
+77,Marvin Young,19,Sparta Rotterdam,Eredivisie,"CB, RB, RM",83.0,69.0,69.0,fc26_filter
+78,João Pedro Arnauth Barrocas Simões,18,Sporting CP,Primeira Liga,"CM, CAM, CDM",83.0,69.0,71.0,nxgn_2026
+79,Pedro Henrique Cardoso de Lima,19,FC Porto,Primeira Liga,"RB, RM",83.0,68.0,76.0,fc26_filter
+80,Santino Andino Valencia,19,Godoy Cruz,Liga Profesional de Fútbol,"LM, LW, CAM",83.0,68.0,88.0,fc26_filter
+81,Harry John Amass,18,Sheffield Wednesday,Championship,"LB, LM",83.0,68.0,74.0,fc26_filter
+82,Carlos Espí Escrihuela,19,Levante UD,La Liga,ST,83.0,68.0,71.0,fc26_filter
+83,Nikolaus Wurmbrand,19,SK Rapid,Bundesliga,"RM, ST, RW",83.0,68.0,86.0,fc26_filter
+84,Harrison Armstrong,18,Preston North End,Championship,"CDM, CM",83.0,67.0,65.0,fc26_filter
+85,Tylel Tati,17,FC Nantes,Ligue 1,CB,83.0,67.0,68.0,fc26_filter|nxgn_2026
+86,Matias Siltanen,18,Djurgårdens IF,Allsvenskan,"CDM, CM",83.0,66.0,69.0,fc26_filter
+87,Viktor Tsukanov,19,Shakhtar Donetsk,Premier League,"CM, CAM, RM",83.0,65.0,66.0,fc26_filter
+88,Aaron Bouwman,17,Ajax,Eredivisie,CB,83.0,65.0,64.0,fc26_filter
+89,David Uyoyo Odogu,19,AC Milan,Serie A,CB,83.0,65.0,67.0,fc26_filter
+90,Sean Steur,17,Ajax,Eredivisie,"CM, CDM",83.0,64.0,72.0,fc26_filter|nxgn_2026
+91,Colby Donovan,18,Celtic,Premiership,"RB, CB, RM",83.0,64.0,73.0,fc26_filter
+92,Mason Melia,17,St Patrick's Athletic FC,Premier Division,ST,83.0,64.0,76.0,fc26_filter
+93,Antonio Fernández Casino,16,FC Barcelona,La Liga,"RW, RM",83.0,64.0,74.0,fc26_filter
+94,Kiano Dyer,18,FC Volendam,Eredivisie,"CM, CDM",83.0,63.0,72.0,fc26_filter
+95,Nathan De Cat,16,RSC Anderlecht,Pro League,"CDM, CM",83.0,63.0,61.0,fc26_filter|nxgn_2026
+96,Arturo Rodríguez Cosano,18,UD Las Palmas,La Liga 2,"RW, LW, RM",83.0,63.0,78.0,fc26_filter
+97,Pablo López Gómez,19,CD Mirandés,La Liga 2,"RW, LW, RM",83.0,63.0,56.0,fc26_filter
+98,Kaye Furo,18,Club Brugge KV,Pro League,ST,83.0,63.0,72.0,fc26_filter
+99,Artem Stepanov,17,1. FC Nürnberg,2. Bundesliga,ST,83.0,63.0,67.0,fc26_filter
+100,Hugo Pinilla Ruiz,19,Real Zaragoza,La Liga 2,"RM, CAM, LM, RW",83.0,62.0,67.0,fc26_filter
