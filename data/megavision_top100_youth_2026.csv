@@ -1,6 +1,6 @@
 rank,name,age,team,league,position,fc_pot,fc_ovr,speed,sources
 1,Jorthy Mokio,17,Ajax,Eredivisie,"CDM, CM, LB, CB",89.0,70.0,70.0,fc26_filter|nxgn_2026
-2,Pau Cubarsí Paredes,18,FC Barcelona,La Liga,CB,88.0,82.0,70.0,fc26_filter
+2,Pau Cubarsí Paredes,18,FC Barcelona,La Liga,CB,88.0,82.0,70.0,fc26_filter|nxgn_2026
 3,Givairo Read,19,Feyenoord,Eredivisie,"RB, RM",88.0,75.0,81.0,fc26_filter
 4,Kees Smit,19,AZ Alkmaar,Eredivisie,"CAM, CM, RM",87.0,72.0,61.0,fc26_filter
 5,Julien Dienda M. Duranville,19,Borussia Dortmund,Bundesliga,"RM, LM, ST, RW",87.0,72.0,88.0,fc26_filter
@@ -19,7 +19,7 @@ rank,name,age,team,league,position,fc_pot,fc_ovr,speed,sources
 18,Jesús Rodriguez Caraballo,19,Como,Serie A,"LM, RM, LW",85.0,74.0,80.0,fc26_filter
 19,Marc Bernal Casas,18,FC Barcelona,La Liga,"CDM, CM",85.0,73.0,61.0,fc26_filter|nxgn_2026
 20,Lennon Lee Miller,18,Udinese,Serie A,"CM, CDM, CAM, CB",85.0,71.0,73.0,fc26_filter
-21,Ian Martín Subiabre,18,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",85.0,69.0,85.0,fc26_filter
+21,Ian Martín Subiabre,18,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",85.0,69.0,85.0,fc26_filter|nxgn_2026
 22,Forzan Assan Ouédraogo,19,RB Leipzig,Bundesliga,"CAM, CM",85.0,69.0,76.0,fc26_filter
 23,Antonio José Cordero Campillo,18,KVC Westerlo,Pro League,"LW, RW, LM",85.0,69.0,78.0,fc26_filter
 24,Tobías Emanuel Ramírez Cardozo,18,Argentinos Juniors,Liga Profesional de Fútbol,CB,85.0,69.0,78.0,fc26_filter
