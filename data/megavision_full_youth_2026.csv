@@ -1,0 +1,94 @@
+rank,name,age,team,league,position,fc_pot,fc_ovr,speed,sources
+1,Lamine Yamal Nasraoui Ebana,17,FC Barcelona,La Liga,"RM, RW",95.0,89.0,85.0,fc26_filter|megabot_search
+2,Endrick Felipe Moreira de Sousa,18,Real Madrid,La Liga,"ST, RW",91.0,77.0,87.0,fc26_filter
+3,Estêvão Willian Almeida,18,Chelsea,Premier League,"RM, CAM, RW",89.0,78.0,90.0,fc26_filter
+4,Jorrel Hato,19,Chelsea,Premier League,"LB, CB",89.0,78.0,85.0,megabot_search
+5,Rodrigo Mora de Carvalho,18,FC Porto,Primeira Liga,"CAM, LW, CM, ST",89.0,76.0,77.0,fc26_filter
+6,Jorthy Mokio,17,Ajax,Eredivisie,"CDM, CM, LB, CB",89.0,70.0,70.0,fc26_filter|megabot_search|nxgn_2026
+7,Pau Cubarsí Paredes,18,FC Barcelona,La Liga,CB,88.0,82.0,70.0,fc26_filter|megabot_search
+8,Franco Mastantuono,17,Real Madrid,La Liga,"CAM, RW, ST",88.0,77.0,74.0,fc26_filter|megabot_search|nxgn_2026
+9,Geovany Tcherno Quenda,18,Sporting CP,Primeira Liga,"RM, LM, LW, RW",88.0,76.0,85.0,fantrax_eligible|fc26_filter|nxgn_2026
+10,Givairo Read,19,Feyenoord,Eredivisie,"RB, RM",88.0,75.0,81.0,megabot_search
+11,Rio Bass Ray Ngumoha Adigun,16,Liverpool,Premier League,"LM, LW",88.0,68.0,90.0,fc26_filter|megabot_search
+12,Myles Anthony Lewis-Skelly,18,Arsenal,Premier League,"LB, CM",87.0,78.0,76.0,fc26_filter|megabot_search
+13,Ethan Chidiebere Nwaneri,18,Arsenal,Premier League,"RW, CM, RM",87.0,76.0,82.0,fantrax_eligible|fc26_filter|nxgn_2026
+14,Luka Vušković,18,Hamburger SV,Bundesliga,CB,87.0,72.0,58.0,fc26_filter|megabot_search
+15,Finn Jeltsch,18,VfB Stuttgart,Bundesliga,CB,87.0,72.0,69.0,fc26_filter|megabot_search
+16,Luka Vušković,18,Hamburger SV,Bundesliga,CB,87.0,72.0,58.0,nxgn_2026
+17,Pablo García Fernández,18,Real Betis Balompié,La Liga,"RM, ST, LM, RW",87.0,68.0,75.0,fc26_filter
+18,Francesco Camarda,17,Lecce,Serie A,ST,87.0,65.0,67.0,fc26_filter|megabot_search|nxgn_2026
+19,Leny Yoro,19,Manchester United,Premier League,CB,86.0,78.0,69.0,megabot_search
+20,Ayyoub Bouaddi,17,Lille OSC,Ligue 1,"CM, CDM",86.0,75.0,75.0,fantrax_eligible|fc26_filter|nxgn_2026
+21,Archie Gray,19,Tottenham Hotspur,Premier League,"CDM, CB, RB, RM",86.0,75.0,71.0,megabot_search
+22,Mikey Steven Danny Moore,17,Rangers FC,Premiership,"LW, LM",86.0,72.0,76.0,fantrax_eligible|fc26_filter|nxgn_2026
+23,Mason Miley,18,NEW,Premier League,M,86.0,72.0,65.0,fantrax_eligible
+24,Christos Mouzakitis,18,Olympiacos FC,Super League,"CM, CAM",86.0,71.0,69.0,fantrax_eligible|fc26_filter
+25,Konstantinos Karetsas,17,KRC Genk,Pro League,"CAM, RW, CM",86.0,70.0,73.0,fc26_filter|nxgn_2026
+26,Sverre Halseth Nypan,18,Middlesbrough,Championship,"CM, CAM, ST",86.0,69.0,74.0,fc26_filter
+27,Lennart Karl,17,FC Bayern München,Bundesliga,"CAM, RM, CM",86.0,63.0,69.0,fc26_filter|nxgn_2026
+28,Martim Moreira Moutinho Fernandes,19,FC Porto,Primeira Liga,"RB, RM",85.0,75.0,81.0,megabot_search
+29,Marc Bernal Casas,18,FC Barcelona,La Liga,"CDM, CM",85.0,73.0,61.0,fc26_filter|megabot_search
+30,Ray Kendry Páez Andrade,18,RC Strasbourg Alsace,Ligue 1,"CAM, RW, CM",85.0,73.0,79.0,fc26_filter
+31,Charalampos Kostoulas,18,Brighton & Hove Albion,Premier League,"ST, CAM, RM",85.0,72.0,86.0,fantrax_eligible|fc26_filter|nxgn_2026
+32,Lennon Lee Miller,18,Udinese,Serie A,"CM, CDM, CAM, CB",85.0,71.0,73.0,fc26_filter
+33,Joshua Kofi Acheampong,19,Chelsea,Premier League,"RB, CB, CDM, RM",85.0,70.0,76.0,megabot_search
+34,Ian Martín Subiabre,18,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",85.0,69.0,85.0,fc26_filter|nxgn_2026
+35,Antonio José Cordero Campillo,18,KVC Westerlo,Pro League,"LW, RW, LM",85.0,69.0,78.0,fc26_filter
+36,Tobías Emanuel Ramírez Cardozo,18,Argentinos Juniors,Liga Profesional de Fútbol,CB,85.0,69.0,78.0,fc26_filter|megabot_search
+37,Tidiam Diadie Stephan Gomis,18,RB Leipzig,Bundesliga,"LM, RM, ST, LW",85.0,68.0,85.0,fc26_filter
+38,Kouakou Henry-Joane Aaron Aimerick Gadou,18,FC Red Bull Salzburg,Bundesliga,CB,85.0,66.0,70.0,fc26_filter|megabot_search
+39,Justin Armando Lerma Soliz,17,Independiente del Valle,Serie A,"LM, CAM, CM, LW",85.0,64.0,78.0,fc26_filter
+40,Diego Basilio León Blanco,18,Manchester United,Premier League,"LB, LM",85.0,64.0,83.0,fc26_filter|megabot_search
+41,Mamadou Sarr,19,RC Strasbourg Alsace,Ligue 1,CB,84.0,76.0,66.0,megabot_search
+42,Jérémy Jacquet,19,Stade Rennais FC,Ligue 1,CB,84.0,75.0,64.0,megabot_search
+43,Mike Louis Penders,19,RC Strasbourg Alsace,Ligue 1,GK,84.0,73.0,,megabot_search
+44,Elias Niklas Baum,19,Eintracht Frankfurt,Bundesliga,"RB, RM",84.0,72.0,75.0,megabot_search
+45,Christopher John Rigg,18,Sunderland,Premier League,"CAM, CM",84.0,70.0,68.0,fantrax_eligible|nxgn_2026
+46,Tóth Alex László,19,Ferencvárosi Torna Club,Nemzeti Bajnokság I,"CDM, CM",84.0,70.0,66.0,megabot_search
+47,Vitor de Oliveira Nunes dos Reis,19,Girona FC,La Liga,CB,84.0,70.0,65.0,megabot_search
+48,Veljko Milosavljević,18,AFC Bournemouth,Premier League,CB,84.0,70.0,53.0,megabot_search
+49,Ayden Edford Heaven,18,Manchester United,Premier League,"CB, LB",84.0,69.0,69.0,megabot_search
+50,Jon Martín Vicente,19,Real Sociedad,La Liga,CB,84.0,68.0,65.0,megabot_search
+51,Dennis Seimen,19,SC Paderborn 07,2. Bundesliga,GK,84.0,66.0,,megabot_search
+52,Semm Renders,17,Royal Antwerp FC,Pro League,"RB, RM",84.0,62.0,73.0,megabot_search
+53,Valentin Atangana Edoa,19,Al Ahli SFC,Pro League,"CDM, CM",83.0,73.0,66.0,megabot_search
+54,Kosta Nedeljkovic,19,RB Leipzig,Bundesliga,"RB, RM",83.0,72.0,81.0,megabot_search
+55,Abdulai Juma Bah,19,OGC Nice,Ligue 1,CB,83.0,72.0,66.0,megabot_search
+56,Mohamed Kader Meïté,17,Stade Rennais FC,Ligue 1,ST,83.0,70.0,65.0,nxgn_2026
+57,João Pedro Arnauth Barrocas Simões,18,Sporting CP,Primeira Liga,"CM, CAM, CDM",83.0,69.0,71.0,nxgn_2026
+58,Ibrahim Mbaye,17,Paris Saint-Germain,Ligue 1,"RW, LW, RM",83.0,68.0,77.0,fantrax_eligible|nxgn_2026
+59,Joshua David Steven King,18,Fulham FC,Premier League,"CM, CDM, CAM",83.0,68.0,67.0,nxgn_2026
+60,Harry Amass,19,MUN,Premier League,D,83.0,68.0,74.0,fantrax_eligible
+61,Tylel Tati,17,FC Nantes,Ligue 1,CB,83.0,67.0,68.0,nxgn_2026
+62,Harrison Armstrong,19,EVE,Premier League,M,83.0,67.0,65.0,fantrax_eligible
+63,Sean Steur,17,Ajax,Eredivisie,"CM, CDM",83.0,64.0,72.0,fantrax_eligible|nxgn_2026
+64,Nathan De Cat,16,RSC Anderlecht,Pro League,"CDM, CM",83.0,63.0,61.0,nxgn_2026
+65,Kaye Furo,19,BRE,Premier League,F,83.0,63.0,72.0,fantrax_eligible
+66,Giovanni Leoni,19,LIV,Premier League,D,82.0,69.0,53.0,fantrax_eligible
+67,Bradley Burrowes,18,AVL,Premier League,M,82.0,65.0,86.0,fantrax_eligible
+68,Robinio Vaz,18,Olympique de Marseille,Ligue 1,ST,82.0,64.0,79.0,fantrax_eligible|nxgn_2026
+69,Kerim-Sam Alajbegović,17,FC Red Bull Salzburg,Bundesliga,"LM, CAM, LW",82.0,63.0,70.0,nxgn_2026
+70,Jonah Kusi-Asare,19,FUL,Premier League,F,82.0,60.0,61.0,fantrax_eligible
+71,Alfie Cresswell,19,LEE,Premier League,M,81.0,74.0,54.0,fantrax_eligible
+72,Juan Angulo,18,SUN,Premier League,F,81.0,72.0,81.0,fantrax_eligible
+73,Andrija Maksimović,18,RB Leipzig,Bundesliga,"RW, CAM, RM",81.0,71.0,71.0,nxgn_2026
+74,Honest Ahanor,17,Atalanta,Serie A,"LB, LM",81.0,66.0,68.0,fantrax_eligible|nxgn_2026
+75,Lucas Herrington,19,HUL,Premier League,D,81.0,59.0,65.0,fantrax_eligible
+76,Floyd Samba,17,MCI,Premier League,M,80.0,80.0,,fantrax_eligible
+77,Oskar Pietuszewski,17,Jagiellonia Białystok,Ekstraklasa,"LM, RM, LW",80.0,64.0,79.0,nxgn_2026
+78,Triston Rowe,19,AVL,Premier League,D,80.0,60.0,66.0,fantrax_eligible
+79,Sidiki Cherif,19,COV,Premier League,F,79.0,67.0,69.0,fantrax_eligible
+80,Mateus Bula Dami Mané,17,Wolverhampton Wanderers,Premier League,"RW, ST, RM",79.0,60.0,75.0,nxgn_2026
+81,Zavier Gozo,19,CRY,Premier League,F,79.0,55.0,67.0,fantrax_eligible
+82,Michael Mills,17,NEW,Premier League,F,78.0,66.0,73.0,fantrax_eligible
+83,Fenyő Noah Gabriel,19,Eintracht Frankfurt,Bundesliga,"CDM, CB, CM",78.0,61.0,64.0,nxgn_2026
+84,Younes Ibrahim,18,BHA,Premier League,M,77.0,62.0,77.0,fantrax_eligible
+85,Pedro Fernández,17,FC Barcelona,La Liga,"CAM, CM",76.0,59.0,67.0,nxgn_2026
+86,Zadok Yohanna,19,BHA,Premier League,F,76.0,59.0,76.0,fantrax_eligible
+87,Jack Fletcher,19,MUN,Premier League,M,75.0,57.0,73.0,fantrax_eligible
+88,Tyler Fletcher,19,MUN,Premier League,M,75.0,57.0,73.0,fantrax_eligible
+89,Kyran Thompson,17,NEW,Premier League,M,73.0,67.0,59.0,fantrax_eligible
+90,Braiden Graham,18,EVE,Premier League,F,73.0,64.0,48.0,fantrax_eligible
+91,Shea Lacey,19,MUN,Premier League,F,73.0,51.0,72.0,fantrax_eligible
+92,Luka Lynch,19,AVL,Premier League,F,61.0,61.0,,fantrax_eligible
+93,George Hemmings,19,AVL,Premier League,M,60.0,60.0,64.0,fantrax_eligible
