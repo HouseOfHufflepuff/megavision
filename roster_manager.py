@@ -75,6 +75,21 @@ TEAM_OWNER_EMAILS = {
 }
 ALL_TEAMS = list(TEAM_FULL_NAME.keys())
 
+# Standing rule (Jer, 2026-09-26): any email that goes to Kevin O'Laughlin (TTS) also CCs his brother Matt
+# O'Laughlin, who helps manage Kevin's team. Apply via cc_for() on EVERY outgoing email, not just team emails.
+CC_RULES = {"kolaughlin@gmail.com": ["molaughlin@gmail.com"]}
+
+
+def cc_for(recipients, existing_cc=()):
+    """CC list for an outgoing email: any CC_RULES addressee present in `recipients` pulls in their CC(s).
+    Never duplicates someone who is already a direct recipient."""
+    have = {r.lower() for r in list(recipients) + list(existing_cc)}
+    out = list(existing_cc)
+    for who, extra in CC_RULES.items():
+        if who in have:
+            out += [e for e in extra if e.lower() not in have and e not in out]
+    return out
+
 
 def fetch_managed_teams(conn=None):
     """Team codes opted into automated roster management, from the
@@ -834,6 +849,44 @@ SPONSOR_TAGLINES = [
 def sponsor_cta():
     import random
     return random.choice(SPONSOR_TAGLINES).format(url=SPONSOR_URL)
+
+
+# ---- Two Halves CTA for HTML emails --------------------------------------------------------------------------
+# The Gmail connector used to send our mail rewrites EVERY URL (plain text, <a href>, even google.com links) to
+# https://www.google.com/url?q=<url>&source=gmail&ust=<now+24h>&sa=E. That is Google's layer, not our copy, and
+# it cannot be switched off from here (tested 2026-09-26: bare URL, scheme-less, protocol-relative, uppercase
+# scheme, span text all get wrapped). Consequences we design around:
+#   * links work for ~24h, then Google shows a "Redirect Notice" click-through -> keep the CTA a real button
+#     (table + bgcolor, the only styling the connector preserves) so it works fresh, and never paste a wrapped
+#     URL back into a template (it would be double-wrapped and dead after a day) -> unwrap_google_redirects().
+#   * external <img> tags are stripped -> no hero image.
+def unwrap_google_redirects(text):
+    import re
+    from urllib.parse import parse_qs, urlparse
+    def fix(m):
+        q = parse_qs(urlparse(m.group(0).replace("&amp;", "&")).query).get("q")
+        return q[0] if q else m.group(0)
+    return re.sub(r"https://www\.google\.com/url\?[^\s\"'<>]+", fix, text)
+
+
+def two_halves_cta_html():
+    return (
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:18px 0">'
+        '<tr><td bgcolor="#f4f1ea" style="background-color:#f4f1ea;padding:16px 18px">'
+        '<p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:11px;letter-spacing:1px;color:#666666">'
+        'OFFICIAL MEGAVISION SPONSOR</p>'
+        '<p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:17px;font-weight:bold;color:#111111">'
+        'Two Halves: the rescue robot that fits through a standard doorway.</p>'
+        '<p style="margin:0 0 14px 0;font-family:Arial,sans-serif;font-size:14px;line-height:20px;color:#333333">'
+        'A split-chassis humanoid built to go into collapsed buildings so first responders do not have to. '
+        'Hydraulic climbing, a laser that cuts rebar, and a torso that separates from its base. '
+        'Give it 60 seconds before you rage-refresh your roster again.</p>'
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>'
+        '<td bgcolor="#d4380d" style="background-color:#d4380d;padding:12px 22px;border-radius:6px">'
+        f'<a href="{SPONSOR_URL}" style="color:#ffffff;font-weight:bold;font-family:Arial,sans-serif;font-size:15px;'
+        'text-decoration:none"><font color="#ffffff">Meet Two Halves</font></a></td></tr></table>'
+        '</td></tr></table>'
+    )
 
 
 def build_email_body(result, moves, conn, sess, executed=True):
