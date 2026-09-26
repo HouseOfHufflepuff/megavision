@@ -1,101 +1,101 @@
-megabot_rank,prev_rank_pot_only,name,dob,team,league,position,megabot_score,fc_pot,fc_ovr,goalcom_nxgn_rank,speed,games_25_26,goals_25_26,assists_25_26,g_plus_a_25_26,stats_source,career_senior_gp,career_senior_g,career_senior_a,notes_games_by_team_25_26
-1,2,Pau Cubarsí Paredes,2007-01-22,FC Barcelona,La Liga,CB,85.1,88,82,3,70,48,1,0,1,TM,,,,FC Barcelona 48
-2,1,Jorthy Mokio,2008-02-29,Ajax,Eredivisie,"CDM, CM, LB, CB",76.5,89,70,21,70,35,4,3,7,TM,,,,Ajax Amsterdam 35
-3,5,Lennart Karl,2008-02-22,FC Bayern München,Bundesliga,"CAM, RM, CM",76.1,86,63,5,69,38,9,8,17,TM,,,,Bayern Munich 38
-4,6,Marc Bernal Casas,2007-05-26,FC Barcelona,La Liga,"CDM, CM",67.3,85,73,17,61,33,5,1,6,TM,,,,FC Barcelona 33
-5,3,Francesco Camarda,2008-03-10,Lecce,Serie A,ST,62.4,87,65,22,67,23,1,1,2,TM,,,,US Lecce 23
-6,7,Ian Martín Subiabre,2007-01-01,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",56.2,85,69,36,85,18,2,1,3,HL,51,3,3,CA River Plate 18
-7,41,Robinio Vaz,2007-02-17,Olympique de Marseille,Ligue 1,ST,55.3,82,64,23,79,32,5,4,9,TM,,,,"Olympique Marseille 18, Associazione Sportiva Roma 14"
-8,45,Kerim-Sam Alajbegović,2007-09-21,FC Red Bull Salzburg,Bundesliga,"LM, CAM, LW",54.6,82,63,33,70,44,13,4,17,HL,49,14,4,Red Bull Salzburg 44
-9,4,Christos Mouzakitis,2006-12-25,Olympiacos FC,Super League,"CM, CAM",54.2,86,71,,69,34,1,2,3,TM,,,,Olympiakos Syndesmos Filathlon Peiraios 34
-10,17,Mohamed Kader Meïté,2007-10-11,Stade Rennais FC,Ligue 1,ST,52.6,83,70,19,65,,,,,n/a,,,,
-11,65,Honest Ahanor,2008-02-23,Atalanta,Serie A,"LB, LM",52.0,81,66,12,68,35,1,0,1,TM,,,,Atalanta BC 35
-12,27,Nathan De Cat,2008-07-19,RSC Anderlecht,Pro League,"CDM, CM",51.8,83,63,29,61,41,2,4,6,TM,,,,RSC Anderlecht 41
-13,24,Mason Melia,2007-09-22,St Patrick's Athletic FC,Premier Division,ST,51.4,83,64,,76,44,15,5,20,HL,102,25,8,St. Patrick's Athletic 44
-14,20,Tylel Tati,2008-01-19,FC Nantes,Ligue 1,CB,49.0,83,67,28,68,20,0,0,0,TM,,,,FC Nantes 20
-15,25,Sean Steur,2008-01-11,Ajax,Eredivisie,"CM, CDM",48.4,83,64,32,72,23,1,2,3,TM,,,,Ajax Amsterdam 23
-16,14,Mattia Liberali,2007-04-07,Catanzaro,Serie B,"RW, RM, CAM",48.1,84,65,,70,30,4,4,8,HL,69,15,12,US Catanzaro 30
-17,10,Kouakou Henry-Joane Aaron Aimerick Gadou,2007-01-17,FC Red Bull Salzburg,Bundesliga,CB,46.8,85,66,,70,36,0,0,0,HL,65,0,0,Red Bull Salzburg 36
-18,8,Tobías Emanuel Ramírez Cardozo,2006-11-11,Argentinos Juniors,Liga Profesional de Fútbol,CB,46.4,85,69,,78,10,0,0,0,HL,44,0,0,AA Argentinos Juniors 10
-19,9,Antonio José Cordero Campillo,2006-11-14,KVC Westerlo,Pro League,"LW, RW, LM",46.0,85,69,,78,7,0,0,0,TM,,,,KVC Westerlo 7
-20,11,Diego Basilio León Blanco,2007-04-03,Manchester United,Premier League,"LB, LM",45.7,85,64,,83,14,2,0,2,HL,33,4,0,"Club Cerro Porteño 14, Manchester United 0"
-21,18,João Pedro Arnauth Barrocas Simões,2007-01-06,Sporting CP,Primeira Liga,"CM, CAM, CDM",44.6,83,69,49,71,28,0,2,2,TM,,,,Sporting CP 28
-22,88,Oskar Pietuszewski,2008-05-20,Jagiellonia Białystok,Ekstraklasa,"LM, RM, LW",44.2,80,64,45,79,49,6,6,12,HL,73,7,7,"Jagiellonia Bialystok 31, FC Porto 18"
-23,63,Andrija Maksimović,2007-06-05,RB Leipzig,Bundesliga,"RW, CAM, RM",44.1,81,71,31,71,10,0,0,0,HL,83,16,12,RB Leipzig 10
-24,12,Justin Armando Lerma Soliz,2008-05-05,Independiente del Valle,Serie A,"LM, CAM, CM, LW",44.0,85,64,,78,11,0,1,1,HL,43,2,2,Independiente del Valle 11
-25,22,Matias Siltanen,2007-03-29,Djurgårdens IF,Allsvenskan,"CDM, CM",43.7,83,66,,69,34,0,4,4,HL,101,1,10,"Djurgårdens IF 34, Kuopion Palloseura 0"
-26,28,Artem Stepanov,2007-08-10,1. FC Nürnberg,2. Bundesliga,ST,43.6,83,63,,67,29,6,2,8,HL,37,11,2,"FC Utrecht 15, 1.FC Nuremberg 14"
-27,21,Harrison Armstrong,2007-01-19,Preston North End,Championship,"CDM, CM",43.6,83,67,,65,32,1,3,4,HL,59,2,5,"Preston North End 17, Everton FC 15"
-28,64,Maxloren Sannoe Castro Rufino,2007-12-08,Sporting Cristal,Liga 1,"LW, LM, RW",43.6,81,68,,81,38,2,5,7,HL,100,9,14,Club Sporting Cristal 38
-29,19,Harry John Amass,2007-03-16,Sheffield Wednesday,Championship,"LB, LM",42.7,83,68,,74,22,1,1,2,HL,30,1,1,"Sheffield Wednesday 21, Norwich City 1, Manchester United 0"
-30,15,Bruno Durdov,2007-12-11,Hajduk Split,Hrvatska nogometna liga,"RW, RM",42.5,84,64,,73,20,1,1,2,HL,58,4,2,HNK Hajduk Split 20
-31,34,Francis-Ikechukwu Onyeka,2007-04-29,VfL Bochum 1848,2. Bundesliga,"CAM, CM",42.4,83,60,,64,32,8,1,9,HL,39,10,2,VfL Bochum 32
-32,13,Veljko Milosavljević,2007-06-28,AFC Bournemouth,Premier League,CB,41.9,84,70,,53,15,0,0,0,HL,43,0,3,"Red Star Belgrade 8, AFC Bournemouth 7"
-33,85,Luca Oliveira Meirelles,2007-03-15,Shakhtar Donetsk,Premier League,"ST, LW",41.6,80,65,,70,37,11,2,13,HL,45,14,2,"Shakhtar Donetsk 29, Santos FC 8"
-34,16,Semm Renders,2007-12-17,Royal Antwerp FC,Pro League,"RB, RM",39.0,84,62,,73,12,0,0,0,TM,,,,Royal Antwerp FC 12
-35,97,Prince Amoako Junior,2007-02-19,FC Nordsjælland,Superliga,"LW, LM",38.8,80,62,,80,25,7,5,12,TM,,,,FC Nordsjaelland 25
-36,>100,Mateus Bula Dami Mané,2007-09-16,Wolverhampton Wanderers,Premier League,"RW, ST, RM",38.6,79,60,30,75,30,3,2,5,TM,,,,Wolverhampton Wanderers 30
-37,36,Abubacarr Sedi Kinteh,2006-11-30,Tromsø IL,Eliteserien,CB,38.3,82,65,,71,26,1,1,2,HL,35,1,1,Tromsø IL 26
-38,66,Aarón Ochoa Moloney,2007-04-18,Málaga CF,La Liga 2,"CAM, ST, CM",38.2,81,65,,66,30,3,3,6,HL,68,3,4,Málaga CF 30
-39,>100,Yan Diomande,2006-11-14,RB Leipzig,Bundesliga,"LM, RM, ST, LW",38.2,78,66,,71,36,13,10,23,TM,,,,RB Leipzig 36
-40,23,Aaron Bouwman,2007-08-28,Ajax,Eredivisie,CB,37.7,83,65,,64,12,1,0,1,TM,,,,Ajax Amsterdam 12
-41,31,Louis Donald Page,2008-07-10,Leicester City,Championship,"CM, CDM, CAM",37.6,83,61,,74,21,0,1,1,HL,29,0,4,Leicester City 21
-42,32,Christian Comotto,2008-04-25,Spezia,Serie B,CM,37.4,83,61,,63,30,0,1,1,HL,53,14,3,Spezia Calcio 30
-43,37,Sandro Miguel Rodrigues Vidigal,2007-07-28,Sporting Clube de Braga,Primeira Liga,"LW, RW, CAM, LM",37.4,82,65,,77,7,1,2,3,TM,,,,SC Braga 7
-44,29,Kaye Furo,2007-02-06,Club Brugge KV,Pro League,ST,37.2,83,63,,72,10,1,0,1,TM,,,,"Club Brugge KV 7, Brentford FC 3"
-45,48,Otto Emerson Stange,2007-02-09,SV Elversberg,2. Bundesliga,"ST, LM",37.1,82,62,,63,23,3,2,5,HL,41,5,2,"SV 07 Elversberg 12, Hamburger SV 11"
-46,83,Ethan Mbappé Lottin,2006-12-29,Lille OSC,Ligue 1,"CM, RM",36.3,80,69,,73,20,3,1,4,TM,,,,LOSC Lille 20
-47,26,Antonio Fernández Casino,2008-07-15,FC Barcelona,La Liga,"RW, RM",36.3,83,64,,74,1,0,0,0,TM,,,,FC Barcelona 1
-48,35,Mihajlo Cvetkovic,2007-01-10,RSC Anderlecht,Pro League,"ST, LW",35.9,82,67,,71,,,,,n/a,,,,
-49,30,Kiano Dyer,2006-11-21,FC Volendam,Eredivisie,"CM, CDM",35.8,83,63,,72,4,0,0,0,TM,,,,FC Volendam 4
-50,38,Bradley Burrowes,2008-03-04,Aston Villa,Premier League,"RM, ST, RW",35.7,82,65,,86,1,0,0,0,TM,,,,Aston Villa 1
-51,67,Francisco Cortés Gracia,2007-08-11,Cultural Leonesa,La Liga 2,"LW, LM",35.6,81,64,,74,22,3,0,3,HL,26,3,0,"Levante UD 12, Cultural Leonesa 10"
-52,>100,Sidiki Chérif,2006-12-15,Angers SCO,Ligue 1,"LM, ST, LW",35.6,79,67,,69,33,6,1,7,TM,,,,"Angers SCO 19, Fenerbahce 14"
-53,46,Alex Marchal García,2007-11-30,Reading FC,League One,"LB, RW, LW, RM",35.2,82,63,,85,,,,,n/a,,,,
-54,79,Thiago Pitarch Pinar,2007-08-03,Real Madrid,La Liga,CM,35.0,81,60,40,65,16,0,2,2,TM,,,,Real Madrid 16
-55,39,Axel Tape-Kobrissa,2007-08-10,Bayer 04 Leverkusen,Bundesliga,CB,34.4,82,65,,68,8,0,0,0,TM,,,,Bayer 04 Leverkusen 8
-56,42,Lazar Jovanović,2006-11-30,VfB Stuttgart,Bundesliga,"RM, LM, RW",34.4,82,64,,75,6,0,0,0,HL,43,6,4,VfB Stuttgart 6
-57,40,Marius Courcoul,2007-01-01,Angers SCO,Ligue 1,"CDM, CM, CB",34.1,82,65,,55,18,0,0,0,TM,,,,Angers SCO 18
-58,89,Rafael Pinto Pedrosa,2007-09-30,Karlsruher SC,2. Bundesliga,"RB, RM",34.0,80,64,,75,30,1,2,3,HL,50,2,3,Karlsruher SC 30
-59,84,Khalis Merah,2007-02-24,Olympique Lyonnais,Ligue 1,"CAM, CM",33.9,80,66,,64,30,1,2,3,TM,,,,Olympique Lyon 30
-60,43,Tomás Parmo,2008-01-08,Independiente,Liga Profesional de Fútbol,"CAM, CM",33.9,82,64,,77,0,0,0,0,HL,1,0,0,
-61,49,Kacper Potulski,2007-10-19,1. FSV Mainz 05,Bundesliga,CB,33.7,82,62,,60,15,1,1,2,TM,,,,1.FSV Mainz 05 15
-62,44,Juan Cruz Meza,2008-03-14,River Plate,Liga Profesional de Fútbol,CM,33.6,82,64,,67,8,0,0,0,HL,26,0,2,CA River Plate 8
-63,47,James Wilson,2007-03-06,Hearts,Premiership,ST,33.6,82,63,,72,,,,,n/a,,,,
-64,50,Lucas Jetten,2007-06-07,Ajax,Eredivisie,"LB, LM",33.5,82,62,,84,0,0,0,0,TM-zero,,,,
-65,52,Trevan Sanusi,2007-04-25,FC Lorient,Ligue 1,"LW, RW, LM",33.1,82,61,,86,0,0,0,0,TM-zero,,,,
-66,54,Justin-Kai von der Hitz,2006-10-22,1. FC Nürnberg,2. Bundesliga,"RM, RB, RW",32.8,82,60,,77,6,0,1,1,HL,10,0,1,1.FC Nuremberg 6
-67,73,Daniel Demenenge Daga,2007-01-10,Molde FK,Eliteserien,"CDM, CM",32.8,81,61,,68,15,3,1,4,HL,70,6,4,Molde FK 15
-68,69,Patrice Čović,2007-06-25,SV Werder Bremen,Bundesliga,"CAM, RM, CM",32.3,81,63,,69,16,1,0,1,TM,,,,SV Werder Bremen 16
-69,86,Giacomo De Pieri,2006-12-29,SS Juve Stabia,Serie B,"RW, RM",32.1,80,65,,77,18,1,0,1,HL,84,33,19,"SSC Bari 11, SS Juve Stabia 7, Inter Milan 0"
-70,55,Juan David Obando,2006-12-09,Atlético Nacional,Categoría Primera A,"CAM, CM",31.9,82,60,,78,3,0,0,0,HL,9,0,0,Atlético Nacional 3
-71,33,Bailey Rice,2006-10-04,Rangers FC,Premiership,"CDM, CM",31.6,83,61,,52,0,0,0,0,TM-zero,,,,
-72,68,Arda Ünyay,2007-01-18,Galatasaray SK,Süper Lig,"CB, RB",31.5,81,64,,70,9,0,0,0,TM,,,,Galatasaray 9
-73,56,Boris Chi Mamuzah Lum,2007-10-02,Hertha BSC,2. Bundesliga,"CDM, CM",31.4,82,60,,71,6,0,0,0,HL,9,0,0,Hertha BSC 6
-74,80,Noah Fernandez,2008-01-09,PSV,Eredivisie,"CAM, LW, CM",30.9,81,60,,71,13,1,1,2,TM,,,,PSV Eindhoven 13
-75,70,Argyrios Liatsikouras,2006-12-20,Olympiacos FC,Super League,"CM, CAM",30.7,81,63,,76,2,0,0,0,TM,,,,Olympiakos Syndesmos Filathlon Peiraios 2
-76,53,Leon Jakirović,2008-01-16,Dinamo Zagreb,Hrvatska nogometna liga,"CB, LB",30.6,82,61,,66,0,0,0,0,HL,4,0,0,GNK Dinamo Zagreb 0
-77,74,Philipp Maybach,2007-12-14,FK Austria Wien,Bundesliga,"CDM, CM",30.6,81,61,,64,23,0,0,0,HL,50,0,1,Austria Vienna 23
-78,51,Matteo Palma,2008-03-13,Udinese,Serie A,CB,30.6,82,62,,52,8,0,0,0,TM,,,,Udinese Calcio 8
-79,72,Christ Wawa,2007-06-09,BK Häcken,Allsvenskan,"RW, RM",30.6,81,62,,81,1,0,0,0,HL,7,1,0,BK Häcken 1
-80,57,Jonah Daniel Kusi-Asare,2007-07-04,Fulham FC,Premier League,ST,30.5,82,60,,61,9,0,0,0,TM,,,,"Fulham FC 8, Bayern Munich 1"
-81,58,Brad Ryan Manguelle,2007-11-27,KRC Genk,Pro League,CB,30.5,82,60,,70,0,0,0,0,TM-zero,,,,
-82,60,Pedro André Villalba Gaona,2008-07-09,Libertad,División Profesional,"LM, LW, CAM",30.1,82,58,,69,,,,,n/a,,,,
-83,90,David Cordón Mancha,2007-10-16,Getafe CF,La Liga,"LB, LM",30.0,80,64,,75,14,0,0,0,HL,51,2,1,Getafe CF 14
-84,71,Viggo Gebel,2007-11-22,RB Leipzig,Bundesliga,"CAM, LM, RM, CM",30.0,81,63,,72,0,0,0,0,TM-zero,,,,
-85,75,René Mitongo Muteba,2008-01-18,Standard de Liège,Pro League,ST,30.0,81,61,,75,7,0,0,0,TM,,,,Standard Liège 7
-86,93,Darryl Bakola,2007-11-30,Olympique de Marseille,Ligue 1,"CAM, CM",29.5,80,63,,64,15,0,2,2,TM,,,,"Olympique Marseille 9, US Sassuolo 6"
-87,>100,Ruud Nijstad,2008-01-17,FC Twente,Eredivisie,CB,29.5,80,59,,75,24,1,1,2,TM,,,,FC Twente Enschede 24
-88,61,Amlani Tatu,2008-07-01,Adelaide United,A-League Men,"LM, RM, LW",29.3,82,57,,70,5,0,0,0,HL,9,0,0,Adelaide United 5
-89,94,Noah Markmann,2007-02-24,FC Nordsjælland,Superliga,CB,29.2,80,63,,66,21,0,0,0,TM,,,,FC Nordsjaelland 21
-90,91,Valentín Alejandro Pezzolesi,2007-04-16,UD Las Palmas,La Liga 2,"RB, RM",29.1,80,64,,70,6,1,0,1,HL,14,1,1,UD Las Palmas 6
-91,59,Andrea Natali,2008-01-28,AZ Alkmaar,Eredivisie,CB,29.0,82,60,,58,0,0,0,0,TM-zero,,,,
-92,>100,Afonso da Cruz Patrão,2007-02-03,Sporting Clube de Braga,Primeira Liga,"ST, CAM, RW",28.9,79,66,,75,11,1,0,1,HL,18,2,1,"KVC Westerlo 11, SC Braga 0"
-93,62,Igor Tyjon,2008-03-20,Blackburn Rovers,Championship,ST,28.6,82,57,,69,1,0,0,0,HL,3,0,0,Blackburn Rovers 1
-94,76,Jeremiah Mensah,2008-02-21,Bayer 04 Leverkusen,Bundesliga,"CM, CAM",28.5,81,61,,68,2,0,0,0,TM,,,,Bayer 04 Leverkusen 2
-95,77,Kacper Koscierski,2007-06-23,VfL Bochum 1848,2. Bundesliga,"RB, RM",28.3,81,61,,69,0,0,0,0,TM-zero,,,,
-96,>100,Alexander Røssing-Lelesiit,2007-01-20,Hamburger SV,Bundesliga,"LW, RM, LM",28.1,80,60,,74,14,0,1,1,TM,,,,Hamburger SV 14
-97,78,Mario Jiménez Gambín,2007-07-01,Granada CF,La Liga 2,"CAM, CM",27.9,81,61,,61,4,0,0,0,HL,8,0,0,Granada CF 4
-98,>100,Bismark Junior Edjeodji,2007-04-24,Vejle Boldklub,Superliga,"CM, LW, ST",27.8,78,62,,80,17,1,4,5,TM,,,,Vejle Boldklub 17
-99,>100,Pedro Fernández,2008-01-12,FC Barcelona,La Liga,"CAM, CM",27.7,76,59,18,67,,,,,n/a,,,,
-100,81,Lucas Herrington,2007-09-05,Brisbane Roar,A-League Men,CB,27.5,81,59,,65,,,,,n/a,,,,
+megabot_rank,prev_rank_pot_only,name,dob,team,league,position,megabot_score,strength_of_games_score,fc_pot,fc_ovr,goalcom_nxgn_rank,speed,games_25_26,goals_25_26,assists_25_26,g_plus_a_25_26,stats_source,career_senior_gp,career_senior_g,career_senior_a,notes_games_by_team_25_26
+1,2,Pau Cubarsí Paredes,2007-01-22,FC Barcelona,La Liga,CB,85.1,96.0,88,82,3,70,48,1,0,1,TM,,,,FC Barcelona 48 (T1)
+2,1,Jorthy Mokio,2008-02-29,Ajax,Eredivisie,"CDM, CM, LB, CB",74.1,52.5,89,70,21,70,35,4,3,7,TM,,,,Ajax Amsterdam 35 (T2)
+3,5,Lennart Karl,2008-02-22,FC Bayern München,Bundesliga,"CAM, RM, CM",71.0,76.0,86,63,5,69,38,9,8,17,TM,,,,Bayern Munich 38 (T1)
+4,6,Marc Bernal Casas,2007-05-26,FC Barcelona,La Liga,"CDM, CM",66.4,66.0,85,73,17,61,33,5,1,6,TM,,,,FC Barcelona 33 (T1)
+5,4,Christos Mouzakitis,2006-12-25,Olympiacos FC,Super League,"CM, CAM",60.9,51.0,86,71,,69,34,1,2,3,TM,,,,Olympiakos Syndesmos Filathlon Peiraios 34 (T2)
+6,24,Mason Melia,2007-09-22,St Patrick's Athletic FC,Premier Division,ST,58.5,66.0,83,64,,76,44,15,5,20,HL,102,25,8,"St. Patrick's Athletic 44 (T2), Tottenham Hotspur U21 6 (T5)"
+7,3,Francesco Camarda,2008-03-10,Lecce,Serie A,ST,58.4,34.5,87,65,22,67,23,1,1,2,TM,,,,US Lecce 23 (T2)
+8,45,Kerim-Sam Alajbegović,2007-09-21,FC Red Bull Salzburg,Bundesliga,"LM, CAM, LW",56.1,66.0,82,63,33,70,44,13,4,17,HL,49,14,4,Red Bull Salzburg 44 (T2)
+9,7,Ian Martín Subiabre,2007-01-01,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",53.8,9.0,85,69,36,85,18,2,1,3,HL,51,3,3,CA River Plate 18 (T4)
+10,41,Robinio Vaz,2007-02-17,Olympique de Marseille,Ligue 1,ST,53.6,57.0,82,64,23,79,32,5,4,9,TM,,,,"Olympique Marseille 18 (T1), Associazione Sportiva Roma 14 (T2)"
+11,14,Mattia Liberali,2007-04-07,Catanzaro,Serie B,"RW, RM, CAM",53.4,45.0,84,65,,70,30,4,4,8,HL,69,15,12,US Catanzaro 30 (T2)
+12,10,Kouakou Henry-Joane Aaron Aimerick Gadou,2007-01-17,FC Red Bull Salzburg,Bundesliga,CB,52.9,54.0,85,66,,70,36,0,0,0,HL,65,0,0,Red Bull Salzburg 36 (T2)
+13,20,Harrison Armstrong,2007-01-19,Preston North End,Championship,"CDM, CM",51.7,63.0,83,67,,65,32,1,3,4,HL,59,2,5,"Preston North End 17 (T2), Everton FC 15 (T0)"
+14,27,Nathan De Cat,2008-07-19,RSC Anderlecht,Pro League,"CDM, CM",51.4,61.5,83,63,29,61,41,2,4,6,TM,,,,RSC Anderlecht 41 (T2)
+15,88,Oskar Pietuszewski,2008-05-20,Jagiellonia Białystok,Ekstraklasa,"LM, RM, LW",50.6,73.5,80,64,45,79,49,6,6,12,HL,73,7,7,"Jagiellonia Bialystok 31 (T2), FC Porto 18 (T2)"
+16,18,João Pedro Arnauth Barrocas Simões,2007-01-06,Sporting CP,Primeira Liga,"CM, CAM, CDM",49.7,42.0,83,69,49,71,28,0,2,2,TM,,,,Sporting CP 28 (T2)
+17,8,Antonio José Cordero Campillo,2006-11-14,KVC Westerlo,Pro League,"LW, RW, LM",49.7,10.5,85,69,,78,7,0,0,0,TM,,,,KVC Westerlo 7 (T2)
+18,22,Matias Siltanen,2007-03-29,Djurgårdens IF,Allsvenskan,"CDM, CM",49.6,51.0,83,66,,69,34,0,4,4,HL,101,1,10,"Djurgårdens IF 34 (T2), Kuopion Palloseura 0 (T2)"
+19,9,Tobías Emanuel Ramírez Cardozo,2006-11-11,Argentinos Juniors,Liga Profesional de Fútbol,CB,48.8,5.0,85,69,,78,10,0,0,0,HL,44,0,0,AA Argentinos Juniors 10 (T4)
+20,28,Artem Stepanov,2007-08-10,1. FC Nürnberg,2. Bundesliga,ST,48.6,43.5,83,63,,67,29,6,2,8,HL,37,11,2,"FC Utrecht 15 (T2), 1.FC Nuremberg 14 (T2), 1.FC Nuremberg II 1 (T5)"
+21,21,Tylel Tati,2008-01-19,FC Nantes,Ligue 1,CB,48.3,40.0,83,67,28,68,20,0,0,0,TM,,,,FC Nantes 20 (T1)
+22,19,Harry John Amass,2007-03-16,Sheffield Wednesday,Championship,"LB, LM",47.8,33.0,83,68,,74,22,1,1,2,HL,30,1,1,"Sheffield Wednesday 21 (T2), Norwich City 1 (T2), Manchester United U21 1 (T5), Manchester United 0 (T0)"
+23,13,Veljko Milosavljević,2007-06-28,AFC Bournemouth,Premier League,CB,47.6,29.5,84,70,,53,15,0,0,0,HL,43,0,3,"Red Star Belgrade 8 (T2), AFC Bournemouth 7 (T0)"
+24,34,Francis-Ikechukwu Onyeka,2007-04-29,VfL Bochum 1848,2. Bundesliga,"CAM, CM",47.2,48.0,83,60,,64,32,8,1,9,HL,39,10,2,VfL Bochum 32 (T2)
+25,25,Sean Steur,2008-01-11,Ajax,Eredivisie,"CM, CDM",47.2,34.5,83,64,32,72,23,1,2,3,TM,,,,Ajax Amsterdam 23 (T2)
+26,11,Diego Basilio León Blanco,2007-04-03,Manchester United,Premier League,"LB, LM",47.2,7.0,85,64,,83,14,2,0,2,HL,33,4,0,"Manchester United U21 20 (T5), Club Cerro Porteño 14 (T4), Manchester United 0 (T0)"
+27,>100,Yan Diomande,2006-11-14,RB Leipzig,Bundesliga,"LM, RM, ST, LW",47.0,72.0,78,66,,71,36,13,10,23,TM,,,,RB Leipzig 36 (T1)
+28,15,Bruno Durdov,2007-12-11,Hajduk Split,Hrvatska nogometna liga,"RW, RM",46.7,30.0,84,64,,73,20,1,1,2,HL,58,4,2,HNK Hajduk Split 20 (T2)
+29,17,Mohamed Kader Meïté,2007-10-11,Stade Rennais FC,Ligue 1,ST,46.7,10.2,83,70,19,65,,,,,n/a,,,,
+30,85,Luca Oliveira Meirelles,2007-03-15,Shakhtar Donetsk,Premier League,"ST, LW",46.4,47.5,80,65,,70,37,11,2,13,HL,45,14,2,"Shakhtar Donetsk 29 (T2), Santos FC U20 13 (T5), Santos FC 8 (T4)"
+31,65,Honest Ahanor,2008-02-23,Atalanta,Serie A,"LB, LM",46.3,52.5,81,66,12,68,35,1,0,1,TM,,,,Atalanta BC 35 (T2)
+32,12,Justin Armando Lerma Soliz,2008-05-05,Independiente del Valle,Serie A,"LM, CAM, CM, LW",45.7,5.5,85,64,,78,11,0,1,1,HL,43,2,2,"Independiente del Valle 11 (T4), Independiente del Valle U20 3 (T5)"
+33,64,Maxloren Sannoe Castro Rufino,2007-12-08,Sporting Cristal,Liga 1,"LW, LM, RW",44.5,19.0,81,68,,81,38,2,5,7,HL,100,9,14,Club Sporting Cristal 38 (T4)
+34,66,Aarón Ochoa Moloney,2007-04-18,Málaga CF,La Liga 2,"CAM, ST, CM",43.6,45.0,81,65,,66,30,3,3,6,HL,68,3,4,Málaga CF 30 (T2)
+35,36,Abubacarr Sedi Kinteh,2006-11-30,Tromsø IL,Eliteserien,CB,43.3,39.0,82,65,,71,26,1,1,2,HL,35,1,1,"Tromsø IL 26 (T2), Tromsø IL II 3 (T5)"
+36,97,Prince Amoako Junior,2007-02-19,FC Nordsjælland,Superliga,"LW, LM",43.1,37.5,80,62,,80,25,7,5,12,TM,,,,FC Nordsjaelland 25 (T2)
+37,63,Andrija Maksimović,2007-06-05,RB Leipzig,Bundesliga,"RW, CAM, RM",43.1,20.0,81,71,31,71,10,0,0,0,HL,83,16,12,RB Leipzig 10 (T1)
+38,>100,Sidiki Chérif,2006-12-15,Angers SCO,Ligue 1,"LM, ST, LW",42.9,59.0,79,67,,69,33,6,1,7,TM,,,,"Angers SCO 19 (T1), Fenerbahce 14 (T2)"
+39,83,Ethan Mbappé Lottin,2006-12-29,Lille OSC,Ligue 1,"CM, RM",42.8,40.0,80,69,,73,20,3,1,4,TM,,,,LOSC Lille 20 (T1)
+40,48,Otto Emerson Stange,2007-02-09,SV Elversberg,2. Bundesliga,"ST, LM",42.1,40.0,82,62,,63,23,3,2,5,HL,41,5,2,"SV 07 Elversberg 12 (T2), Hamburger SV 11 (T1), Hamburger SV II 1 (T5)"
+41,31,Christian Comotto,2008-04-25,Spezia,Serie B,CM,42.1,45.0,83,61,,63,30,0,1,1,HL,53,14,3,Spezia Calcio 30 (T2)
+42,16,Semm Renders,2007-12-17,Royal Antwerp FC,Pro League,"RB, RM",42.0,18.0,84,62,,73,12,0,0,0,TM,,,,Royal Antwerp FC 12 (T2)
+43,84,Khalis Merah,2007-02-24,Olympique Lyonnais,Ligue 1,"CAM, CM",41.7,60.0,80,66,,64,30,1,2,3,TM,,,,Olympique Lyon 30 (T1)
+44,32,Louis Donald Page,2008-07-10,Leicester City,Championship,"CM, CDM, CAM",41.4,31.5,83,61,,74,21,0,1,1,HL,29,0,4,"Leicester City 21 (T2), Leicester City U21 9 (T5)"
+45,>100,Mateus Bula Dami Mané,2007-09-16,Wolverhampton Wanderers,Premier League,"RW, ST, RM",41.4,75.0,79,60,30,75,30,3,2,5,TM,,,,Wolverhampton Wanderers 30 (T0)
+46,23,Aaron Bouwman,2007-08-28,Ajax,Eredivisie,CB,41.3,18.0,83,65,,64,12,1,0,1,TM,,,,Ajax Amsterdam 12 (T2)
+47,67,Francisco Cortés Gracia,2007-08-11,Cultural Leonesa,La Liga 2,"LW, LM",40.9,39.0,81,64,,74,22,3,0,3,HL,26,3,0,"Levante UD 12 (T1), Cultural Leonesa 10 (T2)"
+48,29,Kaye Furo,2007-02-06,Club Brugge KV,Pro League,ST,40.7,18.0,83,63,,72,10,1,0,1,TM,,,,"Club Brugge KV 7 (T2), Brentford FC 3 (T0)"
+49,37,Sandro Miguel Rodrigues Vidigal,2007-07-28,Sporting Clube de Braga,Primeira Liga,"LW, RW, CAM, LM",40.4,10.5,82,65,,77,7,1,2,3,TM,,,,SC Braga 7 (T2)
+50,38,Marius Courcoul,2007-01-01,Angers SCO,Ligue 1,"CDM, CM, CB",39.5,36.0,82,65,,55,18,0,0,0,TM,,,,Angers SCO 18 (T1)
+51,89,Rafael Pinto Pedrosa,2007-09-30,Karlsruher SC,2. Bundesliga,"RB, RM",39.2,45.0,80,64,,75,30,1,2,3,HL,50,2,3,"Karlsruher SC 30 (T2), Karlsruher SC II 1 (T5)"
+52,35,Mihajlo Cvetkovic,2007-01-10,RSC Anderlecht,Pro League,"ST, LW",39.2,10.2,82,67,,71,,,,,n/a,,,,
+53,26,Antonio Fernández Casino,2008-07-15,FC Barcelona,La Liga,"RW, RM",38.7,2.0,83,64,,74,1,0,0,0,TM,,,,FC Barcelona 1 (T1)
+54,39,Bradley Burrowes,2008-03-04,Aston Villa,Premier League,"RM, ST, RW",38.3,2.5,82,65,,86,1,0,0,0,TM,,,,Aston Villa 1 (T0)
+55,49,Kacper Potulski,2007-10-19,1. FSV Mainz 05,Bundesliga,CB,38.2,30.0,82,62,,60,15,1,1,2,TM,,,,1.FSV Mainz 05 15 (T1)
+56,30,Kiano Dyer,2006-11-21,FC Volendam,Eredivisie,"CM, CDM",38.2,6.0,83,63,,72,4,0,0,0,TM,,,,FC Volendam 4 (T2)
+57,40,Axel Tape-Kobrissa,2007-08-10,Bayer 04 Leverkusen,Bundesliga,CB,38.1,16.0,82,65,,68,8,0,0,0,TM,,,,Bayer 04 Leverkusen 8 (T1)
+58,46,Alex Marchal García,2007-11-30,Reading FC,League One,"LB, RW, LW, RM",37.8,10.2,82,63,,85,,,,,n/a,,,,
+59,42,Lazar Jovanović,2006-11-30,VfB Stuttgart,Bundesliga,"RM, LM, RW",37.6,12.0,82,64,,75,6,0,0,0,HL,43,6,4,VfB Stuttgart 6 (T1)
+60,69,Patrice Čović,2007-06-25,SV Werder Bremen,Bundesliga,"CAM, RM, CM",37.1,32.0,81,63,,69,16,1,0,1,TM,,,,SV Werder Bremen 16 (T1)
+61,86,Giacomo De Pieri,2006-12-29,SS Juve Stabia,Serie B,"RW, RM",36.2,27.0,80,65,,77,18,1,0,1,HL,84,33,19,"SSC Bari 11 (T2), SS Juve Stabia 7 (T2), Inter Milan 0 (T2)"
+62,47,James Wilson,2007-03-06,Hearts,Premiership,ST,36.2,10.2,82,63,,72,,,,,n/a,,,,
+63,43,Tomás Parmo,2008-01-08,Independiente,Liga Profesional de Fútbol,"CAM, CM",36.1,0.0,82,64,,77,0,0,0,0,HL,1,0,0,CA Independiente II 13 (T5)
+64,79,Thiago Pitarch Pinar,2007-08-03,Real Madrid,La Liga,CM,36.0,32.0,81,60,40,65,16,0,2,2,TM,,,,Real Madrid 16 (T1)
+65,73,Daniel Demenenge Daga,2007-01-10,Molde FK,Eliteserien,"CDM, CM",36.0,22.5,81,61,,68,15,3,1,4,HL,70,6,4,"Molde FK 15 (T2), Molde FK II 3 (T5)"
+66,44,Juan Cruz Meza,2008-03-14,River Plate,Liga Profesional de Fútbol,CM,35.4,4.0,82,64,,67,8,0,0,0,HL,26,0,2,"CA River Plate II 18 (T5), CA River Plate 8 (T4)"
+67,50,Lucas Jetten,2007-06-07,Ajax,Eredivisie,"LB, LM",35.3,0.0,82,62,,84,0,0,0,0,TM-zero,,,,
+68,54,Justin-Kai von der Hitz,2006-10-22,1. FC Nürnberg,2. Bundesliga,"RM, RB, RW",34.9,9.0,82,60,,77,6,0,1,1,HL,10,0,1,"1.FC Nuremberg II 20 (T5), 1.FC Nuremberg 6 (T2)"
+69,52,Trevan Sanusi,2007-04-25,FC Lorient,Ligue 1,"LW, RW, LM",34.8,0.0,82,61,,86,0,0,0,0,TM-zero,,,,
+70,90,David Cordón Mancha,2007-10-16,Getafe CF,La Liga,"LB, LM",34.7,28.0,80,64,,75,14,0,0,0,HL,51,2,1,Getafe CF 14 (T1)
+71,74,Philipp Maybach,2007-12-14,FK Austria Wien,Bundesliga,"CDM, CM",34.6,34.5,81,61,,64,23,0,0,0,HL,50,0,1,"Austria Vienna 23 (T2), Young Violets Austria Wien 4 (T5), Austria Vienna UEFA U19 2 (T5)"
+72,68,Arda Ünyay,2007-01-18,Galatasaray SK,Süper Lig,"CB, RB",34.6,13.5,81,64,,70,9,0,0,0,TM,,,,Galatasaray 9 (T2)
+73,55,Jonah Daniel Kusi-Asare,2007-07-04,Fulham FC,Premier League,ST,34.3,22.0,82,60,,61,9,0,0,0,TM,,,,"Fulham FC 8 (T0), Bayern Munich 1 (T1)"
+74,>100,Prosper Peter,2007-08-09,Angers SCO,Ligue 1,"ST, CAM",33.8,58.0,78,63,,54,29,5,0,5,TM,,,,Angers SCO 29 (T1)
+75,80,Noah Fernandez,2008-01-09,PSV,Eredivisie,"CAM, LW, CM",33.8,19.5,81,60,,71,13,1,1,2,TM,,,,PSV Eindhoven 13 (T2)
+76,93,Darryl Bakola,2007-11-30,Olympique de Marseille,Ligue 1,"CAM, CM",33.7,27.0,80,63,,64,15,0,2,2,TM,,,,"Olympique Marseille 9 (T1), US Sassuolo 6 (T2)"
+77,56,Boris Chi Mamuzah Lum,2007-10-02,Hertha BSC,2. Bundesliga,"CDM, CM",33.5,9.0,82,60,,71,6,0,0,0,HL,9,0,0,"Hertha BSC II 15 (T5), Hertha BSC 6 (T2)"
+78,33,Bailey Rice,2006-10-04,Rangers FC,Premiership,"CDM, CM",33.3,0.0,83,61,,52,0,0,0,0,TM-zero,,,,
+79,94,Noah Markmann,2007-02-24,FC Nordsjælland,Superliga,CB,33.3,31.5,80,63,,66,21,0,0,0,TM,,,,FC Nordsjaelland 21 (T2)
+80,>100,Ruud Nijstad,2008-01-17,FC Twente,Eredivisie,CB,33.3,36.0,80,59,,75,24,1,1,2,TM,,,,FC Twente Enschede 24 (T2)
+81,57,Juan David Obando,2006-12-09,Atlético Nacional,Categoría Primera A,"CAM, CM",33.3,1.5,82,60,,78,3,0,0,0,HL,9,0,0,Atlético Nacional 3 (T4)
+82,51,Matteo Palma,2008-03-13,Udinese,Serie A,CB,33.2,12.0,82,62,,52,8,0,0,0,TM,,,,Udinese Calcio 8 (T2)
+83,>100,Noahkai Dominic Banks,2006-12-01,FC Augsburg,Bundesliga,CB,33.2,46.0,78,66,,61,23,1,1,2,TM,,,,FC Augsburg 23 (T1)
+84,70,Argyrios Liatsikouras,2006-12-20,Olympiacos FC,Super League,"CM, CAM",32.9,3.0,81,63,,76,2,0,0,0,TM,,,,Olympiakos Syndesmos Filathlon Peiraios 2 (T2)
+85,72,Christ Wawa,2007-06-09,BK Häcken,Allsvenskan,"RW, RM",32.5,1.5,81,62,,81,1,0,0,0,HL,7,1,0,BK Häcken 1 (T2)
+86,>100,Afonso da Cruz Patrão,2007-02-03,Sporting Clube de Braga,Primeira Liga,"ST, CAM, RW",32.5,16.5,79,66,,75,11,1,0,1,HL,18,2,1,"SC Braga B 14 (T5), KVC Westerlo 11 (T2), SC Braga 0 (T2)"
+87,75,René Mitongo Muteba,2008-01-18,Standard de Liège,Pro League,ST,32.4,10.5,81,61,,75,7,0,0,0,TM,,,,Standard Liège 7 (T2)
+88,53,Leon Jakirović,2008-01-16,Dinamo Zagreb,Hrvatska nogometna liga,"CB, LB",32.4,0.0,82,61,,66,0,0,0,0,HL,4,0,0,"Inter Milan Primavera 15 (T5), GNK Dinamo Zagreb II 3 (T5), Inter Milan UEFA U19 1 (T5), GNK Dinamo Zagreb 0 (T2)"
+89,>100,Alexander Røssing-Lelesiit,2007-01-20,Hamburger SV,Bundesliga,"LW, RM, LM",32.1,28.0,80,60,,74,14,0,1,1,TM,,,,Hamburger SV 14 (T1)
+90,58,Brad Ryan Manguelle,2007-11-27,KRC Genk,Pro League,CB,32.1,0.0,82,60,,70,0,0,0,0,TM-zero,,,,
+91,>100,Andrija Bulatovic,2006-12-27,RC Lens,Ligue 1,CM,32.0,38.0,78,64,,63,19,0,4,4,TM,,,,RC Lens 19 (T1)
+92,71,Viggo Gebel,2007-11-22,RB Leipzig,Bundesliga,"CAM, LM, RM, CM",32.0,0.0,81,63,,72,0,0,0,0,TM-zero,,,,
+93,>100,Abdoul Karim Coulibaly,2007-05-23,SV Werder Bremen,Bundesliga,"CB, CDM",32.0,54.0,79,60,,63,27,1,0,1,TM,,,,SV Werder Bremen 27 (T1)
+94,60,Pedro André Villalba Gaona,2008-07-09,Libertad,División Profesional,"LM, LW, CAM",31.9,10.2,82,58,,69,,,,,n/a,,,,
+95,91,Valentín Alejandro Pezzolesi,2007-04-16,UD Las Palmas,La Liga 2,"RB, RM",31.9,9.0,80,64,,70,6,1,0,1,HL,14,1,1,"Las Palmas Atlético 11 (T5), UD Las Palmas 6 (T2)"
+96,>100,Jeff Ekhator Osayuki,2006-11-11,Genoa,Serie A,ST,31.7,48.0,78,61,,67,32,4,0,4,TM,,,,Genoa CFC 32 (T2)
+97,>100,Bismark Junior Edjeodji,2007-04-24,Vejle Boldklub,Superliga,"CM, LW, ST",31.3,25.5,78,62,,80,17,1,4,5,TM,,,,Vejle Boldklub 17 (T2)
+98,>100,Mustafa Erhan Hekimoğlu,2007-04-22,Beşiktaş JK,Süper Lig,"ST, LM, RW, LW",31.3,27.0,78,66,,74,18,1,0,1,TM,,,,Beşiktaş Jimnastik Kulübü 18 (T2)
+99,59,Andrea Natali,2008-01-28,AZ Alkmaar,Eredivisie,CB,30.6,0.0,82,60,,58,0,0,0,0,TM-zero,,,,
+100,76,Jeremiah Mensah,2008-02-21,Bayer 04 Leverkusen,Bundesliga,"CM, CAM",30.5,4.0,81,61,,68,2,0,0,0,TM,,,,Bayer 04 Leverkusen 2 (T1)
