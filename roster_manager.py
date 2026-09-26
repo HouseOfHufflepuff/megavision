@@ -888,6 +888,21 @@ def two_halves_cta_html():
         '</td></tr></table>'
     )
 
+def two_halves_cta_text():
+    """Plain-text Two Halves CTA (use in every MEGAVISION email/post; standing rule 2026-09-26)."""
+    return ("Official MEGAVISION sponsor: Two Halves, the rescue robot that fits through a standard doorway. "
+            "Split chassis, hydraulic climbing, a laser that cuts rebar. Meet it: " + SPONSOR_URL)
+
+
+def ensure_two_halves_cta(html_body):
+    """Append the HTML CTA if the body does not already carry a Two Halves block."""
+    if "two-halves" in html_body:
+        return html_body
+    marker = "-- MegaBot"
+    cta = two_halves_cta_html()
+    return html_body.replace(marker, cta + marker, 1) if marker in html_body else html_body + cta
+
+
 
 def build_email_body(result, moves, conn, sess, executed=True):
     code = result["code"]
