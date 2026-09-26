@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>The Wonderkid Index</title>
+<style>
+@font-face{font-family:"BC";src:url("fonts/BarlowCondensed-ExtraBold.ttf");font-weight:800}
+@font-face{font-family:"BC";src:url("fonts/BarlowCondensed-Bold.ttf");font-weight:700}
+@font-face{font-family:"BC";src:url("fonts/BarlowCondensed-SemiBold.ttf");font-weight:600}
+@font-face{font-family:"PM";src:url("fonts/IBMPlexMono-Medium.ttf");font-weight:500}
+@font-face{font-family:"PM";src:url("fonts/IBMPlexMono-SemiBold.ttf");font-weight:600}
+:root{--ground:#0A1030;--panel:#111A47;--panel2:#16215A;--line:rgba(146,164,255,.16);--ink:#F3F5FF;--muted:#8E99CB;
+  --accent:#FF5B3A;--gold:#FFC44D;--pos:#35D39A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--ground)}
+.poster{width:1200px;height:1500px;position:relative;overflow:hidden;color:var(--ink);font-family:"PM",monospace;
+  background:radial-gradient(900px 500px at 92% -6%,rgba(255,91,58,.22),transparent 60%),
+  linear-gradient(var(--line) 1px,transparent 1px) 0 0/100% 50px,
+  linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/50px 100%,var(--ground);padding:46px 56px 0}
+.tag{display:flex;align-items:center;gap:14px;font-size:15px;letter-spacing:2px;color:var(--muted)}
+.pill{background:var(--accent);color:#fff;font-weight:600;padding:7px 14px;border-radius:4px;letter-spacing:2px}
+h1{font-family:"BC";font-weight:800;font-size:88px;line-height:.92;letter-spacing:-1px;margin:14px 0 8px;text-transform:uppercase}
+h1 span{color:var(--accent)}
+.sub{font-size:15px;color:var(--muted);letter-spacing:.4px;line-height:1.4}
+.tickerbar{margin:14px -56px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(17,26,71,.7);
+  padding:8px 56px;font-size:13px;color:var(--ink);letter-spacing:1px;white-space:nowrap;overflow:hidden}
+.tickerbar b{color:var(--accent)}
+.podium{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:18px}
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:10px;padding:12px 18px 11px;position:relative}
+.card.gold{border-color:var(--gold);box-shadow:0 0 0 1px rgba(255,196,77,.35),0 12px 40px rgba(255,196,77,.12)}
+.card-top{display:flex;align-items:center;gap:8px}
+.rk{font-family:"BC";font-weight:800;font-size:38px;line-height:1;color:var(--accent);margin-right:auto}
+.gold .rk{color:var(--gold)}
+.chip{font-size:12px;font-weight:600;letter-spacing:1.4px;padding:4px 8px;border:1px solid var(--line);border-radius:4px;color:var(--ink);background:rgba(255,255,255,.04)}
+.chip.s{text-align:center;justify-self:start}
+.fn{font-size:12px;letter-spacing:2px;color:var(--muted);margin-top:4px;height:15px;white-space:nowrap}
+.ln{font-family:"BC";font-weight:800;font-size:50px;line-height:.95;letter-spacing:-.5px;white-space:nowrap}
+.club{font-size:13px;color:var(--muted);margin-top:4px;letter-spacing:.5px;white-space:nowrap}
+.club i,.who small i{color:var(--accent);font-style:normal}
+.club b,.who small b{color:var(--ink);font-weight:600}
+.idx{display:flex;align-items:flex-end;gap:10px;margin-top:6px}
+.idx-n{font-size:52px;font-weight:600;line-height:.9;letter-spacing:-2px}
+.gold .idx-n{color:var(--gold)}
+.idx-l{font-size:11px;letter-spacing:1.6px;color:var(--muted);line-height:1.3;padding-bottom:4px}
+.gauges{margin-top:8px;display:grid;gap:5px}
+.g{display:grid;grid-template-columns:34px 1fr 30px;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.g em{font-style:normal;color:var(--ink);text-align:right;font-weight:600}
+.track{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,var(--accent),#FF9A6B);border-radius:3px}
+.line{margin-top:8px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px}
+.pos{color:var(--pos);font-weight:600}
+.na{color:var(--muted)}
+.thead,.row{display:grid;grid-template-columns:44px 318px 54px 40px 1fr 46px 46px 150px;gap:10px;align-items:center}
+.thead{margin-top:16px;font-size:11px;letter-spacing:1.6px;color:var(--muted);padding:0 8px 6px;border-bottom:1px solid var(--line)}
+.thead span:nth-child(n+6){text-align:right}
+.row{height:40px;padding:0 8px;border-bottom:1px solid rgba(146,164,255,.09);font-size:14px}
+.row:nth-child(odd){background:rgba(255,255,255,.02)}
+.rk2{font-family:"BC";font-weight:800;font-size:24px;color:var(--accent)}
+.who{display:flex;flex-direction:column;line-height:1.1;overflow:hidden}
+.who>b{font-family:"BC";font-weight:700;font-size:22px;letter-spacing:.2px;white-space:nowrap}
+.who small{font-size:11px;color:var(--muted);letter-spacing:.4px;white-space:nowrap;margin-top:1px}
+.age{color:var(--muted);text-align:center}
+.bar{position:relative;height:22px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;display:block}
+.bar-fill{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,rgba(255,91,58,.85),rgba(255,154,107,.85))}
+.bar em{position:absolute;right:8px;top:0;line-height:22px;font-style:normal;font-weight:600;font-size:14px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.num{text-align:right;font-weight:600}
+.st{text-align:right;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.method{position:absolute;left:56px;right:56px;bottom:58px;font-size:11.5px;line-height:1.5;color:var(--muted);letter-spacing:.3px}
+.method b{color:var(--ink);font-weight:600}
+.foot{position:absolute;left:0;right:0;bottom:0;height:46px;background:var(--accent);display:flex;align-items:center;justify-content:space-between;padding:0 56px;color:#fff;font-size:14px;letter-spacing:1.6px;font-weight:600}
+.foot b{font-family:"BC";font-weight:800;font-size:24px;letter-spacing:1.5px}
+</style></head><body>
+<div class="poster">
+  <div class="tag"><span class="pill">THE WONDERKID INDEX</span><span>26/27 KICKOFF · AGES 18 &amp; UNDER · ALL LEAGUES</span></div>
+  <h1>The 20 best<br>players <span>18 &amp; under</span></h1>
+  <div class="sub">Ranked by the MegaBot Index: potential, rating, strength of games, end product. No draft rules.</div>
+  <div class="tickerbar"><b>▲ INDEX</b> &nbsp; #1 MASTANTUONO 83.1   ·   #2 KARETSAS 77.6   ·   #3 MOKIO 76.4   ·   #4 BOUADDI 75.1   ·   #5 NGUMOHA 74.7   ·   #6 KARL 72.3</div>
+  <div class="podium"><div class="card gold">
+  <div class="card-top"><span class="rk">01</span><span class="chip">CAM</span><span class="chip">AGE 18</span></div>
+  <div class="fn">FRANCO</div>
+  <div class="ln">MASTANTUONO</div>
+  <div class="club">Real Madrid</div>
+  <div class="idx"><span class="idx-n">83.1</span><span class="idx-l">MEGABOT<br>INDEX</span></div>
+  <div class="gauges">
+    <div class="g"><span>POT</span><div class="track"><div class="fill" style="width:88%"></div></div><em>88</em></div>
+    <div class="g"><span>OVR</span><div class="track"><div class="fill" style="width:77%"></div></div><em>77</em></div>
+  </div>
+  <div class="line">25/26 · 35 GP · <span class="pos">4 G+A</span></div>
+</div><div class="card">
+  <div class="card-top"><span class="rk">02</span><span class="chip">CAM</span><span class="chip">AGE 18</span></div>
+  <div class="fn">KONSTANTINOS</div>
+  <div class="ln">KARETSAS</div>
+  <div class="club">Genk <i>→</i> <b>Dortmund</b></div>
+  <div class="idx"><span class="idx-n">77.6</span><span class="idx-l">MEGABOT<br>INDEX</span></div>
+  <div class="gauges">
+    <div class="g"><span>POT</span><div class="track"><div class="fill" style="width:86%"></div></div><em>86</em></div>
+    <div class="g"><span>OVR</span><div class="track"><div class="fill" style="width:70%"></div></div><em>70</em></div>
+  </div>
+  <div class="line">25/26 · 47 GP · <span class="pos">18 G+A</span></div>
+</div><div class="card">
+  <div class="card-top"><span class="rk">03</span><span class="chip">CDM</span><span class="chip">AGE 18</span></div>
+  <div class="fn">JORTHY</div>
+  <div class="ln">MOKIO</div>
+  <div class="club">Ajax</div>
+  <div class="idx"><span class="idx-n">76.4</span><span class="idx-l">MEGABOT<br>INDEX</span></div>
+  <div class="gauges">
+    <div class="g"><span>POT</span><div class="track"><div class="fill" style="width:89%"></div></div><em>89</em></div>
+    <div class="g"><span>OVR</span><div class="track"><div class="fill" style="width:70%"></div></div><em>70</em></div>
+  </div>
+  <div class="line">25/26 · 35 GP · <span class="pos">7 G+A</span></div>
+</div></div>
+  <div class="thead"><span>#</span><span>PLAYER · 25/26 CLUB</span><span>POS</span><span>AGE</span><span>MEGABOT INDEX</span><span>POT</span><span>OVR</span><span>25/26 OUTPUT</span></div>
+  <div class="row">
+  <span class="rk2">04</span>
+  <span class="who"><b>Ayyoub Bouaddi</b><small>Lille <i>→</i> <b>Man City</b></small></span>
+  <span class="chip s">CM</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:90.4%"></span><em>75.1</em></span>
+  <span class="num">86</span>
+  <span class="num">75</span>
+  <span class="st">40 GP · <span class="pos">1 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">05</span>
+  <span class="who"><b>Rio Ngumoha</b><small>Liverpool</small></span>
+  <span class="chip s">LM</span>
+  <span class="age">17</span>
+  <span class="bar"><span class="bar-fill" style="width:89.9%"></span><em>74.7</em></span>
+  <span class="num">88</span>
+  <span class="num">68</span>
+  <span class="st">27 GP · <span class="pos">3 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">06</span>
+  <span class="who"><b>Lennart Karl</b><small>Bayern</small></span>
+  <span class="chip s">CAM</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:87.0%"></span><em>72.3</em></span>
+  <span class="num">86</span>
+  <span class="num">63</span>
+  <span class="st">38 GP · <span class="pos">17 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">07</span>
+  <span class="who"><b>Mikey Moore</b><small>Rangers</small></span>
+  <span class="chip s">LW</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:86.8%"></span><em>72.1</em></span>
+  <span class="num">86</span>
+  <span class="num">72</span>
+  <span class="st">39 GP · <span class="pos">8 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">08</span>
+  <span class="who"><b>Mason Melia</b><small>St Patrick&#x27;s <i>→</i> <b>Spurs</b></small></span>
+  <span class="chip s">ST</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:72.2%"></span><em>60.0</em></span>
+  <span class="num">83</span>
+  <span class="num">64</span>
+  <span class="st">44 GP · <span class="pos">20 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">09</span>
+  <span class="who"><b>Francesco Camarda</b><small>Lecce</small></span>
+  <span class="chip s">ST</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:72.1%"></span><em>59.9</em></span>
+  <span class="num">87</span>
+  <span class="num">65</span>
+  <span class="st">23 GP · <span class="pos">2 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">10</span>
+  <span class="who"><b>Ibrahim Mbaye</b><small>PSG <i>→</i> <b>Aston Villa</b></small></span>
+  <span class="chip s">RW</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:72.0%"></span><em>59.8</em></span>
+  <span class="num">83</span>
+  <span class="num">68</span>
+  <span class="st">29 GP · <span class="pos">5 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">11</span>
+  <span class="who"><b>Kerim Alajbegović</b><small>Red Bull Salzburg</small></span>
+  <span class="chip s">LM</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:69.1%"></span><em>57.4</em></span>
+  <span class="num">82</span>
+  <span class="num">63</span>
+  <span class="st">44 GP · <span class="pos">17 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">12</span>
+  <span class="who"><b>Nathan De Cat</b><small>Anderlecht <i>→</i> <b>Hoffenheim</b></small></span>
+  <span class="chip s">CDM</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:63.3%"></span><em>52.6</em></span>
+  <span class="num">83</span>
+  <span class="num">63</span>
+  <span class="st">41 GP · <span class="pos">6 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">13</span>
+  <span class="who"><b>Oskar Pietuszewski</b><small>Jagiellonia <i>→</i> <b>Porto</b></small></span>
+  <span class="chip s">LM</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:62.7%"></span><em>52.1</em></span>
+  <span class="num">80</span>
+  <span class="num">64</span>
+  <span class="st">49 GP · <span class="pos">12 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">14</span>
+  <span class="who"><b>Tylel Tati</b><small>Nantes</small></span>
+  <span class="chip s">CB</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:60.3%"></span><em>50.1</em></span>
+  <span class="num">83</span>
+  <span class="num">67</span>
+  <span class="st">20 GP · <span class="pos">0 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">15</span>
+  <span class="who"><b>Artem Stepanov</b><small>Utrecht</small></span>
+  <span class="chip s">ST</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:60.0%"></span><em>49.9</em></span>
+  <span class="num">83</span>
+  <span class="num">63</span>
+  <span class="st">29 GP · <span class="pos">8 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">16</span>
+  <span class="who"><b>Mohamed Kader Meïté</b><small>Rennes <i>→</i> <b>Al Hilal</b></small></span>
+  <span class="chip s">ST</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:59.2%"></span><em>49.2</em></span>
+  <span class="num">83</span>
+  <span class="num">70</span>
+  <span class="st"><span class="na">25/26 stats n/a</span></span>
+</div><div class="row">
+  <span class="rk2">17</span>
+  <span class="who"><b>Sean Steur</b><small>Ajax</small></span>
+  <span class="chip s">CM</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:58.6%"></span><em>48.7</em></span>
+  <span class="num">83</span>
+  <span class="num">64</span>
+  <span class="st">23 GP · <span class="pos">3 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">18</span>
+  <span class="who"><b>Bruno Durdov</b><small>Hajduk Split <i>→</i> <b>Górnik Zabrze</b></small></span>
+  <span class="chip s">RW</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:58.0%"></span><em>48.2</em></span>
+  <span class="num">84</span>
+  <span class="num">64</span>
+  <span class="st">20 GP · <span class="pos">2 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">19</span>
+  <span class="who"><b>Honest Ahanor</b><small>Atalanta</small></span>
+  <span class="chip s">LB</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:57.8%"></span><em>48.0</em></span>
+  <span class="num">81</span>
+  <span class="num">66</span>
+  <span class="st">35 GP · <span class="pos">1 G+A</span></span>
+</div><div class="row">
+  <span class="rk2">20</span>
+  <span class="who"><b>Justin Lerma</b><small>Ind. del Valle <i>→</i> <b>Dortmund</b></small></span>
+  <span class="chip s">LM</span>
+  <span class="age">18</span>
+  <span class="bar"><span class="bar-fill" style="width:56.8%"></span><em>47.2</em></span>
+  <span class="num">85</span>
+  <span class="num">64</span>
+  <span class="st">11 GP · <span class="pos">1 G+A</span></span>
+</div>
+  <div class="method"><b>INDEX</b> = 40% FC potential · 25% FC overall · 15% strength of games (25/26 games weighted by league tier) · 10% goals + assists · 5% Goal.com NXGN rank · 5% pace. Ratings: EA FC26. Stats: Transfermarkt, Highlightly. Age on Aug 1, 2026. Arrows mark moves confirmed by club or major-outlet reports; other summer moves may not be reflected. <b>n/a</b> = stats unavailable.</div>
+  <div class="foot"><b>MEGAVISION × MEGABOT</b><span>houseofhufflepuff.github.io/megavision</span></div>
+</div></body></html>

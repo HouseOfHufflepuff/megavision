@@ -1,0 +1,62 @@
+<title>Wonderkid Index</title>
+<style>
+:root{color-scheme:dark;--ground:#0A1030;--panel:#111A47;--line:rgba(146,164,255,.18);--ink:#F3F5FF;--muted:#9AA5D6;--accent:#FF5B3A;--pos:#35D39A}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:15px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding-inline:16px;padding-block:28px}
+.wrap{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:32px;align-items:start}
+@media(max-width:860px){.wrap{grid-template-columns:1fr}}
+img.poster{width:100%;height:auto;display:block;border-radius:6px;border:1px solid var(--line)}
+h1{font:800 44px/1 "Arial Narrow","Helvetica Neue",Arial,sans-serif;letter-spacing:.5px;text-transform:uppercase;margin:0 0 6px}
+h1 span{color:var(--accent)}
+p{margin:0 0 12px;color:var(--muted);max-width:62ch}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin:18px 0}
+.box h2,h2{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:600}
+textarea{width:100%;min-height:150px;background:#0A1030;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:10px;font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;resize:vertical}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+button,a.btn{background:var(--accent);color:#fff;border:0;border-radius:6px;padding:10px 16px;font:600 14px/1 inherit;text-decoration:none;cursor:pointer}
+a.btn.alt,button.alt{background:transparent;border:1px solid var(--line);color:var(--ink)}
+button:focus-visible,a.btn:focus-visible,textarea:focus-visible{outline:2px solid var(--pos);outline-offset:2px}
+.tw{overflow-x:auto;margin-top:6px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums;min-width:640px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right} td.nm{font-weight:600} td.idx{color:var(--accent);font-weight:700} td b{color:var(--ink)}
+ul{margin:0;padding-left:18px;color:var(--muted)} li{margin-bottom:6px;max-width:66ch}
+.full{grid-column:1/-1}
+</style>
+<div class="wrap">
+  <div><img class="poster" src="wonderkid_index_u18.png" alt="Infographic: the 20 best players aged 18 and under, ranked by the MegaBot Index. Mastantuono, Karetsas, Mokio, Bouaddi and Ngumoha lead."></div>
+  <div>
+    <h1>Wonderkid <span>Index</span></h1>
+    <p>The 20 best players in the world aged 18 or under at the start of 26/27, every league, no draft rules. Save the image (right-click or long-press) and post it.</p>
+    <div class="box"><h2>Post copy</h2>
+      <textarea id="tweet" aria-label="Post text">The 20 best players in the world aged 18 &amp; under, ranked on potential, rating, strength of games and output.
+
+1. Mastantuono
+2. Karetsas
+3. Mokio
+4. Bouaddi
+5. Ngumoha
+
+Full index below.</textarea>
+      <div class="btns"><button id="copy" type="button">Copy text</button><a class="btn alt" href="https://x.com/intent/post?text=The%2020%20best%20players%20in%20the%20world%20aged%2018%20%26%20under%2C%20ranked%20on%20potential%2C%20rating%2C%20strength%20of%20games%20and%20output.%0A%0A1.%20Mastantuono%0A2.%20Karetsas%0A3.%20Mokio%0A4.%20Bouaddi%0A5.%20Ngumoha%0A%0AFull%20index%20below." target="_blank" rel="noopener">Open X composer</a></div>
+    </div>
+    <h2>How it works</h2>
+    <ul>
+      <li>MegaBot Index: 40% FC potential, 25% FC overall, 15% strength of games, 10% goals plus assists, 5% Goal.com NXGN rank, 5% pace.</li>
+      <li>Strength of games: 25/26 games played, weighted by league. Premier League 100, Bundesliga / La Liga / Ligue 1 80, other European leagues 60, non-European 20, youth sides 0 (Serie A falls in the 60 group).</li>
+      <li>Ratings are EA FC26. FC27 has no machine-readable source yet. EA does not rate players born 2009 or later, so Dowman and Sullivan cannot be ranked.</li>
+      <li>Stats come from Transfermarkt and Highlightly. Kader Meïté moved to Al Hilal in February, so his 25/26 output is unavailable and his index uses a neutral value.</li>
+      <li>The club column is the club for most of 25/26. Arrows mark moves confirmed by club or major-outlet reports; other summer moves may not be reflected.</li>
+    </ul>
+  </div>
+  <div class="full"><h2>Top 20</h2><div class="tw"><table><thead><tr><th>#</th><th>Player</th><th>25/26 club</th><th>Age</th><th>Pos</th><th class=n>Index</th><th class=n>Pot/Ovr</th><th class=n>GP / G / A</th></tr></thead><tbody><tr><td>1</td><td class="nm">Franco Mastantuono</td><td>Real Madrid</td><td>18</td><td>CAM</td><td class="n idx">83.1</td><td class="n">88/77</td><td class="n">35 / 3 / 1</td></tr><tr><td>2</td><td class="nm">Konstantinos Karetsas</td><td>Genk → <b>Dortmund</b></td><td>18</td><td>CAM</td><td class="n idx">77.6</td><td class="n">86/70</td><td class="n">47 / 2 / 16</td></tr><tr><td>3</td><td class="nm">Jorthy Mokio</td><td>Ajax</td><td>18</td><td>CDM</td><td class="n idx">76.4</td><td class="n">89/70</td><td class="n">35 / 4 / 3</td></tr><tr><td>4</td><td class="nm">Ayyoub Bouaddi</td><td>Lille → <b>Man City</b></td><td>18</td><td>CM</td><td class="n idx">75.1</td><td class="n">86/75</td><td class="n">40 / 0 / 1</td></tr><tr><td>5</td><td class="nm">Rio Ngumoha</td><td>Liverpool</td><td>17</td><td>LM</td><td class="n idx">74.7</td><td class="n">88/68</td><td class="n">27 / 2 / 1</td></tr><tr><td>6</td><td class="nm">Lennart Karl</td><td>Bayern</td><td>18</td><td>CAM</td><td class="n idx">72.3</td><td class="n">86/63</td><td class="n">38 / 9 / 8</td></tr><tr><td>7</td><td class="nm">Mikey Moore</td><td>Rangers</td><td>18</td><td>LW</td><td class="n idx">72.1</td><td class="n">86/72</td><td class="n">39 / 6 / 2</td></tr><tr><td>8</td><td class="nm">Mason Melia</td><td>St Patrick&#x27;s → <b>Spurs</b></td><td>18</td><td>ST</td><td class="n idx">60.0</td><td class="n">83/64</td><td class="n">44 / 15 / 5</td></tr><tr><td>9</td><td class="nm">Francesco Camarda</td><td>Lecce</td><td>18</td><td>ST</td><td class="n idx">59.9</td><td class="n">87/65</td><td class="n">23 / 1 / 1</td></tr><tr><td>10</td><td class="nm">Ibrahim Mbaye</td><td>PSG → <b>Aston Villa</b></td><td>18</td><td>RW</td><td class="n idx">59.8</td><td class="n">83/68</td><td class="n">29 / 3 / 2</td></tr><tr><td>11</td><td class="nm">Kerim Alajbegović</td><td>Red Bull Salzburg</td><td>18</td><td>LM</td><td class="n idx">57.4</td><td class="n">82/63</td><td class="n">44 / 13 / 4</td></tr><tr><td>12</td><td class="nm">Nathan De Cat</td><td>Anderlecht → <b>Hoffenheim</b></td><td>18</td><td>CDM</td><td class="n idx">52.6</td><td class="n">83/63</td><td class="n">41 / 2 / 4</td></tr><tr><td>13</td><td class="nm">Oskar Pietuszewski</td><td>Jagiellonia → <b>Porto</b></td><td>18</td><td>LM</td><td class="n idx">52.1</td><td class="n">80/64</td><td class="n">49 / 6 / 6</td></tr><tr><td>14</td><td class="nm">Tylel Tati</td><td>Nantes</td><td>18</td><td>CB</td><td class="n idx">50.1</td><td class="n">83/67</td><td class="n">20 / 0 / 0</td></tr><tr><td>15</td><td class="nm">Artem Stepanov</td><td>Utrecht</td><td>18</td><td>ST</td><td class="n idx">49.9</td><td class="n">83/63</td><td class="n">29 / 6 / 2</td></tr><tr><td>16</td><td class="nm">Mohamed Kader Meïté</td><td>Rennes → <b>Al Hilal</b></td><td>18</td><td>ST</td><td class="n idx">49.2</td><td class="n">83/70</td><td class="n">n/a</td></tr><tr><td>17</td><td class="nm">Sean Steur</td><td>Ajax</td><td>18</td><td>CM</td><td class="n idx">48.7</td><td class="n">83/64</td><td class="n">23 / 1 / 2</td></tr><tr><td>18</td><td class="nm">Bruno Durdov</td><td>Hajduk Split → <b>Górnik Zabrze</b></td><td>18</td><td>RW</td><td class="n idx">48.2</td><td class="n">84/64</td><td class="n">20 / 1 / 1</td></tr><tr><td>19</td><td class="nm">Honest Ahanor</td><td>Atalanta</td><td>18</td><td>LB</td><td class="n idx">48.0</td><td class="n">81/66</td><td class="n">35 / 1 / 0</td></tr><tr><td>20</td><td class="nm">Justin Lerma</td><td>Ind. del Valle → <b>Dortmund</b></td><td>18</td><td>LM</td><td class="n idx">47.2</td><td class="n">85/64</td><td class="n">11 / 0 / 1</td></tr></tbody></table></div></div>
+  <div class="full"><h2>Next 10</h2><div class="tw"><table><thead><tr><th>#</th><th>Player</th><th>25/26 club</th><th>Age</th><th>Pos</th><th class=n>Index</th><th class=n>Pot/Ovr</th><th class=n>GP / G / A</th></tr></thead><tbody><tr><td>21</td><td class="nm">Maxloren Castro</td><td>Sporting Cristal</td><td>18</td><td>LW</td><td class="n idx">46.7</td><td class="n">81/68</td><td class="n">38 / 2 / 5</td></tr><tr><td>22</td><td class="nm">Semm Renders</td><td>Royal Antwerp</td><td>18</td><td>RB</td><td class="n idx">43.2</td><td class="n">84/62</td><td class="n">12 / 0 / 0</td></tr><tr><td>23</td><td class="nm">Chidozie Obi-Martin</td><td>Man United</td><td>18</td><td>ST</td><td class="n idx">43.1</td><td class="n">84/65</td><td class="n">0 / 0 / 0</td></tr><tr><td>24</td><td class="nm">Christian Comotto</td><td>Spezia Calcio</td><td>18</td><td>CM</td><td class="n idx">43.0</td><td class="n">83/61</td><td class="n">30 / 0 / 1</td></tr><tr><td>25</td><td class="nm">Aaron Bouwman</td><td>Ajax</td><td>18</td><td>CB</td><td class="n idx">42.8</td><td class="n">83/65</td><td class="n">12 / 1 / 0</td></tr><tr><td>26</td><td class="nm">Louis Page</td><td>Leicester City</td><td>18</td><td>CM</td><td class="n idx">42.5</td><td class="n">83/61</td><td class="n">21 / 0 / 1</td></tr><tr><td>27</td><td class="nm">Francisco Cortés Gracia</td><td>Levante UD</td><td>18</td><td>LW</td><td class="n idx">42.4</td><td class="n">81/64</td><td class="n">22 / 3 / 0</td></tr><tr><td>28</td><td class="nm">Mateus Mané</td><td>Wolverhampton Wanderers</td><td>18</td><td>RW</td><td class="n idx">42.3</td><td class="n">79/60</td><td class="n">30 / 3 / 2</td></tr><tr><td>29</td><td class="nm">Rafael Pinto Pedrosa</td><td>Karlsruher SC</td><td>18</td><td>RB</td><td class="n idx">40.7</td><td class="n">80/64</td><td class="n">30 / 1 / 2</td></tr><tr><td>30</td><td class="nm">Antonio Fernández Casino</td><td>Barcelona</td><td>18</td><td>RW</td><td class="n idx">40.2</td><td class="n">83/64</td><td class="n">1 / 0 / 0</td></tr></tbody></table></div></div>
+</div>
+<script>
+document.getElementById("copy").addEventListener("click",function(){
+  var t=document.getElementById("tweet"),b=this;
+  function ok(){b.textContent="Copied";setTimeout(function(){b.textContent="Copy text"},1600)}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t.value).then(ok,function(){t.select()})}else{t.select()}
+});
+</script>
