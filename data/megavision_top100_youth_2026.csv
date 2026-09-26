@@ -1,101 +1,101 @@
-rank,name,age,team,league,position,fc_pot,fc_ovr,speed,sources
-1,Jorthy Mokio,17,Ajax,Eredivisie,"CDM, CM, LB, CB",89.0,70.0,70.0,fc26_filter|nxgn_2026
-2,Pau Cubarsí Paredes,18,FC Barcelona,La Liga,CB,88.0,82.0,70.0,fc26_filter|nxgn_2026
-3,Givairo Read,19,Feyenoord,Eredivisie,"RB, RM",88.0,75.0,81.0,fc26_filter
-4,Kees Smit,19,AZ Alkmaar,Eredivisie,"CAM, CM, RM",87.0,72.0,61.0,fc26_filter
-5,Julien Dienda M. Duranville,19,Borussia Dortmund,Bundesliga,"RM, LM, ST, RW",87.0,72.0,88.0,fc26_filter
-6,Finn Jeltsch,18,VfB Stuttgart,Bundesliga,CB,87.0,72.0,69.0,fc26_filter
-7,Pablo García Fernández,18,Real Betis Balompié,La Liga,"RM, ST, LM, RW",87.0,68.0,75.0,fc26_filter|nxgn_2026
-8,Francesco Camarda,17,Lecce,Serie A,ST,87.0,65.0,67.0,fc26_filter|nxgn_2026
-9,Leny Yoro,19,Manchester United,Premier League,CB,86.0,78.0,69.0,fc26_filter
-10,Maher Mauricio Carrizo,19,Vélez Sarsfield,Liga Profesional de Fútbol,"RM, CAM, ST, RW",86.0,72.0,87.0,fc26_filter
-11,Paul Wanner,19,PSV,Eredivisie,"CAM, RW, CM",86.0,72.0,75.0,fc26_filter
-12,Leo Sauer,19,Feyenoord,Eredivisie,"LW, CAM, LM",86.0,72.0,88.0,fc26_filter
-13,Christos Mouzakitis,18,Olympiacos FC,Super League,"CM, CAM",86.0,71.0,69.0,fc26_filter
-14,Tygo Land,19,FC Groningen,Eredivisie,"CM, CDM",86.0,68.0,73.0,fc26_filter
-15,Lennart Karl,17,FC Bayern München,Bundesliga,"CAM, RM, CM",86.0,63.0,69.0,fc26_filter|nxgn_2026
-16,Roger Fernandes,19,Al Ittihad,Pro League,"RM, LM, RW",85.0,76.0,89.0,fc26_filter
-17,Senny Mayulu,19,Paris Saint-Germain,Ligue 1,CM,85.0,75.0,75.0,fc26_filter
-18,Jesús Rodriguez Caraballo,19,Como,Serie A,"LM, RM, LW",85.0,74.0,80.0,fc26_filter
-19,Marc Bernal Casas,18,FC Barcelona,La Liga,"CDM, CM",85.0,73.0,61.0,fc26_filter|nxgn_2026
-20,Lennon Lee Miller,18,Udinese,Serie A,"CM, CDM, CAM, CB",85.0,71.0,73.0,fc26_filter
-21,Ian Martín Subiabre,18,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",85.0,69.0,85.0,fc26_filter|nxgn_2026
-22,Forzan Assan Ouédraogo,19,RB Leipzig,Bundesliga,"CAM, CM",85.0,69.0,76.0,fc26_filter
-23,Antonio José Cordero Campillo,18,KVC Westerlo,Pro League,"LW, RW, LM",85.0,69.0,78.0,fc26_filter
-24,Tobías Emanuel Ramírez Cardozo,18,Argentinos Juniors,Liga Profesional de Fútbol,CB,85.0,69.0,78.0,fc26_filter
-25,Tidiam Diadie Stephan Gomis,18,RB Leipzig,Bundesliga,"LM, RM, ST, LW",85.0,68.0,85.0,fc26_filter
-26,Kouakou Henry-Joane Aaron Aimerick Gadou,18,FC Red Bull Salzburg,Bundesliga,CB,85.0,66.0,70.0,fc26_filter
-27,Alejandro Granados Torres,19,Club Brugge KV,Pro League,"CM, CAM",85.0,65.0,68.0,fc26_filter
-28,Justin Armando Lerma Soliz,17,Independiente del Valle,Serie A,"LM, CAM, CM, LW",85.0,64.0,78.0,fc26_filter
-29,Diego Basilio León Blanco,18,Manchester United,Premier League,"LB, LM",85.0,64.0,83.0,fc26_filter
-30,Mamadou Sarr,19,RC Strasbourg Alsace,Ligue 1,CB,84.0,76.0,66.0,fc26_filter
-31,Elias Niklas Baum,19,Eintracht Frankfurt,Bundesliga,"RB, RM",84.0,72.0,75.0,fc26_filter
-32,Ibrahim Maza,19,Bayer 04 Leverkusen,Bundesliga,"CAM, CM",84.0,71.0,75.0,fc26_filter
-33,Tyrique George,19,Chelsea,Premier League,"LM, RM, ST, LW",84.0,71.0,79.0,fc26_filter
-34,Marc Guiu Paz,19,Chelsea,Premier League,ST,84.0,71.0,76.0,fc26_filter
-35,Tóth Alex László,19,Ferencvárosi Torna Club,Nemzeti Bajnokság I,"CDM, CM",84.0,70.0,66.0,fc26_filter
-36,Jerónimo Dómina,19,Club Atlético Unión,Liga Profesional de Fútbol,ST,84.0,70.0,86.0,fc26_filter
-37,Min-hyuk Yang,19,Portsmouth,Championship,"RM, RW, LM",84.0,70.0,80.0,fc26_filter
-38,Veljko Milosavljević,18,AFC Bournemouth,Premier League,CB,84.0,70.0,53.0,fc26_filter
-39,Ayden Edford Heaven,18,Manchester United,Premier League,"CB, LB",84.0,69.0,69.0,fc26_filter
-40,Simone Pafundi,19,Sampdoria,Serie B,"CAM, CM, ST",84.0,68.0,76.0,fc26_filter
-41,Saïd El Mala,18,1. FC Köln,Bundesliga,"LM, CAM, LW",84.0,68.0,75.0,fc26_filter
-42,Christian Michel Kofane,18,Bayer 04 Leverkusen,Bundesliga,ST,84.0,68.0,63.0,fc26_filter
-43,Jon Martín Vicente,19,Real Sociedad,La Liga,CB,84.0,68.0,65.0,fc26_filter
-44,Jayden Osei Addai,19,Como,Serie A,"RM, RW",84.0,67.0,83.0,fc26_filter
-45,Mattia Liberali,18,Catanzaro,Serie B,"RW, RM, CAM",84.0,65.0,70.0,fc26_filter
-46,Bruno Durdov,17,Hajduk Split,Hrvatska nogometna liga,"RW, RM",84.0,64.0,73.0,fc26_filter
-47,Rayane Bounida,19,Ajax,Eredivisie,"LW, CAM, LM",84.0,64.0,70.0,fc26_filter
-48,Daniel Díaz Gándara,19,Real Sociedad de Fútbol B,La Liga 2,"RM, ST, RW",84.0,63.0,69.0,fc26_filter
-49,Findlay Curtis,18,Rangers FC,Premiership,"LW, RW, LM",84.0,63.0,63.0,fc26_filter
-50,Semm Renders,17,Royal Antwerp FC,Pro League,"RB, RM",84.0,62.0,73.0,fc26_filter
-51,Can Yılmaz Uzun,19,Eintracht Frankfurt,Bundesliga,"CAM, ST, CM",83.0,74.0,62.0,fc26_filter
-52,Valentin Atangana Edoa,19,Al Ahli SFC,Pro League,"CDM, CM",83.0,73.0,66.0,fc26_filter
-53,Kosta Nedeljkovic,19,RB Leipzig,Bundesliga,"RB, RM",83.0,72.0,81.0,fc26_filter
-54,Abdulai Juma Bah,19,OGC Nice,Ligue 1,CB,83.0,72.0,66.0,fc26_filter
-55,Kauã Elias Nogueira,19,Shakhtar Donetsk,Premier League,ST,83.0,71.0,80.0,fc26_filter
-56,Gianluca Prestianni Gross,19,SL Benfica,Primeira Liga,"RM, CAM, RW",83.0,71.0,87.0,fc26_filter
-57,Santiago Javier Lencina,19,River Plate,Liga Profesional de Fútbol,"RW, CAM, RM",83.0,71.0,75.0,fc26_filter
-58,Mohamed Kader Meïté,17,Stade Rennais FC,Ligue 1,ST,83.0,70.0,65.0,fc26_filter|nxgn_2026
-59,Idrissa Guèye,18,Udinese,Serie A,ST,83.0,70.0,67.0,fc26_filter
-60,João Pedro Arnauth Barrocas Simões,18,Sporting CP,Primeira Liga,"CM, CAM, CDM",83.0,69.0,71.0,fc26_filter|nxgn_2026
-61,Maurice Krattenmacher,19,Hertha BSC,2. Bundesliga,"CAM, ST, CM",83.0,69.0,75.0,fc26_filter
-62,Yasin Özcan,19,RSC Anderlecht,Pro League,"CB, LB, LM",83.0,69.0,74.0,fc26_filter
-63,Lewis Koumas,19,Birmingham City,Championship,"RM, LM, RW",83.0,69.0,78.0,fc26_filter
-64,Marvin Young,19,Sparta Rotterdam,Eredivisie,"CB, RB, RM",83.0,69.0,69.0,fc26_filter
-65,Pedro Henrique Cardoso de Lima,19,FC Porto,Primeira Liga,"RB, RM",83.0,68.0,76.0,fc26_filter
-66,Santino Andino Valencia,19,Godoy Cruz,Liga Profesional de Fútbol,"LM, LW, CAM",83.0,68.0,88.0,fc26_filter
-67,Harry John Amass,18,Sheffield Wednesday,Championship,"LB, LM",83.0,68.0,74.0,fc26_filter
-68,Carlos Espí Escrihuela,19,Levante UD,La Liga,ST,83.0,68.0,71.0,fc26_filter
-69,Nikolaus Wurmbrand,19,SK Rapid,Bundesliga,"RM, ST, RW",83.0,68.0,86.0,fc26_filter
-70,Harrison Armstrong,18,Preston North End,Championship,"CDM, CM",83.0,67.0,65.0,fc26_filter
-71,Tylel Tati,17,FC Nantes,Ligue 1,CB,83.0,67.0,68.0,fc26_filter|nxgn_2026
-72,Matias Siltanen,18,Djurgårdens IF,Allsvenskan,"CDM, CM",83.0,66.0,69.0,fc26_filter
-73,Viktor Tsukanov,19,Shakhtar Donetsk,Premier League,"CM, CAM, RM",83.0,65.0,66.0,fc26_filter
-74,Aaron Bouwman,17,Ajax,Eredivisie,CB,83.0,65.0,64.0,fc26_filter
-75,David Uyoyo Odogu,19,AC Milan,Serie A,CB,83.0,65.0,67.0,fc26_filter
-76,Sean Steur,17,Ajax,Eredivisie,"CM, CDM",83.0,64.0,72.0,fc26_filter|nxgn_2026
-77,Colby Donovan,18,Celtic,Premiership,"RB, CB, RM",83.0,64.0,73.0,fc26_filter
-78,Mason Melia,17,St Patrick's Athletic FC,Premier Division,ST,83.0,64.0,76.0,fc26_filter
-79,Antonio Fernández Casino,16,FC Barcelona,La Liga,"RW, RM",83.0,64.0,74.0,fc26_filter
-80,Kiano Dyer,18,FC Volendam,Eredivisie,"CM, CDM",83.0,63.0,72.0,fc26_filter
-81,Nathan De Cat,16,RSC Anderlecht,Pro League,"CDM, CM",83.0,63.0,61.0,fc26_filter|nxgn_2026
-82,Arturo Rodríguez Cosano,18,UD Las Palmas,La Liga 2,"RW, LW, RM",83.0,63.0,78.0,fc26_filter
-83,Pablo López Gómez,19,CD Mirandés,La Liga 2,"RW, LW, RM",83.0,63.0,56.0,fc26_filter
-84,Kaye Furo,18,Club Brugge KV,Pro League,ST,83.0,63.0,72.0,fc26_filter
-85,Artem Stepanov,17,1. FC Nürnberg,2. Bundesliga,ST,83.0,63.0,67.0,fc26_filter
-86,Hugo Pinilla Ruiz,19,Real Zaragoza,La Liga 2,"RM, CAM, LM, RW",83.0,62.0,67.0,fc26_filter
-87,Louis Donald Page,16,Leicester City,Championship,"CM, CDM, CAM",83.0,61.0,74.0,fc26_filter
-88,Christian Comotto,17,Spezia,Serie B,CM,83.0,61.0,63.0,fc26_filter
-89,Bailey Rice,18,Rangers FC,Premiership,"CDM, CM",83.0,61.0,52.0,fc26_filter
-90,Francis-Ikechukwu Onyeka,18,VfL Bochum 1848,2. Bundesliga,"CAM, CM",83.0,60.0,64.0,fc26_filter
-91,Mathis Amougou,19,RC Strasbourg Alsace,Ligue 1,"CM, CDM",82.0,72.0,71.0,fc26_filter
-92,Gabriel Silva Moscardo de Salles,19,Sporting Clube de Braga,Primeira Liga,"CDM, CM",82.0,72.0,65.0,fc26_filter
-93,Bence Dárdai,19,VfL Wolfsburg,Bundesliga,"CAM, CM",82.0,72.0,66.0,fc26_filter
-94,George Osrzehmen Ilenikhena,18,AS Monaco,Ligue 1,ST,82.0,72.0,79.0,fc26_filter
-95,Victor Mow Froholdt,19,FC Porto,Primeira Liga,"CM, CDM, CAM",82.0,71.0,75.0,fc26_filter
-96,Louis Leroux,19,FC Nantes,Ligue 1,"CM, LB, LM",82.0,70.0,67.0,fc26_filter
-97,William Gomes Carvalho Santos,19,FC Porto,Primeira Liga,"LW, RW, LM",82.0,70.0,82.0,fc26_filter
-98,Jaydee Canvot,18,Crystal Palace,Premier League,"CB, CDM, CM",82.0,70.0,70.0,fc26_filter
-99,Roony Bardghji,19,FC Barcelona,La Liga,"RM, RW",82.0,69.0,73.0,fc26_filter
-100,Lucas Høgsberg,19,RC Strasbourg Alsace,Ligue 1,"CB, RB, LB, RM",82.0,69.0,67.0,fc26_filter
+rank,name,dob,age_at_oct1_2026,team,league,position,fc_pot,fc_ovr,speed,sources
+1,Jorthy Mokio,2008-02-29,18,Ajax,Eredivisie,"CDM, CM, LB, CB",89.0,70.0,70.0,fc26_filter|nxgn_2026
+2,Pau Cubarsí Paredes,2007-01-22,19,FC Barcelona,La Liga,CB,88.0,82.0,70.0,fc26_filter|nxgn_2026
+3,Francesco Camarda,2008-03-10,18,Lecce,Serie A,ST,87.0,65.0,67.0,fc26_filter|nxgn_2026
+4,Christos Mouzakitis,2006-12-25,19,Olympiacos FC,Super League,"CM, CAM",86.0,71.0,69.0,fc26_filter
+5,Lennart Karl,2008-02-22,18,FC Bayern München,Bundesliga,"CAM, RM, CM",86.0,63.0,69.0,fc26_filter|nxgn_2026
+6,Marc Bernal Casas,2007-05-26,19,FC Barcelona,La Liga,"CDM, CM",85.0,73.0,61.0,fc26_filter|nxgn_2026
+7,Ian Martín Subiabre,2007-01-01,19,River Plate,Liga Profesional de Fútbol,"LW, RW, ST, LM",85.0,69.0,85.0,fc26_filter|nxgn_2026
+8,Antonio José Cordero Campillo,2006-11-14,19,KVC Westerlo,Pro League,"LW, RW, LM",85.0,69.0,78.0,fc26_filter
+9,Tobías Emanuel Ramírez Cardozo,2006-11-11,19,Argentinos Juniors,Liga Profesional de Fútbol,CB,85.0,69.0,78.0,fc26_filter
+10,Kouakou Henry-Joane Aaron Aimerick Gadou,2007-01-17,19,FC Red Bull Salzburg,Bundesliga,CB,85.0,66.0,70.0,fc26_filter
+11,Justin Armando Lerma Soliz,2008-05-05,18,Independiente del Valle,Serie A,"LM, CAM, CM, LW",85.0,64.0,78.0,fc26_filter
+12,Diego Basilio León Blanco,2007-04-03,19,Manchester United,Premier League,"LB, LM",85.0,64.0,83.0,fc26_filter
+13,Veljko Milosavljević,2007-06-28,19,AFC Bournemouth,Premier League,CB,84.0,70.0,53.0,fc26_filter
+14,Mattia Liberali,2007-04-07,19,Catanzaro,Serie B,"RW, RM, CAM",84.0,65.0,70.0,fc26_filter
+15,Bruno Durdov,2007-12-11,18,Hajduk Split,Hrvatska nogometna liga,"RW, RM",84.0,64.0,73.0,fc26_filter
+16,Semm Renders,2007-12-17,18,Royal Antwerp FC,Pro League,"RB, RM",84.0,62.0,73.0,fc26_filter
+17,Mohamed Kader Meïté,2007-10-11,18,Stade Rennais FC,Ligue 1,ST,83.0,70.0,65.0,fc26_filter|nxgn_2026
+18,João Pedro Arnauth Barrocas Simões,2007-01-06,19,Sporting CP,Primeira Liga,"CM, CAM, CDM",83.0,69.0,71.0,fc26_filter|nxgn_2026
+19,Harry John Amass,2007-03-16,19,Sheffield Wednesday,Championship,"LB, LM",83.0,68.0,74.0,fc26_filter
+20,Harrison Armstrong,2007-01-19,19,Preston North End,Championship,"CDM, CM",83.0,67.0,65.0,fc26_filter
+21,Tylel Tati,2008-01-19,18,FC Nantes,Ligue 1,CB,83.0,67.0,68.0,fc26_filter|nxgn_2026
+22,Matias Siltanen,2007-03-29,19,Djurgårdens IF,Allsvenskan,"CDM, CM",83.0,66.0,69.0,fc26_filter
+23,Aaron Bouwman,2007-08-28,19,Ajax,Eredivisie,CB,83.0,65.0,64.0,fc26_filter
+24,Sean Steur,2008-01-11,18,Ajax,Eredivisie,"CM, CDM",83.0,64.0,72.0,fc26_filter|nxgn_2026
+25,Mason Melia,2007-09-22,19,St Patrick's Athletic FC,Premier Division,ST,83.0,64.0,76.0,fc26_filter
+26,Antonio Fernández Casino,2008-07-15,18,FC Barcelona,La Liga,"RW, RM",83.0,64.0,74.0,fc26_filter
+27,Kiano Dyer,2006-11-21,19,FC Volendam,Eredivisie,"CM, CDM",83.0,63.0,72.0,fc26_filter
+28,Nathan De Cat,2008-07-19,18,RSC Anderlecht,Pro League,"CDM, CM",83.0,63.0,61.0,fc26_filter|nxgn_2026
+29,Kaye Furo,2007-02-06,19,Club Brugge KV,Pro League,ST,83.0,63.0,72.0,fc26_filter
+30,Artem Stepanov,2007-08-10,19,1. FC Nürnberg,2. Bundesliga,ST,83.0,63.0,67.0,fc26_filter
+31,Louis Donald Page,2008-07-10,18,Leicester City,Championship,"CM, CDM, CAM",83.0,61.0,74.0,fc26_filter
+32,Christian Comotto,2008-04-25,18,Spezia,Serie B,CM,83.0,61.0,63.0,fc26_filter
+33,Bailey Rice,2006-10-04,19,Rangers FC,Premiership,"CDM, CM",83.0,61.0,52.0,fc26_filter
+34,Francis-Ikechukwu Onyeka,2007-04-29,19,VfL Bochum 1848,2. Bundesliga,"CAM, CM",83.0,60.0,64.0,fc26_filter
+35,Mihajlo Cvetkovic,2007-01-10,19,RSC Anderlecht,Pro League,"ST, LW",82.0,67.0,71.0,fc26_filter
+36,Bradley Burrowes,2008-03-04,18,Aston Villa,Premier League,"RM, ST, RW",82.0,65.0,86.0,fc26_filter
+37,Axel Tape-Kobrissa,2007-08-10,19,Bayer 04 Leverkusen,Bundesliga,CB,82.0,65.0,68.0,fc26_filter
+38,Marius Courcoul,2007-01-01,19,Angers SCO,Ligue 1,"CDM, CM, CB",82.0,65.0,55.0,fc26_filter
+39,Sandro Miguel Rodrigues Vidigal,2007-07-28,19,Sporting Clube de Braga,Primeira Liga,"LW, RW, CAM, LM",82.0,65.0,77.0,fc26_filter
+40,Abubacarr Sedi Kinteh,2006-11-30,19,Tromsø IL,Eliteserien,CB,82.0,65.0,71.0,fc26_filter
+41,Juan Cruz Meza,2008-03-14,18,River Plate,Liga Profesional de Fútbol,CM,82.0,64.0,67.0,fc26_filter
+42,Tomás Parmo,2008-01-08,18,Independiente,Liga Profesional de Fútbol,"CAM, CM",82.0,64.0,77.0,fc26_filter
+43,Robinio Vaz,2007-02-17,19,Olympique de Marseille,Ligue 1,ST,82.0,64.0,79.0,fc26_filter|nxgn_2026
+44,Lazar Jovanović,2006-11-30,19,VfB Stuttgart,Bundesliga,"RM, LM, RW",82.0,64.0,75.0,fc26_filter
+45,Alex Marchal García,2007-11-30,18,Reading FC,League One,"LB, RW, LW, RM",82.0,63.0,85.0,fc26_filter
+46,Kerim-Sam Alajbegović,2007-09-21,19,FC Red Bull Salzburg,Bundesliga,"LM, CAM, LW",82.0,63.0,70.0,fc26_filter|nxgn_2026
+47,James Wilson,2007-03-06,19,Hearts,Premiership,ST,82.0,63.0,72.0,fc26_filter
+48,Lucas Jetten,2007-06-07,19,Ajax,Eredivisie,"LB, LM",82.0,62.0,84.0,fc26_filter
+49,Otto Emerson Stange,2007-02-09,19,SV Elversberg,2. Bundesliga,"ST, LM",82.0,62.0,63.0,fc26_filter
+50,Kacper Potulski,2007-10-19,18,1. FSV Mainz 05,Bundesliga,CB,82.0,62.0,60.0,fc26_filter
+51,Matteo Palma,2008-03-13,18,Udinese,Serie A,CB,82.0,62.0,52.0,fc26_filter
+52,Leon Jakirović,2008-01-16,18,Dinamo Zagreb,Hrvatska nogometna liga,"CB, LB",82.0,61.0,66.0,fc26_filter
+53,Trevan Sanusi,2007-04-25,19,FC Lorient,Ligue 1,"LW, RW, LM",82.0,61.0,86.0,fc26_filter
+54,Justin-Kai von der Hitz,2006-10-22,19,1. FC Nürnberg,2. Bundesliga,"RM, RB, RW",82.0,60.0,77.0,fc26_filter
+55,Boris Chi Mamuzah Lum,2007-10-02,18,Hertha BSC,2. Bundesliga,"CDM, CM",82.0,60.0,71.0,fc26_filter
+56,Juan David Obando,2006-12-09,19,Atlético Nacional,Categoría Primera A,"CAM, CM",82.0,60.0,78.0,fc26_filter
+57,Andrea Natali,2008-01-28,18,AZ Alkmaar,Eredivisie,CB,82.0,60.0,58.0,fc26_filter
+58,Jonah Daniel Kusi-Asare,2007-07-04,19,Fulham FC,Premier League,ST,82.0,60.0,61.0,fc26_filter
+59,Brad Ryan Manguelle,2007-11-27,18,KRC Genk,Pro League,CB,82.0,60.0,70.0,fc26_filter
+60,Pedro André Villalba Gaona,2008-07-09,18,Libertad,División Profesional,"LM, LW, CAM",82.0,58.0,69.0,fc26_filter
+61,Igor Tyjon,2008-03-20,18,Blackburn Rovers,Championship,ST,82.0,57.0,69.0,fc26_filter
+62,Amlani Tatu,2008-07-01,18,Adelaide United,A-League Men,"LM, RM, LW",82.0,57.0,70.0,fc26_filter
+63,Andrija Maksimović,2007-06-05,19,RB Leipzig,Bundesliga,"RW, CAM, RM",81.0,71.0,71.0,fc26_filter|nxgn_2026
+64,Maxloren Sannoe Castro Rufino,2007-12-08,18,Sporting Cristal,Liga 1,"LW, LM, RW",81.0,68.0,81.0,fc26_filter
+65,Honest Ahanor,2008-02-23,18,Atalanta,Serie A,"LB, LM",81.0,66.0,68.0,fc26_filter|nxgn_2026
+66,Aarón Ochoa Moloney,2007-04-18,19,Málaga CF,La Liga 2,"CAM, ST, CM",81.0,65.0,66.0,fc26_filter
+67,Francisco Cortés Gracia,2007-08-11,19,Cultural Leonesa,La Liga 2,"LW, LM",81.0,64.0,74.0,fc26_filter
+68,Arda Ünyay,2007-01-18,19,Galatasaray SK,Süper Lig,"CB, RB",81.0,64.0,70.0,fc26_filter
+69,Argyrios Liatsikouras,2006-12-20,19,Olympiacos FC,Super League,"CM, CAM",81.0,63.0,76.0,fc26_filter
+70,Viggo Gebel,2007-11-22,18,RB Leipzig,Bundesliga,"CAM, LM, RM, CM",81.0,63.0,72.0,fc26_filter
+71,Patrice Čović,2007-06-25,19,SV Werder Bremen,Bundesliga,"CAM, RM, CM",81.0,63.0,69.0,fc26_filter
+72,Christ Wawa,2007-06-09,19,BK Häcken,Allsvenskan,"RW, RM",81.0,62.0,81.0,fc26_filter
+73,Jeremiah Mensah,2008-02-21,18,Bayer 04 Leverkusen,Bundesliga,"CM, CAM",81.0,61.0,68.0,fc26_filter
+74,Mario Jiménez Gambín,2007-07-01,19,Granada CF,La Liga 2,"CAM, CM",81.0,61.0,61.0,fc26_filter
+75,Daniel Demenenge Daga,2007-01-10,19,Molde FK,Eliteserien,"CDM, CM",81.0,61.0,68.0,fc26_filter
+76,Philipp Maybach,2007-12-14,18,FK Austria Wien,Bundesliga,"CDM, CM",81.0,61.0,64.0,fc26_filter
+77,René Mitongo Muteba,2008-01-18,18,Standard de Liège,Pro League,ST,81.0,61.0,75.0,fc26_filter
+78,Kacper Koscierski,2007-06-23,19,VfL Bochum 1848,2. Bundesliga,"RB, RM",81.0,61.0,69.0,fc26_filter
+79,Noah Fernandez,2008-01-09,18,PSV,Eredivisie,"CAM, LW, CM",81.0,60.0,71.0,fc26_filter
+80,Thiago Pitarch Pinar,2007-08-03,19,Real Madrid,La Liga,CM,81.0,60.0,65.0,fc26_filter|nxgn_2026
+81,Lucas Herrington,2007-09-05,19,Brisbane Roar,A-League Men,CB,81.0,59.0,65.0,fc26_filter
+82,Lawrence Wong,2007-10-06,18,Melbourne City FC,A-League Men,"CAM, ST, CM",81.0,56.0,62.0,fc26_filter
+83,Ethan Mbappé Lottin,2006-12-29,19,Lille OSC,Ligue 1,"CM, RM",80.0,69.0,73.0,fc26_filter
+84,Khalis Merah,2007-02-24,19,Olympique Lyonnais,Ligue 1,"CAM, CM",80.0,66.0,64.0,fc26_filter
+85,Luca Oliveira Meirelles,2007-03-15,19,Shakhtar Donetsk,Premier League,"ST, LW",80.0,65.0,70.0,fc26_filter
+86,Giacomo De Pieri,2006-12-29,19,SS Juve Stabia,Serie B,"RW, RM",80.0,65.0,77.0,fc26_filter
+87,Bogdan Popov,2007-04-04,19,Empoli,Serie B,ST,80.0,65.0,63.0,fc26_filter
+88,David Cordón Mancha,2007-10-16,18,Getafe CF,La Liga,"LB, LM",80.0,64.0,75.0,fc26_filter
+89,Valentín Alejandro Pezzolesi,2007-04-16,19,UD Las Palmas,La Liga 2,"RB, RM",80.0,64.0,70.0,fc26_filter
+90,Jay Robinson,2007-03-15,19,Southampton,Championship,"ST, CAM, LW",80.0,64.0,67.0,fc26_filter
+91,Rafael Pinto Pedrosa,2007-09-30,19,Karlsruher SC,2. Bundesliga,"RB, RM",80.0,64.0,75.0,fc26_filter
+92,Oskar Pietuszewski,2008-05-20,18,Jagiellonia Białystok,Ekstraklasa,"LM, RM, LW",80.0,64.0,79.0,fc26_filter|nxgn_2026
+93,Darryl Bakola,2007-11-30,18,Olympique de Marseille,Ligue 1,"CAM, CM",80.0,63.0,64.0,fc26_filter
+94,Joachim Kayi Sanda,2006-11-29,19,Red Star FC,Ligue 2,CB,80.0,63.0,63.0,fc26_filter
+95,Bleon Kurtulus,2007-06-24,19,Halmstads BK,Allsvenskan,CB,80.0,63.0,64.0,fc26_filter
+96,Noah Markmann,2007-02-24,19,FC Nordsjælland,Superliga,CB,80.0,63.0,66.0,fc26_filter
+97,Noham Kamara,2007-01-22,19,Paris Saint-Germain,Ligue 1,CB,80.0,62.0,63.0,fc26_filter
+98,Robert Ramšak,2006-10-18,19,Eintracht Braunschweig,2. Bundesliga,ST,80.0,62.0,68.0,fc26_filter
+99,Sydney Ehizogie Osazuwa Omoruyi,2007-04-21,19,Real Sociedad de Fútbol B,La Liga 2,ST,80.0,62.0,71.0,fc26_filter
+100,Adrián Arnuncio Baquerín,2007-03-04,19,Real Valladolid CF,La Liga 2,ST,80.0,62.0,68.0,fc26_filter
