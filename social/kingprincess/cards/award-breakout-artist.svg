@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+<rect width="400" height="500" fill="#FF5FA8"/>
+<rect x="10" y="10" width="380" height="480" fill="none" stroke="#1B1410" stroke-width="2.5" stroke-dasharray="1 0"/>
+<rect x="16" y="16" width="368" height="468" fill="none" stroke="#F3E6D8" stroke-width="1"/>
+<g transform="translate(328,428)"><circle cx="18" cy="18" r="18" fill="#F3E6D8"/><circle cx="18" cy="18" r="12.5" fill="none" stroke="#FF5FA8" stroke-width="1.2" opacity="0.55"/><circle cx="18" cy="18" r="8.5" fill="none" stroke="#FF5FA8" stroke-width="1.2" opacity="0.55"/><circle cx="18" cy="18" r="3.2" fill="#FF5FA8"/></g>
+<text x="28" y="46" font-family="Arial Black, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#F3E6D8">ACCOLADE</text>
+<text font-family="Arial Black, Helvetica, sans-serif" font-size="36" font-weight="900" fill="#1B1410"><tspan x="28" y="260.0">Breakout Artist</tspan></text>
+<text x="28" y="470" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="16" fill="#1B1410" opacity="0.8">Vivid Seats Pop honoree, 2018</text>
+</svg>

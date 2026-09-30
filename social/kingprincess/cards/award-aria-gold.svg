@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+<rect width="400" height="500" fill="#F3E6D8"/>
+<rect x="10" y="10" width="380" height="480" fill="none" stroke="#1B1410" stroke-width="2.5" stroke-dasharray="1 0"/>
+<rect x="16" y="16" width="368" height="468" fill="none" stroke="#D8A64E" stroke-width="1"/>
+<g transform="translate(322,428)"><path d="M20 38 C-6 18 -2 -4 14 -2 C19 -1 20 4 20 4 C20 4 21 -1 26 -2 C42 -4 46 18 20 38 Z" fill="#D8A64E"/></g>
+<text x="28" y="46" font-family="Arial Black, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#D8A64E">ACCOLADE</text>
+<text font-family="Arial Black, Helvetica, sans-serif" font-size="36" font-weight="900" fill="#1B1410"><tspan x="28" y="260.0">ARIA Gold</tspan></text>
+<text x="28" y="470" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="16" fill="#1B1410" opacity="0.8">“Talia” certified gold in Australia</text>
+</svg>

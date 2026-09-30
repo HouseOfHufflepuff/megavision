@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+<rect width="400" height="500" fill="#1B1410"/>
+<rect x="10" y="10" width="380" height="480" fill="none" stroke="#D8A64E" stroke-width="2.5" stroke-dasharray="1 0"/>
+<rect x="16" y="16" width="368" height="468" fill="none" stroke="#F3E6D8" stroke-width="1"/>
+<g transform="translate(330,430)"><path d="M20 0 L26 14 L41 14 L29 23 L34 38 L20 29 L6 38 L11 23 L-1 14 L14 14 Z" fill="#F3E6D8"/></g>
+<text x="28" y="46" font-family="Arial Black, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#F3E6D8">CHEAP QUEEN</text>
+<text font-family="Arial Black, Helvetica, sans-serif" font-size="88" font-weight="900" fill="#D8A64E"><tspan x="28" y="260.0">2019</tspan></text>
+<text x="28" y="470" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="16" fill="#D8A64E" opacity="0.8">Debut album; SNL; Glastonbury with Mark Ronson</text>
+</svg>

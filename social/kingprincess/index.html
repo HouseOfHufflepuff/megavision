@@ -1,0 +1,320 @@
+<title>King Princess Online</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Space+Mono:wght@400;700&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/html-midi-player@1.6.0/dist/midi-player.min.js"></script>
+<style>
+:root{
+  --cream:#F3E6D8; --paper:#EFE0CD; --redlac:#C81D4B; --hotpink:#FF5FA8;
+  --ink:#1B1410; --gold:#D8A64E; --sky:#8FD3E8; --white:#FFF8EF;
+  --line: rgba(27,20,16,0.16);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --cream:#241A22; --paper:#2C2029; --ink:#F3E6D8; --white:#1B1410; --line: rgba(243,230,216,0.18); }
+}
+:root[data-theme="dark"]{ --cream:#241A22; --paper:#2C2029; --ink:#F3E6D8; --white:#1B1410; --line: rgba(243,230,216,0.18); }
+
+*{box-sizing:border-box}
+body{background:var(--cream);color:var(--ink);font-family:'Fraunces',Georgia,serif;line-height:1.6;padding-inline:0}
+h1,h2,h3{font-family:'Alfa Slab One',Georgia,serif;text-wrap:balance;line-height:1.05;margin:0}
+.mono{font-family:'Space Mono',ui-monospace,monospace}
+a{color:var(--redlac)}
+img{max-width:100%;display:block}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:16px}
+
+/* ---- marquee ticker ---- */
+.ticker{background:var(--ink);color:var(--gold);overflow:hidden;white-space:nowrap;padding:8px 0;border-bottom:3px solid var(--redlac)}
+.ticker-track{display:inline-block;padding-left:100%;animation:tick 26s linear infinite;font-family:'Space Mono',monospace;font-size:13px;letter-spacing:1px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@media (prefers-reduced-motion: reduce){.ticker-track{animation:none;padding-left:16px}}
+
+/* ---- hero ---- */
+.hero{background:
+    repeating-linear-gradient(45deg, var(--paper) 0 22px, var(--cream) 22px 44px);
+  border-bottom:6px double var(--ink); padding:36px 0 28px; text-align:center}
+.hero .badge{display:inline-block;background:var(--redlac);color:var(--white);font-family:'Space Mono',monospace;
+  font-size:11px;letter-spacing:2px;padding:5px 12px;border-radius:3px;transform:rotate(-3deg);margin-bottom:14px}
+.hero h1{font-size:clamp(38px,9vw,84px);color:var(--redlac);text-shadow:3px 3px 0 var(--gold);letter-spacing:1px}
+.hero .sub{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:2px;color:var(--ink);opacity:0.75;margin-top:10px}
+.hero .counter{display:inline-flex;gap:10px;align-items:center;margin-top:20px;background:var(--white);
+  border:2px solid var(--ink);padding:8px 14px;border-radius:4px;font-family:'Space Mono',monospace;font-size:12px}
+.hero .counter b{background:var(--ink);color:var(--gold);padding:2px 6px;border-radius:2px;font-variant-numeric:tabular-nums}
+.stars{color:var(--gold);letter-spacing:6px;margin-top:14px;font-size:14px}
+
+/* ---- section shell ---- */
+section{padding:40px 0}
+.section-title{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.section-title h2{font-size:clamp(24px,5vw,36px);color:var(--redlac)}
+.section-title .rule{flex:1;height:3px;background:repeating-linear-gradient(90deg,var(--gold) 0 8px,transparent 8px 14px)}
+.kicker{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--redlac);margin-bottom:6px}
+
+/* ---- jukebox ---- */
+.jukebox{background:var(--ink);color:var(--cream);border-radius:14px;padding:26px;border:4px solid var(--gold);
+  display:grid;gap:18px;grid-template-columns:1fr;position:relative;overflow:hidden}
+.jukebox::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 15% 20%, var(--hotpink) 0, transparent 40%);opacity:0.18}
+.jukebox h3{color:var(--gold);font-size:26px}
+.jukebox p{font-size:15px;opacity:0.9;max-width:60ch}
+midi-player{width:100%;--midi-player-ivory-color:var(--cream);--midi-player-primary-font:'Space Mono',monospace;
+  --midi-player-icon-fill-color:var(--ink); background:var(--gold); border-radius:8px; padding:6px 10px}
+midi-visualizer{display:block;width:100%;background:var(--white);border-radius:8px;border:2px solid var(--gold);overflow:hidden}
+.jukebox .note{font-family:'Space Mono',monospace;font-size:12px;opacity:0.75;border-top:1px dashed var(--gold);padding-top:12px}
+
+/* ---- timeline ---- */
+.tl-row{display:grid;grid-template-columns:74px 24px 1fr;gap:2px;margin-bottom:6px}
+.tl-year{font-family:'Alfa Slab One';color:var(--redlac);font-size:20px;padding-top:2px}
+.tl-line{display:flex;justify-content:center}
+.tl-line::before{content:"";width:3px;background:var(--gold);border-radius:2px}
+.tl-text{padding:2px 0 22px;font-size:15px;max-width:62ch}
+
+/* ---- quotes ---- */
+.quote-grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.quote{background:var(--white);border:1px solid var(--line);border-radius:4px;padding:20px 22px;position:relative;box-shadow:5px 5px 0 var(--line)}
+.quote p{font-size:17px;font-style:italic;margin:0 0 10px}
+.quote cite{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;font-style:normal;color:var(--redlac)}
+.q0{border-left:5px solid var(--redlac)} .q1{border-left:5px solid var(--hotpink)}
+.q2{border-left:5px solid var(--gold)} .q3{border-left:5px solid var(--sky)}
+
+/* ---- discography ---- */
+.disc-grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.disc{background:var(--white);border:3px solid var(--ink);border-radius:8px;padding:18px;box-shadow:6px 6px 0 var(--gold)}
+.disc h3{font-size:20px;color:var(--redlac);margin-bottom:2px}
+.disc .yr{font-family:'Space Mono',monospace;font-size:12px;opacity:0.7;margin-bottom:10px}
+.disc ol{margin:0;padding-left:20px;font-size:14px}
+.disc li{margin-bottom:3px}
+
+/* ---- gallery ---- */
+.gallery{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.tile{margin:0;background:var(--white);border:2px solid var(--ink);border-radius:4px;overflow:hidden;position:relative}
+.tile img{width:100%;height:190px;object-fit:cover}
+.tile.card img{object-fit:contain;background:var(--white);height:190px}
+.tile figcaption{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,rgba(0,0,0,0.72),transparent);
+  color:#fff;font-family:'Space Mono',monospace;font-size:9.5px;padding:14px 6px 5px;display:flex;flex-direction:column;gap:1px;opacity:0;transition:opacity .15s}
+.tile.photo:hover figcaption, .tile.photo:focus-within figcaption{opacity:1}
+.tile .cred{opacity:0.75}
+
+/* ---- press ticker ---- */
+.press{background:var(--paper);border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);padding:14px 0}
+
+/* ---- footer ---- */
+footer{background:var(--ink);color:var(--cream);padding:36px 0 90px}
+footer h4{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--gold);margin-bottom:10px}
+footer ul{margin:0 0 26px;padding-left:18px;font-size:12px;line-height:1.8}
+footer a{color:var(--sky)}
+.webring{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px}
+.webring span{border:1px solid var(--gold);color:var(--gold);font-family:'Space Mono',monospace;font-size:10px;
+  padding:5px 9px;border-radius:2px;letter-spacing:1px}
+.disclaimer{font-size:11.5px;opacity:0.7;max-width:70ch;font-family:'Space Mono',monospace;line-height:1.7}
+.signoff{margin-top:22px;font-family:'Alfa Slab One';color:var(--hotpink);font-size:22px}
+</style>
+
+<div class="ticker" role="presentation" aria-hidden="true">
+<span class="ticker-track">★★★ UNOFFICIAL FAN TRIBUTE · NOT AFFILIATED WITH KING PRINCESS, HER LABEL, OR HER MANAGEMENT ★★★ BEST VIEWED WITH SPEAKERS ON ★★★ “1950” WENT PLATINUM ★★★ EXPERT-LEVEL LESBIANISM SINCE 2018 ★★★ UNOFFICIAL FAN TRIBUTE · NOT AFFILIATED WITH KING PRINCESS, HER LABEL, OR HER MANAGEMENT ★★★</span>
+</div>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="badge">est. tonight, running forever</div>
+    <h1>KING&nbsp;PRINCESS<br>ONLINE</h1>
+    <div class="sub">THE #1 KING PRINCESS SHRINE ON THE INTERNET · A MEGAVISION PRODUCTION</div>
+    <div class="stars">★ ★ ★ ★ ★</div>
+    <div class="counter"><span>VISITORS:</span><b id="hitcounter" class="mono">002611</b><span>· LAST UPDATED: RIGHT NOW</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section id="jukebox">
+  <div class="section-title"><h2>Now Playing</h2><div class="rule"></div></div>
+  <div class="jukebox">
+    <h3>♪ shrine-theme.mid ♪</h3>
+    <p>A MegaBot original, played on the house synth — four chords (I–vi–IV–V, the classic "50s progression") under an alto-sax hook, in honor of the song that started all of this. Not the real "1950." Just a nod to it. Hit play; your browser needs a click first, we don't believe in autoplay ambushes.</p>
+    <midi-player src="data:audio/midi;base64,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" visualizer="#kpviz" loop></midi-player>
+    <midi-visualizer type="piano-roll" id="kpviz" src="data:audio/midi;base64,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"></midi-visualizer>
+    <div class="note">SYNTH: browser oscillator (no soundfont fetch — keeps this page fast and sandboxed) · KEY: C · TEMPO: 100bpm · LOOPS: forever, same as this page</div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="section-title"><h2>About Her</h2><div class="rule"></div></div>
+  <p class="kicker">THE SHORT VERSION</p>
+  <p>Mikaela Mullaney Straus — <b>King Princess</b> — is a singer, songwriter, multi-instrumentalist and actor from Brooklyn. She grew up inside her father's recording studio, Mission Sound, absorbing Led Zeppelin, T. Rex and Jack White before she'd finished grade school. A label tried to sign her at eleven; she said no, on the grounds that she didn't yet know what her music was. She figured it out at nineteen, dropped out of USC's Thornton School after a year, and released "1950" in February 2018 — a queer love song built on a Patricia Highsmith novel that Harry Styles, of all people, helped send around the world with one tweet.</p>
+  <p>She is, on her father's side, the great-great-granddaughter of Isidor and Ida Straus — co-owner of Macy's and his wife, who died together on the Titanic rather than be separated. She has said, more than once, that she did not inherit a fortune. She is genderqueer, identifies as lesbian, and has spent a career being loudly, specifically herself about both.</p>
+  <div class="section-title" style="margin-top:30px"><h2 style="font-size:22px">The Timeline</h2><div class="rule"></div></div>
+  <div class="tl-row"><div class="tl-year">1998</div><div class="tl-line"></div><div class="tl-text">Born Mikaela Mullaney Straus in Brooklyn, NY, on December 19. Raised partly in her father’s recording studio, Mission Sound — bass, guitar, piano, drums, production, all before she was a teenager.</div></div>
+<div class="tl-row"><div class="tl-year">2018</div><div class="tl-line"></div><div class="tl-text">Debut single “1950” drops in February — a tribute to Patricia Highsmith’s The Price of Salt and to queer love across decades. Harry Styles tweets a lyric; the song finds a much bigger room than a bedroom demo has any right to. The Make My Bed EP follows in June. Signed to Mark Ronson’s Zelig Records.</div></div>
+<div class="tl-row"><div class="tl-year">2019</div><div class="tl-line"></div><div class="tl-text">Debut album Cheap Queen, produced largely by King Princess herself. Lollapalooza, Coachella, and Glastonbury’s Park Stage — joined onstage by Mark Ronson, dressed as her. Musical guest on SNL in November.</div></div>
+<div class="tl-row"><div class="tl-year">2020</div><div class="tl-line"></div><div class="tl-text">A deluxe Cheap Queen arrives Valentine’s Day with five new tracks. Named to Queerty’s 50 Heroes for the 50th anniversary of the first Pride march. GLAAD Media Award nomination, Outstanding Music Artist.</div></div>
+<div class="tl-row"><div class="tl-year">2022</div><div class="tl-line"></div><div class="tl-text">Second album Hold On Baby. Opens for Kacey Musgraves, Shawn Mendes, and the Red Hot Chili Peppers. Judges Netflix’s Is It Cake?, because pop stardom is also supposed to be a little ridiculous.</div></div>
+<div class="tl-row"><div class="tl-year">2024</div><div class="tl-line"></div><div class="tl-text">“Fantastic” lands on the Arcane season 2 soundtrack.</div></div>
+<div class="tl-row"><div class="tl-year">2025</div><div class="tl-line"></div><div class="tl-text">Leaves Zelig; third album Girl Violence releases independently via Section1. Acting debut as Tina in Nine Perfect Strangers season 2, plus a role in Song Sung Blue.</div></div>
+<div class="tl-row"><div class="tl-year">2026</div><div class="tl-line"></div><div class="tl-text">Appears in One Night Only; set to make her stage debut in a musical adaptation of Girl, Interrupted at The Public Theater.</div></div>
+</section>
+
+<section id="quotes">
+  <div class="section-title"><h2>In Her Words</h2><div class="rule"></div></div>
+  <div class="quote-grid">
+  <blockquote class="quote q0"><p>“My music isn’t really about the possibility of being queer, or being with someone who possibly could be queer, or is trying it on. My music is about expert-level lesbianism.”</p><cite>— King Princess, Interview, 2025</cite></blockquote>
+<blockquote class="quote q1"><p>“I read The Price of Salt, a Patricia Highsmith novel. It’s brilliant — I think one of the best queer texts we have available.”</p><cite>— King Princess, on writing “1950”</cite></blockquote>
+<blockquote class="quote q2"><p>“The light bulb went off when I was in the shower. I was humming that melody, and I raced out. I was like, ‘Oh fuck!’ I picked up a guitar and recorded on my phone.”</p><cite>— King Princess, on writing “1950”</cite></blockquote>
+<blockquote class="quote q3"><p>“I was really interested in using this metaphor of 1950 for how queer love existed decades ago.”</p><cite>— King Princess, triple j, Like A Version</cite></blockquote>
+<blockquote class="quote q0"><p>“I didn’t get the bitch in the end.”</p><cite>— King Princess, on the song’s ending, vs. the novel’s</cite></blockquote>
+<blockquote class="quote q1"><p>“I’m a great example of somebody who is gay but exists on a very complicated gender spectrum. I’m okay with that uncertainty, and I’m okay with existing in a gray area.”</p><cite>— King Princess, W Magazine, 2019</cite></blockquote>
+<blockquote class="quote q2"><p>“I’m tired of pretending I am normal. I am non-binary!!!”</p><cite>— King Princess, Instagram, 2023</cite></blockquote>
+<blockquote class="quote q3"><p>“He. She. It. They. Xenogender. I never felt offended by the pronoun situation.”</p><cite>— King Princess, Rolling Stone, 2022</cite></blockquote>
+<blockquote class="quote q0"><p>“It’s important that, in the record, I move the focus a little bit away from me — to communities like drag, gender expression, and friendship.”</p><cite>— King Princess, on Cheap Queen</cite></blockquote>
+  </div>
+</section>
+
+<section id="discography">
+  <div class="section-title"><h2>The Discography</h2><div class="rule"></div></div>
+  <div class="disc-grid">
+    <div class="disc"><h3>Make My Bed</h3><div class="yr">EP · June 15, 2018</div>
+      <ol><li>Make My Bed</li><li>Talia</li><li>Upper West Side</li><li>Holy</li><li>1950</li></ol></div>
+    <div class="disc"><h3>Cheap Queen</h3><div class="yr">Album · Oct 25, 2019 · deluxe Feb 2020</div>
+      <ol><li>Tough On Myself</li><li>Useless Phrases</li><li>Cheap Queen</li><li>Ain't Together</li><li>Do You Wanna See Me Crying?</li><li>Homegirl</li><li>Prophet</li><li>Isabel's Moment</li><li>Trust Nobody</li><li>Watching My Phone</li><li>You Destroyed My Heart</li><li>Hit The Back</li><li>If You Think It's Love</li></ol></div>
+    <div class="disc"><h3>Hold On Baby</h3><div class="yr">Album · July 29, 2022</div>
+      <ol><li>Little Bother (feat. Fouhsée)</li><li>For My Friends</li><li>Too Bad</li><li>Cursed</li><li>Hold On Baby Interlude</li><li>I Hate Myself, I Want To Party</li><li>Winter Is Hopeful</li><li>Dotted Lines</li><li>Sex Shop</li><li>Let Us Die</li></ol></div>
+    <div class="disc"><h3>Girl Violence</h3><div class="yr">Album · 2025 · Section1</div>
+      <ol><li>Girl Violence</li><li>Jaime</li><li>Origin</li><li>I Feel Pretty</li><li>Cry Cry Cry</li><li>Get Your Heart Broken</li><li>Girls</li><li>Covers</li><li>Say What You Will</li><li>RIP KP</li><li>Alone Again</li><li>Slow Down And Shut Up</li><li>Serena</li></ol></div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="section-title"><h2>The Wall (51 images)</h2><div class="rule"></div></div>
+  <p class="kicker">A MIX OF REAL, PROPERLY-LICENSED PHOTOS AND ORIGINAL FAN-MADE CARDS — HOVER A PHOTO FOR CREDIT, FULL LIST BELOW</p>
+  <div class="gallery">
+  <figure class="tile card"><img src="cards/track-for-my-friends.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/motif-disco.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/motif-wave.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/award-riaa-platinum.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-make-my-bed.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-talia.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-hit-the-back.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/timeline-2018.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-let-us-die.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/king-princess-boston-closeup-1-25-19.jpg" alt="Live in Boston, Jan 25 2019" loading="lazy">
+<figcaption><span class="cap">Live in Boston, Jan 25 2019</span><span class="cred">© Grenwall · CC BY-SA 4.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/track-sex-shop.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/20181108-king-princess-powerstation-nz05.jpg" alt="Live at Powerstation, Auckland, Nov 2018" loading="lazy">
+<figcaption><span class="cap">Live at Powerstation, Auckland, Nov 2018</span><span class="cred">© Prosperosity · CC BY-SA 4.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/track-homegirl.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-holy.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/timeline-2024.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/award-breakout-artist.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-i-feel-pretty.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/20181108-king-princess-powerstation-nz06.jpg" alt="Live at Powerstation, Auckland, Nov 2018" loading="lazy">
+<figcaption><span class="cap">Live at Powerstation, Auckland, Nov 2018</span><span class="cred">© Prosperosity · CC BY-SA 4.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/track-too-bad.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/20181108-king-princess-powerstation-nz02.jpg" alt="Live at Powerstation, Auckland, Nov 2018" loading="lazy">
+<figcaption><span class="cap">Live at Powerstation, Auckland, Nov 2018</span><span class="cred">© Prosperosity · CC BY-SA 4.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/award-glaad-nominee.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/timeline-2022.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/kingprincess-byphilipromano.jpg" alt="Studio portrait" loading="lazy">
+<figcaption><span class="cap">Studio portrait</span><span class="cred">© Philip Romano · CC BY 4.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/motif-check.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-girl-violence.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-little-bother.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-cry-cry-cry.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-serena.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/award-queerty-50.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/coronacapfest19-1--50079008492.jpg" alt="Corona Capital Festival, 2019" loading="lazy">
+<figcaption><span class="cap">Corona Capital Festival, 2019</span><span class="cred">© Raph_PH · CC BY 2.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/track-tough-on-myself.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/king-princess-melkweg-2025.jpg" alt="Live at Melkweg, Amsterdam, 2025" loading="lazy">
+<figcaption><span class="cap">Live at Melkweg, Amsterdam, 2025</span><span class="cred">© Kismenők · CC BY-SA 4.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/timeline-2025.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/timeline-2020.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/award-aria-gold.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/20181108-king-princess-powerstation-nz01.jpg" alt="Live at Powerstation, Auckland, Nov 2018" loading="lazy">
+<figcaption><span class="cap">Live at Powerstation, Auckland, Nov 2018</span><span class="cred">© Prosperosity · CC BY-SA 4.0</span></figcaption>
+</figure>
+<figure class="tile photo">
+<img src="photos/coronacapfest19-3--50078185873.jpg" alt="Corona Capital Festival, 2019" loading="lazy">
+<figcaption><span class="cap">Corona Capital Festival, 2019</span><span class="cred">© Raph_PH · CC BY 2.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/track-1950.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/20181108-king-princess-powerstation-nz03.jpg" alt="Live at Powerstation, Auckland, Nov 2018" loading="lazy">
+<figcaption><span class="cap">Live at Powerstation, Auckland, Nov 2018</span><span class="cred">© Prosperosity · CC BY-SA 4.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/track-girls.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/coronacapfest19-2--50079008277.jpg" alt="Corona Capital Festival, 2019" loading="lazy">
+<figcaption><span class="cap">Corona Capital Festival, 2019</span><span class="cred">© Raph_PH · CC BY 2.0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/track-prophet.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-ain-t-together.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-rip-kp.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/timeline-1998.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-i-hate-myself--i-want-to-party.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-cheap-queen.svg" alt="" loading="lazy"></figure>
+<figure class="tile photo">
+<img src="photos/20181108-king-princess-powerstation-nz04.jpg" alt="Live at Powerstation, Auckland, Nov 2018" loading="lazy">
+<figcaption><span class="cap">Live at Powerstation, Auckland, Nov 2018</span><span class="cred">© Prosperosity · CC BY-SA 4.0</span></figcaption>
+</figure>
+<figure class="tile photo">
+<img src="photos/king-princess-at-the-regency-ballroom-sf.jpg" alt="Live at the Regency Ballroom, SF, Nov 19 2025" loading="lazy">
+<figcaption><span class="cap">Live at the Regency Ballroom, SF, Nov 19 2025</span><span class="cred">© Junefreund · CC0</span></figcaption>
+</figure>
+<figure class="tile card"><img src="cards/timeline-2019.svg" alt="" loading="lazy"></figure>
+<figure class="tile card"><img src="cards/track-upper-west-side.svg" alt="" loading="lazy"></figure>
+  </div>
+</section>
+
+</div>
+
+<div class="press">
+  <div class="wrap ticker" style="background:none;border:none;padding:0">
+    <span class="ticker-track" style="color:var(--redlac)">★ QUEERTY 50 HEROES, 2020 · GLAAD MEDIA AWARD NOMINEE, OUTSTANDING MUSIC ARTIST, 2020 · VIVID SEATS BREAKOUT POP ARTIST, 2018 · "1950" RIAA PLATINUM · "TALIA" ARIA GOLD · QUEERTY 50 HEROES, 2020 · GLAAD MEDIA AWARD NOMINEE, OUTSTANDING MUSIC ARTIST, 2020 ★</span>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <h4>PHOTO CREDITS</h4>
+    <ul>
+    <li><a href="https://commons.wikimedia.org/wiki/File:20181108_King_Princess_Powerstation-NZ01.jpg" target="_blank" rel="noopener">Live at Powerstation, Auckland, Nov 2018</a> — Prosperosity, CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:20181108_King_Princess_Powerstation-NZ02.jpg" target="_blank" rel="noopener">Live at Powerstation, Auckland, Nov 2018</a> — Prosperosity, CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:20181108_King_Princess_Powerstation-NZ03.jpg" target="_blank" rel="noopener">Live at Powerstation, Auckland, Nov 2018</a> — Prosperosity, CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:20181108_King_Princess_Powerstation-NZ04.jpg" target="_blank" rel="noopener">Live at Powerstation, Auckland, Nov 2018</a> — Prosperosity, CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:20181108_King_Princess_Powerstation-NZ05.jpg" target="_blank" rel="noopener">Live at Powerstation, Auckland, Nov 2018</a> — Prosperosity, CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:20181108_King_Princess_Powerstation-NZ06.jpg" target="_blank" rel="noopener">Live at Powerstation, Auckland, Nov 2018</a> — Prosperosity, CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:CoronaCapFest19-1_(50079008492).jpg" target="_blank" rel="noopener">Corona Capital Festival, 2019</a> — Raph_PH, CC BY 2.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:CoronaCapFest19-2_(50079008277).jpg" target="_blank" rel="noopener">Corona Capital Festival, 2019</a> — Raph_PH, CC BY 2.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:CoronaCapFest19-3_(50078185873).jpg" target="_blank" rel="noopener">Corona Capital Festival, 2019</a> — Raph_PH, CC BY 2.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:KingPrincess-byPhilipRomano.jpg" target="_blank" rel="noopener">Studio portrait</a> — Philip Romano, CC BY 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:King_Princess_Boston_Close_Up_1.25.19.jpg" target="_blank" rel="noopener">Live in Boston, Jan 25 2019</a> — Grenwall, CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:King_Princess_Melkweg_2025.jpg" target="_blank" rel="noopener">Live at Melkweg, Amsterdam, 2025</a> — Kismenők, CC BY-SA 4.0</li>
+<li><a href="https://commons.wikimedia.org/wiki/File:King_Princess_at_the_Regency_Ballroom_SF_-_November_19,_2025.jpg" target="_blank" rel="noopener">Live at the Regency Ballroom, SF, Nov 19 2025</a> — Junefreund, CC0</li>
+    </ul>
+    <p style="font-size:11px;opacity:0.65;margin-top:-14px;margin-bottom:26px">All photographs used under their original Creative Commons / CC0 licenses via Wikimedia Commons, unmodified apart from resizing. Illustrated cards throughout the gallery are original artwork made for this page, not photographs of King Princess.</p>
+    <h4>WEBRING</h4>
+    <div class="webring"><span>◀ PREV</span><span>KP FAN RING</span><span>RANDOM</span><span>NEXT ▶</span><span>MEMBER SINCE TONIGHT</span></div>
+    <p class="disclaimer">This is an unofficial fan tribute made for MEGAVISION by MegaBot. It is not affiliated with, endorsed by, or connected to King Princess, Mikaela Straus, Section1, Zelig Records, Columbia Records, or anyone's management. Biographical information is drawn from Wikipedia and public interviews; quotes are cited to their original interviews. Built in the style of the late-1990s music fan page, because "1950" is a song about the past being realer than the present and that felt like the only correct engine for this.</p>
+    <div class="signoff">— long live the shrine —</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  try {
+    var el = document.getElementById('hitcounter');
+    var n = parseInt(localStorage.getItem('kp_shrine_hits')||'2611',10) + 1;
+    localStorage.setItem('kp_shrine_hits', String(n));
+    el.textContent = String(n).padStart(6,'0');
+  } catch(e) {}
+})();
+</script>

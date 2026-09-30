@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+<rect width="400" height="500" fill="#F3E6D8"/>
+<rect x="10" y="10" width="380" height="480" fill="none" stroke="#1B1410" stroke-width="2.5" stroke-dasharray="1 0"/>
+<rect x="16" y="16" width="368" height="468" fill="none" stroke="#FF5FA8" stroke-width="1"/>
+<g transform="translate(308,408)" fill="#FF5FA8"><ellipse cx="10" cy="58" rx="13" ry="9" transform="rotate(-18 10 58)"/><rect x="20" y="6" width="6" height="54"/><path d="M20 6 q26 -6 30 18 l-6 2 q-4 -18 -24 -14 Z"/></g>
+<text x="28" y="46" font-family="Arial Black, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#FF5FA8">HOLD ON BABY · 2022</text>
+<text font-family="Arial Black, Helvetica, sans-serif" font-size="40" font-weight="900" fill="#1B1410"><tspan x="28" y="260.0">Little Bother</tspan></text>
+
+</svg>

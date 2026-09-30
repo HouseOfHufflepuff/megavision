@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+<rect width="400" height="500" fill="#D8A64E"/>
+<rect x="10" y="10" width="380" height="480" fill="none" stroke="#1B1410" stroke-width="2.5" stroke-dasharray="1 0"/>
+<rect x="16" y="16" width="368" height="468" fill="none" stroke="#C81D4B" stroke-width="1"/>
+<rect x="371" y="471" width="14" height="14" fill="#C81D4B"/><rect x="357" y="471" width="14" height="14" fill="none"/><rect x="343" y="471" width="14" height="14" fill="#C81D4B"/><rect x="329" y="471" width="14" height="14" fill="none"/><rect x="371" y="457" width="14" height="14" fill="none"/><rect x="357" y="457" width="14" height="14" fill="#C81D4B"/><rect x="343" y="457" width="14" height="14" fill="none"/><rect x="329" y="457" width="14" height="14" fill="#C81D4B"/><rect x="371" y="443" width="14" height="14" fill="#C81D4B"/><rect x="357" y="443" width="14" height="14" fill="none"/><rect x="343" y="443" width="14" height="14" fill="#C81D4B"/><rect x="329" y="443" width="14" height="14" fill="none"/><rect x="371" y="429" width="14" height="14" fill="none"/><rect x="357" y="429" width="14" height="14" fill="#C81D4B"/><rect x="343" y="429" width="14" height="14" fill="none"/><rect x="329" y="429" width="14" height="14" fill="#C81D4B"/>
+<text x="28" y="46" font-family="Arial Black, Helvetica, sans-serif" font-size="13" letter-spacing="2" fill="#C81D4B">SHRINE</text>
+<text font-family="Arial Black, Helvetica, sans-serif" font-size="34" font-weight="900" fill="#1B1410"><tspan x="28" y="260.0">JUKE BOX</tspan></text>
+<text x="28" y="470" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="16" fill="#1B1410" opacity="0.8">diner floor</text>
+</svg>
