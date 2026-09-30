@@ -903,6 +903,43 @@ def ensure_two_halves_cta(html_body):
     return html_body.replace(marker, cta + marker, 1) if marker in html_body else html_body + cta
 
 
+# ---- King Princess shrine CTA (standing rule 2026-09-30: circulate in MegaBot emails, same as Two Halves) -------
+KING_PRINCESS_URL = "https://claude.ai/artifact/C4QB1JUFRWWv1taL8eKpwS"
+
+
+def king_princess_cta_html():
+    return (
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:18px 0">'
+        '<tr><td bgcolor="#1B1410" style="background-color:#1B1410;padding:16px 18px">'
+        '<p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:11px;letter-spacing:1px;color:#D8A64E">'
+        'THE #1 KING PRINCESS SHRINE ON THE INTERNET</p>'
+        '<p style="margin:0 0 6px 0;font-family:Arial,sans-serif;font-size:17px;font-weight:bold;color:#FFF8EF">'
+        'King Princess Online: the fan shrine MEGAVISION built her.</p>'
+        '<p style="margin:0 0 14px 0;font-family:Arial,sans-serif;font-size:14px;line-height:20px;color:#F3E6D8">'
+        'Full bio, cited quotes, discography, 51 images, and a jukebox playing an original instrumental '
+        'in the mood of "Cry Cry Cry." Built GeoCities-1998 style, because that’s the correct engine for it.</p>'
+        '<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>'
+        '<td bgcolor="#C81D4B" style="background-color:#C81D4B;padding:12px 22px;border-radius:6px">'
+        f'<a href="{KING_PRINCESS_URL}" style="color:#ffffff;font-weight:bold;font-family:Arial,sans-serif;font-size:15px;'
+        'text-decoration:none"><font color="#ffffff">Enter the shrine</font></a></td></tr></table>'
+        '</td></tr></table>'
+    )
+
+
+def king_princess_cta_text():
+    return ("The #1 King Princess shrine on the internet: full bio, cited quotes, discography, 51 images, "
+            "and a jukebox track. Enter: " + KING_PRINCESS_URL)
+
+
+def ensure_king_princess_cta(html_body):
+    """Append the King Princess CTA if the body does not already carry one."""
+    if "King Princess Online" in html_body or KING_PRINCESS_URL in html_body:
+        return html_body
+    marker = "-- MegaBot"
+    cta = king_princess_cta_html()
+    return html_body.replace(marker, cta + marker, 1) if marker in html_body else html_body + cta
+
+
 
 def build_email_body(result, moves, conn, sess, executed=True):
     code = result["code"]
