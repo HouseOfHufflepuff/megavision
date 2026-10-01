@@ -410,7 +410,7 @@ NAV_LINKS = [
     ("pigeons/index.html", "Pigeons"),
     ("lazy-river/index.html", "Lazy River"),
     ("https://houseofhufflepuff.github.io/two-halves/", "Two Halves"),
-    ("https://claude.ai/artifact/C4QB1JUFRWWv1taL8eKpwS", "King Princess"),
+    ("https://houseofhufflepuff.github.io/megavision/social/kingprincess/", "King Princess"),
 ]
 
 

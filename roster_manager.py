@@ -904,7 +904,7 @@ def ensure_two_halves_cta(html_body):
 
 
 # ---- King Princess shrine CTA (standing rule 2026-09-30: circulate in MegaBot emails, same as Two Halves) -------
-KING_PRINCESS_URL = "https://claude.ai/artifact/C4QB1JUFRWWv1taL8eKpwS"
+KING_PRINCESS_URL = "https://houseofhufflepuff.github.io/megavision/social/kingprincess/"
 
 
 def king_princess_cta_html():
