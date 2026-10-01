@@ -1,0 +1,101 @@
+rank,name,dob,club,league,pos,score,fc27_ovr,potential,pot_source,goalcom_rank,speed,games_25_26,g_25_26,a_25_26,stats_source
+1,Lennart Karl,2008-02-22,FC Bayern München,Bundesliga,RM,82.3,77,86.0,FC26 (carried forward -- FC27 has no public potential data yet),5,73,38,9,8,TM
+2,Yan Diomande,2006-11-14,Real Madrid,LALIGA EA SPORTS,RW,75.2,84,78.0,FC26 (carried forward -- FC27 has no public potential data yet),,93,36,13,10,TM
+3,Jorthy Mokio,2008-02-29,Ajax,Eredivisie,CDM,70.5,71,89.0,FC26 (carried forward -- FC27 has no public potential data yet),21,67,35,4,3,TM
+4,Pau Cubarsí,2007-01-22,FC Barcelona,LALIGA EA SPORTS,CB,70.2,86,92.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,78,,,,n/a
+5,Kerim Alajbegović,2007-09-21,Juventus,Serie A Enilive,CAM,70.0,71,82.0,FC26 (carried forward -- FC27 has no public potential data yet),33,73,44,13,4,HL
+6,Oskar Pietuszewski,2008-05-20,FC Porto,Liga Portugal,LM,68.8,74,80.0,FC26 (carried forward -- FC27 has no public potential data yet),45,84,49,6,6,HL
+7,Robinio Vaz,2007-02-17,AS Roma,Serie A Enilive,ST,66.7,71,82.0,FC26 (carried forward -- FC27 has no public potential data yet),23,84,32,5,4,TM
+8,Mateus Mané,2007-09-16,Wolves,EFL Championship,CAM,64.2,74,79.0,FC26 (carried forward -- FC27 has no public potential data yet),30,77,30,3,2,TM
+9,Nathan De Cat,2008-07-19,TSG Hoffenheim,Bundesliga,CDM,63.5,71,83.0,FC26 (carried forward -- FC27 has no public potential data yet),29,58,41,2,4,TM
+10,Francis Onyeka,2007-04-29,SV Elversberg,Bundesliga,CAM,61.4,70,83.0,FC26 (carried forward -- FC27 has no public potential data yet),,67,32,8,1,HL
+11,Mattia Liberali,2007-04-06,Como,Serie A Enilive,CAM,60.8,68,84.0,FC26 (carried forward -- FC27 has no public potential data yet),,76,30,4,4,HL
+12,Sidiki Chérif,2006-12-15,Coventry City,Premier League,ST,60.6,72,79.0,FC26 (carried forward -- FC27 has no public potential data yet),,86,33,6,1,TM
+13,Prince Amoako Junior,2007-02-19,FC Nordsjælland,Metropolitan Division,LW,60.1,69,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,89,25,7,5,TM
+14,Francesco Camarda,2008-03-10,Milano FC,Serie A Enilive,ST,59.9,66,87.0,FC26 (carried forward -- FC27 has no public potential data yet),22,76,23,1,1,TM
+15,Sean Steur,2008-01-11,Newcastle Utd,Premier League,CM,58.9,72,83.0,FC26 (carried forward -- FC27 has no public potential data yet),32,71,23,1,2,TM
+16,Luca Meirelles,2007-03-15,Shakhtar Donetsk,Ukrayina Liha,ST,58.6,66,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,70,37,11,2,HL
+17,Matias Siltanen,2007-03-29,Djurgårdens IF,Allsvenskan,CDM,58.2,69,83.0,FC26 (carried forward -- FC27 has no public potential data yet),,71,34,,4,HL
+18,Khalis Merah,2007-02-24,OL,Ligue 1 McDonald's,CAM,57.9,73,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,66,30,1,2,TM
+19,Ian Subiabre,2007-01-01,Tigre,LPF,LM,57.8,71,85.0,FC26 (carried forward -- FC27 has no public potential data yet),36,90,18,2,1,HL
+20,Tylel Tati,2008-01-19,FC Nantes,Ligue 2 BKT,CB,57.3,71,83.0,FC26 (carried forward -- FC27 has no public potential data yet),28,69,20,,,TM
+21,Prosper Peter,2007-08-09,Angers SCO,Ligue 1 McDonald's,ST,56.8,72,78.0,FC26 (carried forward -- FC27 has no public potential data yet),,72,29,5,,TM
+22,João Simões,2007-01-06,Sporting CP,Liga Portugal,CM,56.5,70,83.0,FC26 (carried forward -- FC27 has no public potential data yet),49,72,28,,2,TM
+23,Abubacarr Sedi Kinteh,2006-11-30,Al Ahli,ROSHN Saudi League,CB,56.2,71,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,81,26,1,1,HL
+24,Marc Bernal,2007-05-26,FC Barcelona,LALIGA EA SPORTS,CDM,56.2,78,84.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,71,,,,n/a
+25,Christos Mouzakitis,2006-12-25,Olympiacos FC,Hellas Liga,CM,55.9,73,79.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,70,34,1,2,TM
+26,Rudy Matondo,2008-03-13,Paris FC,Ligue 1 McDonald's,CM,55.7,74,78.0,FC26 (carried forward -- FC27 has no public potential data yet),,74,27,2,,TM
+27,Otto Stange,2007-02-09,Hamburger SV,Bundesliga,ST,54.7,66,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,76,23,3,2,HL
+28,Harry Amass,2007-03-16,Man Utd,Premier League,LB,54.7,69,83.0,FC26 (carried forward -- FC27 has no public potential data yet),,77,22,1,1,HL
+29,Oumar Camara,2007-05-11,Vitória SC,Liga Portugal,RM,54.5,70,77.0,FC26 (carried forward -- FC27 has no public potential data yet),,79,30,5,2,TM
+30,Andrija Bulatović,2006-12-27,RC Lens,Ligue 1 McDonald's,CM,54.5,73,79.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,68,19,,4,TM
+31,Mohamed Kader Meïté,2007-10-11,Al Hilal,ROSHN Saudi League,ST,54.2,72,83.0,FC26 (carried forward -- FC27 has no public potential data yet),19,67,,,,n/a
+32,Kacper Potulski,2007-10-19,1. FSV Mainz 05,Bundesliga,CB,53.7,71,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,68,15,1,1,TM
+33,Rafael Pinto Pedrosa,2007-09-30,Karlsruher SC,Bundesliga 2,RB,53.3,68,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,75,30,1,2,HL
+34,Christian Comotto,2008-04-25,Milano FC,Serie A Enilive,CM,52.6,65,83.0,FC26 (carried forward -- FC27 has no public potential data yet),,69,30,,1,HL
+35,Noahkai Banks,2006-12-01,FC Augsburg,Bundesliga,CB,52.5,72,78.0,FC26 (carried forward -- FC27 has no public potential data yet),,66,23,1,1,TM
+36,Anxo Rodríguez,2007-03-10,Celta Fortuna,LALIGA HYPERMOTION,CB,52.4,65,89.0,FC26 (carried forward -- FC27 has no public potential data yet),,64,,,,n/a
+37,Alejandro Gomes Rodríguez,2008-03-11,OL,Ligue 1 McDonald's,ST,52.4,64,89.0,FC26 (carried forward -- FC27 has no public potential data yet),,71,,,,n/a
+38,Bruno Durdov,2007-12-11,Górnik Zabrze,Ekstraklasa,RW,52.3,64,84.0,FC26 (carried forward -- FC27 has no public potential data yet),,79,20,1,1,HL
+39,Álvaro Montoro,2007-04-17,Botafogo,CONMEBOL Sudamericana,LM,52.2,75,81.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,82,,,,n/a
+40,Andrija Maksimović,2007-06-05,RB Leipzig,Bundesliga,RW,52.0,71,81.0,FC26 (carried forward -- FC27 has no public potential data yet),31,70,10,,,HL
+41,Ruud Nijstad,2008-01-17,FC Twente,Eredivisie,CB,51.8,70,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,67,24,1,1,TM
+42,Ethan Mbappé,2006-12-29,LOSC Lille,Ligue 1 McDonald's,RM,50.6,74,80.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,82,,,,n/a
+43,Louis Page,2008-07-10,Leicester City,EFL League One,CAM,50.4,64,83.0,FC26 (carried forward -- FC27 has no public potential data yet),,74,21,,1,HL
+44,Marius Courcoul,2007-01-01,RAAL La Louvière,1A Pro League,CDM,50.2,68,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,55,18,,,TM
+45,Alexis Vossah,2008-03-11,Toulouse FC,Ligue 1 McDonald's,CDM,49.9,71,76.0,FC26 (carried forward -- FC27 has no public potential data yet),,67,23,1,1,TM
+46,Dro Fernández,2008-01-12,Paris SG,Ligue 1 McDonald's,CM,49.9,73,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,70,,,,n/a
+47,Artem Stepanov,2007-08-10,FC Utrecht,Eredivisie,ST,49.7,68,74.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,69,29,6,2,HL
+48,Agustín dos Santos,2008-02-09,Nacional,CONMEBOL Libertadores,CM,49.6,64,87.0,FC26 (carried forward -- FC27 has no public potential data yet),,63,,,,n/a
+49,Matthew dos Santos,2008-06-05,Red Bulls,MLS,LB,49.6,63,87.0,FC26 (carried forward -- FC27 has no public potential data yet),,70,,,,n/a
+50,Gilberto Mora,2008-10-14,Club Tijuana,Liga BBVA MX,CAM,49.6,74,80.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,71,,,,n/a
+51,Aaron Bouwman,2007-08-28,Ajax,Eredivisie,CB,49.4,68,83.0,FC26 (carried forward -- FC27 has no public potential data yet),,57,12,1,,TM
+52,Mathys Detourbet,2007-04-29,AS Monaco,Ligue 1 McDonald's,LM,49.4,73,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,76,,,,n/a
+53,Noah Markmann,2007-02-24,FC Nordsjælland,Metropolitan Division,CB,49.0,68,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,72,21,,,TM
+54,Patrice Čović,2007-06-25,SV Werder Bremen,Bundesliga,CAM,49.0,66,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,66,16,1,,TM
+55,Noah Fernandez,2008-01-09,PSV,Eredivisie,CAM,48.8,67,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,71,13,1,1,TM
+56,Kaye Furo,2007-02-06,Brentford,Premier League,ST,48.4,65,83.0,FC26 (carried forward -- FC27 has no public potential data yet),,67,10,1,,TM
+57,Andre Garcia,2007-11-30,Club Brugge,1A Pro League,LB,48.0,63,84.0,FC26 (carried forward -- FC27 has no public potential data yet),,86,,,,n/a
+58,Giacomo De Pieri,2006-12-29,Ascoli,Serie BKT,CAM,47.6,65,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,78,18,1,,HL
+59,Karim Coulibaly,2007-05-23,Strasbourg,Ligue 1 McDonald's,CB,47.4,73,79.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,65,,,,n/a
+60,Semm Renders,2007-12-17,Royal Antwerp FC,1A Pro League,RB,47.3,62,84.0,FC26 (carried forward -- FC27 has no public potential data yet),,73,12,,,TM
+61,Darryl Bakola,2007-11-30,Sassuolo,Serie A Enilive,CAM,47.0,66,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,57,15,,2,TM
+62,Philipp Maybach,2007-12-14,FK Austria Wien,Ö. Bundesliga,CDM,46.7,63,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,66,23,,,HL
+63,Daniel Daga,2007-01-10,Molde FK,Eliteserien,CDM,46.5,61,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,68,15,3,1,HL
+64,Mustafa Erhan Hekimoğlu,2007-04-22,Beşiktaş,Trendyol Süper Lig,ST,46.5,67,78.0,FC26 (carried forward -- FC27 has no public potential data yet),,74,18,1,,TM
+65,Jorge Salinas,2007-04-03,R. Racing Club,LALIGA EA SPORTS,LB,46.4,72,78.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,73,,,,n/a
+66,Matteo Palma,2008-03-13,Udinese,Serie A Enilive,CB,46.4,67,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,60,8,,,TM
+67,Alexander Røssing-Lelesiit,2007-01-20,Hamburger SV,Bundesliga,LW,46.2,63,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,75,14,,1,TM
+68,Toni Fernández,2008-07-15,FC Barcelona,LALIGA EA SPORTS,RW,46.1,65,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,74,,,,n/a
+69,Bradley Burrowes,2008-03-04,Aston Villa,Premier League,RM,45.9,65,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,84,1,,,TM
+70,Juan Cruz Meza,2008-03-14,River Plate,LPF,CM,45.8,67,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,66,8,,,HL
+71,Lucas Ferreira,2006-11-25,FC Luzern,Brack Super League,CAM,45.5,65,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,67,,,,n/a
+72,James Wilson,2007-03-06,Hearts,Scottish Premiership,ST,45.3,64,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,72,,,,n/a
+73,Arda Ünyay,2007-01-18,Galatasaray,Trendyol Süper Lig,CB,45.2,65,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,70,9,,,TM
+74,Joaquín Freitas,2006-12-02,River Plate,LPF,ST,45.2,70,77.0,FC26 (carried forward -- FC27 has no public potential data yet),,85,,,,n/a
+75,Anestis Mythou,2007-05-22,PAOK FC,Hellas Liga,ST,45.2,67,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,72,,,,n/a
+76,Lucas Silva,2007-02-26,River Plate,LPF,CDM,45.1,71,78.0,FC26 (carried forward -- FC27 has no public potential data yet),,65,,,,n/a
+77,Thijs Kraaijeveld,2007-05-03,Feyenoord,Eredivisie,CDM,45.1,67,79.0,FC26 (carried forward -- FC27 has no public potential data yet),,59,16,,,TM
+78,Jonah Kusi-Asare,2007-07-04,Fulham,Premier League,ST,45.0,62,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,63,9,,,TM
+79,Kyllian Antonio,2008-01-04,RC Lens,Ligue 1 McDonald's,CB,45.0,69,79.0,FC26 (carried forward -- FC27 has no public potential data yet),,63,4,,1,TM
+80,Justin von der Hitz,2006-10-22,1. FC Nürnberg,Bundesliga 2,RB,44.9,62,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,77,6,,1,HL
+81,Lucas Herrington,2007-09-05,Hull City,Premier League,CB,44.9,66,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,65,,,,n/a
+82,Aarón Martín,2006-11-24,Al Qadsiah,ROSHN Saudi League,CAM,44.8,65,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,71,,,,n/a
+83,Afonso Patrão,2007-02-03,KVC Westerlo,1A Pro League,ST,44.8,65,79.0,FC26 (carried forward -- FC27 has no public potential data yet),,76,11,1,,HL
+84,Máximo Carrizo,2008-02-28,New York City FC,MLS,CAM,44.8,56,86.0,FC26 (carried forward -- FC27 has no public potential data yet),,78,,,,n/a
+85,Bright Ede,2007-02-18,RC Deportivo,LALIGA EA SPORTS,CB,44.8,66,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,75,,,,n/a
+86,Felipe Marín,2007-04-02,Atl. Nacional,Liga Colombia,CM,44.8,56,87.0,FC26 (carried forward -- FC27 has no public potential data yet),,66,,,,n/a
+87,Wael Mohya,2008-12-31,M'gladbach,Bundesliga,CAM,44.7,71,77.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,72,,,,n/a
+88,Ryunosuke Sato,2006-10-16,Valencia CF,LALIGA EA SPORTS,LM,44.7,71,77.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,72,,,,n/a
+89,Noham Kamara,2007-01-22,OL,Ligue 1 McDonald's,CB,44.6,68,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,69,2,,,TM
+90,Triston Rowe,2006-10-02,Aston Villa,Premier League,RB,44.6,65,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,80,,,,n/a
+91,Wojciech Mońka,2007-01-18,Lech Poznań,Ekstraklasa,CB,44.6,72,77.0,FC26 (carried forward -- FC27 has no public potential data yet),,64,,,,n/a
+92,Dani Fernández,2008-01-26,CD Tenerife,LALIGA HYPERMOTION,RM,44.3,64,81.0,FC26 (carried forward -- FC27 has no public potential data yet),,72,,,,n/a
+93,Olti Hyseni,2007-07-17,Brøndby IF,Metropolitan Division,LW,44.1,66,79.0,FC26 (carried forward -- FC27 has no public potential data yet),,79,,,,n/a
+94,Rodrigo Martínez,2008-03-22,Nacional,CONMEBOL Libertadores,LW,43.9,62,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,71,,,,n/a
+95,Montrell Culbreath,2007-08-29,Leverkusen,Bundesliga,RM,43.9,70,76.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,82,,,,n/a
+96,Lucas Jetten,2007-06-07,SC Cambuur,Eredivisie,LB,43.8,62,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,87,,,,TM-zero
+97,Boris Mamuzah Lum,2007-10-02,Hertha BSC,Bundesliga 2,CDM,43.7,62,82.0,FC26 (carried forward -- FC27 has no public potential data yet),,71,6,,,HL
+98,Valentín Pezzolesi,2007-04-16,UD Las Palmas,LALIGA HYPERMOTION,RB,43.6,63,80.0,FC26 (carried forward -- FC27 has no public potential data yet),,78,6,1,,HL
+99,Quentin Ndjantou,2007-07-23,Paris SG,Ligue 1 McDonald's,LW,43.4,70,76.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,76,,,,n/a
+100,Tomás Aranda,2007-05-09,Boca Juniors,LPF,LM,43.4,70,76.0,estimated (no FC26 or FC27 potential available; age-scaled overall+6.0),,76,,,,n/a
