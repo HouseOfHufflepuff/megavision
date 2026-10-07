@@ -332,6 +332,24 @@ CREATE TABLE IF NOT EXISTS youth_status_overrides (
     updated_at TEXT NOT NULL,
     PRIMARY KEY (team_code, player_name)
 );
+
+-- 2026/27 youth draft results. The Google Sheet Youth tab is still the
+-- all-time history; these rows are the picks made in this draft, merged
+-- onto each team page ahead of that history.
+CREATE TABLE IF NOT EXISTS youth_draft_picks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    season TEXT NOT NULL,
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,
+    pos TEXT,
+    age INTEGER,
+    club TEXT,
+    rating REAL,
+    round INTEGER,
+    status TEXT NOT NULL DEFAULT 'Active',
+    updated_at TEXT NOT NULL,
+    UNIQUE(season, team_code, player_name)
+);
 """
 
 

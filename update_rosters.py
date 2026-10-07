@@ -174,6 +174,22 @@ for _t in CURRENT_SEASON_TITLES:
     title_payout_by_code[_t["team_code"]] = title_payout_by_code.get(_t["team_code"], 0) + _t["payout"]
 fans_by_code = fetch_fans(wb)
 youth_by_code = fetch_youth(wb)
+# 2026/27 picks live in mega.db (the sheet Youth tab does not have them yet).
+# Prepend any pick whose name is not already on that team's sheet history.
+_youth_conn = db.connect()
+_draft_rows = _youth_conn.execute(
+    "SELECT team_code, season, player_name, pos, age, club, rating, status "
+    "FROM youth_draft_picks ORDER BY round ASC, id"
+).fetchall()
+_youth_conn.close()
+for _code, _season, _name, _pos, _age, _club, _rating, _status in _draft_rows:
+    _have = youth_by_code.setdefault(_code, [])
+    if any((_y["player"] or "").strip().casefold() == _name.strip().casefold() for _y in _have):
+        continue
+    _have.insert(0, {
+        "year": _season, "player": _name, "pos": _pos or "", "age": _age,
+        "club": _club or "", "status": _status or "Active", "fc26": _rating,
+    })
 stadiums = fetch_stadiums()
 rank_bonus, points_bonus_table = fetch_standings_reference(wb)
 firm_legacy = fetch_firm_legacy(wb)
@@ -988,7 +1004,10 @@ for code, name, owners in TEAMS:
     for y in youth:
         cleaned = clean_player(y["player"], y["pos"])
         last = (cleaned["player_name"] or "").split()[-1].lower() if cleaned["player_name"] else ""
+        drafted_rating = y.get("fc26")
         y["fc26"] = global_fc26_lookup.get(last)
+        if y["fc26"] is None and isinstance(drafted_rating, (int, float)):
+            y["fc26"] = drafted_rating
         y["fpts"] = global_fpts_lookup.get(last)
     _matched_youth_fc26 = [y["fc26"] for y in youth if isinstance(y["fc26"], (int, float))]
     avg_youth_fc26 = (sum(_matched_youth_fc26) / len(_matched_youth_fc26)) if _matched_youth_fc26 else None
