@@ -1426,6 +1426,8 @@ title_payouts_total = sum(_t["payout"] for _t in CURRENT_SEASON_TITLES)
 _irp_conn = db.connect()
 irp_fees_total = _irp_conn.execute("SELECT COALESCE(SUM(fee),0) FROM irp_fees WHERE season='26/27'").fetchone()[0]
 irp_fees_by_code = dict(_irp_conn.execute("SELECT team_code, SUM(fee) FROM irp_fees WHERE season='26/27' GROUP BY team_code").fetchall())
+youth_bounty_total = _irp_conn.execute("SELECT COALESCE(SUM(fee),0) FROM youth_bounties WHERE season='26/27'").fetchone()[0]
+youth_bounty_by_code = dict(_irp_conn.execute("SELECT team_code, SUM(fee) FROM youth_bounties WHERE season='26/27' GROUP BY team_code").fetchall())
 _irp_conn.close()
 synced_weeks = sorted({w for w, _ in _gw_fans})
 salary_collected_total = sum(
@@ -1436,6 +1438,7 @@ cut_dead_money_total = sum(c["salary"] for v in _cuts_by_team.values() for c in 
 epl_payouts_total = sum(p["payout"] for v in _epl_payouts_by_team.values() for p in v)
 pot_balance = (
     STADIUM_EXPANSION_FEES_TOTAL + transfer_levy_total + CITADEL_CUP_SPONSOR + irp_fees_total
+    + youth_bounty_total
     + cut_dead_money_total + salary_collected_total - tickets_paid_total - title_payouts_total
     - epl_payouts_total
 )
@@ -1453,6 +1456,7 @@ pot_rows_html = "".join(
         ("Transfer Levy", "10% league cut of every transfer fee, one-time", transfer_levy_total),
         ("Citadel Cup Sponsor", "flat sponsor pot, free money to the league", CITADEL_CUP_SPONSOR),
         ("IRP Fees", "$6/injury-replacement pickup -- " + ", ".join(f"{c} {money(v)}" for c, v in irp_fees_by_code.items()), irp_fees_total),
+        ("Youth Draft Bounty", "$15 for a second youth pick -- " + ", ".join(f"{c} {money(v)}" for c, v in sorted(youth_bounty_by_code.items())), youth_bounty_total),
         ("Cut Dead Money", "Rulez 4.2(2), full remaining salary of any player cut after the 1st EPL game -- "
          + (", ".join(f"{code} {money(sum(c['salary'] for c in cuts))}" for code, cuts in _cuts_by_team.items()) or "none yet"),
          cut_dead_money_total),

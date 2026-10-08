@@ -237,6 +237,19 @@ CREATE TABLE IF NOT EXISTS team_stadium (
 -- Rulez. One row per pickup so the $4 shows up in that team's costs on
 -- financials.html without having to encode it into the player's own wage
 -- (which is a real contract value, not a one-time fee).
+-- $15 bounty for a second youth-draft pick (Rulez). One row per team that
+-- used the optional round-2 pick. Passes are not charged.
+CREATE TABLE IF NOT EXISTS youth_bounties (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team_code TEXT NOT NULL,
+    player_name TEXT NOT NULL,
+    season TEXT NOT NULL,
+    fee REAL NOT NULL DEFAULT 15.0,
+    note TEXT,
+    updated_at TEXT NOT NULL,
+    UNIQUE(team_code, player_name, season)
+);
+
 CREATE TABLE IF NOT EXISTS irp_fees (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     team_code TEXT NOT NULL,
