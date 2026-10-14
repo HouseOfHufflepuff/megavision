@@ -105,13 +105,11 @@ def match_fc26(fantrax_name, fantrax_pos, fc26_idx):
 
 def fetch_minutes_last_week(week):
     """{element_id: {"minutes":.., "starts":.., "total_points":..}} from
-    FPL's own live event data for the real gameweek before this one. Mega's
-    own week numbering runs one ahead of FPL's real event numbering -- Mega
-    GW1 was the cup week (Community Shield/Super Cup/FA Cup), not a real PL
-    round -- so "last week" for Mega week W is FPL event W-2. Confirmed by
-    cross-checking FPL's bootstrap-static `events` (event 3 marked finished/
-    is_current while Mega was on GW4, event 4 marked is_next while Mega
-    was on GW5).
+    FPL's own live event data for the real gameweek before this one.
+    As of GW6 (2026-10-09) Mega week N covers FPL event N: the long Mega
+    week 5 spanned FPL gameweek 5 and the international break, so the old
+    "Mega is one ahead, last week is FPL event W-2" offset no longer holds.
+    Last real round for Mega week W is FPL event W-1.
 
     total_points is FPL's OWN per-gameweek fantasy score -- used as the
     "last real gameweek's fantasy total" rank factor since Fantrax's own
@@ -119,7 +117,7 @@ def fetch_minutes_last_week(week):
     returns season-cumulative regardless of the period param, confirmed by
     testing; see MEMORY/session notes). A different scoring system from
     Fantrax's own Rulez points, but the best real per-week signal available."""
-    fpl_event = week - 2
+    fpl_event = week - 1
     if fpl_event < 1:
         return {}
     req = urllib.request.Request(LIVE_EVENT_URL.format(event=fpl_event), headers={"User-Agent": "Mozilla/5.0"})
@@ -192,7 +190,7 @@ def sync(week=None):
     minutes_by_id = fetch_minutes_last_week(week)
     fpl_elements = fpl.fetch_elements()
     fpl_lookup = fpl.build_lookup(fpl_elements)
-    print(f"  {len(minutes_by_id)} players with minutes data from FPL event {week - 2}.", file=sys.stderr)
+    print(f"  {len(minutes_by_id)} players with minutes data from FPL event {week - 1}.", file=sys.stderr)
 
     conn = connect()
     cur = conn.cursor()

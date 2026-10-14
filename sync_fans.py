@@ -19,6 +19,26 @@ from common import TEAMS, fetch_stadiums
 from db import connect
 
 
+def _cup_games(sess, week):
+    """Junior-team fixtures for one period, folded back to the 12 franchise codes."""
+    resp = sess.get("https://www.fantrax.com/fxea/general/getLeagueInfo", params={"leagueId": fl.LEAGUE_ID}, timeout=20)
+    resp.raise_for_status()
+    id_to_code = {v: k for k, v in fl.JUNIOR_TEAM_ID.items()}
+    games = []
+    for period in resp.json()["matchups"]:
+        if period["period"] != week:
+            continue
+        for m in period.get("matchupList") or []:
+            home, away = m.get("home") or {}, m.get("away") or {}
+            if home.get("TBD") or away.get("TBD"):
+                continue
+            home_code = id_to_code.get(home.get("id"))
+            away_code = id_to_code.get(away.get("id"))
+            if home_code and away_code:
+                games.append({"week": week, "home": home_code, "away": away_code})
+    return games
+
+
 def sync_week(week):
     conn = connect()
     cur = conn.cursor()
@@ -54,7 +74,14 @@ def sync_week(week):
         fanbase[code] = b["total"]
 
     games = [g for g in fl.fetch_schedule(sess) if g["week"] == week]
-    ticket_price = 0.0 if week in fa.NON_REGULAR_SEASON_WEEKS else fa.REGULAR_SEASON_TICKET_PRICE
+    # A cup week (FA Cup, Citadel) is scheduled on the junior teams only.
+    # Those games still move Best 11 and the season fan count, but the gate
+    # is $0. League weeks stay on the senior schedule at the normal price.
+    cup_week = False
+    if not games:
+        games = _cup_games(sess, week)
+        cup_week = bool(games)
+    ticket_price = 0.0 if cup_week or week in fa.NON_REGULAR_SEASON_WEEKS else fa.REGULAR_SEASON_TICKET_PRICE
 
     cur.execute("DELETE FROM gw_fans WHERE week=?", (week,))
     results = []
@@ -75,6 +102,19 @@ def sync_week(week):
             )
         results.append({"home": home, "away": away, **game, "gate": gate, "home_rev": home_rev, "away_rev": away_rev})
 
+    # Teams with no fixture this week (FA Cup bye) still get a fan-count
+    # snapshot, so the site's latest week has every club. Empty opponent
+    # marks it as a bye; the fans page does not render it as a match.
+    played = {code for g in games for code in (g["home"], g["away"])}
+    for code, _, _ in TEAMS:
+        if code in played:
+            continue
+        cur.execute(
+            "INSERT INTO gw_fans (week, team_code, opponent, is_home, base_score, fanbase, interest, "
+            "attendance, ticket_revenue, bonuses, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+            (week, code, "", 0, fanbase.get(code), fanbase.get(code), None, None, 0.0, "", now),
+        )
+
     conn.commit()
     conn.close()
     return results, breakdowns, league_record_rank, fanbase
@@ -86,7 +126,10 @@ if __name__ == "__main__":
         sys.exit(1)
     week = int(sys.argv[1])
     results, breakdowns, league_record_rank, fanbase = sync_week(week)
-    print(f"GW{week} fans (ticket price ${0.0 if week in fa.NON_REGULAR_SEASON_WEEKS else fa.REGULAR_SEASON_TICKET_PRICE:.2f}):\n")
+    charged = 0.0
+    if results and results[0]["attendance"]:
+        charged = results[0]["gate"] / results[0]["attendance"]
+    print(f"GW{week} fans (ticket price ${charged:.2f}):\n")
     for g in sorted(results, key=lambda r: -r["attendance"]):
         tag = " *** SOLD OUT ***" if g["sold_out"] else ""
         bonuses = f" [{', '.join(g['bonuses'])}]" if g["bonuses"] else ""

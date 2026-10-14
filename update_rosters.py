@@ -527,6 +527,8 @@ def build_fan_card(code, name, detailed=False):
     week_rows = ""
     for w in weeks:
         row = _gw_fans[(w, code)]
+        if not row["opponent"]:
+            continue  # bye / no fixture -- fan-count snapshot only
         host_cap = stadiums.get(code if row["is_home"] else row["opponent"], {}).get("capacity") or 0
         ha_badge = ('<span style="color:var(--mv-gold);font-weight:600;">HOME</span>' if row["is_home"]
                      else '<span class="dim">AWAY</span>')
