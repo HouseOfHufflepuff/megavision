@@ -324,7 +324,7 @@ CLUB_NAMES = {
     "EVE": "Everton", "FUL": "Fulham", "HUL": "Hull City", "IPS": "Ipswich Town",
     "LEE": "Leeds United", "LEEDS": "Leeds United",
     "LIV": "Liverpool", "MCI": "Manchester City", "MUN": "Manchester United",
-    "NEW": "Newcastle United", "NOT": "Nottingham Forest", "SUN": "Sunderland",
+    "NEW": "Newcastle United", "NOT": "Nottingham Forest", "NFO": "Nottingham Forest", "SUN": "Sunderland",
     "TOT": "Tottenham Hotspur", "WHU": "West Ham United", "WOL": "Wolverhampton Wanderers",
 }
 

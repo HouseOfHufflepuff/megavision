@@ -22,6 +22,10 @@ from db import connect
 now = datetime.now(timezone.utc).isoformat()
 
 BOOTSTRAP_URL = "https://fantasy.premierleague.com/api/bootstrap-static/"
+FIXTURES_URL = "https://fantasy.premierleague.com/api/fixtures/"
+
+# FPL short_name -> the club code Fantrax/FFS/rank.html use.
+FPL_CLUB_CODE = {"NFO": "NOT"}
 
 CLUB_DISPLAY_NAMES = {
     "ARS": "Arsenal", "AVL": "Aston Villa", "BOU": "AFC Bournemouth", "BRE": "Brentford",
@@ -41,18 +45,43 @@ def _club_display_name(code):
     return CLUB_DISPLAY_NAMES.get(code, code)
 
 
-def fetch_club_records():
-    """FPL's own bootstrap-static teams array has played/win/draw/loss/
-    position for every real EPL club, keyed by its own short_name -- which
-    already matches our 3-letter club codes exactly."""
-    req = urllib.request.Request(BOOTSTRAP_URL, headers={"User-Agent": "Mozilla/5.0"})
+def _get_json(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as resp:
-        data = json.loads(resp.read())
-    return {
-        t["short_name"]: {"played": t["played"], "win": t["win"], "draw": t["draw"],
-                           "loss": t["loss"], "position": t["position"]}
-        for t in data["teams"]
-    }
+        return json.loads(resp.read())
+
+
+def fetch_club_records():
+    """Table position from FPL bootstrap-static. W-D-L from finished
+    fixtures -- FPL's teams array leaves played/win/draw/loss at 0 all
+    season (confirmed GW9). NFO on FPL is NOT everywhere else."""
+    data = _get_json(BOOTSTRAP_URL)
+    teams = {t["id"]: t for t in data["teams"]}
+    records = {}
+    for t in data["teams"]:
+        code = FPL_CLUB_CODE.get(t["short_name"], t["short_name"])
+        records[code] = {
+            "played": 0, "win": 0, "draw": 0, "loss": 0,
+            "position": t["position"],
+        }
+    for fixture in _get_json(FIXTURES_URL):
+        if not fixture.get("finished"):
+            continue
+        home = FPL_CLUB_CODE.get(teams[fixture["team_h"]]["short_name"], teams[fixture["team_h"]]["short_name"])
+        away = FPL_CLUB_CODE.get(teams[fixture["team_a"]]["short_name"], teams[fixture["team_a"]]["short_name"])
+        hg, ag = fixture["team_h_score"], fixture["team_a_score"]
+        records[home]["played"] += 1
+        records[away]["played"] += 1
+        if hg > ag:
+            records[home]["win"] += 1
+            records[away]["loss"] += 1
+        elif ag > hg:
+            records[away]["win"] += 1
+            records[home]["loss"] += 1
+        else:
+            records[home]["draw"] += 1
+            records[away]["draw"] += 1
+    return records
 
 
 def sync(week=None):

@@ -148,7 +148,18 @@ def build_ffs_index(ffs_data):
     for club, info in ffs_data.items():
         names = {}
         def flag(n, key):
-            names.setdefault(_fold(n.split()[-1]), {"lineup": False, "out": False, "doubt": False})[key] = True
+            # FFS writes compound surnames as "Raya Martin" / "Konsa Ngoyo".
+            # Fantrax last-name lookup is "Raya" / "Konsa". Index every
+            # real token so those still match. Skip 1-2 letter particles.
+            tokens = [_fold(t) for t in n.replace("-", " ").split() if t]
+            keys = set()
+            if tokens:
+                keys.add(tokens[-1])
+            for tok in tokens:
+                if len(tok) >= 3 and tok not in {"van", "von", "del", "dos", "das"}:
+                    keys.add(tok)
+            for tok in keys:
+                names.setdefault(tok, {"lineup": False, "out": False, "doubt": False})[key] = True
         for n in info["lineup"]:
             flag(n, "lineup")
         for n in info["out"]:
