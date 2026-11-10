@@ -190,6 +190,21 @@ for _code, _season, _name, _pos, _age, _club, _rating, _status in _draft_rows:
         "year": _season, "player": _name, "pos": _pos or "", "age": _age,
         "club": _club or "", "status": _status or "Active", "fc26": _rating,
     })
+# Youth tab Promoted column lags real promotions. If this team already has a
+# youth_players / youth_legend contract on the player, the history row is Promoted.
+_promo_conn = db.connect()
+_promoted_by_team = {}
+for _pcode, _pname in _promo_conn.execute(
+    "SELECT team_code, player_name FROM team_player_wages "
+    "WHERE season='26/27' AND category IN ('youth_players','youth_legend')"
+):
+    _promoted_by_team.setdefault(_pcode, set()).add((_pname or "").strip().casefold())
+_promo_conn.close()
+for _code, _rows in youth_by_code.items():
+    _have = _promoted_by_team.get(_code, set())
+    for _y in _rows:
+        if (_y.get("player") or "").strip().casefold() in _have:
+            _y["status"] = "Promoted"
 stadiums = fetch_stadiums()
 rank_bonus, points_bonus_table = fetch_standings_reference(wb)
 firm_legacy = fetch_firm_legacy(wb)
