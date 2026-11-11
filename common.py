@@ -204,10 +204,12 @@ def compute_fan_formula(rank_bonus, points_bonus, firm_legacy, fantrax_standings
 
 
 def fetch_youth(wb):
-    """code -> list of youth-drafted players (all-time), most recent first,
-    straight from the 'Youth' tab. Columns: Year, Team, Player, Pos,
-    Age, Current Owner Team, Currently Playing, Original Team,
-    Fantrax Eligible, Promoted, Youth Rights Released, Contract Frozen."""
+    """code -> list of Youth Players (all-time), most recent first, straight
+    from the 'Youth' tab. This is the Rulez 4.1(6) list. A senior-draft pick
+    tagged Drafted '27 is not a Youth Player, even if they are 23 or younger.
+    Columns: Year, Team, Player, Pos, Age, Current Owner Team, Currently
+    Playing, Original Team, Fantrax Eligible, Promoted, Youth Rights
+    Released, Contract Frozen."""
     ws = wb["Youth"]
     rows = list(ws.iter_rows(min_row=2, max_row=1167, values_only=True))
     valid_codes = {code for code, _, _ in TEAMS}
@@ -400,6 +402,7 @@ NAV_LINKS = [
     ("index.html", "Home"),
     ("trophy-room.html", "Trophy Room"),
     ("teams.html", "Teams"),
+    ("youth.html", "Youth"),
     ("rulez.html", "Rulez"),
     ("rank.html", "Rank"),
     ("draft.html", "Draft Board"),

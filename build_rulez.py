@@ -155,8 +155,9 @@ def build():
       ])}
       {h3("(6) Youth Promotion")}
       {ul([
-        "Promotion grants a 3-year contract: Y1 $4, Y2 $4, Y3 $4.40.",
-        "Youth players can play 4 league games without promotion, unlimited Cup/Euro games; a 5th league start requires promotion.",
+        "A Youth Player is a name on that team's Youth Draft History (each team page, and the Youth Board). A senior-draft pick tagged Drafted '27 is not a Youth Player, even if they are 23 or younger. Age does not make someone youth.",
+        "Promotion grants a 3-year contract: Y1 $4, Y2 $4, Y3 $4.40. A promoted Youth Player who is 23 or under on August 1 does not count against the 9 multi-year slots.",
+        "Youth players can play 4 Mega Sr league games without promotion, unlimited Cup/Euro games; a 5th league start requires promote or drop. Drop books the full remaining salary as dead money.",
         "Any unpromoted youth player 24+ on August 1 on an EPL roster must be promoted or released by the Youth Draft (October international break) -- applies only once they're actually in the EPL. A promoted-at-24+ player can be used as a Legend of the Club, otherwise needs one of the 9 multi-year slots.",
       ])}
       {h3("(7) Youth Loan")}
