@@ -118,7 +118,7 @@ def build():
       <p style="color:var(--mv-ink-muted);line-height:1.7;">A team fills its 17 contracts through any combination of these paths.</p>
       {h3("(1) Kept Players")}
       {ul([
-        "Max 9 multi-year contracts under normal conditions -- at any point, 9 of 17 players can be expected back next year.",
+        "Max 9 multi-year contracts under normal conditions -- measured at season start / keeper lock. In-season youth promotions are not re-tested against that 9.",
         "Multi-year contracts: max 5 per position, min 1 per position. Okay: 5F/3M/1D or 4F/1M/1D. Not okay: 6F/2M/1D or 5F/4M/0D.",
         "<strong>Legend of the Club</strong>: a former youth player, promoted, now 24+ on August 1 -- one per team, doesn't count against the 9.",
         "<strong>Promoted Youth, 23 or younger</strong>: doesn't count against the 9.",

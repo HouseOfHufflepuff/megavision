@@ -207,14 +207,23 @@ for _pcode, _pname, _pos, _club in _promo_conn.execute(
     "WHERE action IN ('add','recategorize') AND category IN ('youth_players','youth_legend')"
 ):
     _promo_meta[(_pcode, (_pname or "").strip().casefold())] = (_pos or "", _club or "")
+def _youth_last(name):
+    parts = (name or "").strip().split()
+    return parts[-1].casefold() if parts else ""
+
 for _pcode, _pname, _src in _promo_conn.execute(
     "SELECT DISTINCT team_code, player_name, source FROM team_player_wages "
     "WHERE season='26/27' AND source LIKE 'youth_promo_%'"
 ):
     _have = youth_by_code.setdefault(_pcode, [])
-    if any((_y["player"] or "").strip().casefold() == (_pname or "").strip().casefold() for _y in _have):
+    _want = (_pname or "").strip().casefold()
+    _last = _youth_last(_pname)
+    _lasts = [_youth_last(_y.get("player")) for _y in _have]
+    if any((_y["player"] or "").strip().casefold() == _want for _y in _have):
         continue
-    _pos, _club = _promo_meta.get((_pcode, (_pname or "").strip().casefold()), ("", ""))
+    if _last and _lasts.count(_last) == 1:
+        continue
+    _pos, _club = _promo_meta.get((_pcode, _want), ("", ""))
     _have.insert(0, {
         "year": "2026/27", "player": _pname, "pos": _pos, "age": None,
         "club": _club, "status": "Promoted",
@@ -222,8 +231,11 @@ for _pcode, _pname, _src in _promo_conn.execute(
 _promo_conn.close()
 for _code, _rows in youth_by_code.items():
     _have = _promoted_by_team.get(_code, set())
+    _have_lasts = [_youth_last(p) for p in _have]
     for _y in _rows:
-        if (_y.get("player") or "").strip().casefold() in _have:
+        _pn = (_y.get("player") or "").strip().casefold()
+        _last = _youth_last(_y.get("player"))
+        if _pn in _have or (_last and _have_lasts.count(_last) == 1):
             _y["status"] = "Promoted"
 stadiums = fetch_stadiums()
 rank_bonus, points_bonus_table = fetch_standings_reference(wb)
