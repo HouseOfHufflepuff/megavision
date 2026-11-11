@@ -297,77 +297,6 @@ for _roster in fantrax_rosters.values():
     for _p in _roster:
         global_fpts_lookup[_p["name"].split()[-1].lower()] = _p["fpts"]
 
-# Mega Sr starts and on-roster flags for Youth Draft History names only.
-# youth_starts also has drafted U23s from a bad first-pass audit; those
-# names are ignored unless they appear on Youth Draft History.
-def _norm_youth_name(name):
-    cleaned = (clean_player(name or "", "")["player_name"] or name or "").strip()
-    return cleaned.casefold()
-
-def _youth_last_first3(name):
-    parts = (_norm_youth_name(name) or "").split()
-    if not parts:
-        return "", ""
-    return parts[-1], parts[0][:3]
-
-_starts_conn = db.connect()
-_start_rows = list(_starts_conn.execute(
-    "SELECT team_code, player_name, COUNT(*) FROM youth_starts GROUP BY team_code, player_name"
-))
-_this_season_promo = {
-    (_pc, (_pn or "").strip().casefold())
-    for _pc, _pn in _starts_conn.execute(
-        "SELECT team_code, player_name FROM team_player_wages "
-        "WHERE season='26/27' AND category IN ('youth_players','youth_legend') "
-        "AND source LIKE 'youth_promo_%'"
-    )
-}
-_starts_conn.close()
-_starts_exact = {}
-_starts_by_last = {}
-for _sc, _sn, _sn_n in _start_rows:
-    _starts_exact[(_sc, _norm_youth_name(_sn))] = _sn_n
-    _last, _f3 = _youth_last_first3(_sn)
-    _starts_by_last.setdefault((_sc, _last), []).append((_f3, _sn_n))
-
-def youth_sr_starts(code, name):
-    key = (code, _norm_youth_name(name))
-    if key in _starts_exact:
-        return _starts_exact[key]
-    last, f3 = _youth_last_first3(name)
-    cands = _starts_by_last.get((code, last), [])
-    if len(cands) == 1:
-        return cands[0][1]
-    for cf3, n in cands:
-        if cf3 == f3:
-            return n
-    return 0
-
-_sr_exact = {}
-_sr_by_last = {}
-for _code, _roster in fantrax_rosters.items():
-    for _p in _roster:
-        _nm = _p.get("name") or ""
-        _sr_exact.setdefault(_code, set()).add(_norm_youth_name(_nm))
-        _last, _f3 = _youth_last_first3(_nm)
-        _sr_by_last.setdefault((_code, _last), []).append(_f3)
-
-def youth_on_mega_sr(code, name):
-    if _norm_youth_name(name) in _sr_exact.get(code, set()):
-        return True
-    last, f3 = _youth_last_first3(name)
-    cands = _sr_by_last.get((code, last), [])
-    if len(cands) == 1:
-        return True
-    return f3 in cands
-
-for _code, _rows in youth_by_code.items():
-    for _y in _rows:
-        _pname = _y.get("player") or ""
-        _y["starts"] = youth_sr_starts(_code, _pname)
-        _y["on_mega_sr"] = youth_on_mega_sr(_code, _pname)
-        _y["this_season_promo"] = (_code, _pname.strip().casefold()) in _this_season_promo
-
 # 26/27 hasn't kicked off yet -- every team starts 0, same as the 0-0-0
 # record already shown on each team page; Fantrax's live standings still
 # reflect the prior season, not a real record for the new one.
@@ -1099,8 +1028,11 @@ for code, name, owners in TEAMS:
         pitch_rows.append(f'<div class="mv-pitch-row">{row_html}</div>')
     depth_html = "".join(pitch_rows)
 
-    # ---- Youth Draft History: the Rulez 4.1(6) Youth Player list. Not
-    # Drafted '27. Not every U23 on the Fantrax roster. ----
+    # ---- youth draft history: all-time, purely informational -- these are
+    # NOT the same as the "Youth Legend"/"Youth Player" categories above
+    # (which are the subset currently kept and counted in payroll); this is
+    # every player the team has ever drafted, shown for reference, never
+    # counted toward salary ----
     youth = youth_by_code.get(code, [])
 
     # ---- youth: rating (EA FC 26, falling back to live Fantrax fpts),
@@ -1120,18 +1052,16 @@ for code, name, owners in TEAMS:
     def rating_plain_label(fc26):
         return f'{fc26:,.0f}' if isinstance(fc26, (int, float)) else '—'
 
+    # ---- youth draft history: ONE table, all-time, sorted most recent
+    # draft first. This is a historical record (informational only, salary
+    # doesn't count here) -- the currently-kept youth players with real
+    # salary are already in the main roster table above, tagged "Youth
+    # Legend"/"Youth Player" ----
     # fetch_youth() already returns most-recent-first straight off the sheet
-    def _youth_starts_cell(y):
-        n = y.get("starts") or 0
-        if n:
-            return f'<td data-sort="{n}">{n}</td>'
-        return '<td class="dim" data-sort="0">—</td>'
-
     youth_rows = "".join(
         f'<tr><td class="dim">{y["year"]}</td><td>{y["player"]}</td><td>{y["pos"]}</td>'
         f'<td>{y["age"] if y["age"] is not None else "—"}</td><td>{y["club"]}</td>'
         f'<td>{rating_plain_label(y["fc26"])}</td>'
-        f'{_youth_starts_cell(y)}'
         f'<td style="color:{STATUS_COLOR[y["status"]]};font-weight:600;">{y["status"]}</td></tr>'
         for y in youth
     )
@@ -1143,7 +1073,6 @@ for code, name, owners in TEAMS:
           <thead><tr>
             <th data-sort-type="text">Draft</th><th data-sort-type="text">Player</th><th data-sort-type="text">Pos</th>
             <th data-sort-type="num">Age</th><th data-sort-type="text">Club</th><th data-sort-type="num">Rating</th>
-            <th data-sort-type="num">Mega Sr starts</th>
             <th data-sort-type="text">Status</th>
           </tr></thead>
           <tbody>{youth_rows}</tbody>
@@ -1197,9 +1126,6 @@ for code, name, owners in TEAMS:
         <span style="color:{CATEGORY_BADGE_COLOR["youth_legend"]};">Youth Legend</span>,
         <span style="color:{CATEGORY_BADGE_COLOR["youth_players"]};">Youth Player</span>, and
         <span style="color:{CATEGORY_BADGE_COLOR["drafted"]};">Drafted '27</span> tags mark each.
-        Drafted '27 is a senior auction pick, not a Youth Player, even if the player is 23 or younger.
-        Youth Players are the names on
-        <a href="youth.html" style="color:inherit;">Youth Draft History</a> below.
         Salary is each player's real contract wage (multi-year where extended, per the
         <a href="rulez.html" style="color:inherit;">Rulez</a> contract rules) where we've verified it, live FPL price as a fallback otherwise.
         Depth Chart is ranked by EA FC 26 overall rating (Fantrax fantasy points as fallback/tiebreak).
@@ -1336,7 +1262,7 @@ for code, name, owners in TEAMS:
 
     <section class="card mv-card">
       <h2 class="mv-chrome-text">Youth Draft History</h2>
-      <div class="sub">{len(youth)} Youth Player{"s" if len(youth) != 1 else ""} all-time &middot; this is the Rulez 4.1(6) list, not Drafted '27 &middot; 4 free Mega Sr games, then promote or drop &middot; <a href="youth.html" style="color:inherit;">league Youth Board</a></div>
+      <div class="sub">{len(youth)} player{"s" if len(youth) != 1 else ""} drafted all-time &middot; informational only, does not count toward payroll</div>
       {youth_section}
     </section>
 
@@ -1444,117 +1370,6 @@ teams_html = head("Teams", "teams.html") + hero_logo() + f"""
 with open("teams.html", "w") as f:
     f.write(teams_html)
 print("Updated teams.html")
-
-# ---------------- youth.html: Rulez 4.1(6) board. Only Youth Draft History
-# names. Drafted '27 U23s do not appear here. ----------------
-def _youth_call(y):
-    status = y.get("status") or "Active"
-    starts = y.get("starts") or 0
-    if status == "Promoted" or y.get("this_season_promo"):
-        return "Promoted", 2, "var(--mv-gold)"
-    if starts >= 5:
-        return "Promote or drop", 0, "var(--mv-crimson)"
-    if starts == 4:
-        return "4 starts — one free game left", 1, "var(--mv-gold)"
-    if starts == 1:
-        return "1 Mega Sr start", 3, "var(--mv-ink)"
-    if starts:
-        return f"{starts} Mega Sr starts", 3, "var(--mv-ink)"
-    return "On Mega Sr, 0 starts", 4, "var(--mv-ink-muted)"
-
-youth_clock = []
-for _code, _rows in youth_by_code.items():
-    for _y in _rows:
-        _status = _y.get("status") or "Active"
-        _starts = _y.get("starts") or 0
-        _on_sr = _y.get("on_mega_sr")
-        _promo = _y.get("this_season_promo")
-        if _promo:
-            pass
-        elif _status == "Active" and (_on_sr or _starts):
-            pass
-        else:
-            continue
-        _call, _sort, _color = _youth_call(_y)
-        youth_clock.append({
-            "code": _code,
-            "name": TEAM_FULL_NAME.get(_code, _code),
-            "player": _y.get("player") or "",
-            "pos": _y.get("pos") or "",
-            "status": _status,
-            "starts": _starts,
-            "call": _call,
-            "sort": _sort,
-            "color": _color,
-            "on_sr": _on_sr,
-        })
-youth_clock.sort(key=lambda r: (r["sort"], -r["starts"], r["code"], r["player"]))
-
-youth_clock_rows = "\n            ".join(
-    f'<tr>'
-    f'<td data-sort="{r["name"]}"><a href="team-{r["code"].lower()}.html" style="color:inherit;text-decoration:none;font-weight:600;">{r["name"]}</a> '
-    f'<span class="dim">{r["code"]}</span></td>'
-    f'<td>{r["player"]}</td>'
-    f'<td>{r["pos"] or "—"}</td>'
-    f'<td data-sort="{r["starts"]}">{r["starts"] if r["starts"] else "—"}</td>'
-    f'<td style="color:{STATUS_COLOR.get(r["status"], "var(--mv-ink)")};font-weight:600;">{r["status"]}</td>'
-    f'<td style="color:{r["color"]};font-weight:600;">{r["call"]}</td>'
-    f'</tr>'
-    for r in youth_clock
-) or '<tr><td colspan="6" class="dim">No Youth Players on a Mega Sr clock right now.</td></tr>'
-
-youth_html = head("Youth", "youth.html") + hero_logo() + f"""
-    <div class="mv-page-header">
-      <h1 class="mv-chrome-text">Youth Board</h1>
-      <div class="sub">Rulez 4.1(6) &middot; Youth Draft History is the list &middot; Drafted '27 is not youth</div>
-    </div>
-
-    <section class="card mv-card">
-      <h2 class="mv-chrome-text">What counts</h2>
-      <p style="font-size:14px;line-height:1.6;color:var(--mv-ink);margin:0 0 10px;">
-        A Youth Player is a name on that team's Youth Draft History. Source is the Youth sheet plus
-        <code>youth_draft_picks</code> in mega.db. Promoted status follows a
-        <span style="color:{CATEGORY_BADGE_COLOR["youth_players"]};">Youth Player</span> or
-        <span style="color:{CATEGORY_BADGE_COLOR["youth_legend"]};">Youth Legend</span> contract on the books.
-      </p>
-      <p style="font-size:14px;line-height:1.6;color:var(--mv-ink);margin:0 0 10px;">
-        A <span style="color:{CATEGORY_BADGE_COLOR["drafted"]};">Drafted '27</span> tag is a senior auction pick.
-        Age 23 or under does not make that player a Youth Player. Do not mail owners about drafted U23s for promote-or-drop.
-      </p>
-      <p style="font-size:14px;line-height:1.6;color:var(--mv-ink);margin:0;">
-        Four free Mega Sr league games. A fifth start is promote ($4 / $4 / $4.40) or drop (full remaining salary is dead money).
-        Promoted at 23 or under does not count against the 9. Cup and Euro games do not count. Full history is on each
-        <a href="teams.html" style="color:inherit;">team page</a>. Rule text is
-        <a href="rulez.html" style="color:inherit;">Rulez 4.1(6)</a>.
-      </p>
-    </section>
-
-    <section class="card mv-card">
-      <h2 class="mv-chrome-text">Live clock</h2>
-      <div class="sub">{len(youth_clock)} Youth Player{"s" if len(youth_clock) != 1 else ""} on Mega Sr or promoted this season &middot; click a column to sort</div>
-      <div class="mv-table-scroll">
-        <table class="mv-table mv-sortable" id="youthClock">
-          <thead>
-            <tr>
-              <th data-sort-type="text">Team</th>
-              <th data-sort-type="text">Player</th>
-              <th data-sort-type="text">Pos</th>
-              <th data-sort-type="num">Mega Sr starts</th>
-              <th data-sort-type="text">Status</th>
-              <th data-sort-type="text">Call</th>
-            </tr>
-          </thead>
-          <tbody>
-            {youth_clock_rows}
-          </tbody>
-        </table>
-      </div>
-    </section>
-""" + foot()
-
-with open("youth.html", "w") as f:
-    f.write(youth_html)
-print(f"Updated youth.html ({len(youth_clock)} on the live clock)")
 
 # ---------------- financials.html / index.html (site default is now
 # Financials -- see head()'s NAV_LINKS): two tabs, GW (default) and Season.
